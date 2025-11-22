@@ -1,0 +1,265 @@
+"use client";
+
+import { useState } from "react";
+import { Typewriter } from "react-simple-typewriter";
+import Image from "next/image";
+
+// Tipuri de proiecte pentru filtrare
+type ProjectCategory = "all" | "aerial" | "real-estate" | "events" | "commercial";
+
+interface Project {
+  id: number;
+  title: string;
+  category: ProjectCategory;
+  thumbnail: string;
+  videoUrl?: string;
+  description: string;
+}
+
+// Portfolio Projects
+const projects: Project[] = [
+  {
+    id: 1,
+    title: "Big Belly - Aerial Filming",
+    category: "commercial",
+    thumbnail: "/bigbelly.png",
+    description: "Professional aerial filming for Big Belly brand",
+  },
+  {
+    id: 2,
+    title: "Multiverse Party - Advertisement",
+    category: "events",
+    thumbnail: "/multiverse.png",
+    description: "Dynamic advertisement video for Multiverse party event",
+  },
+  {
+    id: 3,
+    title: "Accommodation Cabin - Promo Video",
+    category: "real-estate",
+    thumbnail: "/cabanuta.png",
+    description: "Promotional aerial video showcasing a beautiful accommodation cabin",
+  },
+  {
+    id: 4,
+    title: "Outdoor Lounge - Aerial Filming",
+    category: "commercial",
+    thumbnail: "/aerlounge.png",
+    description: "Aerial cinematography for outdoor lounge venue",
+  },
+  {
+    id: 5,
+    title: "Casa Numaa - Aerial Filming",
+    category: "real-estate",
+    thumbnail: "/casanumaa.png",
+    description: "Professional aerial videography for Casa Numaa property",
+  },
+  {
+    id: 6,
+    title: "Utopic Party - Aerial Filming",
+    category: "events",
+    thumbnail: "/utopic.png",
+    description: "Aerial coverage and filming for Utopic party event",
+  },
+];
+
+export default function Portfolio() {
+  const [selectedCategory, setSelectedCategory] = useState<ProjectCategory>("all");
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  const categories: { value: ProjectCategory; label: string }[] = [
+    { value: "all", label: "All Projects" },
+    { value: "aerial", label: "Aerial" },
+    { value: "real-estate", label: "Real Estate" },
+    { value: "events", label: "Events" },
+    { value: "commercial", label: "Commercial" },
+  ];
+
+  const filteredProjects =
+    selectedCategory === "all"
+      ? projects
+      : projects.filter((project) => project.category === selectedCategory);
+
+  return (
+    <main className="min-h-screen text-white pt-24 pb-16 relative">
+      {/* Background Image */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <Image
+          src="/background2.jpg"
+          alt="Portfolio background"
+          fill
+          priority
+          quality={75}
+          sizes="100vw"
+          className="object-cover"
+        />
+      </div>
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
+            <Typewriter
+              words={["Portfolio"]}
+              loop={false}
+              cursor
+              cursorStyle="|"
+              typeSpeed={90}
+              deleteSpeed={0}
+              delaySpeed={999999}
+            />
+          </h1>
+          <p className="text-gray-300">
+            Explore our collection of professional aerial footage and cinematography
+          </p>
+        </div>
+
+        {/* Filter Buttons */}
+        <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 md:mb-12 px-2">
+          {categories.map((category) => (
+            <button
+              key={category.value}
+              onClick={() => setSelectedCategory(category.value)}
+              className={`px-4 py-1.5 md:px-6 md:py-2 rounded-xl font-semibold transition-all duration-300 text-sm md:text-base ${
+                selectedCategory === category.value
+                  ? "liquid-glass-button text-white scale-105"
+                  : "liquid-glass liquid-glass-hover text-white"
+              }`}
+              style={{ fontFamily: "var(--font-roboto)" }}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Projects Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {filteredProjects.map((project) => (
+            <div
+              key={project.id}
+              className="group relative overflow-hidden rounded-2xl cursor-pointer liquid-glass liquid-glass-hover backdrop-blur-md"
+              onClick={() => setSelectedProject(project)}
+            >
+              {/* Thumbnail */}
+              <div className={`aspect-video relative overflow-hidden ${
+                project.thumbnail.includes('.png') && 
+                (project.thumbnail.includes('multiverse') || 
+                 project.thumbnail.includes('casanumaa') || 
+                 project.thumbnail.includes('utopic') ||
+                 project.thumbnail.includes('aerlounge') ||
+                 project.thumbnail.includes('bigbelly') ||
+                 project.thumbnail.includes('cabanuta'))
+                  ? 'bg-gradient-to-br from-black/30 via-black/20 to-black/30 backdrop-blur-sm' 
+                  : ''
+              }`}>
+                <img
+                  src={project.thumbnail}
+                  alt={project.title}
+                  className={`w-full h-full transition-all duration-500 group-hover:scale-110 ${
+                    project.thumbnail.includes('.png') && 
+                    (project.thumbnail.includes('multiverse') || 
+                     project.thumbnail.includes('casanumaa') || 
+                     project.thumbnail.includes('utopic') ||
+                     project.thumbnail.includes('aerlounge') ||
+                     project.thumbnail.includes('bigbelly') ||
+                     project.thumbnail.includes('cabanuta'))
+                      ? `object-contain drop-shadow-2xl filter brightness-110 group-hover:brightness-125 ${
+                          project.thumbnail.includes('bigbelly')
+                            ? 'p-3'
+                            : project.thumbnail.includes('casanumaa')
+                            ? 'p-2'
+                            : 'p-6'
+                        }`
+                      : 'object-cover'
+                  }`}
+                />
+                <div className={`absolute inset-0 transition-all duration-300 ${
+                  project.thumbnail.includes('.png') && 
+                  (project.thumbnail.includes('multiverse') || 
+                   project.thumbnail.includes('casanumaa') || 
+                   project.thumbnail.includes('utopic') ||
+                   project.thumbnail.includes('aerlounge') ||
+                   project.thumbnail.includes('bigbelly') ||
+                   project.thumbnail.includes('cabanuta'))
+                    ? 'bg-gradient-to-t from-black/20 via-transparent to-black/20 group-hover:from-black/10 group-hover:via-transparent group-hover:to-black/10'
+                    : 'bg-gradient-to-t from-black/80 via-black/40 to-black/20 group-hover:from-black/60 group-hover:via-black/30 group-hover:to-black/10'
+                }`} />
+                
+                {/* Play Icon Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <div className="bg-white/20 backdrop-blur-md rounded-full p-4 transform scale-75 group-hover:scale-100 transition-transform duration-300 shadow-2xl">
+                    <svg
+                      className="w-12 h-12 text-white"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Project Info */}
+              <div className="p-5 relative">
+                <h3 className="text-xl font-semibold mb-2 group-hover:text-white transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
+                  {project.title}
+                </h3>
+                <p className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">{project.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Empty State */}
+        {filteredProjects.length === 0 && (
+          <div className="text-center py-16">
+            <p className="text-xl text-gray-400">No projects found in this category.</p>
+          </div>
+        )}
+      </div>
+
+      {/* Modal pentru proiect selectat */}
+      {selectedProject && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 md:p-6 overflow-y-auto animate-fade-in"
+          onClick={() => setSelectedProject(null)}
+        >
+          <div
+            className="max-w-4xl w-full liquid-glass-strong rounded-2xl overflow-hidden my-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative aspect-video">
+              {selectedProject.videoUrl ? (
+                <video
+                  src={selectedProject.videoUrl}
+                  controls
+                  autoPlay
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <img
+                  src={selectedProject.thumbnail}
+                  alt={selectedProject.title}
+                  className="w-full h-full object-cover"
+                />
+              )}
+              <button
+                onClick={() => setSelectedProject(null)}
+                className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-6">
+              <h2 className="text-3xl font-bold mb-2" style={{ fontFamily: "var(--font-playfair)" }}>
+                {selectedProject.title}
+              </h2>
+              <p className="text-gray-300">{selectedProject.description}</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </main>
+  );
+}
+
