@@ -255,7 +255,7 @@ export default function Header() {
         </div>
       </div>
 
-      <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} headerHeight={headerHeight} />
+      <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   );
 }

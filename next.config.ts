@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Optimizări pentru compilare mai rapidă
-  swcMinify: true,
-  
   // Optimizări pentru imagini
   images: {
     formats: ['image/avif', 'image/webp'],
