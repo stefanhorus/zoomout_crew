@@ -20,10 +20,12 @@ export default function Home() {
   const [isPaused, setIsPaused] = useState(false);
   const [isTouching, setIsTouching] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const [videoLoading, setVideoLoading] = useState(true);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const startXRef = useRef<number>(0);
   const scrollLeftRef = useRef<number>(0);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const videoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -157,8 +159,27 @@ export default function Home() {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
+      if (videoTimeoutRef.current) {
+        clearTimeout(videoTimeoutRef.current);
+      }
     };
   }, []);
+
+  // Timeout pentru video - dacă nu se încarcă în 5 secunde, folosește fallback
+  useEffect(() => {
+    if (videoLoading && !videoError) {
+      videoTimeoutRef.current = setTimeout(() => {
+        console.warn("Video loading timeout - using fallback image");
+        setVideoError(true);
+        setVideoLoading(false);
+      }, 5000);
+    }
+    return () => {
+      if (videoTimeoutRef.current) {
+        clearTimeout(videoTimeoutRef.current);
+      }
+    };
+  }, [videoLoading, videoError]);
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center bg-black text-white pt-24 md:pt-32 lg:pt-48">
@@ -209,14 +230,22 @@ export default function Home() {
             onError={(e) => {
               console.error("Video failed to load:", e);
               setVideoError(true);
+              setVideoLoading(false);
             }}
             onLoadedData={() => {
+              setVideoLoading(false);
+              if (videoTimeoutRef.current) {
+                clearTimeout(videoTimeoutRef.current);
+              }
               if (videoRef.current) {
                 videoRef.current.play().catch((err) => {
                   console.error("Video play failed:", err);
                   setVideoError(true);
                 });
               }
+            }}
+            onCanPlay={() => {
+              setVideoLoading(false);
             }}
           >
             {/* Multiple sources: WebM (optimizat) cu fallback MP4 */}
