@@ -193,16 +193,16 @@ export default function Home() {
         }
       `}} />
       
-      {/* Background image (temporarily replacing video for testing) */}
+      {/* Video de fundal cu overlay gradient */}
       <div className="absolute inset-0 w-full h-full z-0">
-        <Image
-          src="/background4.jpg"
-          alt="Background"
-          fill
-          priority
-          quality={90}
-          sizes="100vw"
-          className="object-cover"
+        <video
+          src={isMobile ? "/Drone-hero-mobile-1080.mp4" : "/drone-hero-landscape2k.mp4"}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="w-full h-full object-cover"
         />
         {/* Gradient overlay pentru contrast mai bun */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/50" />
