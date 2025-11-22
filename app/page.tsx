@@ -248,23 +248,12 @@ export default function Home() {
               setVideoLoading(false);
             }}
           >
-            {/* Multiple sources: WebM (optimizat) cu fallback MP4 */}
+            {/* Video hero principal */}
             {isMobile ? (
-              <>
-                <source src="/Drone-hero-mobile-1080.mp4" type="video/mp4" />
-                <source src="/Drone-hero-mobile-tall-1080.mp4" type="video/mp4" />
-              </>
+              <source src="/Drone-hero-mobile-1080.mp4" type="video/mp4" />
             ) : (
-              <>
-                {/* Nou video hero - 2K */}
-                <source src="/Drone-Hero-2-2k.mp4" type="video/mp4" />
-                {/* Fallback la video-urile vechi dacă noul nu se încarcă */}
-                <source src="/drone-hero-landscape2k.webm" type="video/webm" />
-                <source src="/drone-hero-landscape2k.mp4" type="video/mp4" />
-              </>
+              <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
             )}
-            {/* Fallback text dacă browser-ul nu suportă video */}
-            Your browser does not support the video tag.
           </video>
         ) : (
           // Fallback: Background image dacă video-ul nu se încarcă
