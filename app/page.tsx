@@ -278,8 +278,8 @@ export default function Home() {
             className="object-cover"
           />
         )}
-        {/* Gradient overlay pentru contrast mai bun */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/50" />
+        {/* Gradient overlay pentru contrast mai bun - mai întunecat */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/65" />
       </div>
 
       {/* Conținutul de deasupra video-ului */}
