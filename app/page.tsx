@@ -248,15 +248,22 @@ export default function Home() {
               setVideoLoading(false);
             }}
           >
-            {/* Video hero principal - Mux CDN */}
+            {/* Video hero principal - Mux CDN în producție, local în development */}
             {isMobile ? (
               <source src="/Drone-hero-mobile-1080.mp4" type="video/mp4" />
             ) : (
               <>
-                {/* Mux video - streaming adaptiv HLS */}
-                <source src="https://stream.mux.com/rR8P8mSaKDzz02TsftugTUdI00cQPJX00oy.m3u8" type="application/x-mpegURL" />
-                {/* Fallback MP4 direct de la Mux */}
-                <source src="https://stream.mux.com/rR8P8mSaKDzz02TsftugTUdI00cQPJX00oy.mp4" type="video/mp4" />
+                {process.env.NODE_ENV === 'production' ? (
+                  <>
+                    {/* Mux video - streaming adaptiv HLS (producție) */}
+                    <source src="https://stream.mux.com/rR8P8mSaKDzz02TsftugTUdI00cQPJX00oy.m3u8" type="application/x-mpegURL" />
+                    {/* Fallback MP4 direct de la Mux */}
+                    <source src="https://stream.mux.com/rR8P8mSaKDzz02TsftugTUdI00cQPJX00oy.mp4" type="video/mp4" />
+                  </>
+                ) : (
+                  /* Video local pentru development (mai rapid) */
+                  <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
+                )}
               </>
             )}
           </video>
