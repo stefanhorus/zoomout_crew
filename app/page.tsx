@@ -219,7 +219,7 @@ export default function Home() {
               }
             }}
           >
-            {/* Multiple sources pentru compatibilitate mai bună */}
+            {/* Multiple sources: WebM (optimizat) cu fallback MP4 */}
             {isMobile ? (
               <>
                 <source src="/Drone-hero-mobile-1080.mp4" type="video/mp4" />
@@ -227,8 +227,10 @@ export default function Home() {
               </>
             ) : (
               <>
+                {/* WebM - mai eficient, se încarcă primul */}
+                <source src="/drone-hero-landscape2k.webm" type="video/webm" />
+                {/* MP4 fallback pentru compatibilitate */}
                 <source src="/drone-hero-landscape2k.mp4" type="video/mp4" />
-                <source src="/drone-hero-landscape4k.mp4" type="video/mp4" />
               </>
             )}
             {/* Fallback text dacă browser-ul nu suportă video */}
