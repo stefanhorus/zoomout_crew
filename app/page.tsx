@@ -200,7 +200,6 @@ export default function Home() {
         {!videoError ? (
           <video
             ref={videoRef}
-            src={isMobile ? "/Drone-hero-mobile-1080.mp4" : "/drone-hero-landscape2k.mp4"}
             autoPlay
             muted
             loop
@@ -219,7 +218,22 @@ export default function Home() {
                 });
               }
             }}
-          />
+          >
+            {/* Multiple sources pentru compatibilitate mai bună */}
+            {isMobile ? (
+              <>
+                <source src="/Drone-hero-mobile-1080.mp4" type="video/mp4" />
+                <source src="/Drone-hero-mobile-tall-1080.mp4" type="video/mp4" />
+              </>
+            ) : (
+              <>
+                <source src="/drone-hero-landscape2k.mp4" type="video/mp4" />
+                <source src="/drone-hero-landscape4k.mp4" type="video/mp4" />
+              </>
+            )}
+            {/* Fallback text dacă browser-ul nu suportă video */}
+            Your browser does not support the video tag.
+          </video>
         ) : (
           // Fallback: Background image dacă video-ul nu se încarcă
           <Image
