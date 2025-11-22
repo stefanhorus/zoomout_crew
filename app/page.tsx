@@ -256,9 +256,10 @@ export default function Home() {
               </>
             ) : (
               <>
-                {/* WebM - mai eficient, se încarcă primul */}
+                {/* Nou video hero - 2K */}
+                <source src="/Drone-Hero-2-2k.mp4" type="video/mp4" />
+                {/* Fallback la video-urile vechi dacă noul nu se încarcă */}
                 <source src="/drone-hero-landscape2k.webm" type="video/webm" />
-                {/* MP4 fallback pentru compatibilitate */}
                 <source src="/drone-hero-landscape2k.mp4" type="video/mp4" />
               </>
             )}
