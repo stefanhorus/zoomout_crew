@@ -165,21 +165,7 @@ export default function Home() {
     };
   }, []);
 
-  // Timeout pentru video - dacă nu se încarcă în 5 secunde, folosește fallback
-  useEffect(() => {
-    if (videoLoading && !videoError) {
-      videoTimeoutRef.current = setTimeout(() => {
-        console.warn("Video loading timeout - using fallback image");
-        setVideoError(true);
-        setVideoLoading(false);
-      }, 5000);
-    }
-    return () => {
-      if (videoTimeoutRef.current) {
-        clearTimeout(videoTimeoutRef.current);
-      }
-    };
-  }, [videoLoading, videoError]);
+  // Eliminat timeout - video-ul se va încărca fără fallback
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center bg-black text-white pt-24 md:pt-32 lg:pt-48">
@@ -219,14 +205,14 @@ export default function Home() {
       {/* Video de fundal cu overlay gradient */}
       <div className="absolute inset-0 w-full h-full z-0">
         {!videoError ? (
-          <video
+        <video
             ref={videoRef}
-            autoPlay
-            muted
-            loop
-            playsInline
+          autoPlay
+          muted
+          loop
+          playsInline
             preload="auto"
-            className="w-full h-full object-cover"
+          className="w-full h-full object-cover"
             onError={(e) => {
               console.error("Video failed to load:", e);
               setVideoError(true);
@@ -268,16 +254,8 @@ export default function Home() {
             )}
           </video>
         ) : (
-          // Fallback: Background image dacă video-ul nu se încarcă
-          <Image
-            src="/background4.jpg"
-            alt="Background"
-            fill
-            priority
-            quality={90}
-            sizes="100vw"
-            className="object-cover"
-          />
+          // Background negru simplu dacă video-ul nu se încarcă
+          <div className="w-full h-full bg-black" />
         )}
         {/* Gradient overlay pentru contrast mai bun - mai întunecat */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/65" />
