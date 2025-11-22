@@ -256,9 +256,9 @@ export default function Home() {
                 {process.env.NODE_ENV === 'production' ? (
                   <>
                     {/* Mux video - streaming adaptiv HLS (producție) */}
-                    <source src="https://stream.mux.com/rR8P8mSaKDzz02TsftugTUdI00cQPJX00oy.m3u8" type="application/x-mpegURL" />
+                    <source src="https://stream.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo.m3u8" type="application/x-mpegURL" />
                     {/* Fallback MP4 direct de la Mux */}
-                    <source src="https://stream.mux.com/rR8P8mSaKDzz02TsftugTUdI00cQPJX00oy.mp4" type="video/mp4" />
+                    <source src="https://stream.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo.mp4" type="video/mp4" />
                   </>
                 ) : (
                   /* Video local pentru development (mai rapid) */
