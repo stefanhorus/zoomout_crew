@@ -19,13 +19,10 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isTouching, setIsTouching] = useState(false);
-  const [videoError, setVideoError] = useState(false);
-  const [videoLoading, setVideoLoading] = useState(true);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const startXRef = useRef<number>(0);
   const scrollLeftRef = useRef<number>(0);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -159,9 +156,6 @@ export default function Home() {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-      if (videoTimeoutRef.current) {
-        clearTimeout(videoTimeoutRef.current);
-      }
     };
   }, []);
 
@@ -204,36 +198,22 @@ export default function Home() {
       
       {/* Video de fundal cu overlay gradient */}
       <div className="absolute inset-0 w-full h-full z-0">
-        {!videoError ? (
         <video
-            ref={videoRef}
+          ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
-            preload="auto"
+          preload="auto"
           className="w-full h-full object-cover"
-            onError={(e) => {
-              console.error("Video failed to load:", e);
-              setVideoError(true);
-              setVideoLoading(false);
-            }}
-            onLoadedData={() => {
-              setVideoLoading(false);
-              if (videoTimeoutRef.current) {
-                clearTimeout(videoTimeoutRef.current);
-              }
-              if (videoRef.current) {
-                videoRef.current.play().catch((err) => {
-                  console.error("Video play failed:", err);
-                  setVideoError(true);
-                });
-              }
-            }}
-            onCanPlay={() => {
-              setVideoLoading(false);
-            }}
-          >
+          onLoadedData={() => {
+            if (videoRef.current) {
+              videoRef.current.play().catch((err) => {
+                console.error("Video play failed:", err);
+              });
+            }
+          }}
+        >
             {/* Video hero principal - Mux CDN în producție, local în development */}
             {isMobile ? (
               <source src="/Drone-hero-mobile-1080.mp4" type="video/mp4" />
@@ -253,10 +233,6 @@ export default function Home() {
               </>
             )}
           </video>
-        ) : (
-          // Background negru simplu dacă video-ul nu se încarcă
-          <div className="w-full h-full bg-black" />
-        )}
         {/* Gradient overlay pentru contrast mai bun - mai întunecat */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/65" />
       </div>
