@@ -19,9 +19,11 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isTouching, setIsTouching] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const startXRef = useRef<number>(0);
   const scrollLeftRef = useRef<number>(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -195,15 +197,31 @@ export default function Home() {
       
       {/* Video de fundal cu overlay gradient */}
       <div className="absolute inset-0 w-full h-full z-0">
-        <video
-          src={isMobile ? "/Drone-hero-mobile-1080.mp4" : "/drone-hero-landscape4k.mp4"}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          className="w-full h-full object-cover"
-        />
+        {!videoError ? (
+          <video
+            ref={videoRef}
+            src={isMobile ? "/Drone-hero-mobile-1080.mp4" : "/drone-hero-landscape4k.mp4"}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            className="w-full h-full object-cover"
+            onError={() => {
+              console.error("Video failed to load");
+              setVideoError(true);
+            }}
+            onLoadedData={() => {
+              if (videoRef.current) {
+                videoRef.current.play().catch((err) => {
+                  console.error("Video play failed:", err);
+                });
+              }
+            }}
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900" />
+        )}
         {/* Gradient overlay pentru contrast mai bun */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/50" />
       </div>

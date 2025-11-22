@@ -22,6 +22,38 @@ const nextConfig: NextConfig = {
   
   // Power optimizations
   poweredByHeader: false,
+
+  // Headers pentru fișiere video
+  async headers() {
+    return [
+      {
+        source: '/:path*.mp4',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'video/mp4',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/:path*.mov',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'video/quicktime',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
