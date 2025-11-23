@@ -91,9 +91,9 @@ export default function Header() {
 
           {/* Desktop Navigation - 2 coloane */}
           <div className="hidden md:flex items-center gap-6">
-            <ul className="flex gap-x-6 gap-y-2 flex-wrap text-white max-w-md">
+            <ul className="grid grid-cols-2 gap-x-6 gap-y-1 text-white">
               {navLinks.map((link) => (
-                <li key={link.href} className="w-[calc(50%-12px)]">
+                <li key={link.href}>
                   <a 
                     href={link.href} 
                     className="hover:opacity-90 transition-all duration-300 text-sm md:text-base relative group font-medium block"
