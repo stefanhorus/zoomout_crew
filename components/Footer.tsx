@@ -56,12 +56,12 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Navigation Links */}
+          {/* Navigation Links - 2 coloane */}
           <div>
             <h4 className="text-lg font-semibold mb-4 text-white transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.2)]" style={{ fontFamily: "var(--font-playfair)" }}>
               Navigation
             </h4>
-            <ul className="space-y-2">
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <Link

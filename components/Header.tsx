@@ -77,11 +77,11 @@ export default function Header() {
             onClick={handleLinkClick}
           >
             <div className="relative">
-              <img 
-                src="/logo.png" 
-                alt="Logo" 
+            <img 
+              src="/logo.png" 
+              alt="Logo" 
                 className="h-7 w-7 md:h-8 md:w-8 object-contain transition-all duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.4)]" 
-              />
+            />
               <div className="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-300" />
             </div>
             <span className="font-semibold text-white text-base md:text-lg transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] group-hover:text-white/95">
@@ -89,14 +89,14 @@ export default function Header() {
             </span>
           </a>
 
-          {/* Desktop Navigation - 2 coloane */}
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <ul className="grid grid-cols-2 gap-x-6 gap-y-1 text-white">
+            <ul className="flex gap-6 text-white">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <a 
                     href={link.href} 
-                    className="hover:opacity-90 transition-all duration-300 text-sm md:text-base relative group font-medium block"
+                    className="hover:opacity-90 transition-all duration-300 text-sm md:text-base relative group font-medium"
                   >
                     <span className="relative z-10">{link.label}</span>
                     <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
