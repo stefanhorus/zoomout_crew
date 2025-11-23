@@ -89,14 +89,14 @@ export default function Header() {
             </span>
           </a>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - 2 coloane */}
           <div className="hidden md:flex items-center gap-6">
-            <ul className="flex gap-6 text-white">
+            <ul className="flex gap-x-6 gap-y-2 flex-wrap text-white max-w-md">
               {navLinks.map((link) => (
-                <li key={link.href}>
+                <li key={link.href} className="w-[calc(50%-12px)]">
                   <a 
                     href={link.href} 
-                    className="hover:opacity-90 transition-all duration-300 text-sm md:text-base relative group font-medium"
+                    className="hover:opacity-90 transition-all duration-300 text-sm md:text-base relative group font-medium block"
                   >
                     <span className="relative z-10">{link.label}</span>
                     <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
