@@ -222,7 +222,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className={`relative ${isCompactLayout ? 'min-h-[92vh]' : 'min-h-screen'} flex flex-col items-center justify-center bg-black text-white ${isCompactLayout ? 'pt-12 md:pt-20 lg:pt-28' : 'pt-24 md:pt-32 lg:pt-48'}`}>
+    <main className="relative min-h-screen flex flex-col items-center justify-center bg-black text-white" style={{ minHeight: '100vh' }}>
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes scroll {
           0% {
