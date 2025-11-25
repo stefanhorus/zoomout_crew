@@ -11,8 +11,8 @@ export async function GET(request: NextRequest) {
     if (format === 'hls') {
       muxUrl = `https://stream.mux.com/${MUX_PLAYBACK_ID}.m3u8`;
     } else {
-      // Încercăm fără extensie .mp4 - Mux poate detecta automat formatul
-      muxUrl = `https://stream.mux.com/${MUX_PLAYBACK_ID}`;
+      // Folosim extensia .mp4 explicit pentru MP4 (conform best practices Mux)
+      muxUrl = `https://stream.mux.com/${MUX_PLAYBACK_ID}.mp4`;
     }
 
     // Fetch video de la Mux cu streaming
