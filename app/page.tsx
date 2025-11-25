@@ -38,12 +38,17 @@ export default function Home() {
     };
 
     const checkCompactLayout = () => {
-      // Detectează MacBook (înălțime viewport > 800px și aspect ratio mai mare)
-      const isMacBook = window.innerHeight > 800 && (window.innerHeight / window.innerWidth) > 0.6;
-      // Layout compact pentru laptopuri Windows mici (înălțime mică și aspect ratio 16:9)
-      // Ajustat pentru a include mai multe laptopuri Windows
-      const isSmallWindowsLaptop = window.innerHeight < 750 && (window.innerHeight / window.innerWidth) < 0.7;
-      setIsCompactLayout(!isMacBook && isSmallWindowsLaptop);
+      const viewportHeight = window.innerHeight;
+      const viewportWidth = window.innerWidth;
+      const aspectRatio = viewportHeight / viewportWidth;
+      
+      // Layout compact pentru ecrane cu înălțime mică sau aspect ratio mic (16:9 sau mai lat)
+      // Folosim o logică bazată pe înălțimea absolută și aspect ratio
+      const isShortScreen = viewportHeight < 800; // Ecrane cu înălțime mică
+      const isWideAspectRatio = aspectRatio < 0.65; // Aspect ratio 16:9 sau mai lat
+      
+      // Layout compact dacă ecranul este scurt SAU are aspect ratio lat
+      setIsCompactLayout(isShortScreen || isWideAspectRatio);
     };
     checkMobile();
     checkCompactLayout();
@@ -226,7 +231,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className={`relative ${isCompactLayout ? 'min-h-[90vh]' : 'min-h-screen'} flex flex-col items-center justify-center bg-black text-white ${isCompactLayout ? 'pt-16 md:pt-24 lg:pt-32' : 'pt-24 md:pt-32 lg:pt-48'}`}>
+    <main className={`relative ${isCompactLayout ? 'min-h-[92vh]' : 'min-h-screen'} flex flex-col items-center justify-center bg-black text-white ${isCompactLayout ? 'pt-12 md:pt-20 lg:pt-28' : 'pt-24 md:pt-32 lg:pt-48'}`}>
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes scroll {
           0% {
@@ -342,7 +347,7 @@ export default function Home() {
       </div>
 
       {/* Conținutul de deasupra video-ului */}
-      <div className={`relative z-10 text-center px-4 md:px-6 max-w-4xl ${isCompactLayout ? 'mb-4 md:mb-6 lg:mb-8' : 'mb-12 md:mb-20 lg:mb-32'} animate-fade-in`}>
+      <div className={`relative z-10 text-center px-4 md:px-6 max-w-4xl ${isCompactLayout ? 'mb-6 md:mb-8 lg:mb-10' : 'mb-12 md:mb-20 lg:mb-32'} animate-fade-in`}>
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 px-2 drop-shadow-2xl text-white">
           <Typewriter
             words={["Zoomout_crew"]}
@@ -369,7 +374,7 @@ export default function Home() {
       </div>
 
       {/* Proudly Worked With Section */}
-      <div className={`relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6 ${isCompactLayout ? 'pb-20 md:pb-24' : 'pb-12 md:pb-16'} ${isCompactLayout ? 'mt-8 md:mt-12 lg:mt-16' : 'mt-16 md:mt-32 lg:mt-40'}`}>
+      <div className={`relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6 ${isCompactLayout ? 'pb-16 md:pb-20' : 'pb-12 md:pb-16'} ${isCompactLayout ? 'mt-6 md:mt-10 lg:mt-14' : 'mt-16 md:mt-32 lg:mt-40'}`}>
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8 md:mb-12 px-2 drop-shadow-lg text-white" style={{ fontFamily: "var(--font-playfair)" }}>
           {t("home.workedWith")}
         </h2>
