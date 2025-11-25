@@ -262,28 +262,26 @@ export default function Home() {
           </div>
         )}
         
-        {/* Folosim next-video pentru Mux în producție, video local în development */}
+        {/* Folosim API route proxy pentru video-ul "Hero" din Mux în producție */}
         {process.env.NODE_ENV === 'production' && !isMobile ? (
-          <Video
-            src={videoLoop}
+          <video
+            ref={videoRef}
             autoPlay
             muted
             loop
             playsInline
-            controls={false}
-            className={`w-full h-full transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
-            style={{ 
-              backgroundColor: '#000',
-              ['--media-object-fit' as string]: 'cover'
-            }}
-            onLoadedData={() => {
-              setVideoLoaded(true);
-              if (videoRef.current) {
-                videoRef.current.play().catch(() => {});
-              }
-            }}
-            onError={() => setVideoError(true)}
-          />
+            preload="auto"
+            crossOrigin="anonymous"
+            className={`w-full h-full object-cover transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+            style={{ backgroundColor: '#000' }}
+          >
+            {/* Video "Hero" din Mux prin proxy API route */}
+            <source src="/api/video?format=mp4" type="video/mp4" />
+            <source src="/api/video?format=hls" type="application/x-mpegURL" />
+            {/* Fallback local dacă proxy-ul nu funcționează */}
+            <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
+            <source src="/Drone-Hero-2-1080.mp4" type="video/mp4" />
+          </video>
         ) : (
           <video
             ref={videoRef}
