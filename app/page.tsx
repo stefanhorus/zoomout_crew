@@ -341,7 +341,8 @@ export default function Home() {
       <div 
         className="relative z-10 text-center px-4 md:px-6 max-w-4xl animate-fade-in"
         style={{
-          marginBottom: viewportHeight < 700 ? '1rem' : viewportHeight < 900 ? '2rem' : '3rem'
+          marginBottom: viewportHeight < 700 ? '1rem' : viewportHeight < 900 ? '2rem' : '3rem',
+          marginTop: viewportHeight < 700 ? '-2rem' : viewportHeight < 900 ? '-3rem' : '-4rem'
         }}
       >
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 px-2 drop-shadow-2xl text-white">
