@@ -369,12 +369,11 @@ export default function Home() {
         </a>
       </div>
 
-      {/* Proudly Worked With Section */}
+      {/* Proudly Worked With Section - Poziționat în partea de jos */}
       <div 
-        className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6"
+        className="absolute bottom-0 left-0 right-0 z-10 w-full max-w-7xl mx-auto px-4 md:px-6"
         style={{
-          marginTop: viewportHeight < 700 ? '1rem' : viewportHeight < 900 ? '2rem' : viewportHeight < 1100 ? '3rem' : '4rem',
-          paddingBottom: viewportHeight < 700 ? '2rem' : viewportHeight < 900 ? '3rem' : '4rem'
+          paddingBottom: viewportHeight < 700 ? '1rem' : viewportHeight < 900 ? '1.5rem' : '2rem'
         }}
       >
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8 md:mb-12 px-2 drop-shadow-lg text-white" style={{ fontFamily: "var(--font-playfair)" }}>
