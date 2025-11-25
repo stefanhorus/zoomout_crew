@@ -226,7 +226,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className={`relative ${isCompactLayout ? 'min-h-[85vh]' : 'min-h-screen'} max-h-screen flex flex-col items-center justify-center bg-black text-white ${isCompactLayout ? 'pt-16 md:pt-24 lg:pt-32' : 'pt-24 md:pt-32 lg:pt-48'}`}>
+    <main className={`relative ${isCompactLayout ? 'min-h-[90vh]' : 'min-h-screen'} flex flex-col items-center justify-center bg-black text-white ${isCompactLayout ? 'pt-16 md:pt-24 lg:pt-32' : 'pt-24 md:pt-32 lg:pt-48'}`}>
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes scroll {
           0% {
@@ -369,7 +369,7 @@ export default function Home() {
       </div>
 
       {/* Proudly Worked With Section */}
-      <div className={`relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6 pb-12 md:pb-16 ${isCompactLayout ? 'mt-8 md:mt-12 lg:mt-16' : 'mt-16 md:mt-32 lg:mt-40'}`}>
+      <div className={`relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6 ${isCompactLayout ? 'pb-20 md:pb-24' : 'pb-12 md:pb-16'} ${isCompactLayout ? 'mt-8 md:mt-12 lg:mt-16' : 'mt-16 md:mt-32 lg:mt-40'}`}>
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8 md:mb-12 px-2 drop-shadow-lg text-white" style={{ fontFamily: "var(--font-playfair)" }}>
           {t("home.workedWith")}
         </h2>
