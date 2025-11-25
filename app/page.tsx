@@ -262,26 +262,41 @@ export default function Home() {
           </div>
         )}
         
-        {/* Folosim API route proxy pentru video-ul "Hero" din Mux în producție */}
+        {/* Folosim Mux Player iframe pentru video-ul "Hero" în producție */}
         {process.env.NODE_ENV === 'production' && !isMobile ? (
-          <video
-            ref={videoRef}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            crossOrigin="anonymous"
-            className={`w-full h-full object-cover transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
-            style={{ backgroundColor: '#000' }}
-          >
-            {/* Video "Hero" din Mux prin proxy API route */}
-            <source src="/api/video?format=mp4" type="video/mp4" />
-            <source src="/api/video?format=hls" type="application/x-mpegURL" />
-            {/* Fallback local dacă proxy-ul nu funcționează */}
-            <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
-            <source src="/Drone-Hero-2-1080.mp4" type="video/mp4" />
-          </video>
+          <div className="absolute inset-0 w-full h-full">
+            <iframe
+              src="https://player.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo?metadata-video-title=Drone-Hero-2-2k-clean&video-title=Drone-Hero-2-2k-clean&autoplay=muted&loop=true&controls=false&muted=true"
+              style={{ 
+                width: '100%', 
+                height: '100%', 
+                border: 'none',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                objectFit: 'cover',
+                pointerEvents: 'none'
+              }}
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+              allowFullScreen={false}
+              className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => {
+                setVideoLoaded(true);
+                // Forțează play după ce iframe-ul se încarcă
+                setTimeout(() => {
+                  const iframe = document.querySelector('iframe[src*="player.mux.com"]') as HTMLIFrameElement;
+                  if (iframe && iframe.contentWindow) {
+                    try {
+                      iframe.contentWindow.postMessage({ command: 'play' }, '*');
+                    } catch (e) {
+                      console.log('Mux player autoplay');
+                    }
+                  }
+                }, 500);
+              }}
+              onError={() => setVideoError(true)}
+            />
+          </div>
         ) : (
           <video
             ref={videoRef}

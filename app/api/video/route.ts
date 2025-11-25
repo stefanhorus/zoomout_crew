@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const MUX_PLAYBACK_ID = 'rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNiPBxVo';
+const MUX_PLAYBACK_ID = 'rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo';
 
 export async function GET(request: NextRequest) {
   try {
