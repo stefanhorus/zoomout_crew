@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useCart } from "@/contexts/CartContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Cart from "./Cart";
 
 export default function Header() {
@@ -11,6 +12,7 @@ export default function Header() {
   const [headerHeight, setHeaderHeight] = useState(64);
   const headerRef = useRef<HTMLElement>(null);
   const { getTotalItems } = useCart();
+  const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
@@ -53,13 +55,13 @@ export default function Header() {
   }, [isMobileMenuOpen]);
 
   const navLinks = [
-    { href: "/", label: "Home", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
-    { href: "/portfolio", label: "Portfolio", icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" },
-    { href: "/services", label: "Services", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
-    { href: "/adventures", label: "Adventures", icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" },
-    { href: "/shop", label: "Shop", icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" },
-    { href: "/about", label: "About", icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { href: "/contact", label: "Contact", icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
+    { href: "/", labelKey: "nav.home", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
+    { href: "/portfolio", labelKey: "nav.portfolio", icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" },
+    { href: "/services", labelKey: "nav.services", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
+    { href: "/adventures", labelKey: "nav.adventures", icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" },
+    { href: "/shop", labelKey: "nav.shop", icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" },
+    { href: "/about", labelKey: "nav.about", icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { href: "/contact", labelKey: "nav.contact", icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
   ];
 
   const handleLinkClick = () => {
@@ -98,13 +100,27 @@ export default function Header() {
                     href={link.href} 
                     className="hover:opacity-90 transition-all duration-300 text-sm md:text-base relative group font-medium"
                   >
-                    <span className="relative z-10">{link.label}</span>
+                    <span className="relative z-10">{t(link.labelKey)}</span>
                     <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
                     <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-white/50 blur-sm transition-all duration-300 group-hover:w-full" />
                   </a>
                 </li>
               ))}
             </ul>
+            
+            {/* Language Selector */}
+            <div className="flex items-center gap-2 ml-2">
+              <button
+                onClick={() => setLanguage(language === "en" ? "ro" : "en")}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg liquid-glass text-white text-sm font-medium hover:opacity-90 transition-all duration-300 group"
+                aria-label="Change language"
+              >
+                <span className="text-xs font-bold">{language === "en" ? "EN" : "RO"}</span>
+                <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                </svg>
+              </button>
+            </div>
             {/* Cart Icon - când există produse sau când cart-ul este deschis */}
             {(getTotalItems() > 0 || isCartOpen) && (
               <button
@@ -229,7 +245,7 @@ export default function Header() {
                     </div>
                     
                     {/* Label */}
-                    <span className="relative z-10 flex-1 truncate">{link.label}</span>
+                    <span className="relative z-10 flex-1 truncate">{t(link.labelKey)}</span>
                     
                     {/* Arrow */}
                     <svg 
@@ -245,6 +261,23 @@ export default function Header() {
               ))}
             </ul>
           </nav>
+
+          {/* Language Selector Mobile */}
+          <div className="px-3 py-3 border-t border-white/10">
+            <button
+              onClick={() => {
+                setLanguage(language === "en" ? "ro" : "en");
+                setIsMobileMenuOpen(false);
+              }}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg liquid-glass text-white text-sm font-medium hover:opacity-90 transition-all duration-300"
+            >
+              <span className="text-sm font-bold">{language === "en" ? "EN" : "RO"}</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+              </svg>
+              <span className="text-xs opacity-75">{language === "en" ? "Switch to Romanian" : "Schimbă la Engleză"}</span>
+            </button>
+          </div>
 
           {/* Footer */}
           <div className="px-3 py-3 border-t border-white/10">

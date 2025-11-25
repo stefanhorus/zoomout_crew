@@ -86,7 +86,7 @@ După ce creezi repository-ul, GitHub îți va arăta instrucțiuni. **Înlocuie
 
 ```bash
 # Adaugă remote-ul GitHub
-git remote add origin https://github.com/TU_USERNAME/zoomout_crew.git
+git remote add origin https://github.com/stefanhorus/zoomout_crew.git
 
 # Verifică că s-a adăugat corect
 git remote -v

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Tipuri de proiecte pentru filtrare
 type ProjectCategory = "all" | "aerial" | "real-estate" | "events" | "commercial";
@@ -63,15 +64,16 @@ const projects: Project[] = [
 ];
 
 export default function Portfolio() {
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<ProjectCategory>("all");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  const categories: { value: ProjectCategory; label: string }[] = [
-    { value: "all", label: "All Projects" },
-    { value: "aerial", label: "Aerial" },
-    { value: "real-estate", label: "Real Estate" },
-    { value: "events", label: "Events" },
-    { value: "commercial", label: "Commercial" },
+  const categories: { value: ProjectCategory; label: string; labelKey: string }[] = [
+    { value: "all", label: "All Projects", labelKey: "portfolio.allProjects" },
+    { value: "aerial", label: "Aerial", labelKey: "portfolio.aerial" },
+    { value: "real-estate", label: "Real Estate", labelKey: "portfolio.realEstate" },
+    { value: "events", label: "Events", labelKey: "portfolio.events" },
+    { value: "commercial", label: "Commercial", labelKey: "portfolio.commercial" },
   ];
 
   const filteredProjects =
@@ -98,7 +100,7 @@ export default function Portfolio() {
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
             <Typewriter
-              words={["Portfolio"]}
+              words={[t("portfolio.title")]}
               loop={false}
               cursor
               cursorStyle="|"
@@ -108,7 +110,7 @@ export default function Portfolio() {
             />
           </h1>
           <p className="text-gray-300">
-            Explore our collection of professional aerial footage and cinematography
+            {t("portfolio.subtitle")}
           </p>
         </div>
 
@@ -125,7 +127,7 @@ export default function Portfolio() {
               }`}
               style={{ fontFamily: "var(--font-roboto)" }}
             >
-              {category.label}
+              {t(category.labelKey)}
             </button>
           ))}
         </div>
@@ -211,7 +213,7 @@ export default function Portfolio() {
         {/* Empty State */}
         {filteredProjects.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-xl text-gray-400">No projects found in this category.</p>
+            <p className="text-xl text-gray-400">{t("portfolio.noProjects")}</p>
           </div>
         )}
       </div>

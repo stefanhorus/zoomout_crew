@@ -3,10 +3,13 @@
 import { useState, useRef, useEffect } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Home() {
+  const { t } = useLanguage();
+  
   const brands = [
-    { id: 1, name: "Brand 1", logo: "/bigbelly.png", width: 350, height: 175 },
+    { id: 1, name: "Brand 1", logo: "/bigbelly.png", width: 320, height: 160 },
     { id: 2, name: "Brand 2", logo: "/casanumaa.png", width: 280, height: 140 },
     { id: 3, name: "Brand 3", logo: "/visualdelights.png", width: 200, height: 100 },
     { id: 4, name: "Brand 4", logo: "/utopic.png", width: 200, height: 100 },
@@ -23,6 +26,8 @@ export default function Home() {
   const startXRef = useRef<number>(0);
   const scrollLeftRef = useRef<number>(0);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoError, setVideoError] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -159,7 +164,49 @@ export default function Home() {
     };
   }, []);
 
-  // Eliminat timeout - video-ul se va încărca fără fallback
+  // Video loading și error handling
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleCanPlay = () => {
+      setVideoLoaded(true);
+      // Forțează play după ce video-ul poate fi redat
+      video.play().catch((err) => {
+        console.error("Video autoplay failed:", err);
+        // Dacă autoplay eșuează, încercă din nou când utilizatorul interacționează
+        const tryPlay = () => {
+          video.play().catch(() => {});
+          document.removeEventListener('click', tryPlay);
+          document.removeEventListener('touchstart', tryPlay);
+        };
+        document.addEventListener('click', tryPlay, { once: true });
+        document.addEventListener('touchstart', tryPlay, { once: true });
+      });
+    };
+
+    const handleError = (e: Event) => {
+      console.error("Video loading error:", e);
+      setVideoError(true);
+    };
+
+    const handleLoadedMetadata = () => {
+      // Încearcă să pornească video-ul când metadata este încărcată
+      if (video.readyState >= 2) {
+        video.play().catch(() => {});
+      }
+    };
+
+    video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('error', handleError);
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+    return () => {
+      video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('error', handleError);
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+    };
+  }, []);
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center bg-black text-white pt-24 md:pt-32 lg:pt-48">
@@ -198,6 +245,21 @@ export default function Home() {
       
       {/* Video de fundal cu overlay gradient */}
       <div className="absolute inset-0 w-full h-full z-0">
+        {/* Fallback image dacă video-ul nu se încarcă */}
+        {videoError && (
+          <div className="absolute inset-0 w-full h-full bg-black">
+            <Image
+              src="/background.jpg"
+              alt="Background fallback"
+              fill
+              priority
+              quality={75}
+              sizes="100vw"
+              className="object-cover opacity-50"
+            />
+          </div>
+        )}
+        
         <video
           ref={videoRef}
           autoPlay
@@ -205,26 +267,26 @@ export default function Home() {
           loop
           playsInline
           preload="auto"
-          className="w-full h-full object-cover"
-          onLoadedData={() => {
-            if (videoRef.current) {
-              videoRef.current.play().catch((err) => {
-                console.error("Video play failed:", err);
-              });
-            }
-          }}
+          className={`w-full h-full object-cover transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          style={{ backgroundColor: '#000' }}
         >
             {/* Video hero principal - Mux CDN în producție, local în development */}
             {isMobile ? (
-              <source src="/Drone-hero-mobile-1080.mp4" type="video/mp4" />
+              <>
+                <source src="/Drone-hero-mobile-1080.mp4" type="video/mp4" />
+                {/* Fallback pentru mobile */}
+                <source src="/Drone-Hero-2-1080.mp4" type="video/mp4" />
+              </>
             ) : (
               <>
                 {process.env.NODE_ENV === 'production' ? (
                   <>
-                    {/* Mux video - streaming adaptiv HLS (producție) */}
+                    {/* Mux video - streaming adaptiv HLS (producție) - doar pentru browsere care suportă */}
                     <source src="https://stream.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo.m3u8" type="application/x-mpegURL" />
-                    {/* Fallback MP4 direct de la Mux */}
+                    {/* Fallback MP4 direct de la Mux - compatibil cu toate browserele */}
                     <source src="https://stream.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo.mp4" type="video/mp4" />
+                    {/* Fallback suplimentar - video local dacă Mux nu funcționează */}
+                    <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
                   </>
                 ) : (
                   /* Video local pentru development (mai rapid) */
@@ -252,7 +314,7 @@ export default function Home() {
         </h1>
 
         <p className="text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 px-2 text-gray-100 drop-shadow-lg">
-          Professional aerial footage & more
+          {t("home.tagline")}
         </p>
 
         <a
@@ -260,14 +322,14 @@ export default function Home() {
           className="inline-block liquid-glass-button text-white px-6 py-3 md:px-8 md:py-4 rounded-xl font-semibold text-sm md:text-base"
           style={{ fontFamily: "var(--font-roboto)" }}
         >
-          See portfolio
+          {t("home.cta")}
         </a>
       </div>
 
       {/* Proudly Worked With Section */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6 pb-12 md:pb-16 mt-16 md:mt-32 lg:mt-40">
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8 md:mb-12 px-2 drop-shadow-lg text-white" style={{ fontFamily: "var(--font-playfair)" }}>
-          Proudly Worked With:
+          {t("home.workedWith")}
         </h2>
         <div className={`relative w-full ${isMobile ? "overflow-x-auto" : "overflow-hidden"}`}>
           {/* Desktop: Auto-scroll */}
@@ -291,7 +353,7 @@ export default function Home() {
                         height: isLarge ? `${brand.height}px` : `${brand.height}px`,
                         maxHeight: isLarge ? `${brand.height}px` : `${brand.height}px`, 
                         width: isLarge ? `${brand.width}px` : `${brand.width}px`,
-                        maxWidth: isLarge ? `${brand.width}px` : `${brand.width}px` 
+                        maxWidth: '100%' 
                       }}
                     />
                   </div>
@@ -315,7 +377,7 @@ export default function Home() {
                         height: isLarge ? `${brand.height}px` : `${brand.height}px`,
                         maxHeight: isLarge ? `${brand.height}px` : `${brand.height}px`, 
                         width: isLarge ? `${brand.width}px` : `${brand.width}px`,
-                        maxWidth: isLarge ? `${brand.width}px` : `${brand.width}px` 
+                        maxWidth: '100%' 
                       }}
                     />
                   </div>

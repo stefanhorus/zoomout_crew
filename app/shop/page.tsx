@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Tipuri de produse pentru filtrare
 type ProductCategory = "all" | "physical" | "digital";
@@ -59,14 +60,15 @@ const products: Product[] = [
 ];
 
 export default function Shop() {
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory>("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { addToCart } = useCart();
 
   const categories = [
-    { value: "all", label: "All Products" },
-    { value: "physical", label: "Physical" },
-    { value: "digital", label: "Digital" },
+    { value: "all", label: "All Products", labelKey: "shop.allProducts" },
+    { value: "physical", label: "Physical", labelKey: "shop.physical" },
+    { value: "digital", label: "Digital", labelKey: "shop.digital" },
   ];
 
   const filteredProducts =
@@ -104,7 +106,7 @@ export default function Shop() {
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
             <Typewriter
-              words={["Shop"]}
+              words={[t("shop.title")]}
               loop={false}
               cursor
               cursorStyle="|"
@@ -114,7 +116,7 @@ export default function Shop() {
             />
           </h1>
           <p className="text-gray-300">
-            Discover our premium selection of drones, accessories, and merchandise
+            {t("shop.subtitle")}
           </p>
         </div>
 
@@ -131,7 +133,7 @@ export default function Shop() {
               }`}
               style={{ fontFamily: "var(--font-roboto)" }}
             >
-              {category.label}
+              {t(category.labelKey)}
             </button>
           ))}
         </div>
@@ -155,11 +157,11 @@ export default function Shop() {
                 {/* Stock Badge */}
                 {product.inStock ? (
                   <div className="absolute top-4 left-4 liquid-glass-button bg-green-500/30 text-white px-3 py-1 rounded-full text-xs font-semibold border-green-500/50">
-                    In Stock
+                    {t("shop.inStock")}
                   </div>
                 ) : (
                   <div className="absolute top-4 left-4 liquid-glass-button bg-red-500/30 text-white px-3 py-1 rounded-full text-xs font-semibold border-red-500/50">
-                    Out of Stock
+                    {t("shop.outOfStock")}
                   </div>
                 )}
               </div>
@@ -184,7 +186,7 @@ export default function Shop() {
                     }`}
                     style={{ fontFamily: "var(--font-roboto)" }}
                   >
-                    Add to Cart
+                    {t("shop.addToCart")}
                   </button>
                 </div>
               </div>
@@ -195,7 +197,7 @@ export default function Shop() {
         {/* Empty State */}
         {filteredProducts.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-xl text-gray-400">No products found in this category.</p>
+            <p className="text-xl text-gray-400">{t("shop.noProducts")}</p>
           </div>
         )}
       </div>

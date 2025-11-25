@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type ServiceCategory = "all" | "videography" | "production";
 
@@ -17,65 +18,67 @@ interface Service {
   image: string;
 }
 
-const services: Service[] = [
+const getServices = (t: (key: string) => string): Service[] => [
   {
     id: 1,
-    title: "Aerial Filming per Hour",
+    title: t("services.aerialFilmingHour"),
     category: "videography",
     icon: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
     price: "70€/hour",
-    description: "Professional aerial filming service per hour. We capture your project on video, and you receive all raw footage plus complimentary aerial photographs.",
+    description: t("services.aerialFilmingHour.desc"),
     features: [
-      "Hourly aerial filming",
-      "4K/8K raw video files",
-      "Bonus aerial photographs",
-      "Quick turnaround delivery"
+      t("services.aerialFilmingHour.feature1"),
+      t("services.aerialFilmingHour.feature2"),
+      t("services.aerialFilmingHour.feature3"),
+      t("services.aerialFilmingHour.feature4")
     ],
     image: "/background4.jpg",
   },
   {
     id: 2,
-    title: "Aerial Filming Full Day",
+    title: t("services.aerialFilmingDay"),
     category: "videography",
     icon: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
     price: "250€/day",
-    description: "Professional aerial filming service for a full day. We capture your project on video, and you receive all raw footage plus complimentary aerial photographs.",
+    description: t("services.aerialFilmingDay.desc"),
     features: [
-      "Full day aerial filming",
-      "4K/8K raw video files",
-      "Bonus aerial photographs",
-      "Quick turnaround delivery"
+      t("services.aerialFilmingDay.feature1"),
+      t("services.aerialFilmingDay.feature2"),
+      t("services.aerialFilmingDay.feature3"),
+      t("services.aerialFilmingDay.feature4")
     ],
     image: "/background5.jpg",
   },
   {
     id: 3,
-    title: "Professional Post-Production",
+    title: t("services.postProduction"),
     category: "production",
     icon: "M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h10a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z",
     price: "50€/video (discount for multiple)",
-    description: "Professional editing of your footage with color grading, transitions, and sound design. Price decreases for multiple videos.",
+    description: t("services.postProduction.desc"),
     features: [
-      "4K/8K editing",
-      "Color grading & color correction",
-      "Sound design & mixing",
-      "Multiple export formats",
-      "Discount for multiple videos"
+      t("services.postProduction.feature1"),
+      t("services.postProduction.feature2"),
+      t("services.postProduction.feature3"),
+      t("services.postProduction.feature4"),
+      t("services.postProduction.feature5")
     ],
     image: "/background3.jpg",
   },
 ];
 
 export default function Services() {
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory>("all");
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
-  const categories: { value: ServiceCategory; label: string }[] = [
-    { value: "all", label: "All Services" },
-    { value: "videography", label: "Filming" },
-    { value: "production", label: "Editing" },
+  const categories: { value: ServiceCategory; label: string; labelKey: string }[] = [
+    { value: "all", label: "All Services", labelKey: "services.allServices" },
+    { value: "videography", label: "Filming", labelKey: "services.filming" },
+    { value: "production", label: "Editing", labelKey: "services.editing" },
   ];
 
+  const services = getServices(t);
   const filteredServices =
     selectedCategory === "all"
       ? services
@@ -102,7 +105,7 @@ export default function Services() {
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
             <Typewriter
-              words={["Services"]}
+              words={[t("services.title")]}
               loop={false}
               cursor
               cursorStyle="|"
@@ -112,7 +115,7 @@ export default function Services() {
             />
           </h1>
           <p className="text-gray-300">
-            Professional aerial services tailored to bring your vision to life
+            {t("services.subtitle")}
           </p>
         </div>
 
@@ -129,7 +132,7 @@ export default function Services() {
               }`}
               style={{ fontFamily: "var(--font-roboto)" }}
             >
-              {category.label}
+              {t(category.labelKey)}
             </button>
           ))}
         </div>
@@ -194,7 +197,7 @@ export default function Services() {
         {/* Empty State */}
         {filteredServices.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-xl text-gray-400">No services found in this category.</p>
+            <p className="text-xl text-gray-400">{t("services.noServices")}</p>
           </div>
         )}
       </div>
@@ -251,12 +254,12 @@ export default function Services() {
               {selectedService.id === 3 && (
                 <div className="mb-6 p-4 rounded-xl liquid-glass border border-white/10">
                   <h4 className="text-lg font-semibold mb-3" style={{ fontFamily: "var(--font-playfair)" }}>
-                    Post-Production Pricing:
+                    {t("services.postProduction.pricing")}
                   </h4>
                   <ul className="space-y-2 text-gray-300">
-                    <li>• 1 video: <span className="text-white font-semibold">50€</span></li>
-                    <li>• 2-3 videos: <span className="text-white font-semibold">45€/video</span></li>
-                    <li>• 4+ videos: <span className="text-white font-semibold">40€/video</span></li>
+                    <li>• {t("services.postProduction.pricing1")} <span className="text-white font-semibold">50€</span></li>
+                    <li>• {t("services.postProduction.pricing2")} <span className="text-white font-semibold">45€/video</span></li>
+                    <li>• {t("services.postProduction.pricing3")} <span className="text-white font-semibold">40€/video</span></li>
                   </ul>
                 </div>
               )}
@@ -264,7 +267,7 @@ export default function Services() {
               {/* Features */}
               <div className="mb-8">
                 <h3 className="text-xl font-semibold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
-                  Highlights
+                  {t("services.highlights")}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {selectedService.features.map((feature, index) => (

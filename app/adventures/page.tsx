@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Tipuri de aventuri pentru filtrare
 type AdventureCategory = "all" | "europe" | "asia" | "americas" | "africa" | "oceania";
@@ -111,16 +112,17 @@ const adventures: Adventure[] = [
 ];
 
 export default function Adventures() {
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<AdventureCategory>("all");
   const [selectedAdventure, setSelectedAdventure] = useState<Adventure | null>(null);
 
-  const categories: { value: AdventureCategory; label: string }[] = [
-    { value: "all", label: "All Adventures" },
-    { value: "europe", label: "Europe" },
-    { value: "asia", label: "Asia" },
-    { value: "americas", label: "Americas" },
-    { value: "africa", label: "Africa" },
-    { value: "oceania", label: "Oceania" },
+  const categories: { value: AdventureCategory; label: string; labelKey: string }[] = [
+    { value: "all", label: "All Adventures", labelKey: "adventures.all" },
+    { value: "europe", label: "Europe", labelKey: "adventures.europe" },
+    { value: "asia", label: "Asia", labelKey: "adventures.asia" },
+    { value: "americas", label: "Americas", labelKey: "adventures.americas" },
+    { value: "africa", label: "Africa", labelKey: "adventures.africa" },
+    { value: "oceania", label: "Oceania", labelKey: "adventures.oceania" },
   ];
 
   const filteredAdventures =
@@ -157,7 +159,7 @@ export default function Adventures() {
             style={{ fontFamily: "var(--font-playfair)" }}
           >
             <Typewriter
-              words={["Adventures"]}
+              words={[t("adventures.title")]}
               loop={false}
               cursor
               cursorStyle="|"
@@ -167,7 +169,7 @@ export default function Adventures() {
             />
           </h1>
           <p className="text-gray-300">
-            Our cinematic travel journal — unique journeys captured from above
+            {t("adventures.subtitle")}
           </p>
         </div>
 
@@ -184,7 +186,7 @@ export default function Adventures() {
               }`}
               style={{ fontFamily: "var(--font-roboto)" }}
             >
-              {cat.label}
+              {t(cat.labelKey)}
             </button>
           ))}
         </div>
@@ -262,7 +264,7 @@ export default function Adventures() {
         {/* Empty State */}
         {filteredAdventures.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-xl text-gray-400">No adventures found in this region.</p>
+            <p className="text-xl text-gray-400">{t("adventures.noAdventures")}</p>
           </div>
         )}
       </div>
@@ -343,7 +345,7 @@ export default function Adventures() {
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                     </svg>
-                  Highlights
+                  {t("adventures.highlights")}
                 </h3>
                   <div className="flex flex-wrap gap-3">
                   {selectedAdventure.highlights.map((h, i) => (
@@ -365,7 +367,7 @@ export default function Adventures() {
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    Gallery
+                    {t("adventures.gallery")}
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {selectedAdventure.images.map((src, i) => (

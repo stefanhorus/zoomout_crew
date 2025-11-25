@@ -2,3 +2,4 @@
 *.mp4 filter=lfs diff=lfs merge=lfs -text
 public/drone-hero-landscape2k.mp4 filter=lfs diff=lfs merge=lfs -text
 *.webm filter=lfs diff=lfs merge=lfs -text
+public/Drone-Hero-2-2k-clean.mp4 filter=lfs diff=lfs merge=lfs -text
