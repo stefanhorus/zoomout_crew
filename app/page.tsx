@@ -267,22 +267,35 @@ export default function Home() {
           loop
           playsInline
           preload="auto"
+          crossOrigin="anonymous"
           className={`w-full h-full object-cover transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
           style={{ backgroundColor: '#000' }}
         >
             {/* Video hero principal - Mux CDN în producție, local în development */}
             {isMobile ? (
               <>
-                <source src="/Drone-hero-mobile-1080.mp4" type="video/mp4" />
+              <source src="/Drone-hero-mobile-1080.mp4" type="video/mp4" />
                 {/* Fallback pentru mobile */}
                 <source src="/Drone-Hero-2-1080.mp4" type="video/mp4" />
               </>
             ) : (
               <>
-                {/* Folosim doar video-ul local pentru a evita problemele cu tracking prevention */}
-                <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
-                <source src="/Drone-Hero-2-1080.mp4" type="video/mp4" />
-                <source src="/Drone-Hero-2-1080-clean.mp4" type="video/mp4" />
+                {process.env.NODE_ENV === 'production' ? (
+                  <>
+                    {/* Mux video prin proxy API route pentru a evita tracking prevention */}
+                    <source src="/api/video?format=mp4" type="video/mp4" />
+                    {/* HLS direct de la Mux (nu poate fi proxied ușor) */}
+                    <source src="https://stream.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo.m3u8" type="application/x-mpegURL" />
+                    {/* Fallback direct Mux MP4 dacă proxy-ul nu funcționează */}
+                    <source src="https://stream.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo.mp4" type="video/mp4" />
+                    {/* Fallback local dacă Mux nu funcționează */}
+                    <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
+                    <source src="/Drone-Hero-2-1080.mp4" type="video/mp4" />
+                  </>
+                ) : (
+                  /* Video local pentru development */
+                  <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
+                )}
               </>
             )}
           </video>
