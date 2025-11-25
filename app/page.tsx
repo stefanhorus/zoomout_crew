@@ -41,7 +41,8 @@ export default function Home() {
       // Detectează MacBook (înălțime viewport > 800px și aspect ratio mai mare)
       const isMacBook = window.innerHeight > 800 && (window.innerHeight / window.innerWidth) > 0.6;
       // Layout compact pentru laptopuri Windows mici (înălțime mică și aspect ratio 16:9)
-      const isSmallWindowsLaptop = window.innerHeight < 700 && (window.innerHeight / window.innerWidth) < 0.65;
+      // Ajustat pentru a include mai multe laptopuri Windows
+      const isSmallWindowsLaptop = window.innerHeight < 750 && (window.innerHeight / window.innerWidth) < 0.7;
       setIsCompactLayout(!isMacBook && isSmallWindowsLaptop);
     };
     checkMobile();
@@ -341,7 +342,7 @@ export default function Home() {
       </div>
 
       {/* Conținutul de deasupra video-ului */}
-      <div className={`relative z-10 text-center px-4 md:px-6 max-w-4xl ${isCompactLayout ? 'mb-8 md:mb-12 lg:mb-16' : 'mb-12 md:mb-20 lg:mb-32'} animate-fade-in`}>
+      <div className={`relative z-10 text-center px-4 md:px-6 max-w-4xl ${isCompactLayout ? 'mb-4 md:mb-6 lg:mb-8' : 'mb-12 md:mb-20 lg:mb-32'} animate-fade-in`}>
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 px-2 drop-shadow-2xl text-white">
           <Typewriter
             words={["Zoomout_crew"]}
@@ -368,7 +369,7 @@ export default function Home() {
       </div>
 
       {/* Proudly Worked With Section */}
-      <div className={`relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6 pb-12 md:pb-16 ${isCompactLayout ? 'mt-20 md:mt-28 lg:mt-36' : 'mt-16 md:mt-32 lg:mt-40'}`}>
+      <div className={`relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6 pb-12 md:pb-16 ${isCompactLayout ? 'mt-8 md:mt-12 lg:mt-16' : 'mt-16 md:mt-32 lg:mt-40'}`}>
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8 md:mb-12 px-2 drop-shadow-lg text-white" style={{ fontFamily: "var(--font-playfair)" }}>
           {t("home.workedWith")}
         </h2>
