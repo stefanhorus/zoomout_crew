@@ -279,16 +279,10 @@ export default function Home() {
               </>
             ) : (
               <>
-                {/* Prioritizăm video-ul local pentru compatibilitate maximă */}
+                {/* Folosim doar video-ul local pentru a evita problemele cu tracking prevention */}
                 <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
                 <source src="/Drone-Hero-2-1080.mp4" type="video/mp4" />
-                {/* Fallback Mux doar dacă video-ul local nu funcționează */}
-                {process.env.NODE_ENV === 'production' && (
-                  <>
-                    <source src="https://stream.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo.mp4" type="video/mp4" />
-                    <source src="https://stream.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo.m3u8" type="application/x-mpegURL" />
-                  </>
-                )}
+                <source src="/Drone-Hero-2-1080-clean.mp4" type="video/mp4" />
               </>
             )}
           </video>
