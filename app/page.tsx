@@ -280,22 +280,10 @@ export default function Home() {
               </>
             ) : (
               <>
-                {process.env.NODE_ENV === 'production' ? (
-                  <>
-                    {/* Mux video prin proxy API route pentru a evita tracking prevention */}
-                    <source src="/api/video?format=mp4" type="video/mp4" />
-                    {/* HLS direct de la Mux (nu poate fi proxied ușor) */}
-                    <source src="https://stream.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo.m3u8" type="application/x-mpegURL" />
-                    {/* Fallback direct Mux MP4 dacă proxy-ul nu funcționează */}
-                    <source src="https://stream.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo.mp4" type="video/mp4" />
-                    {/* Fallback local dacă Mux nu funcționează */}
-                    <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
-                    <source src="/Drone-Hero-2-1080.mp4" type="video/mp4" />
-                  </>
-                ) : (
-                  /* Video local pentru development */
-                  <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
-                )}
+                {/* Folosim video-urile locale - funcționează perfect și fără probleme */}
+                <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
+                <source src="/Drone-Hero-2-1080.mp4" type="video/mp4" />
+                <source src="/Drone-Hero-2-1080-clean.mp4" type="video/mp4" />
               </>
             )}
           </video>
