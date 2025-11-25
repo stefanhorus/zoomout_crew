@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import withVideo from 'next-video/process';
 
 const nextConfig: NextConfig = {
   // Optimizări pentru imagini
@@ -56,4 +57,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withVideo(nextConfig);

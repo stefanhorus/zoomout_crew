@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
+import Video from 'next-video';
+import videoLoop from '/videos/bg.mp4';
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Home() {
@@ -260,44 +262,51 @@ export default function Home() {
           </div>
         )}
         
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          crossOrigin="anonymous"
-          className={`w-full h-full object-cover transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
-          style={{ backgroundColor: '#000' }}
-        >
-            {/* Video hero principal - Mux CDN în producție, local în development */}
+        {/* Folosim next-video pentru Mux în producție, video local în development */}
+        {process.env.NODE_ENV === 'production' && !isMobile ? (
+          <Video
+            src={videoLoop}
+            autoPlay
+            muted
+            loop
+            playsInline
+            controls={false}
+            className={`w-full h-full transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+            style={{ 
+              backgroundColor: '#000',
+              ['--media-object-fit' as string]: 'cover'
+            }}
+            onLoadedData={() => {
+              setVideoLoaded(true);
+              if (videoRef.current) {
+                videoRef.current.play().catch(() => {});
+              }
+            }}
+            onError={() => setVideoError(true)}
+          />
+        ) : (
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            crossOrigin="anonymous"
+            className={`w-full h-full object-cover transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+            style={{ backgroundColor: '#000' }}
+          >
+            {/* Video local pentru mobile și development */}
             {isMobile ? (
               <>
-              <source src="/Drone-hero-mobile-1080.mp4" type="video/mp4" />
-                {/* Fallback pentru mobile */}
+                <source src="/Drone-hero-mobile-1080.mp4" type="video/mp4" />
                 <source src="/Drone-Hero-2-1080.mp4" type="video/mp4" />
               </>
             ) : (
-              <>
-                {process.env.NODE_ENV === 'production' ? (
-                  <>
-                    {/* Mux video prin proxy API route pentru a evita tracking prevention */}
-                    <source src="/api/video?format=mp4" type="video/mp4" />
-                    {/* HLS prin proxy */}
-                    <source src="/api/video?format=hls" type="application/x-mpegURL" />
-                    {/* Fallback local dacă proxy-ul nu funcționează */}
-                    <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
-                    <source src="/Drone-Hero-2-1080.mp4" type="video/mp4" />
-                    <source src="/Drone-Hero-2-1080-clean.mp4" type="video/mp4" />
-                  </>
-                ) : (
-                  /* Video local pentru development */
-                  <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
-                )}
-              </>
+              <source src="/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
             )}
           </video>
+        )}
         {/* Gradient overlay pentru contrast mai bun - mai întunecat */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/65" />
       </div>
