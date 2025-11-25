@@ -264,17 +264,19 @@ export default function Home() {
         
         {/* Folosim Mux Player iframe pentru video-ul "Hero" în producție */}
         {process.env.NODE_ENV === 'production' && !isMobile ? (
-          <div className="absolute inset-0 w-full h-full">
+          <div className="absolute inset-0 w-full h-full overflow-hidden">
             <iframe
               src="https://player.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo?metadata-video-title=Drone-Hero-2-2k-clean&video-title=Drone-Hero-2-2k-clean&autoplay=muted&loop=true&controls=false&muted=true"
               style={{ 
-                width: '100%', 
-                height: '100%', 
-                border: 'none',
+                width: '100vw', 
+                height: '56.25vw', // 16:9 aspect ratio
+                minHeight: '100vh',
+                minWidth: '177.78vh', // 16:9 aspect ratio inversat
                 position: 'absolute',
-                top: 0,
-                left: 0,
-                objectFit: 'cover',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                border: 'none',
                 pointerEvents: 'none'
               }}
               allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
