@@ -45,8 +45,13 @@ export default function Home() {
       setIsCompactLayout(!isMacBook && isSmallWindowsLaptop);
     };
     checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    checkCompactLayout();
+    const handleResize = () => {
+      checkMobile();
+      checkCompactLayout();
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Animație automată cu JavaScript pentru mobil
