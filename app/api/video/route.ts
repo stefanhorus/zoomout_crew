@@ -15,11 +15,17 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch video de la Mux cu streaming
+    const headers: Record<string, string> = {
+      'Accept': format === 'hls' ? 'application/vnd.apple.mpegurl' : 'video/mp4',
+    };
+    
+    const rangeHeader = request.headers.get('range');
+    if (rangeHeader) {
+      headers['Range'] = rangeHeader;
+    }
+
     const response = await fetch(muxUrl, {
-      headers: {
-        'Accept': format === 'hls' ? 'application/vnd.apple.mpegurl' : 'video/mp4',
-        'Range': request.headers.get('range') || undefined,
-      },
+      headers,
     });
 
     if (!response.ok) {
