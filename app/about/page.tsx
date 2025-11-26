@@ -12,7 +12,7 @@ export default function About() {
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
-          src="/background4.jpg"
+          src="/background4tiny.png"
           alt="About background"
           fill
           priority

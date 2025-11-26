@@ -32,7 +32,7 @@ const getServices = (t: (key: string) => string): Service[] => [
       t("services.aerialFilmingHour.feature3"),
       t("services.aerialFilmingHour.feature4")
     ],
-    image: "/background4.jpg",
+    image: "/background4tiny.png",
   },
   {
     id: 2,

@@ -262,7 +262,7 @@ export default function Home() {
         {videoError && (
           <div className="absolute inset-0 w-full h-full bg-black">
             <Image
-              src="/background.jpg"
+              src="/backgroundtiny.png"
               alt="Background fallback"
               fill
               priority
