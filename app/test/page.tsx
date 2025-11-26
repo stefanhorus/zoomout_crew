@@ -66,7 +66,7 @@ export default function Test() {
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
-          src="/background2.jpg"
+          src="/background2tiny.png"
           alt="Test background"
           fill
           priority

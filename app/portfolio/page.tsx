@@ -86,7 +86,7 @@ export default function Portfolio() {
       {/* Background Image */}
       <div className="absolute inset-0 w-full h-full z-0">
         <Image
-          src="/background2.jpg"
+          src="/background2tiny.png"
           alt="Portfolio background"
           fill
           priority
