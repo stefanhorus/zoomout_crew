@@ -147,10 +147,12 @@ export default function Shop() {
             >
               {/* Product Image */}
               <div className="aspect-square relative overflow-hidden">
-                <img
+                <Image
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/10 group-hover:from-black/40 group-hover:via-black/20 group-hover:to-black/5 transition-all duration-300" />
                 
@@ -213,10 +215,12 @@ export default function Shop() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative aspect-square">
-              <img
+              <Image
                 src={selectedProduct.image}
                 alt={selectedProduct.name}
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
               />
               <button
                 onClick={() => setSelectedProduct(null)}

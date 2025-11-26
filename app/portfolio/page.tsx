@@ -152,10 +152,12 @@ export default function Portfolio() {
                   ? 'bg-gradient-to-br from-black/30 via-black/20 to-black/30 backdrop-blur-sm' 
                   : ''
               }`}>
-                <img
+                <Image
                   src={project.thumbnail}
                   alt={project.title}
-                  className={`w-full h-full transition-all duration-500 group-hover:scale-110 ${
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className={`transition-all duration-500 group-hover:scale-110 ${
                     project.thumbnail.includes('.png') && 
                     (project.thumbnail.includes('multiverse') || 
                      project.thumbnail.includes('casanumaa') || 
@@ -237,10 +239,12 @@ export default function Portfolio() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <img
+                <Image
                   src={selectedProject.thumbnail}
                   alt={selectedProject.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 80vw"
+                  className="object-cover"
                 />
               )}
               <button

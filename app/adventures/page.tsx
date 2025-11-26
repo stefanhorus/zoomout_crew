@@ -200,18 +200,16 @@ export default function Adventures() {
               className="group relative overflow-hidden rounded-2xl cursor-pointer liquid-glass liquid-glass-hover h-full flex flex-col"
             >
               <div className="aspect-video relative overflow-hidden">
-                <img
+                <Image
                   src={adv.thumbnail}
                   alt={adv.title}
-                  className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className={`object-cover transition-transform duration-500 group-hover:scale-110 ${
                     adv.thumbnail.includes('sardinia') ? 'brightness-125 contrast-110' : 
                     adv.thumbnail.includes('ams') ? 'brightness-110 contrast-105' : 
                     adv.thumbnail.includes('americasept') ? 'brightness-110 contrast-105' : ''
                   }`}
-                  onError={(e) => {
-                    console.error('Image failed to load:', adv.thumbnail);
-                    e.currentTarget.src = '/background2.jpg';
-                  }}
                 />
                 <div className={`absolute inset-0 bg-gradient-to-t transition-all duration-300 ${
                   adv.thumbnail.includes('sardinia') 
@@ -290,11 +288,15 @@ export default function Adventures() {
                   className="w-full h-auto max-h-[60vh] object-contain"
                 />
               ) : (
-                <img
-                  src={selectedAdventure.thumbnail}
-                  alt={selectedAdventure.title}
-                  className="w-full h-auto max-h-[60vh] object-contain"
-                />
+                <div className="relative w-full h-[60vh]">
+                  <Image
+                    src={selectedAdventure.thumbnail}
+                    alt={selectedAdventure.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 80vw"
+                    className="object-contain"
+                  />
+                </div>
               )}
 
               {/* Close Button */}
@@ -382,10 +384,12 @@ export default function Adventures() {
                           })
                         }
                       >
-                        <img
+                        <Image
                           src={src}
                           alt={`Gallery ${i + 1}`}
-                          className="rounded-xl object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
+                          fill
+                          sizes="(max-width: 768px) 50vw, 33vw"
+                          className="rounded-xl object-cover transition-transform duration-300 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
                           <svg className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Cart from "./Cart";
@@ -78,11 +79,13 @@ export default function Header() {
             className="flex items-center gap-2 md:gap-3 hover:opacity-90 transition-all duration-300 cursor-pointer z-50 group"
             onClick={handleLinkClick}
           >
-            <div className="relative">
-            <img 
+            <div className="relative h-7 w-7 md:h-8 md:w-8">
+            <Image 
               src="/logo.png" 
               alt="Logo" 
-                className="h-7 w-7 md:h-8 md:w-8 object-contain transition-all duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.4)]" 
+              width={32}
+              height={32}
+              className="object-contain transition-all duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.4)]" 
             />
               <div className="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-300" />
             </div>
