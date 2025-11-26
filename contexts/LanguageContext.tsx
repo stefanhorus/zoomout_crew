@@ -68,6 +68,13 @@ const translations: Record<Language, Record<string, string>> = {
     "about.reviews.review3.name": "Mike Rodriguez",
     "about.reviews.review3.initials": "MR",
     "about.reviews.review3.role": "Marketing Director",
+    "about.reviews.review4.text": "I had the pleasure of hosting at Remote Tiny House Retreat a particularly kind and professional couple, who, in exchange for a night's accommodation, proposed to create some stunning drone footage to promote the location. The collaboration with them was excellent. The materials they created perfectly highlighted the beauty of the place. I recommend them with confidence and would be happy to see them again anytime.",
+    "about.reviews.review4.textOriginal": "Am avut plăcerea de a găzdui la Remote Tiny House Retreat un cuplu deosebit de amabil și profesionist, care, în schimbul unei nopți de cazare, mi-a propus să realizeze câteva filmări superbe cu drona pentru promovarea locației. Colaborarea cu ei a fost excelentă🫂 Materialele pe care le-a creat au pus perfect în valoare frumusețea locului🤗🪄🌻 Îi recomand cu încredere și m-aș bucura să îi revăd oricând💯",
+    "about.reviews.review4.name": "Florin Marius",
+    "about.reviews.review4.initials": "FM",
+    "about.reviews.review4.role": "Remote Tiny House Retreat Owner",
+    "about.reviews.showOriginal": "Show original (Romanian)",
+    "about.reviews.showTranslated": "Show translated (English)",
     
     // Portfolio page
     "portfolio.title": "Portfolio",
@@ -205,6 +212,13 @@ const translations: Record<Language, Record<string, string>> = {
     "about.reviews.review3.name": "Mihai Radu",
     "about.reviews.review3.initials": "MR",
     "about.reviews.review3.role": "Director Marketing",
+    "about.reviews.review4.text": "Am avut plăcerea de a găzdui la Remote Tiny House Retreat un cuplu deosebit de amabil și profesionist, care, în schimbul unei nopți de cazare, mi-a propus să realizeze câteva filmări superbe cu drona pentru promovarea locației. Colaborarea cu ei a fost excelentă🫂 Materialele pe care le-a creat au pus perfect în valoare frumusețea locului🤗🪄🌻 Îi recomand cu încredere și m-aș bucura să îi revăd oricând💯",
+    "about.reviews.review4.textOriginal": "Am avut plăcerea de a găzdui la Remote Tiny House Retreat un cuplu deosebit de amabil și profesionist, care, în schimbul unei nopți de cazare, mi-a propus să realizeze câteva filmări superbe cu drona pentru promovarea locației. Colaborarea cu ei a fost excelentă🫂 Materialele pe care le-a creat au pus perfect în valoare frumusețea locului🤗🪄🌻 Îi recomand cu încredere și m-aș bucura să îi revăd oricând💯",
+    "about.reviews.review4.name": "Florin Marius",
+    "about.reviews.review4.initials": "FM",
+    "about.reviews.review4.role": "Proprietar Remote Tiny House Retreat",
+    "about.reviews.showOriginal": "Afișează original (Română)",
+    "about.reviews.showTranslated": "Afișează tradus (Engleză)",
     
     // Portfolio page
     "portfolio.title": "Portofoliu",
