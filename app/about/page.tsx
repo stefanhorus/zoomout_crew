@@ -21,7 +21,7 @@ export default function About() {
           className="object-cover"
         />
         {/* Dark overlay pentru contrast mai bun */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/75" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/45" />
       </div>
 
       {/* Futuristic Animated Background Orbs */}
@@ -188,6 +188,107 @@ export default function About() {
                   </div>
                 </li>
               </ul>
+            </div>
+          </section>
+
+          {/* Reviews Section */}
+          <section className="liquid-glass-strong rounded-2xl p-8 md:p-12 liquid-glass-hover animate-fade-in-up relative group overflow-hidden" style={{ animationDelay: '0.5s' }}>
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-transparent to-cyan-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl" />
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center animate-text-shimmer text-white drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
+                {t("about.reviews.title") || "What Our Clients Say"}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Review 1 */}
+                <div className="liquid-glass rounded-xl p-6 liquid-glass-hover relative group overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-gray-100 mb-4 italic drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                      {t("about.reviews.review1.text") || "Exceptional quality and professionalism. The aerial footage exceeded all our expectations!"}
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold">
+                        {t("about.reviews.review1.initials") || "JD"}
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold text-sm" style={{ fontFamily: "var(--font-playfair)" }}>
+                          {t("about.reviews.review1.name") || "John Doe"}
+                        </p>
+                        <p className="text-gray-400 text-xs" style={{ fontFamily: "var(--font-roboto)" }}>
+                          {t("about.reviews.review1.role") || "Event Organizer"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Review 2 */}
+                <div className="liquid-glass rounded-xl p-6 liquid-glass-hover relative group overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-pink-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-gray-100 mb-4 italic drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                      {t("about.reviews.review2.text") || "Amazing work! They captured our property beautifully from every angle."}
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white font-bold">
+                        {t("about.reviews.review2.initials") || "SM"}
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold text-sm" style={{ fontFamily: "var(--font-playfair)" }}>
+                          {t("about.reviews.review2.name") || "Sarah Miller"}
+                        </p>
+                        <p className="text-gray-400 text-xs" style={{ fontFamily: "var(--font-roboto)" }}>
+                          {t("about.reviews.review2.role") || "Real Estate Agent"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Review 3 */}
+                <div className="liquid-glass rounded-xl p-6 liquid-glass-hover relative group overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-gray-100 mb-4 italic drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                      {t("about.reviews.review3.text") || "Professional, creative, and delivered exactly what we needed. Highly recommended!"}
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-white font-bold">
+                        {t("about.reviews.review3.initials") || "MR"}
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold text-sm" style={{ fontFamily: "var(--font-playfair)" }}>
+                          {t("about.reviews.review3.name") || "Mike Rodriguez"}
+                        </p>
+                        <p className="text-gray-400 text-xs" style={{ fontFamily: "var(--font-roboto)" }}>
+                          {t("about.reviews.review3.role") || "Marketing Director"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
 
