@@ -195,34 +195,41 @@ export default function About() {
           <section className="liquid-glass-strong rounded-2xl p-8 md:p-12 liquid-glass-hover animate-fade-in-up relative group overflow-hidden" style={{ animationDelay: '0.5s' }}>
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-transparent to-cyan-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl" />
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center animate-text-shimmer text-white drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
-                {t("about.reviews.title") || "What Our Clients Say"}
+              <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center animate-text-shimmer text-white drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
+                {t("about.reviews.title")}
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 {/* Review 1 */}
-                <div className="liquid-glass rounded-xl p-6 liquid-glass-hover relative group overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
+                <div className="liquid-glass rounded-2xl p-6 md:p-8 liquid-glass-hover relative group/review overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/10 via-blue-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-2xl" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
                   <div className="relative z-10">
-                    <div className="flex items-center gap-1 mb-4">
+                    {/* Quote Icon */}
+                    <div className="mb-4 opacity-20 group-hover/review:opacity-40 transition-opacity">
+                      <svg className="w-12 h-12 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.996 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.984zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                      </svg>
+                    </div>
+                    <div className="flex items-center gap-1 mb-5">
                       {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <svg key={i} className="w-5 h-5 text-yellow-400 fill-current drop-shadow-lg transform transition-transform group-hover/review:scale-110" style={{ transitionDelay: `${i * 50}ms` }} viewBox="0 0 20 20">
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
                       ))}
                     </div>
-                    <p className="text-gray-100 mb-4 italic drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
-                      {t("about.reviews.review1.text") || "Exceptional quality and professionalism. The aerial footage exceeded all our expectations!"}
+                    <p className="text-gray-100 mb-6 italic text-base leading-relaxed drop-shadow-md group-hover/review:text-white transition-colors" style={{ fontFamily: "var(--font-roboto)" }}>
+                      {t("about.reviews.review1.text")}
                     </p>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold">
-                        {t("about.reviews.review1.initials") || "JD"}
+                    <div className="flex items-center gap-4 pt-4 border-t border-white/10">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-cyan-500/30 transform group-hover/review:scale-110 transition-transform">
+                        {t("about.reviews.review1.initials")}
                       </div>
                       <div>
-                        <p className="text-white font-semibold text-sm" style={{ fontFamily: "var(--font-playfair)" }}>
-                          {t("about.reviews.review1.name") || "John Doe"}
+                        <p className="text-white font-semibold text-base group-hover/review:text-cyan-100 transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
+                          {t("about.reviews.review1.name")}
                         </p>
-                        <p className="text-gray-400 text-xs" style={{ fontFamily: "var(--font-roboto)" }}>
-                          {t("about.reviews.review1.role") || "Event Organizer"}
+                        <p className="text-gray-400 text-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                          {t("about.reviews.review1.role")}
                         </p>
                       </div>
                     </div>
@@ -230,29 +237,36 @@ export default function About() {
                 </div>
 
                 {/* Review 2 */}
-                <div className="liquid-glass rounded-xl p-6 liquid-glass-hover relative group overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-pink-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
+                <div className="liquid-glass rounded-2xl p-6 md:p-8 liquid-glass-hover relative group/review overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400/10 via-pink-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-2xl" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
                   <div className="relative z-10">
-                    <div className="flex items-center gap-1 mb-4">
+                    {/* Quote Icon */}
+                    <div className="mb-4 opacity-20 group-hover/review:opacity-40 transition-opacity">
+                      <svg className="w-12 h-12 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.996 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.984zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                      </svg>
+                    </div>
+                    <div className="flex items-center gap-1 mb-5">
                       {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <svg key={i} className="w-5 h-5 text-yellow-400 fill-current drop-shadow-lg transform transition-transform group-hover/review:scale-110" style={{ transitionDelay: `${i * 50}ms` }} viewBox="0 0 20 20">
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
                       ))}
                     </div>
-                    <p className="text-gray-100 mb-4 italic drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
-                      {t("about.reviews.review2.text") || "Amazing work! They captured our property beautifully from every angle."}
+                    <p className="text-gray-100 mb-6 italic text-base leading-relaxed drop-shadow-md group-hover/review:text-white transition-colors" style={{ fontFamily: "var(--font-roboto)" }}>
+                      {t("about.reviews.review2.text")}
                     </p>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white font-bold">
-                        {t("about.reviews.review2.initials") || "SM"}
+                    <div className="flex items-center gap-4 pt-4 border-t border-white/10">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-purple-500/30 transform group-hover/review:scale-110 transition-transform">
+                        {t("about.reviews.review2.initials")}
                       </div>
                       <div>
-                        <p className="text-white font-semibold text-sm" style={{ fontFamily: "var(--font-playfair)" }}>
-                          {t("about.reviews.review2.name") || "Sarah Miller"}
+                        <p className="text-white font-semibold text-base group-hover/review:text-purple-100 transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
+                          {t("about.reviews.review2.name")}
                         </p>
-                        <p className="text-gray-400 text-xs" style={{ fontFamily: "var(--font-roboto)" }}>
-                          {t("about.reviews.review2.role") || "Real Estate Agent"}
+                        <p className="text-gray-400 text-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                          {t("about.reviews.review2.role")}
                         </p>
                       </div>
                     </div>
@@ -260,29 +274,36 @@ export default function About() {
                 </div>
 
                 {/* Review 3 */}
-                <div className="liquid-glass rounded-xl p-6 liquid-glass-hover relative group overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
+                <div className="liquid-glass rounded-2xl p-6 md:p-8 liquid-glass-hover relative group/review overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-cyan-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-2xl" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
                   <div className="relative z-10">
-                    <div className="flex items-center gap-1 mb-4">
+                    {/* Quote Icon */}
+                    <div className="mb-4 opacity-20 group-hover/review:opacity-40 transition-opacity">
+                      <svg className="w-12 h-12 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.996 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.984zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                      </svg>
+                    </div>
+                    <div className="flex items-center gap-1 mb-5">
                       {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <svg key={i} className="w-5 h-5 text-yellow-400 fill-current drop-shadow-lg transform transition-transform group-hover/review:scale-110" style={{ transitionDelay: `${i * 50}ms` }} viewBox="0 0 20 20">
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
                       ))}
                     </div>
-                    <p className="text-gray-100 mb-4 italic drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
-                      {t("about.reviews.review3.text") || "Professional, creative, and delivered exactly what we needed. Highly recommended!"}
+                    <p className="text-gray-100 mb-6 italic text-base leading-relaxed drop-shadow-md group-hover/review:text-white transition-colors" style={{ fontFamily: "var(--font-roboto)" }}>
+                      {t("about.reviews.review3.text")}
                     </p>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-white font-bold">
-                        {t("about.reviews.review3.initials") || "MR"}
+                    <div className="flex items-center gap-4 pt-4 border-t border-white/10">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-blue-500/30 transform group-hover/review:scale-110 transition-transform">
+                        {t("about.reviews.review3.initials")}
                       </div>
                       <div>
-                        <p className="text-white font-semibold text-sm" style={{ fontFamily: "var(--font-playfair)" }}>
-                          {t("about.reviews.review3.name") || "Mike Rodriguez"}
+                        <p className="text-white font-semibold text-base group-hover/review:text-blue-100 transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
+                          {t("about.reviews.review3.name")}
                         </p>
-                        <p className="text-gray-400 text-xs" style={{ fontFamily: "var(--font-roboto)" }}>
-                          {t("about.reviews.review3.role") || "Marketing Director"}
+                        <p className="text-gray-400 text-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                          {t("about.reviews.review3.role")}
                         </p>
                       </div>
                     </div>
