@@ -210,6 +210,7 @@ export default function Adventures() {
                     adv.thumbnail.includes('ams') ? 'brightness-110 contrast-105' : 
                     adv.thumbnail.includes('americasept') ? 'brightness-110 contrast-105' : ''
                   }`}
+                  unoptimized={adv.thumbnail.includes('tiny')}
                 />
                 <div className={`absolute inset-0 bg-gradient-to-t transition-all duration-300 ${
                   adv.thumbnail.includes('sardinia') 
