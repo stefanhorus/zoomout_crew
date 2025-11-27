@@ -56,10 +56,11 @@ const translations: Record<Language, Record<string, string>> = {
     "about.readyToWork.text": "Let's bring your vision to life from above.",
     "about.getInTouch": "Get in Touch",
     "about.reviews.title": "What Our Clients Say",
-    "about.reviews.review1.text": "As the CEO of Utopic (event planning crew) and Visual Delights Marketing Agency, I got to work a lot with Zoomout Crew. They fit our playful style, and they are not afraid to go along with our wild (sometimes unhinged, tbh) ideas, which is why they were the perfect fit for us. When you need those crazy, dangerous shots, you call them. They are passionate about what they do and ready to test the limits of their capabilities. Therefore, I recommend them if you align with a bold, creative vision as well.",
+    "about.reviews.review1.text": "Ca CEO al Utopic (echipa de planificare evenimente) și Visual Delights Marketing Agency, am lucrat mult cu Zoomout Crew. Se potrivesc stilului nostru jucăuș și nu se tem să meargă pe urmele ideilor noastre sălbatice (uneori chiar nebunești, să fiu sincer), motiv pentru care au fost alegerea perfectă pentru noi. Când ai nevoie de acele cadre nebunești, periculoase, îi chemi pe ei. Sunt pasionați de ceea ce fac și gata să testeze limitele capacităților lor. Prin urmare, îi recomand dacă te aliniezi și tu cu o viziune îndrăzneață și creativă.",
+    "about.reviews.review1.textOriginal": "As the CEO of Utopic (event planning crew) and Visual Delights Marketing Agency, I got to work a lot with Zoomout Crew. They fit our playful style, and they are not afraid to go along with our wild (sometimes unhinged, tbh) ideas, which is why they were the perfect fit for us. When you need those crazy, dangerous shots, you call them. They are passionate about what they do and ready to test the limits of their capabilities. Therefore, I recommend them if you align with a bold, creative vision as well.",
     "about.reviews.review1.name": "Naim Onuk",
     "about.reviews.review1.initials": "NO",
-    "about.reviews.review1.role": "Visual Delights Marketing Agency Owner",
+    "about.reviews.review1.role": "Proprietar Visual Delights Marketing Agency",
     "about.reviews.review2.text": "Amazing work! They captured our property beautifully from every angle.",
     "about.reviews.review2.name": "Sarah Miller",
     "about.reviews.review2.initials": "SM",
@@ -74,7 +75,8 @@ const translations: Record<Language, Record<string, string>> = {
     "about.reviews.review4.initials": "FM",
     "about.reviews.review4.role": "Remote Tiny House Retreat Owner",
     "about.reviews.showOriginal": "Show original (Romanian)",
-    "about.reviews.showTranslated": "Show translated (English)",
+    "about.reviews.showOriginalEnglish": "Show original (English)",
+    "about.reviews.showTranslated": "Show translated",
     
     // Portfolio page
     "portfolio.title": "Portfolio",
@@ -204,6 +206,7 @@ const translations: Record<Language, Record<string, string>> = {
     "about.reviews.review1.name": "Naim Onuk",
     "about.reviews.review1.initials": "NO",
     "about.reviews.review1.role": "Proprietar Visual Delights Marketing Agency",
+    "about.reviews.review1.textOriginal": "As the CEO of Utopic (event planning crew) and Visual Delights Marketing Agency, I got to work a lot with Zoomout Crew. They fit our playful style, and they are not afraid to go along with our wild (sometimes unhinged, tbh) ideas, which is why they were the perfect fit for us. When you need those crazy, dangerous shots, you call them. They are passionate about what they do and ready to test the limits of their capabilities. Therefore, I recommend them if you align with a bold, creative vision as well.",
     "about.reviews.review2.text": "Lucrare minunată! Au capturat proprietatea noastră frumos din fiecare unghi.",
     "about.reviews.review2.name": "Maria Ionescu",
     "about.reviews.review2.initials": "MI",
@@ -218,7 +221,8 @@ const translations: Record<Language, Record<string, string>> = {
     "about.reviews.review4.initials": "FM",
     "about.reviews.review4.role": "Proprietar Remote Tiny House Retreat",
     "about.reviews.showOriginal": "Afișează original (Română)",
-    "about.reviews.showTranslated": "Afișează tradus (Engleză)",
+    "about.reviews.showOriginalEnglish": "Afișează original (Engleză)",
+    "about.reviews.showTranslated": "Afișează tradus",
     
     // Portfolio page
     "portfolio.title": "Portofoliu",
