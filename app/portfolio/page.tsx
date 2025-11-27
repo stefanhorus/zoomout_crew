@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 // Tipuri de proiecte pentru filtrare
 type ProjectCategory = "all" | "aerial" | "real-estate" | "events" | "commercial";
@@ -67,6 +68,7 @@ export default function Portfolio() {
   const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<ProjectCategory>("all");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
 
   const categories: { value: ProjectCategory; label: string; labelKey: string }[] = [
     { value: "all", label: "All Projects", labelKey: "portfolio.allProjects" },
@@ -150,14 +152,19 @@ export default function Portfolio() {
                  project.thumbnail.includes('bigbelly') ||
                  project.thumbnail.includes('cabanuta'))
                   ? 'bg-gradient-to-br from-black/30 via-black/20 to-black/30 backdrop-blur-sm' 
-                  : ''
+                  : 'bg-gray-900'
               }`}>
+                {!loadedImages.has(project.id) && (
+                  <LoadingSkeleton className="absolute inset-0" />
+                )}
                 <Image
                   src={project.thumbnail}
                   alt={project.title}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className={`transition-all duration-500 group-hover:scale-110 ${
+                    loadedImages.has(project.id) ? 'opacity-100' : 'opacity-0'
+                  } ${
                     project.thumbnail.includes('.png') && 
                     (project.thumbnail.includes('multiverse') || 
                      project.thumbnail.includes('casanumaa') || 
@@ -174,6 +181,7 @@ export default function Portfolio() {
                         }`
                       : 'object-cover'
                   }`}
+                  onLoad={() => setLoadedImages(prev => new Set(prev).add(project.id))}
                 />
                 <div className={`absolute inset-0 transition-all duration-300 ${
                   project.thumbnail.includes('.png') && 

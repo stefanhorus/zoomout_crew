@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 // Tipuri de aventuri pentru filtrare
 type AdventureCategory = "all" | "europe" | "asia" | "americas" | "africa" | "oceania";
@@ -115,6 +116,7 @@ export default function Adventures() {
   const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<AdventureCategory>("all");
   const [selectedAdventure, setSelectedAdventure] = useState<Adventure | null>(null);
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
 
   const categories: { value: AdventureCategory; label: string; labelKey: string }[] = [
     { value: "all", label: "All Adventures", labelKey: "adventures.all" },
@@ -199,18 +201,24 @@ export default function Adventures() {
               onClick={() => setSelectedAdventure(adv)}
               className="group relative overflow-hidden rounded-2xl cursor-pointer liquid-glass liquid-glass-hover h-full flex flex-col"
             >
-              <div className="aspect-video relative overflow-hidden">
+              <div className="aspect-video relative overflow-hidden bg-gray-900">
+                {!loadedImages.has(adv.id) && (
+                  <LoadingSkeleton className="absolute inset-0" />
+                )}
                 <Image
                   src={adv.thumbnail}
                   alt={adv.title}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className={`object-cover transition-transform duration-500 group-hover:scale-110 ${
+                  className={`object-cover transition-all duration-500 group-hover:scale-110 ${
+                    loadedImages.has(adv.id) ? 'opacity-100' : 'opacity-0'
+                  } ${
                     adv.thumbnail.includes('sardinia') ? 'brightness-125 contrast-110' : 
                     adv.thumbnail.includes('ams') ? 'brightness-110 contrast-105' : 
                     adv.thumbnail.includes('americasept') ? 'brightness-110 contrast-105' : ''
                   }`}
                   unoptimized={adv.thumbnail.includes('tiny')}
+                  onLoad={() => setLoadedImages(prev => new Set(prev).add(adv.id))}
                 />
                 <div className={`absolute inset-0 bg-gradient-to-t transition-all duration-300 ${
                   adv.thumbnail.includes('sardinia') 
