@@ -279,10 +279,10 @@ export default function Home() {
           <div className="absolute inset-0 w-full h-full overflow-hidden">
             {isMobile ? (
               <iframe
-                src="https://player.mux.com/1ZNl7mG4dyczA01qMJ6TVCQyxJfuHDwNbw1q00bB1brhg?metadata-video-title=Drone-Hero-mobile-1080&video-title=Drone-Hero-mobile-1080&autoplay=muted&loop=true&controls=false&muted=true"
+                src="https://player.mux.com/1ZNl7mG4dyczA01qMJ6TVCQyxJfuHDwNbw1q00bB1brhg?metadata-video-title=Drone-Hero-mobile-1080&video-title=Drone-Hero-mobile-1080&autoplay=muted&loop=true&controls=false&muted=true&preload=auto"
                 style={{ 
                   width: '100vw',
-                  height: '177.78vw', // 9/16 aspect ratio (16/9 inversat)
+                  height: '177.78vw', // 9/16 aspect ratio (16/9 inversat pentru vertical)
                   minHeight: '100vh',
                   minWidth: '56.25vh', // 9/16 aspect ratio inversat
                   position: 'absolute',
@@ -297,22 +297,26 @@ export default function Home() {
                 className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
                 onLoad={() => {
                   setVideoLoaded(true);
+                  // Forțează play după ce iframe-ul se încarcă
                   setTimeout(() => {
                     const iframe = document.querySelector('iframe[src*="1ZNl7mG4dyczA01qMJ6TVCQyxJfuHDwNbw1q00bB1brhg"]') as HTMLIFrameElement;
                     if (iframe && iframe.contentWindow) {
                       try {
                         iframe.contentWindow.postMessage({ command: 'play' }, '*');
                       } catch (e) {
-                        console.log('Mux player autoplay');
+                        console.log('Mux player autoplay mobile');
                       }
                     }
                   }, 500);
                 }}
-                onError={() => setVideoError(true)}
+                onError={() => {
+                  console.error('Mux video error for mobile');
+                  setVideoError(true);
+                }}
               />
             ) : (
               <iframe
-                src="https://player.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo?metadata-video-title=Drone-Hero-2-2k-clean&video-title=Drone-Hero-2-2k-clean&autoplay=muted&loop=true&controls=false&muted=true"
+                src="https://player.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo?metadata-video-title=Drone-Hero-2-2k-clean&video-title=Drone-Hero-2-2k-clean&autoplay=muted&loop=true&controls=false&muted=true&preload=auto"
                 style={{ 
                   width: '100vw', 
                   height: '56.25vw', // 16:9 aspect ratio
@@ -330,18 +334,22 @@ export default function Home() {
                 className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
                 onLoad={() => {
                   setVideoLoaded(true);
+                  // Forțează play după ce iframe-ul se încarcă
                   setTimeout(() => {
                     const iframe = document.querySelector('iframe[src*="rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo"]') as HTMLIFrameElement;
                     if (iframe && iframe.contentWindow) {
                       try {
                         iframe.contentWindow.postMessage({ command: 'play' }, '*');
                       } catch (e) {
-                        console.log('Mux player autoplay');
+                        console.log('Mux player autoplay desktop');
                       }
                     }
                   }, 500);
                 }}
-                onError={() => setVideoError(true)}
+                onError={() => {
+                  console.error('Mux video error for desktop');
+                  setVideoError(true);
+                }}
               />
             )}
           </div>
