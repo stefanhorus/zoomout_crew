@@ -20,7 +20,7 @@ const roboto = Roboto({
 export const metadata = {
   title: "Zoomout_crew",
   description: "Professional aerial footage and more",
-  icons: { icon: "/icon.ico" },
+  icons: { icon: "/assets/icon.ico" },
 };
 
 export default function RootLayout({

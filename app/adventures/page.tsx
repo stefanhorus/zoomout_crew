@@ -30,8 +30,8 @@ const adventures: Adventure[] = [
     location: "Kazakhstan & Kyrgyzstan",
     category: "asia",
     date: "2024-07-18",
-    thumbnail: "/kz-kg/5.jpg",
-    videoUrl: "/kz-kg/kz-kg-video.mp4",
+    thumbnail: "/assets/adventures/kz-kg/5.jpg",
+    videoUrl: "/assets/adventures/kz-kg/kz-kg-video.mp4",
     description:
       "A breathtaking journey through Central Asia. From the surreal landscapes of Charyn Canyon to the alpine lakes of Kyrgyzstan...",
     highlights: [
@@ -43,11 +43,11 @@ const adventures: Adventure[] = [
       "Karakol Valley",
     ],
     images: [
-      "/kz-kg/1.jpg",
-      "/kz-kg/2.jpg",
-      "/kz-kg/3.jpg",
-      "/kz-kg/4.jpg",
-      "/kz-kg/5.jpg",
+      "/assets/adventures/kz-kg/1.jpg",
+      "/assets/adventures/kz-kg/2.jpg",
+      "/assets/adventures/kz-kg/3.jpg",
+      "/assets/adventures/kz-kg/4.jpg",
+      "/assets/adventures/kz-kg/5.jpg",
     ],
   },
   {
@@ -56,7 +56,7 @@ const adventures: Adventure[] = [
     location: "Amsterdam, Netherlands",
     category: "europe",
     date: "2025-03-15",
-    thumbnail: "/ams1tiny.png",
+    thumbnail: "/assets/adventures/ams1tiny.png",
     description: "Exploring the beautiful canals, historic architecture, and vibrant culture of Amsterdam from above.",
     highlights: ["Canal Ring", "Anne Frank House", "Van Gogh Museum", "Jordaan District", "Vondelpark"],
   },
@@ -66,7 +66,7 @@ const adventures: Adventure[] = [
     location: "Sardinia, Italy",
     category: "europe",
     date: "2025-06-01",
-    thumbnail: "/sardinia/sardinia1.jpg",
+    thumbnail: "/assets/adventures/sardinia/sardinia1.jpg",
     description: "Aerial journey through the stunning Mediterranean island of Sardinia, capturing its pristine beaches and rugged landscapes.",
     highlights: ["Costa Smeralda", "Cagliari", "Alghero", "La Maddalena", "Nuraghe Su Nuraxi"],
   },
@@ -76,7 +76,7 @@ const adventures: Adventure[] = [
     location: "United States",
     category: "americas",
     date: "2024-07-01",
-    thumbnail: "/americasg/americasg1.jpg",
+    thumbnail: "/assets/adventures/americasg/americasg1.jpg",
     description: "Summer adventure across America, capturing the diverse landscapes and iconic landmarks from a unique perspective.",
     highlights: ["National Parks", "Coastal Views", "Urban Landscapes", "Mountain Ranges"],
   },
@@ -86,7 +86,7 @@ const adventures: Adventure[] = [
     location: "United States",
     category: "americas",
     date: "2025-09-01",
-    thumbnail: "/americasept/americasept1.png",
+    thumbnail: "/assets/adventures/americasept/americasept1.png",
     description: "September exploration of America's breathtaking scenery, from coast to coast.",
     highlights: ["Fall Colors", "Desert Landscapes", "Historic Sites", "Natural Wonders"],
   },
@@ -96,7 +96,7 @@ const adventures: Adventure[] = [
     location: "West Coast, United States",
     category: "americas",
     date: "2025-10-01",
-    thumbnail: "/backgroundtiny.png",
+    thumbnail: "/assets/backgrounds/backgroundtiny.png",
     description: "An epic journey along America's West Coast, capturing the dramatic Pacific coastline and iconic cities.",
     highlights: ["Pacific Coast Highway", "San Francisco", "Los Angeles", "Seattle", "Portland", "Big Sur"],
   },
@@ -106,7 +106,7 @@ const adventures: Adventure[] = [
     location: "Edinburgh, Scotland",
     category: "europe",
     date: "2025-12-15",
-    thumbnail: "/background6tiny.png",
+    thumbnail: "/assets/backgrounds/background6tiny.png",
     description: "Winter wonderland in Edinburgh, showcasing the historic city's charm during the festive season.",
     highlights: ["Edinburgh Castle", "Royal Mile", "Arthur's Seat", "Holyrood Palace", "Christmas Markets"],
   },
@@ -142,7 +142,7 @@ export default function Adventures() {
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
-          src="/background3.jpg"
+          src="/assets/backgrounds/background3.jpg"
           alt="Adventures background"
           fill
           priority
@@ -299,12 +299,12 @@ export default function Adventures() {
               ) : (
                 <div className="relative w-full h-[60vh]">
                   <Image
-                    src={selectedAdventure.thumbnail}
-                    alt={selectedAdventure.title}
+                  src={selectedAdventure.thumbnail}
+                  alt={selectedAdventure.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 80vw"
                     className="object-contain"
-                  />
+                />
                 </div>
               )}
 

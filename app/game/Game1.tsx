@@ -319,7 +319,7 @@ export default function Game1() {
           >
             <div className="relative w-10 h-10">
               <Image
-                src="/logo.png"
+                src="/assets/logo.png"
                 alt="Drone"
                 width={40}
                 height={40}

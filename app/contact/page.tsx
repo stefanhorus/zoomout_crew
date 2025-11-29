@@ -47,7 +47,7 @@ export default function Contact() {
     >
       <div className="absolute inset-0 w-full h-full">
         <Image
-          src="/backgroundtiny.png"
+          src="/assets/backgrounds/backgroundtiny.png"
           alt="Contact background"
           fill
           priority

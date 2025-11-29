@@ -25,7 +25,7 @@ const products: Product[] = [
     id: 1,
     name: "Men's T-Shirt",
     category: "physical",
-    image: "/logo.png",
+    image: "/assets/logo.png",
     price: 29,
     description: "Premium quality T-shirt for men.",
     inStock: true,
@@ -34,7 +34,7 @@ const products: Product[] = [
     id: 2,
     name: "Women's T-Shirt",
     category: "physical",
-    image: "/logo.png",
+    image: "/assets/logo.png",
     price: 29,
     description: "High quality and comfortable T-shirt for women.",
     inStock: true,
@@ -43,7 +43,7 @@ const products: Product[] = [
     id: 3,
     name: "LUT Pack",
     category: "digital",
-    image: "/logo.png",
+    image: "/assets/logo.png",
     price: 15,
     description: "A collection of professional LUTs for video color grading.",
     inStock: true,
@@ -52,7 +52,7 @@ const products: Product[] = [
     id: 4,
     name: "Preset Pack",
     category: "digital",
-    image: "/logo.png",
+    image: "/assets/logo.png",
     price: 12,
     description: "Lightroom preset pack for clean and cinematic looks.",
     inStock: true,
@@ -92,7 +92,7 @@ export default function Shop() {
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
-          src="/background6tiny.png"
+          src="/assets/backgrounds/background6tiny.png"
           alt="Shop background"
           fill
           priority

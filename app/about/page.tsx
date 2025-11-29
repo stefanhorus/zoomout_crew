@@ -29,7 +29,7 @@ export default function About() {
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
-          src="/background4tiny.png"
+          src="/assets/backgrounds/background4tiny.png"
           alt="About background"
           fill
           priority
@@ -248,7 +248,7 @@ export default function About() {
                     <div className="flex items-center gap-4 pt-4 border-t border-white/10">
                       <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg shadow-cyan-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-cyan-400/30">
                         <Image
-                          src="/review1.png"
+                          src="/assets/reviews/review1.png"
                           alt={t("about.reviews.review1.name")}
                           width={48}
                           height={48}
@@ -299,7 +299,7 @@ export default function About() {
                     <div className="flex items-center gap-4 pt-4 border-t border-white/10">
                       <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg shadow-green-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-green-400/30">
                         <Image
-                          src="/review2.png"
+                          src="/assets/reviews/review2.png"
                           alt={t("about.reviews.review4.name")}
                           width={48}
                           height={48}

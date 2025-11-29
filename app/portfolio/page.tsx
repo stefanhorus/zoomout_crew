@@ -27,56 +27,56 @@ interface Project {
 const projects: Project[] = [
   {
     id: 1,
-    title: "Big Belly - Aerial Filming",
+    title: "Big Belly - New Restaurant Location Opening",
     category: "commercial",
-    thumbnail: "/bigbelly.png",
+    thumbnail: "/assets/brands/bigbelly.png",
     muxVideos: [
       {
         playbackId: "DbdlbHpdu541nz100c9oOc700DsUnduPJ6EkEmNIFCzOo",
-        title: "Big Belly 1",
+        title: "",
         assetId: "5802zN02zVKzhO3n7ZMBmNmHEbyOOBnjkv23szggUGE6Q",
       },
       {
         playbackId: "p1LpNG3CjEe01QQhHDOPG3j5L8kywtmmLSKdJaU51Tjg",
-        title: "Big Belly 2",
+        title: "",
         assetId: "CGUXZUf8ZQhCvZ24mvF6UstEj2RzCCXz9agK1I00Qxnc",
       },
     ],
-    description: "Professional aerial filming for Big Belly brand",
+    description: "We were honored to be invited to Big Belly's exclusive private opening event for their new location. Capturing the celebration through aerial cinematography, we documented an evening filled with exceptional atmosphere and outstanding cuisine. The warm, welcoming ambiance combined with the delicious food created the perfect setting for this memorable launch event. This project was a collaborative effort with photographers Dragos Pasniciuc and Dan Gaspar.",
   },
   {
     id: 2,
     title: "Multiverse Party - Advertisement",
     category: "events",
-    thumbnail: "/multiverse.png",
+    thumbnail: "/assets/brands/multiverse.png",
     description: "Dynamic advertisement video for Multiverse party event",
   },
   {
     id: 3,
     title: "Accommodation Cabin - Promo Video",
     category: "real-estate",
-    thumbnail: "/cabanuta.png",
+    thumbnail: "/assets/brands/cabanuta.png",
     description: "Promotional aerial video showcasing a beautiful accommodation cabin",
   },
   {
     id: 4,
     title: "Outdoor Lounge - Aerial Filming",
     category: "commercial",
-    thumbnail: "/aerlounge.png",
+    thumbnail: "/assets/brands/aerlounge.png",
     description: "Aerial cinematography for outdoor lounge venue",
   },
   {
     id: 5,
     title: "Casa Numaa - Aerial Filming",
     category: "real-estate",
-    thumbnail: "/casanumaa.png",
+    thumbnail: "/assets/brands/casanumaa.png",
     description: "Professional aerial videography for Casa Numaa property",
   },
   {
     id: 6,
     title: "Utopic Party - Aerial Filming",
     category: "events",
-    thumbnail: "/utopic.png",
+    thumbnail: "/assets/brands/utopic.png",
     description: "Aerial coverage and filming for Utopic party event",
   },
 ];
@@ -133,7 +133,7 @@ export default function Portfolio() {
       {/* Background Image */}
       <div className="absolute inset-0 w-full h-full z-0">
         <Image
-          src="/background2tiny.png"
+          src="/assets/backgrounds/background2tiny.png"
           alt="Portfolio background"
           fill
           priority
@@ -284,13 +284,14 @@ export default function Portfolio() {
           }}
         >
           <div
-            className="max-w-4xl w-full liquid-glass-strong rounded-2xl overflow-hidden my-4"
+            className="max-w-6xl w-full liquid-glass-strong rounded-2xl overflow-hidden my-4 flex flex-col md:flex-row"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={`relative ${
+            {/* Video Section - Left Side */}
+            <div className={`relative flex-1 ${
               selectedProject.muxVideos && selectedProject.muxVideos.length > 0
-                ? 'aspect-[9/16] max-h-[80vh]' // Vertical aspect ratio pentru video-urile Big Belly
-                : 'aspect-video'
+                ? 'aspect-[9/16] md:aspect-auto md:h-[80vh]' // Vertical aspect ratio pentru video-urile Big Belly
+                : 'aspect-video md:aspect-auto md:h-[80vh]'
             }`}>
               {selectedProject.muxVideos && selectedProject.muxVideos.length > 0 ? (
                 <>
@@ -331,8 +332,8 @@ export default function Portfolio() {
                         </svg>
                       </button>
                       
-                      {/* Video Indicator - pe mijloc jos */}
-                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+                      {/* Video Indicator - bottom center */}
+                      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-10 flex items-center justify-center gap-2 pointer-events-none">
                         {selectedProject.muxVideos.map((video, index) => (
                           <div
                             key={index}
@@ -409,16 +410,18 @@ export default function Portfolio() {
                 </svg>
               </button>
             </div>
-            <div className="p-6">
-              <h2 className="text-3xl font-bold mb-2" style={{ fontFamily: "var(--font-playfair)" }}>
+            
+            {/* Description Section - Right Side */}
+            <div className="flex-1 p-6 md:p-8 flex flex-col justify-center bg-black/20 md:bg-transparent">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedProject.title}
                 {selectedProject.muxVideos && selectedProject.muxVideos.length > 1 && (
-                  <span className="text-lg text-gray-400 ml-2">
+                  <span className="text-base md:text-lg text-gray-400 ml-2">
                     - {selectedProject.muxVideos[selectedVideoIndex].title}
                   </span>
                 )}
               </h2>
-              <p className="text-gray-300">{selectedProject.description}</p>
+              <p className="text-gray-300 text-sm md:text-base leading-relaxed">{selectedProject.description}</p>
             </div>
           </div>
         </div>

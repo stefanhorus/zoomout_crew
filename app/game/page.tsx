@@ -17,7 +17,7 @@ export default function Game() {
       {/* Background */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
-          src="/background3.jpg"
+          src="/assets/backgrounds/background3.jpg"
           alt="Game background"
           fill
           priority

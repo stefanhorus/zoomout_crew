@@ -33,3 +33,7 @@ Pentru producție, adaugă variabilele de mediu în Vercel:
 
 După deploy, video-ul ar trebui să se încarce automat de pe Mux folosind `next-video`.
 
+
+
+
+

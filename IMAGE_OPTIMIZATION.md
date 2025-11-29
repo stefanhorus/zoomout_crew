@@ -123,3 +123,6 @@ După optimizări, ar trebui să vezi:
 - [Web.dev Image Optimization](https://web.dev/fast/#optimize-your-images)
 - [Image Formats Comparison](https://web.dev/avif/)
 
+
+
+
