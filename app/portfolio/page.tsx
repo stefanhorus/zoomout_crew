@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -101,6 +101,32 @@ export default function Portfolio() {
     selectedCategory === "all"
       ? projects
       : projects.filter((project) => project.category === selectedCategory);
+
+  // Keyboard navigation pentru video-uri
+  useEffect(() => {
+    if (!selectedProject || !selectedProject.muxVideos || selectedProject.muxVideos.length <= 1) {
+      return;
+    }
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        setSelectedVideoIndex((prev) => 
+          prev === 0 ? selectedProject.muxVideos!.length - 1 : prev - 1
+        );
+        setVideoLoaded(false);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        setSelectedVideoIndex((prev) => 
+          prev === selectedProject.muxVideos!.length - 1 ? 0 : prev + 1
+        );
+        setVideoLoaded(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [selectedProject, selectedVideoIndex]);
 
   return (
     <main className="min-h-screen text-white pt-24 pb-16 relative">
@@ -268,27 +294,57 @@ export default function Portfolio() {
             }`}>
               {selectedProject.muxVideos && selectedProject.muxVideos.length > 0 ? (
                 <>
-                  {/* Video Selector - doar dacă sunt mai multe video-uri */}
+                  {/* Video Navigation Arrows - doar dacă sunt mai multe video-uri */}
                   {selectedProject.muxVideos.length > 1 && (
-                    <div className="absolute top-4 left-4 z-10 flex gap-2">
-                      {selectedProject.muxVideos.map((video, index) => (
-                        <button
-                          key={index}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedVideoIndex(index);
-                            setVideoLoaded(false);
-                          }}
-                          className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-                            selectedVideoIndex === index
-                              ? 'bg-white/90 text-black'
-                              : 'bg-black/50 text-white hover:bg-black/70'
-                          }`}
-                        >
-                          {video.title}
-                        </button>
-                      ))}
-                    </div>
+                    <>
+                      {/* Left Arrow */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedVideoIndex((prev) => 
+                            prev === 0 ? selectedProject.muxVideos!.length - 1 : prev - 1
+                          );
+                          setVideoLoaded(false);
+                        }}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all hover:scale-110"
+                        aria-label="Previous video"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
+                      </button>
+                      
+                      {/* Right Arrow */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedVideoIndex((prev) => 
+                            prev === selectedProject.muxVideos!.length - 1 ? 0 : prev + 1
+                          );
+                          setVideoLoaded(false);
+                        }}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all hover:scale-110"
+                        aria-label="Next video"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                      
+                      {/* Video Indicator - pe mijloc jos */}
+                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+                        {selectedProject.muxVideos.map((video, index) => (
+                          <div
+                            key={index}
+                            className={`h-2 rounded-full transition-all ${
+                              selectedVideoIndex === index
+                                ? 'w-8 bg-white'
+                                : 'w-2 bg-white/50'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </>
                   )}
                   
                   {/* Mux Video Player */}
