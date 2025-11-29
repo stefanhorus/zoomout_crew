@@ -376,8 +376,6 @@ export default function Home() {
             )}
           </video>
         )}
-        {/* Gradient overlay pentru contrast mai bun - mai întunecat */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/65" />
       </div>
 
       {/* Hidden Game Button - Left Middle - Invisible but still clickable */}
