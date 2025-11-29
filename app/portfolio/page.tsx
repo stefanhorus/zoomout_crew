@@ -15,6 +15,11 @@ interface Project {
   category: ProjectCategory;
   thumbnail: string;
   videoUrl?: string;
+  muxVideos?: Array<{
+    playbackId: string;
+    title: string;
+    assetId?: string;
+  }>;
   description: string;
 }
 
@@ -25,6 +30,18 @@ const projects: Project[] = [
     title: "Big Belly - Aerial Filming",
     category: "commercial",
     thumbnail: "/bigbelly.png",
+    muxVideos: [
+      {
+        playbackId: "DbdlbHpdu541nz100c9oOc700DsUnduPJ6EkEmNIFCzOo",
+        title: "Big Belly 1",
+        assetId: "5802zN02zVKzhO3n7ZMBmNmHEbyOOBnjkv23szggUGE6Q",
+      },
+      {
+        playbackId: "p1LpNG3CjEe01QQhHDOPG3j5L8kywtmmLSKdJaU51Tjg",
+        title: "Big Belly 2",
+        assetId: "CGUXZUf8ZQhCvZ24mvF6UstEj2RzCCXz9agK1I00Qxnc",
+      },
+    ],
     description: "Professional aerial filming for Big Belly brand",
   },
   {
@@ -69,6 +86,8 @@ export default function Portfolio() {
   const [selectedCategory, setSelectedCategory] = useState<ProjectCategory>("all");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+  const [selectedVideoIndex, setSelectedVideoIndex] = useState<number>(0);
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   const categories: { value: ProjectCategory; label: string; labelKey: string }[] = [
     { value: "all", label: "All Projects", labelKey: "portfolio.allProjects" },
@@ -232,14 +251,80 @@ export default function Portfolio() {
       {selectedProject && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 md:p-6 overflow-y-auto animate-fade-in"
-          onClick={() => setSelectedProject(null)}
+          onClick={() => {
+            setSelectedProject(null);
+            setSelectedVideoIndex(0);
+            setVideoLoaded(false);
+          }}
         >
           <div
             className="max-w-4xl w-full liquid-glass-strong rounded-2xl overflow-hidden my-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative aspect-video">
-              {selectedProject.videoUrl ? (
+            <div className={`relative ${
+              selectedProject.muxVideos && selectedProject.muxVideos.length > 0
+                ? 'aspect-[9/16] max-h-[80vh]' // Vertical aspect ratio pentru video-urile Big Belly
+                : 'aspect-video'
+            }`}>
+              {selectedProject.muxVideos && selectedProject.muxVideos.length > 0 ? (
+                <>
+                  {/* Video Selector - doar dacă sunt mai multe video-uri */}
+                  {selectedProject.muxVideos.length > 1 && (
+                    <div className="absolute top-4 left-4 z-10 flex gap-2">
+                      {selectedProject.muxVideos.map((video, index) => (
+                        <button
+                          key={index}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedVideoIndex(index);
+                            setVideoLoaded(false);
+                          }}
+                          className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                            selectedVideoIndex === index
+                              ? 'bg-white/90 text-black'
+                              : 'bg-black/50 text-white hover:bg-black/70'
+                          }`}
+                        >
+                          {video.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Mux Video Player */}
+                  <iframe
+                    src={`https://player.mux.com/${selectedProject.muxVideos[selectedVideoIndex].playbackId}?autoplay=true&loop=false&controls=true&muted=false`}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      border: 'none',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                    }}
+                    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                    allowFullScreen={true}
+                    className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    onLoad={() => {
+                      setVideoLoaded(true);
+                      setTimeout(() => {
+                        const iframe = document.querySelector(`iframe[src*="${selectedProject.muxVideos![selectedVideoIndex].playbackId}"]`) as HTMLIFrameElement;
+                        if (iframe && iframe.contentWindow) {
+                          try {
+                            iframe.contentWindow.postMessage({ command: 'play' }, '*');
+                          } catch (e) {
+                            console.log('Mux player autoplay');
+                          }
+                        }
+                      }, 500);
+                    }}
+                    onError={() => {
+                      console.error('Mux video error');
+                      setVideoLoaded(true);
+                    }}
+                  />
+                </>
+              ) : selectedProject.videoUrl ? (
                 <video
                   src={selectedProject.videoUrl}
                   controls
@@ -256,8 +341,12 @@ export default function Portfolio() {
                 />
               )}
               <button
-                onClick={() => setSelectedProject(null)}
-                className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+                onClick={() => {
+                  setSelectedProject(null);
+                  setSelectedVideoIndex(0);
+                  setVideoLoaded(false);
+                }}
+                className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-20"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -267,6 +356,11 @@ export default function Portfolio() {
             <div className="p-6">
               <h2 className="text-3xl font-bold mb-2" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedProject.title}
+                {selectedProject.muxVideos && selectedProject.muxVideos.length > 1 && (
+                  <span className="text-lg text-gray-400 ml-2">
+                    - {selectedProject.muxVideos[selectedVideoIndex].title}
+                  </span>
+                )}
               </h2>
               <p className="text-gray-300">{selectedProject.description}</p>
             </div>
