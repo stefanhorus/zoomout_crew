@@ -59,12 +59,12 @@ const projects: Project[] = [
     muxVideos: [
       {
         playbackId: "ILANTrld964hQ4OanXs6lq02kqN01q745BRJGgfqPy7Kk",
-        title: "Cabanuta 1",
+        title: "",
         assetId: "bhUSdN7wq8dC4E46Fd7oTbjdhiFpGWKYuJiI9NhS1TQ",
       },
       {
         playbackId: "qOyziLJHQEENO6eg4l2oaFf2x00VywCLLEye01HPiiFy4",
-        title: "Cabanuta 2",
+        title: "",
         assetId: "N24mjHOV008CuL6TwUhb11M02V47cWeynaCCIIoX4pdDI",
       },
     ],
@@ -429,7 +429,7 @@ export default function Portfolio() {
             <div className="flex-1 p-6 md:p-8 flex flex-col justify-center bg-black/20 md:bg-transparent">
               <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedProject.title}
-                {selectedProject.muxVideos && selectedProject.muxVideos.length > 1 && (
+                {selectedProject.muxVideos && selectedProject.muxVideos.length > 1 && selectedProject.muxVideos[selectedVideoIndex].title && (
                   <span className="text-base md:text-lg text-gray-400 ml-2">
                     - {selectedProject.muxVideos[selectedVideoIndex].title}
                   </span>
