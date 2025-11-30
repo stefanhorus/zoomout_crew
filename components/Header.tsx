@@ -81,7 +81,7 @@ export default function Header() {
           >
             <div className="relative h-7 w-7 md:h-8 md:w-8">
             <Image 
-              src="/logo.png" 
+              src="/assets/logo.png" 
               alt="Logo" 
               width={32}
               height={32}
