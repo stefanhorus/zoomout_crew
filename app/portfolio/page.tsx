@@ -68,7 +68,7 @@ const projects: Project[] = [
         assetId: "N24mjHOV008CuL6TwUhb11M02V47cWeynaCCIIoX4pdDI",
       },
     ],
-    description: "Promotional aerial video showcasing a beautiful accommodation cabin",
+    description: "We created promotional materials for Remote Tiny House Retreat, capturing the unique charm and serene atmosphere of this beautiful accommodation cabin. Through aerial cinematography, we showcased the retreat's natural surroundings and cozy accommodations, highlighting the perfect escape for those seeking tranquility and connection with nature.",
   },
   {
     id: 4,
@@ -296,9 +296,23 @@ export default function Portfolio() {
           }}
         >
           <div
-            className="max-w-6xl w-full liquid-glass-strong rounded-2xl overflow-hidden my-4 flex flex-col md:flex-row"
+            className="max-w-6xl w-full liquid-glass-strong rounded-2xl overflow-hidden my-4 flex flex-col md:flex-row relative"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Close Button - Top Right Corner of Modal */}
+            <button
+              onClick={() => {
+                setSelectedProject(null);
+                setSelectedVideoIndex(0);
+                setVideoLoaded(false);
+              }}
+              className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-30"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
             {/* Video Section - Left Side */}
             <div className={`relative flex-1 ${
               selectedProject.muxVideos && selectedProject.muxVideos.length > 0
@@ -409,18 +423,6 @@ export default function Portfolio() {
                   className="object-cover"
                 />
               )}
-              <button
-                onClick={() => {
-                  setSelectedProject(null);
-                  setSelectedVideoIndex(0);
-                  setVideoLoaded(false);
-                }}
-                className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-20"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
             </div>
             
             {/* Description Section - Right Side */}
