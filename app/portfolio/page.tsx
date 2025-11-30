@@ -49,6 +49,13 @@ const projects: Project[] = [
     title: "Multiverse Party - Advertisement",
     category: "events",
     thumbnail: "/assets/brands/multiverse.png",
+    muxVideos: [
+      {
+        playbackId: "Xi5sUxm00g8N5UJGPn7D9Mut4JsMfUFULA01Qn02woUOwo",
+        title: "",
+        assetId: "01Dl02H4Nql5FM5vD3bxu1awLfSXOqOvg7DKo1LHF00KYk",
+      },
+    ],
     description: "We filmed a dynamic advertisement video for the Multiverse party event, capturing the vibrant energy and electrifying atmosphere of this unforgettable rooftop party. Our footage highlighted the event's distinctive style and the memorable moments that defined the night.",
   },
   {
@@ -75,6 +82,13 @@ const projects: Project[] = [
     title: "Outdoor Lounge - Aerial Filming",
     category: "commercial",
     thumbnail: "/assets/brands/aerlounge.png",
+    muxVideos: [
+      {
+        playbackId: "c5jDLrljSoSJid7Du9P9XQb37yzRRrIKqFHYzqpKG8c",
+        title: "",
+        assetId: "cTKE4Xu5idbGw3DAqK02UivmpqNNhkwsMZ52C5ghzLRY",
+      },
+    ],
     description: "This was among the first materials we filmed after purchasing our drone, making it particularly special to us. It's fascinating to look back and see how much we've evolved in both filming and editing since then. This aerial cinematography project for the outdoor lounge venue captures our early work and showcases the foundation of our creative journey.",
   },
   {
@@ -82,6 +96,18 @@ const projects: Project[] = [
     title: "Casa Numaa - Aerial Filming",
     category: "real-estate",
     thumbnail: "/assets/brands/casanumaa.png",
+    muxVideos: [
+      {
+        playbackId: "BaZoibIrmiaFjm1oPbGIWlhQAZrZHCV9NcIMW4HQN014",
+        title: "",
+        assetId: "UWLY1HppsMNTiG01pLNf02EcG00J01n33vjrJnkHryDkKoM",
+      },
+      {
+        playbackId: "mUlM3T9v62Udt6bf02520200cihk49QMbiSc7zYCQDvldk",
+        title: "",
+        assetId: "pwcjT01l3vry006Qgy00sjGW01crDlMbDU0101YKrSNRMuGlE",
+      },
+    ],
     description: "Professional aerial videography for Casa Numaa property",
   },
   {

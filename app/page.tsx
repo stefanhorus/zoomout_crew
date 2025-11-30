@@ -315,42 +315,42 @@ export default function Home() {
                 }}
               />
             ) : (
-              <iframe
+            <iframe
                 src="https://player.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo?metadata-video-title=Drone-Hero-2-2k-clean&video-title=Drone-Hero-2-2k-clean&autoplay=muted&loop=true&controls=false&muted=true&preload=auto"
-                style={{ 
-                  width: '100vw', 
-                  height: '56.25vw', // 16:9 aspect ratio
-                  minHeight: '100vh',
-                  minWidth: '177.78vh', // 16:9 aspect ratio inversat
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  border: 'none',
-                  pointerEvents: 'none'
-                }}
-                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-                allowFullScreen={false}
-                className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
-                onLoad={() => {
-                  setVideoLoaded(true);
-                  // Forțează play după ce iframe-ul se încarcă
-                  setTimeout(() => {
+              style={{ 
+                width: '100vw', 
+                height: '56.25vw', // 16:9 aspect ratio
+                minHeight: '100vh',
+                minWidth: '177.78vh', // 16:9 aspect ratio inversat
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                border: 'none',
+                pointerEvents: 'none'
+              }}
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+              allowFullScreen={false}
+              className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => {
+                setVideoLoaded(true);
+                // Forțează play după ce iframe-ul se încarcă
+                setTimeout(() => {
                     const iframe = document.querySelector('iframe[src*="rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo"]') as HTMLIFrameElement;
-                    if (iframe && iframe.contentWindow) {
-                      try {
-                        iframe.contentWindow.postMessage({ command: 'play' }, '*');
-                      } catch (e) {
+                  if (iframe && iframe.contentWindow) {
+                    try {
+                      iframe.contentWindow.postMessage({ command: 'play' }, '*');
+                    } catch (e) {
                         console.log('Mux player autoplay desktop');
-                      }
                     }
-                  }, 500);
-                }}
+                  }
+                }, 500);
+              }}
                 onError={() => {
                   console.error('Mux video error for desktop');
                   setVideoError(true);
                 }}
-              />
+            />
             )}
           </div>
         ) : (
