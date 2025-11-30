@@ -66,6 +66,15 @@ const products: Product[] = [
     description: "Professional cinematic color grading presets for video editing. Transform your footage with our carefully crafted presets designed to give your videos that cinematic look.",
     inStock: true,
   },
+  {
+    id: 6,
+    name: "Majestic Wallpaper Pack",
+    category: "digital",
+    image: "/assets/shop/Wallpaper.jpg",
+    price: 15,
+    description: "A stunning collection of majestic wallpapers featuring breathtaking aerial landscapes and cinematic scenes. Perfect for desktop, mobile, and tablet backgrounds.",
+    inStock: true,
+  },
 ];
 
 export default function Shop() {
