@@ -49,11 +49,11 @@ const projects: Project[] = [
     title: "Multiverse Party - Advertisement",
     category: "events",
     thumbnail: "/assets/brands/multiverse.png",
-    description: "Dynamic advertisement video for Multiverse party event",
+    description: "We filmed a dynamic advertisement video for the Multiverse party event, capturing the vibrant energy and electrifying atmosphere of this unforgettable celebration. Through creative cinematography and dynamic camera movements, we showcased the party's unique character, the enthusiastic crowd, and the pulsating rhythm that made this event truly special. Our footage highlighted the event's distinctive style and the memorable moments that defined the night.",
   },
   {
     id: 3,
-    title: "Accommodation Cabin - Promo Video",
+    title: "Remote Tiny House Retreat - Promo Videos",
     category: "real-estate",
     thumbnail: "/assets/brands/cabanuta.png",
     muxVideos: [
