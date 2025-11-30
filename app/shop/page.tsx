@@ -57,6 +57,15 @@ const products: Product[] = [
     description: "Lightroom preset pack for clean and cinematic looks.",
     inStock: true,
   },
+  {
+    id: 5,
+    name: "Cinematic Presets",
+    category: "digital",
+    image: "/assets/shop/Cinematic.jpg",
+    price: 20,
+    description: "Professional cinematic color grading presets for video editing. Transform your footage with our carefully crafted presets designed to give your videos that cinematic look.",
+    inStock: true,
+  },
 ];
 
 export default function Shop() {
