@@ -56,6 +56,18 @@ const projects: Project[] = [
     title: "Accommodation Cabin - Promo Video",
     category: "real-estate",
     thumbnail: "/assets/brands/cabanuta.png",
+    muxVideos: [
+      {
+        playbackId: "ILANTrld964hQ4OanXs6lq02kqN01q745BRJGgfqPy7Kk",
+        title: "Cabanuta 1",
+        assetId: "bhUSdN7wq8dC4E46Fd7oTbjdhiFpGWKYuJiI9NhS1TQ",
+      },
+      {
+        playbackId: "qOyziLJHQEENO6eg4l2oaFf2x00VywCLLEye01HPiiFy4",
+        title: "Cabanuta 2",
+        assetId: "N24mjHOV008CuL6TwUhb11M02V47cWeynaCCIIoX4pdDI",
+      },
+    ],
     description: "Promotional aerial video showcasing a beautiful accommodation cabin",
   },
   {
