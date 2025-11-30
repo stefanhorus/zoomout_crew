@@ -49,7 +49,7 @@ const projects: Project[] = [
     title: "Multiverse Party - Advertisement",
     category: "events",
     thumbnail: "/assets/brands/multiverse.png",
-    description: "We filmed a dynamic advertisement video for the Multiverse party event, capturing the vibrant energy and electrifying atmosphere of this unforgettable celebration. Through creative cinematography and dynamic camera movements, we showcased the party's unique character, the enthusiastic crowd, and the pulsating rhythm that made this event truly special. Our footage highlighted the event's distinctive style and the memorable moments that defined the night.",
+    description: "We filmed a dynamic advertisement video for the Multiverse party event, capturing the vibrant energy and electrifying atmosphere of this unforgettable rooftop party. Our footage highlighted the event's distinctive style and the memorable moments that defined the night.",
   },
   {
     id: 3,
@@ -75,7 +75,7 @@ const projects: Project[] = [
     title: "Outdoor Lounge - Aerial Filming",
     category: "commercial",
     thumbnail: "/assets/brands/aerlounge.png",
-    description: "Aerial cinematography for outdoor lounge venue",
+    description: "This was among the first materials we filmed after purchasing our drone, making it particularly special to us. It's fascinating to look back and see how much we've evolved in both filming and editing since then. This aerial cinematography project for the outdoor lounge venue captures our early work and showcases the foundation of our creative journey.",
   },
   {
     id: 5,
