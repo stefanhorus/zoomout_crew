@@ -93,8 +93,8 @@ const projects: Project[] = [
   },
   {
     id: 5,
-    title: "Casa Numaa - Aerial Filming",
-    category: "real-estate",
+    title: "Casa Numaa - Fine Dining Restaurant",
+    category: "commercial",
     thumbnail: "/assets/brands/casanumaa.png",
     muxVideos: [
       {
@@ -108,7 +108,7 @@ const projects: Project[] = [
         assetId: "pwcjT01l3vry006Qgy00sjGW01crDlMbDU0101YKrSNRMuGlE",
       },
     ],
-    description: "Professional aerial videography for Casa Numaa property",
+    description: "We created advertising materials for Casa Numaa, an exceptional fine dining restaurant. Through aerial cinematography, we captured the elegant ambiance and sophisticated atmosphere that defines this culinary destination, showcasing the restaurant's unique character and inviting setting.",
   },
   {
     id: 6,
