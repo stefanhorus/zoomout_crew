@@ -12,12 +12,13 @@ export default function Home() {
   const { t } = useLanguage();
   
   const brands = [
-    { id: 1, name: "Brand 1", logo: "/assets/brands/bigbelly.png", width: 320, height: 160 },
-    { id: 2, name: "Brand 2", logo: "/assets/brands/casanumaa.png", width: 280, height: 140 },
-    { id: 3, name: "Brand 3", logo: "/assets/brands/visualdelights.png", width: 200, height: 100 },
-    { id: 4, name: "Brand 4", logo: "/assets/brands/utopic.png", width: 200, height: 100 },
-    { id: 5, name: "Brand 5", logo: "/assets/brands/aerlounge.png", width: 170, height: 85 },
-    { id: 6, name: "Brand 6", logo: "/assets/brands/multiverse.png", width: 170, height: 85 },
+    { id: 1, name: "Rotaract", logo: "/assets/brands/rotaract.png", width: 200, height: 100 },
+    { id: 2, name: "Big Belly", logo: "/assets/brands/bigbelly.png", width: 320, height: 160 },
+    { id: 3, name: "Casa Numaa", logo: "/assets/brands/casanumaa.png", width: 280, height: 140 },
+    { id: 4, name: "Visual Delights", logo: "/assets/brands/visualdelights.png", width: 200, height: 100 },
+    { id: 5, name: "Utopic", logo: "/assets/brands/utopic.png", width: 200, height: 100 },
+    { id: 6, name: "Aer Lounge", logo: "/assets/brands/aerlounge.png", width: 170, height: 85 },
+    { id: 7, name: "Multiverse", logo: "/assets/brands/multiverse.png", width: 170, height: 85 },
   ];
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
