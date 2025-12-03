@@ -7,12 +7,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 // Tipuri de proiecte pentru filtrare
-type ProjectCategory = "all" | "aerial" | "real-estate" | "events" | "commercial";
+type ProjectCategory = "all" | "real-estate" | "events" | "commercial";
 
 interface Project {
   id: number;
   title: string;
-  category: ProjectCategory;
+  category: ProjectCategory | ProjectCategory[];
   thumbnail: string;
   videoUrl?: string;
   muxVideos?: Array<{
@@ -29,7 +29,7 @@ const projects: Project[] = [
   {
     id: 1,
     title: "Big Belly - New Restaurant Location Opening",
-    category: "events",
+    category: ["events", "commercial"],
     thumbnail: "/assets/brands/bigbelly.png",
     muxVideos: [
       {
@@ -147,7 +147,6 @@ export default function Portfolio() {
 
   const categories: { value: ProjectCategory; label: string; labelKey: string }[] = [
     { value: "all", label: "All Projects", labelKey: "portfolio.allProjects" },
-    { value: "aerial", label: "Aerial", labelKey: "portfolio.aerial" },
     { value: "real-estate", label: "Real Estate", labelKey: "portfolio.realEstate" },
     { value: "events", label: "Events", labelKey: "portfolio.events" },
     { value: "commercial", label: "Commercial", labelKey: "portfolio.commercial" },
@@ -156,7 +155,11 @@ export default function Portfolio() {
   const filteredProjects =
     selectedCategory === "all"
       ? projects
-      : projects.filter((project) => project.category === selectedCategory);
+      : projects.filter((project) => 
+          Array.isArray(project.category) 
+            ? project.category.includes(selectedCategory)
+            : project.category === selectedCategory
+        );
 
   // Keyboard navigation pentru video-uri și imagini
   useEffect(() => {
@@ -261,7 +264,8 @@ export default function Portfolio() {
                  project.thumbnail.includes('utopic') ||
                  project.thumbnail.includes('aerlounge') ||
                  project.thumbnail.includes('bigbelly') ||
-                 project.thumbnail.includes('cabanuta'))) ||
+                 project.thumbnail.includes('cabanuta') ||
+                 project.thumbnail.includes('rotaract'))) ||
                 project.thumbnail.includes('sardinia')
                   ? 'bg-gradient-to-br from-black/30 via-black/20 to-black/30 backdrop-blur-sm' 
                   : 'bg-gray-900'
@@ -283,7 +287,8 @@ export default function Portfolio() {
                      project.thumbnail.includes('utopic') ||
                      project.thumbnail.includes('aerlounge') ||
                      project.thumbnail.includes('bigbelly') ||
-                     project.thumbnail.includes('cabanuta'))) ||
+                     project.thumbnail.includes('cabanuta') ||
+                     project.thumbnail.includes('rotaract'))) ||
                     project.thumbnail.includes('sardinia')
                       ? `object-contain drop-shadow-2xl filter brightness-110 group-hover:brightness-125 ${
                           project.thumbnail.includes('bigbelly')
@@ -303,7 +308,8 @@ export default function Portfolio() {
                    project.thumbnail.includes('utopic') ||
                    project.thumbnail.includes('aerlounge') ||
                    project.thumbnail.includes('bigbelly') ||
-                   project.thumbnail.includes('cabanuta'))) ||
+                   project.thumbnail.includes('cabanuta') ||
+                   project.thumbnail.includes('rotaract'))) ||
                   project.thumbnail.includes('sardinia')
                     ? 'bg-gradient-to-t from-black/20 via-transparent to-black/20 group-hover:from-black/10 group-hover:via-transparent group-hover:to-black/10'
                     : 'bg-gradient-to-t from-black/80 via-black/40 to-black/20 group-hover:from-black/60 group-hover:via-black/30 group-hover:to-black/10'
