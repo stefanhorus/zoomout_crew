@@ -128,6 +128,13 @@ const projects: Project[] = [
     images: ["/assets/photos/sardinia1.jpeg", "/assets/photos/sardinia2.jpeg"],
     description: "We captured the stunning beauty of LA VILLA SUNHOUSE, a luxurious property nestled in the breathtaking landscape of Sardinia. Through aerial cinematography and photography, we showcased the villa's exceptional architecture, pristine surroundings, and the Mediterranean elegance that makes this property truly unique.",
   },
+  {
+    id: 8,
+    title: "Rotaract - Charity Rubber Duck Race",
+    category: "events",
+    thumbnail: "/assets/brands/rotaract.png",
+    description: "We documented the heartwarming Charity Rubber Duck Race organized by Rotaract, capturing the spirit of community and philanthropy through aerial cinematography. This unique fundraising event brought together participants of all ages for a fun and meaningful cause, showcasing the power of community engagement and charitable giving.",
+  },
 ];
 
 export default function Portfolio() {
