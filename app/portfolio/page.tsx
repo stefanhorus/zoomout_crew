@@ -29,7 +29,7 @@ const projects: Project[] = [
   {
     id: 1,
     title: "Big Belly - New Restaurant Location Opening",
-    category: "commercial",
+    category: "events",
     thumbnail: "/assets/brands/bigbelly.png",
     muxVideos: [
       {
