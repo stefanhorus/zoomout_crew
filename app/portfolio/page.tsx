@@ -20,6 +20,7 @@ interface Project {
     title: string;
     assetId?: string;
   }>;
+  images?: string[];
   description: string;
 }
 
