@@ -258,7 +258,7 @@ export default function Home() {
       `}} />
       
       {/* Video de fundal cu overlay gradient */}
-      <div className="absolute inset-0 w-full h-full z-0">
+      <div className="fixed inset-0 w-full h-full z-0">
         {/* Fallback image dacă video-ul nu se încarcă */}
         {videoError && (
           <div className="absolute inset-0 w-full h-full bg-black">

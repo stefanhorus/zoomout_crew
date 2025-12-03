@@ -87,7 +87,7 @@ export default function Services() {
   return (
     <main className="min-h-screen text-white pt-24 pb-16 relative">
       {/* Background Image */}
-      <div className="absolute inset-0 w-full h-full z-0">
+      <div className="fixed inset-0 w-full h-full z-0">
         <Image
           src="/assets/backgrounds/background5.jpg"
           alt="Services background"

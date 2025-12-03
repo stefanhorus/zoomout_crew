@@ -45,7 +45,7 @@ export default function Contact() {
     <section
       className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-4 py-16 relative"
     >
-      <div className="absolute inset-0 w-full h-full">
+      <div className="fixed inset-0 w-full h-full">
         <Image
           src="/assets/backgrounds/backgroundtiny.png"
           alt="Contact background"
