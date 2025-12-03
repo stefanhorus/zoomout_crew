@@ -69,11 +69,6 @@ const projects: Project[] = [
         title: "",
         assetId: "bhUSdN7wq8dC4E46Fd7oTbjdhiFpGWKYuJiI9NhS1TQ",
       },
-      {
-        playbackId: "qOyziLJHQEENO6eg4l2oaFf2x00VywCLLEye01HPiiFy4",
-        title: "",
-        assetId: "N24mjHOV008CuL6TwUhb11M02V47cWeynaCCIIoX4pdDI",
-      },
     ],
     description: "We created promotional materials for Remote Tiny House Retreat, capturing the unique charm and serene atmosphere of this beautiful accommodation cabin. Through aerial cinematography, we showcased the retreat's natural surroundings and cozy accommodations, highlighting the perfect escape for those seeking tranquility and connection with nature.",
   },
@@ -112,10 +107,17 @@ const projects: Project[] = [
   },
   {
     id: 6,
-    title: "Utopic Party - Aerial Filming",
+    title: "Utopic Party - Event Promotion",
     category: "events",
     thumbnail: "/assets/brands/utopic.png",
-    description: "Aerial coverage and filming for Utopic party event",
+    muxVideos: [
+      {
+        playbackId: "CY6gQczar8Ompqq02jXDHskFOwuuB1W8yng5ZOtXTq800",
+        title: "",
+        assetId: "tSi00hlAkFljNSy00QDvqPyhdCBPuoJi2fSZNe3n02iD3g",
+      },
+    ],
+    description: "We created promotional content for the Utopic party event, capturing the vibrant atmosphere and energy through aerial cinematography. Our footage was designed to showcase the event's unique character and attract attendees, highlighting the dynamic setting and unforgettable experience.",
   },
 ];
 
