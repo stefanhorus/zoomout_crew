@@ -119,6 +119,14 @@ const projects: Project[] = [
     ],
     description: "We created promotional content for the Utopic party event, capturing the vibrant atmosphere and energy through aerial cinematography. Our footage was designed to showcase the event's unique character and attract attendees, highlighting the dynamic setting and unforgettable experience.",
   },
+  {
+    id: 7,
+    title: "LA VILLA SUNHOUSE - Sardinia",
+    category: "real-estate",
+    thumbnail: "/assets/photos/sardinia1.jpeg",
+    images: ["/assets/photos/sardinia1.jpeg", "/assets/photos/sardinia2.jpeg"],
+    description: "We captured the stunning beauty of LA VILLA SUNHOUSE, a luxurious property nestled in the breathtaking landscape of Sardinia. Through aerial cinematography and photography, we showcased the villa's exceptional architecture, pristine surroundings, and the Mediterranean elegance that makes this property truly unique.",
+  },
 ];
 
 export default function Portfolio() {
@@ -142,25 +150,35 @@ export default function Portfolio() {
       ? projects
       : projects.filter((project) => project.category === selectedCategory);
 
-  // Keyboard navigation pentru video-uri
+  // Keyboard navigation pentru video-uri și imagini
   useEffect(() => {
-    if (!selectedProject || !selectedProject.muxVideos || selectedProject.muxVideos.length <= 1) {
-      return;
-    }
+    if (!selectedProject) return;
+    
+    const hasMultipleMedia = 
+      (selectedProject.muxVideos && selectedProject.muxVideos.length > 1) ||
+      (selectedProject.images && selectedProject.images.length > 1);
+    
+    if (!hasMultipleMedia) return;
 
     const handleKeyPress = (e: KeyboardEvent) => {
+      const mediaLength = selectedProject.muxVideos?.length || selectedProject.images?.length || 0;
+      
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         setSelectedVideoIndex((prev) => 
-          prev === 0 ? selectedProject.muxVideos!.length - 1 : prev - 1
+          prev === 0 ? mediaLength - 1 : prev - 1
         );
-        setVideoLoaded(false);
+        if (selectedProject.muxVideos) {
+          setVideoLoaded(false);
+        }
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
         setSelectedVideoIndex((prev) => 
-          prev === selectedProject.muxVideos!.length - 1 ? 0 : prev + 1
+          prev === mediaLength - 1 ? 0 : prev + 1
         );
-        setVideoLoaded(false);
+        if (selectedProject.muxVideos) {
+          setVideoLoaded(false);
+        }
       }
     };
 
@@ -442,6 +460,68 @@ export default function Portfolio() {
                   autoPlay
                   className="w-full h-full object-cover"
                 />
+              ) : selectedProject.images && selectedProject.images.length > 0 ? (
+                <>
+                  {/* Image Navigation Arrows - doar dacă sunt mai multe imagini */}
+                  {selectedProject.images.length > 1 && (
+                    <>
+                      {/* Left Arrow */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedVideoIndex((prev) => 
+                            prev === 0 ? selectedProject.images!.length - 1 : prev - 1
+                          );
+                        }}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all hover:scale-110"
+                        aria-label="Previous image"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
+                      </button>
+                      
+                      {/* Right Arrow */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedVideoIndex((prev) => 
+                            prev === selectedProject.images!.length - 1 ? 0 : prev + 1
+                          );
+                        }}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all hover:scale-110"
+                        aria-label="Next image"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                      
+                      {/* Image Indicator - bottom center */}
+                      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-10 flex items-center justify-center gap-2 pointer-events-none">
+                        {selectedProject.images.map((img, index) => (
+                          <div
+                            key={index}
+                            className={`h-2 rounded-full transition-all ${
+                              selectedVideoIndex === index
+                                ? 'w-8 bg-white'
+                                : 'w-2 bg-white/50'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  
+                  {/* Image Display */}
+                  <Image
+                    src={selectedProject.images[selectedVideoIndex]}
+                    alt={selectedProject.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 80vw"
+                    className="object-cover"
+                  />
+                </>
               ) : (
                 <Image
                   src={selectedProject.thumbnail}
