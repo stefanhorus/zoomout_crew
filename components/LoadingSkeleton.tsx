@@ -16,7 +16,7 @@ export default function LoadingSkeleton({ className = "" }: LoadingSkeletonProps
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative w-16 h-16 md:w-20 md:h-20 animate-pulse">
           <Image
-            src="/logo.png"
+            src="/assets/logo.png"
             alt="Loading..."
             width={80}
             height={80}
