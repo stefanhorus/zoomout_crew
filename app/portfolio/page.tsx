@@ -133,6 +133,11 @@ const projects: Project[] = [
     title: "Rotaract - Charity Rubber Duck Race",
     category: "events",
     thumbnail: "/assets/brands/rotaract.png",
+    images: [
+      "/assets/photos/ratuste1.png",
+      "/assets/photos/ratuste2.png",
+      "/assets/photos/ratuste3.png",
+    ],
     description: "We documented the heartwarming Charity Rubber Duck Race organized by Rotaract, capturing the spirit of community and philanthropy through aerial cinematography. This unique fundraising event brought together participants of all ages for a fun and meaningful cause, showcasing the power of community engagement and charitable giving.",
   },
 ];

@@ -26,10 +26,10 @@ interface Adventure {
 const adventures: Adventure[] = [
   {
     id: 1,
-    title: "Across Kazakhstan & Kyrgyzstan",
+    title: "Central Asia Expedition",
     location: "Kazakhstan & Kyrgyzstan",
     category: "asia",
-    date: "2024-07-18",
+    date: "2025-04-15",
     thumbnail: "/assets/adventures/kz-kg/5.jpg",
     videoUrl: "/assets/adventures/kz-kg/kz-kg-video.mp4",
     description:
@@ -52,68 +52,68 @@ const adventures: Adventure[] = [
   },
   {
     id: 2,
-    title: "Amsterdam Adventure",
+    title: "Amsterdam Unmapped",
     location: "Amsterdam, Netherlands",
     category: "europe",
     date: "2025-03-15",
     thumbnail: "/assets/adventures/ams1tiny.png",
-    description: "Exploring the beautiful canals, historic architecture, and vibrant culture of Amsterdam from above.",
+    description: "A week-long Erasmus project adventure in Amsterdam—a boys trip sponsored by the university. During the days, we attended classes at HVA (Hogeschool van Amsterdam), but the rest of our time was all about having fun and exploring the city. We cruised the sunlit canals by boat, went karaoke singing, hit the clubs, and captured Amsterdam's iconic architecture and vibrant culture from unique aerial perspectives.",
     highlights: ["Canal Ring", "Anne Frank House", "Van Gogh Museum", "Jordaan District", "Vondelpark"],
+  },
+  {
+    id: 5,
+    title: "East Coast Horizons",
+    location: "United States",
+    category: "americas",
+    date: "2025-09-15",
+    thumbnail: "/assets/adventures/americasept/americasept1.png",
+    description: "September exploration of America's breathtaking scenery, from coast to coast.",
+    highlights: ["Fall Colors", "Desert Landscapes", "Historic Sites", "Natural Wonders"],
+    images: [
+      "/assets/adventures/americasept/americasept1.png",
+      "/assets/adventures/americasept/americasept2.png",
+      "/assets/adventures/americasept/americasept3.png",
+      "/assets/adventures/americasept/americasept4.png",
+      "/assets/adventures/americasept/americasept5.png",
+    ],
   },
   {
     id: 3,
     title: "Sardinia Discovery",
     location: "Sardinia, Italy",
     category: "europe",
-    date: "2025-06-01",
+    date: "2025-09-15",
     thumbnail: "/assets/adventures/sardinia/sardinia1.jpg",
     description: "Aerial journey through the stunning Mediterranean island of Sardinia, capturing its pristine beaches and rugged landscapes.",
     highlights: ["Costa Smeralda", "Cagliari", "Alghero", "La Maddalena", "Nuraghe Su Nuraxi"],
-  },
-  {
-    id: 4,
-    title: "America Summer Journey",
-    location: "United States",
-    category: "americas",
-    date: "2024-07-01",
-    thumbnail: "/assets/adventures/americasg/americasg1.jpg",
-    description: "Summer adventure across America, capturing the diverse landscapes and iconic landmarks from a unique perspective.",
-    highlights: ["National Parks", "Coastal Views", "Urban Landscapes", "Mountain Ranges"],
-  },
-  {
-    id: 5,
-    title: "America September Expedition",
-    location: "United States",
-    category: "americas",
-    date: "2025-09-01",
-    thumbnail: "/assets/adventures/americasept/americasept1.png",
-    description: "September exploration of America's breathtaking scenery, from coast to coast.",
-    highlights: ["Fall Colors", "Desert Landscapes", "Historic Sites", "Natural Wonders"],
   },
   {
     id: 6,
     title: "West Coast Tour",
     location: "West Coast, United States",
     category: "americas",
-    date: "2025-10-01",
+    date: "2024-10-15",
     thumbnail: "/assets/backgrounds/backgroundtiny.png",
     description: "An epic journey along America's West Coast, capturing the dramatic Pacific coastline and iconic cities.",
     highlights: ["Pacific Coast Highway", "San Francisco", "Los Angeles", "Seattle", "Portland", "Big Sur"],
   },
   {
     id: 7,
-    title: "Edinburgh Winter",
+    title: "Edinburgh Escape",
     location: "Edinburgh, Scotland",
     category: "europe",
     date: "2025-12-15",
-    thumbnail: "/assets/backgrounds/background6tiny.png",
+    thumbnail: "/assets/adventures/edinburgh/edinburgh1.png",
     description: "Winter wonderland in Edinburgh, showcasing the historic city's charm during the festive season.",
     highlights: ["Edinburgh Castle", "Royal Mile", "Arthur's Seat", "Holyrood Palace", "Christmas Markets"],
+    images: [
+      "/assets/adventures/edinburgh/edinburgh1.png",
+    ],
   },
 ];
 
 export default function Adventures() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<AdventureCategory>("all");
   const [selectedAdventure, setSelectedAdventure] = useState<Adventure | null>(null);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
@@ -127,14 +127,16 @@ export default function Adventures() {
     { value: "oceania", label: "Oceania", labelKey: "adventures.oceania" },
   ];
 
-  const filteredAdventures =
+  const filteredAdventures = (
     selectedCategory === "all"
       ? adventures
-      : adventures.filter((adventure) => adventure.category === selectedCategory);
+      : adventures.filter((adventure) => adventure.category === selectedCategory)
+  ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("ro-RO", { year: "numeric", month: "long", day: "numeric" });
+    const locale = language === "ro" ? "ro-RO" : "en-US";
+    return date.toLocaleDateString(locale, { year: "numeric", month: "long" });
   };
 
   return (
@@ -220,13 +222,21 @@ export default function Adventures() {
                   unoptimized={adv.thumbnail.includes('tiny')}
                   onLoad={() => setLoadedImages(prev => new Set(prev).add(adv.id))}
                 />
-                <div className={`absolute inset-0 bg-gradient-to-t transition-all duration-300 ${
-                  adv.thumbnail.includes('sardinia') 
-                    ? 'from-black/40 via-black/20 to-black/5 group-hover:from-black/30 group-hover:via-black/15 group-hover:to-black/0'
-                    : adv.thumbnail.includes('ams') || adv.thumbnail.includes('americasept')
-                    ? 'from-black/60 via-black/30 to-black/10 group-hover:from-black/50 group-hover:via-black/25 group-hover:to-black/5'
-                    : 'from-black/80 via-black/40 to-black/20 group-hover:from-black/60 group-hover:via-black/30 group-hover:to-black/10'
-                }`} />
+                {!adv.thumbnail.includes('americasept') && (
+                  <div className={`absolute inset-0 bg-gradient-to-t transition-all duration-300 ${
+                    adv.thumbnail.includes('sardinia') 
+                      ? 'from-black/50 via-black/25 to-black/8 group-hover:from-black/40 group-hover:via-black/20 group-hover:to-black/3'
+                      : adv.thumbnail.includes('edinburgh')
+                      ? 'from-black/30 via-black/15 to-black/0 group-hover:from-black/15 group-hover:via-black/6 group-hover:to-black/0'
+                      : adv.thumbnail.includes('kz-kg')
+                      ? 'from-black/50 via-black/25 to-black/5 group-hover:from-black/35 group-hover:via-black/15 group-hover:to-black/2'
+                      : adv.thumbnail.includes('backgroundtiny')
+                      ? 'from-black/40 via-black/20 to-black/5 group-hover:from-black/30 group-hover:via-black/15 group-hover:to-black/2'
+                      : adv.thumbnail.includes('ams')
+                      ? 'from-black/40 via-black/20 to-black/5 group-hover:from-black/30 group-hover:via-black/15 group-hover:to-black/2'
+                      : 'from-black/80 via-black/40 to-black/20 group-hover:from-black/60 group-hover:via-black/30 group-hover:to-black/10'
+                  }`} />
+                )}
                 
                 {/* Play Icon Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
