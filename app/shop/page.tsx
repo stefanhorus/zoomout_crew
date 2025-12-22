@@ -105,19 +105,42 @@ export default function Shop() {
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Curăță și validează email-ul
+    const cleanedEmail = newsletterEmail.trim().toLowerCase();
+    
+    if (!cleanedEmail || !cleanedEmail.includes("@") || !cleanedEmail.includes(".")) {
+      setNewsletterStatus("error");
+      return;
+    }
+
     setNewsletterStatus("sending");
+    console.log("📧 Submitting newsletter subscription for:", cleanedEmail);
 
     try {
       const response = await fetch("/api/newsletter", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: newsletterEmail }),
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ email: cleanedEmail }),
       });
 
+      // Verifică dacă răspunsul este JSON
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        console.error("❌ Non-JSON response:", text);
+        setNewsletterStatus("error");
+        return;
+      }
+
       const data = await response.json();
-      console.log("Newsletter API response:", data);
+      console.log("📬 Newsletter API response:", data);
 
       if (response.ok && data.success) {
+        console.log("✅ Newsletter subscription successful");
         setNewsletterStatus("success");
         setTimeout(() => {
           handleNewsletterClose();
@@ -129,6 +152,7 @@ export default function Shop() {
       }
     } catch (error: any) {
       console.error("❌ Newsletter subscription network error:", error);
+      console.error("Error details:", error.message, error.stack);
       setNewsletterStatus("error");
     }
   };
@@ -333,15 +357,18 @@ export default function Shop() {
                       type="email"
                       value={newsletterEmail}
                       onChange={(e) => setNewsletterEmail(e.target.value)}
+                      onBlur={(e) => setNewsletterEmail(e.target.value.trim())}
                       placeholder="Enter your email address"
                       required
+                      autoComplete="email"
+                      inputMode="email"
                       className="w-full px-4 py-2.5 md:py-3 rounded-xl liquid-glass-input text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/20 text-sm md:text-base"
                       disabled={newsletterStatus === "sending"}
                     />
                   </div>
                   <button
                     type="submit"
-                    disabled={newsletterStatus === "sending" || !newsletterEmail}
+                    disabled={newsletterStatus === "sending" || !newsletterEmail.trim()}
                     className="w-full liquid-glass-button text-white py-2.5 md:py-3 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
                   >
                     {newsletterStatus === "sending" ? "Subscribing..." : "Subscribe"}
@@ -422,4 +449,3 @@ export default function Shop() {
     </main>
   );
 }
-
