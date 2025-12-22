@@ -364,7 +364,7 @@ export default function Portfolio() {
           }}
         >
           <div
-            className="max-w-6xl w-full liquid-glass-strong rounded-2xl overflow-y-auto md:overflow-hidden my-auto flex flex-col md:flex-row relative max-h-[90vh] md:max-h-[90vh]"
+            className="max-w-6xl w-full liquid-glass-strong rounded-2xl overflow-hidden my-auto flex flex-col md:flex-row relative max-h-[90vh] md:max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button - Top Right Corner of Modal */}
@@ -382,10 +382,10 @@ export default function Portfolio() {
             </button>
 
             {/* Video Section - Left Side */}
-            <div className={`relative flex-1 shrink-0 min-w-0 ${
+            <div className={`relative flex-shrink-0 min-w-0 ${
               selectedProject.muxVideos && selectedProject.muxVideos.length > 0
-                ? 'aspect-[9/16] md:aspect-auto md:h-[85vh] md:max-h-[85vh]' // Vertical aspect ratio pentru video-urile Big Belly
-                : 'aspect-video md:aspect-auto md:h-[85vh] md:max-h-[85vh]'
+                ? 'h-[45vh] md:aspect-auto md:h-[85vh] md:max-h-[85vh] md:flex-1' // Reduced height on mobile, full height on desktop
+                : 'aspect-video md:aspect-auto md:h-[85vh] md:max-h-[85vh] md:flex-1'
             }`}>
               {selectedProject.muxVideos && selectedProject.muxVideos.length > 0 ? (
                 <>
@@ -556,16 +556,16 @@ export default function Portfolio() {
             </div>
             
             {/* Description Section - Right Side */}
-            <div className="flex-1 p-4 md:p-8 lg:p-10 flex flex-col justify-start md:justify-center bg-black/20 md:bg-transparent overflow-y-auto md:max-h-[85vh]">
-              <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 leading-tight" style={{ fontFamily: "var(--font-playfair)" }}>
+            <div className="flex-1 p-6 md:p-8 lg:p-10 flex flex-col justify-start md:justify-center bg-black/20 md:bg-transparent overflow-y-auto min-h-0">
+              <h2 className="text-2xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-4 leading-tight" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedProject.title}
                 {selectedProject.muxVideos && selectedProject.muxVideos.length > 1 && selectedProject.muxVideos[selectedVideoIndex].title && (
-                  <span className="text-sm md:text-base lg:text-lg text-gray-400 ml-2 block md:inline mt-1 md:mt-0">
+                  <span className="text-base md:text-base lg:text-lg text-gray-400 ml-2 block md:inline mt-2 md:mt-0">
                     - {selectedProject.muxVideos[selectedVideoIndex].title}
                   </span>
                 )}
               </h2>
-              <p className="text-gray-300 text-sm md:text-base lg:text-lg leading-relaxed pb-6 md:pb-0">{selectedProject.description}</p>
+              <p className="text-gray-200 text-base md:text-base lg:text-lg leading-relaxed">{selectedProject.description}</p>
             </div>
           </div>
         </div>
