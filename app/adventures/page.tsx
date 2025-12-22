@@ -296,41 +296,84 @@ export default function Adventures() {
             className="max-w-5xl w-full liquid-glass-strong rounded-2xl overflow-hidden my-auto max-h-[90vh] md:max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Media: Video ou image */}
-            <div className={`relative w-full flex-shrink-0 bg-black overflow-hidden flex items-center justify-center ${
-              selectedAdventure.images && selectedAdventure.images.length > 0
-                ? 'h-[60vh] md:h-[60vh]' // Taller for adventures with images
-                : 'h-[45vh] md:h-[60vh]' // Standard height for videos
-            }`}>
-              {selectedAdventure.videoUrl ? (
-                <video
-                  src={selectedAdventure.videoUrl}
-                  controls
-                  autoPlay
-                  preload="metadata"
-                  className="w-full h-full object-contain"
-                />
-              ) : (
-                <div className="relative w-full h-full">
-                  <Image
-                  src={selectedAdventure.thumbnail}
-                  alt={selectedAdventure.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 80vw"
-                    className="object-contain"
-                />
+            {/* Media Section */}
+            <div className="flex-shrink-0 bg-black overflow-hidden">
+              {/* Main Media: Video ou image */}
+              <div className={`relative w-full bg-black overflow-hidden flex items-center justify-center ${
+                selectedAdventure.images && selectedAdventure.images.length > 0
+                  ? 'h-[45vh] md:h-[50vh]' // Adjusted height when gallery is present
+                  : 'h-[45vh] md:h-[60vh]' // Standard height for videos only
+              }`}>
+                {selectedAdventure.videoUrl ? (
+                  <video
+                    src={selectedAdventure.videoUrl}
+                    controls
+                    autoPlay
+                    preload="metadata"
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <div className="relative w-full h-full">
+                    <Image
+                    src={selectedAdventure.thumbnail}
+                    alt={selectedAdventure.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 80vw"
+                      className="object-contain"
+                  />
+                  </div>
+                )}
+
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedAdventure(null)}
+                  className="absolute top-3 right-3 md:top-4 md:right-4 bg-black/70 hover:bg-black/90 backdrop-blur-sm text-white rounded-full p-2 md:p-2.5 transition-all hover:scale-110 shadow-lg z-10"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Gallery - Above content */}
+              {selectedAdventure.images && selectedAdventure.images.length > 0 && (
+                <div className="p-3 md:p-6 bg-black/30 border-t border-white/10">
+                  <h3 className="text-sm md:text-lg font-semibold mb-2 md:mb-4 flex items-center gap-2 text-white" style={{ fontFamily: "var(--font-playfair)" }}>
+                    <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    {t("adventures.gallery")}
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3 max-h-[30vh] md:max-h-none overflow-y-auto">
+                    {selectedAdventure.images.map((src, i) => (
+                      <div
+                        key={i}
+                        className="group relative aspect-video overflow-hidden rounded-lg cursor-pointer liquid-glass-hover"
+                        onClick={() =>
+                          setSelectedAdventure({
+                            ...selectedAdventure,
+                            videoUrl: undefined,
+                            thumbnail: src,
+                          })
+                        }
+                      >
+                        <Image
+                          src={src}
+                          alt={`Gallery ${i + 1}`}
+                          fill
+                          sizes="(max-width: 768px) 50vw, 33vw"
+                          className="rounded-lg object-cover transition-transform duration-300 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                          <svg className="w-6 h-6 md:w-8 md:h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                          </svg>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
-
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedAdventure(null)}
-                className="absolute top-3 right-3 md:top-4 md:right-4 bg-black/70 hover:bg-black/90 backdrop-blur-sm text-white rounded-full p-2 md:p-2.5 transition-all hover:scale-110 shadow-lg z-10"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
             </div>
 
             {/* Content - Scrollable */}
@@ -385,45 +428,6 @@ export default function Adventures() {
               </div>
               )}
 
-              {/* Gallery */}
-              {selectedAdventure.images && selectedAdventure.images.length > 0 && (
-                <div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold mb-4 md:mb-5 flex items-center gap-2" style={{ fontFamily: "var(--font-playfair)" }}>
-                    <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    {t("adventures.gallery")}
-                  </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-                    {selectedAdventure.images.map((src, i) => (
-                      <div
-                        key={i}
-                        className="group relative aspect-video overflow-hidden rounded-xl cursor-pointer liquid-glass-hover"
-                        onClick={() =>
-                          setSelectedAdventure({
-                            ...selectedAdventure,
-                            videoUrl: undefined,
-                            thumbnail: src,
-                          })
-                        }
-                      >
-                        <Image
-                          src={src}
-                          alt={`Gallery ${i + 1}`}
-                          fill
-                          sizes="(max-width: 768px) 50vw, 33vw"
-                          className="rounded-xl object-cover transition-transform duration-300 group-hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                          <svg className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                          </svg>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
