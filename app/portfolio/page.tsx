@@ -385,6 +385,8 @@ export default function Portfolio() {
             <div className={`relative flex-shrink-0 min-w-0 ${
               selectedProject.muxVideos && selectedProject.muxVideos.length > 0
                 ? 'h-[45vh] md:aspect-auto md:h-[85vh] md:max-h-[85vh] md:flex-1' // Reduced height on mobile, full height on desktop
+                : selectedProject.images && selectedProject.images.length > 0
+                ? 'h-[60vh] md:aspect-auto md:h-[85vh] md:max-h-[85vh] md:flex-1' // Taller height for image projects on mobile
                 : 'aspect-video md:aspect-auto md:h-[85vh] md:max-h-[85vh] md:flex-1'
             }`}>
               {selectedProject.muxVideos && selectedProject.muxVideos.length > 0 ? (
