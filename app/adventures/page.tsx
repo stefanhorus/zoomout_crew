@@ -155,11 +155,11 @@ export default function Adventures() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         {/* Title */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 md:mb-12">
           <h1
-            className="text-5xl md:text-6xl font-bold mb-4"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2"
             style={{ fontFamily: "var(--font-playfair)" }}
           >
             <Typewriter
@@ -172,7 +172,7 @@ export default function Adventures() {
               delaySpeed={999999}
             />
           </h1>
-          <p className="text-gray-300">
+          <p className="text-gray-300 text-sm sm:text-base px-2">
             {t("adventures.subtitle")}
           </p>
         </div>
@@ -289,25 +289,25 @@ export default function Adventures() {
       {/* Modal */}
       {selectedAdventure && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 md:p-6 overflow-y-auto animate-fade-in"
+          className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/95 backdrop-blur-sm p-0 md:p-6 overflow-y-auto animate-fade-in"
           onClick={() => setSelectedAdventure(null)}
         >
           <div
-            className="max-w-5xl w-full liquid-glass-strong rounded-2xl overflow-hidden my-4 max-h-[90vh] flex flex-col"
+            className="max-w-5xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-hidden my-0 md:my-4 max-h-screen md:max-h-[90vh] flex flex-col min-h-screen md:min-h-0"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Media: Video ou image */}
-            <div className="relative w-full flex-shrink-0 bg-black overflow-hidden flex items-center justify-center">
+            <div className="relative w-full flex-shrink-0 bg-black overflow-hidden flex items-center justify-center max-h-[40vh] md:max-h-[60vh]">
               {selectedAdventure.videoUrl ? (
                 <video
                   src={selectedAdventure.videoUrl}
                   controls
                   autoPlay
                   preload="metadata"
-                  className="w-full h-auto max-h-[60vh] object-contain"
+                  className="w-full h-auto max-h-[40vh] md:max-h-[60vh] object-contain"
                 />
               ) : (
-                <div className="relative w-full h-[60vh]">
+                <div className="relative w-full h-[40vh] md:h-[60vh]">
                   <Image
                   src={selectedAdventure.thumbnail}
                   alt={selectedAdventure.title}
@@ -330,49 +330,49 @@ export default function Adventures() {
             </div>
 
             {/* Content - Scrollable */}
-            <div className="p-6 md:p-8 overflow-y-auto flex-1">
+            <div className="p-5 sm:p-6 md:p-8 overflow-y-auto flex-1">
               {/* Header with date and location */}
-              <div className="mb-6 pb-4 border-b border-white/10">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+              <div className="mb-5 md:mb-6 pb-3 md:pb-4 border-b border-white/10">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-3 mb-3 md:mb-4">
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 text-gray-300">
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-4 h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                       </svg>
-                      <span className="text-sm md:text-base font-medium">{formatDate(selectedAdventure.date)}</span>
+                      <span className="text-xs sm:text-sm md:text-base font-medium">{formatDate(selectedAdventure.date)}</span>
                     </div>
                     <div className="flex items-center gap-2 text-gray-300">
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-4 h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                     </svg>
-                      <span className="text-sm md:text-base font-medium">{selectedAdventure.location}</span>
+                      <span className="text-xs sm:text-sm md:text-base font-medium">{selectedAdventure.location}</span>
                     </div>
                   </div>
                 </div>
 
-                <h2 className="text-3xl md:text-5xl font-bold mb-3 leading-tight" style={{ fontFamily: "var(--font-playfair)" }}>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-3 leading-tight" style={{ fontFamily: "var(--font-playfair)" }}>
                   {selectedAdventure.title}
                 </h2>
               </div>
               
-              <p className="text-gray-300 text-base md:text-lg mb-8 leading-relaxed">
+              <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-6 md:mb-8 leading-relaxed">
                 {selectedAdventure.description}
               </p>
 
               {/* Highlights */}
               {selectedAdventure.highlights && selectedAdventure.highlights.length > 0 && (
-              <div className="mb-8">
-                  <h3 className="text-xl md:text-2xl font-semibold mb-5 flex items-center gap-2" style={{ fontFamily: "var(--font-playfair)" }}>
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="mb-6 md:mb-8">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold mb-4 md:mb-5 flex items-center gap-2" style={{ fontFamily: "var(--font-playfair)" }}>
+                    <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                     </svg>
                   {t("adventures.highlights")}
                 </h3>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-2 md:gap-3">
                   {selectedAdventure.highlights.map((h, i) => (
                       <span 
                         key={i} 
-                        className="liquid-glass px-5 py-2.5 rounded-xl text-white text-sm md:text-base font-medium transition-all hover:scale-105 cursor-default"
+                        className="liquid-glass px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl text-white text-xs sm:text-sm md:text-base font-medium transition-all hover:scale-105 cursor-default"
                       >
                       {h}
                     </span>
@@ -384,13 +384,13 @@ export default function Adventures() {
               {/* Gallery */}
               {selectedAdventure.images && selectedAdventure.images.length > 0 && (
                 <div>
-                  <h3 className="text-xl md:text-2xl font-semibold mb-5 flex items-center gap-2" style={{ fontFamily: "var(--font-playfair)" }}>
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold mb-4 md:mb-5 flex items-center gap-2" style={{ fontFamily: "var(--font-playfair)" }}>
+                    <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     {t("adventures.gallery")}
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                     {selectedAdventure.images.map((src, i) => (
                       <div
                         key={i}

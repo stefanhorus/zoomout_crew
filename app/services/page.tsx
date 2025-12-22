@@ -100,10 +100,10 @@ export default function Services() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
+        <div className="text-center mb-8 md:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2" style={{ fontFamily: "var(--font-playfair)" }}>
             <Typewriter
               words={[t("services.title")]}
               loop={false}
@@ -114,7 +114,7 @@ export default function Services() {
               delaySpeed={999999}
             />
           </h1>
-          <p className="text-gray-300">
+          <p className="text-gray-300 text-sm sm:text-base px-2">
             {t("services.subtitle")}
           </p>
         </div>
@@ -205,15 +205,15 @@ export default function Services() {
       {/* Modal for Service Details */}
       {selectedService && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 md:p-6 overflow-y-auto animate-fade-in"
+          className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/95 backdrop-blur-sm p-0 md:p-6 overflow-y-auto animate-fade-in"
           onClick={() => setSelectedService(null)}
         >
           <div
-            className="max-w-4xl w-full liquid-glass-strong rounded-2xl overflow-hidden my-4"
+            className="max-w-4xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-hidden my-0 md:my-4 min-h-screen md:min-h-0"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Image */}
-            <div className="relative aspect-video">
+            <div className="relative aspect-video max-h-[40vh] md:max-h-none">
               <img
                 src={selectedService.image}
                 alt={selectedService.title}
@@ -223,7 +223,7 @@ export default function Services() {
               {/* Close Button */}
               <button
                 onClick={() => setSelectedService(null)}
-                className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+                className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -232,31 +232,31 @@ export default function Services() {
             </div>
 
             {/* Modal Content */}
-            <div className="p-6 md:p-8">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
+            <div className="p-5 sm:p-6 md:p-8 overflow-y-auto">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedService.title}
               </h2>
 
               {/* Price - Stylized */}
-              <div className="mb-6">
-                <div className="inline-block liquid-glass-button px-6 py-3 rounded-xl">
-                  <div className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: "var(--font-playfair)" }}>
+              <div className="mb-5 md:mb-6">
+                <div className="inline-block liquid-glass-button px-4 py-2 md:px-6 md:py-3 rounded-xl">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: "var(--font-playfair)" }}>
                   {selectedService.price}
                   </div>
                 </div>
               </div>
 
-              <p className="text-gray-300 text-lg mb-6 leading-relaxed">
+              <p className="text-gray-300 text-base sm:text-lg mb-5 md:mb-6 leading-relaxed">
                 {selectedService.description}
               </p>
 
               {/* Pricing Info for Post-Production */}
               {selectedService.id === 3 && (
-                <div className="mb-6 p-4 rounded-xl liquid-glass border border-white/10">
-                  <h4 className="text-lg font-semibold mb-3" style={{ fontFamily: "var(--font-playfair)" }}>
+                <div className="mb-5 md:mb-6 p-4 rounded-xl liquid-glass border border-white/10">
+                  <h4 className="text-base sm:text-lg font-semibold mb-2 md:mb-3" style={{ fontFamily: "var(--font-playfair)" }}>
                     {t("services.postProduction.pricing")}
                   </h4>
-                  <ul className="space-y-2 text-gray-300">
+                  <ul className="space-y-2 text-sm sm:text-base text-gray-300">
                     <li>• {t("services.postProduction.pricing1")} <span className="text-white font-semibold">50€</span></li>
                     <li>• {t("services.postProduction.pricing2")} <span className="text-white font-semibold">45€/video</span></li>
                     <li>• {t("services.postProduction.pricing3")} <span className="text-white font-semibold">40€/video</span></li>
@@ -265,13 +265,13 @@ export default function Services() {
               )}
 
               {/* Features */}
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
+              <div className="mb-6 md:mb-8 pb-4 md:pb-0">
+                <h3 className="text-lg sm:text-xl font-semibold mb-3 md:mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
                   {t("services.highlights")}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {selectedService.features.map((feature, index) => (
-                    <span key={index} className="liquid-glass px-4 py-2 rounded-lg text-white text-sm md:text-base">
+                    <span key={index} className="liquid-glass px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-white text-xs sm:text-sm md:text-base">
                       {feature}
                     </span>
                   ))}

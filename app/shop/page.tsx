@@ -193,10 +193,10 @@ export default function Shop() {
           className="object-cover"
         />
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
+        <div className="text-center mb-8 md:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2" style={{ fontFamily: "var(--font-playfair)" }}>
             <Typewriter
               words={[t("shop.title")]}
               loop={false}
@@ -207,7 +207,7 @@ export default function Shop() {
               delaySpeed={999999}
             />
           </h1>
-          <p className="text-gray-300">
+          <p className="text-gray-300 text-sm sm:text-base px-2">
             {t("shop.subtitle")}
           </p>
         </div>
@@ -393,14 +393,14 @@ export default function Shop() {
       {/* Modal pentru produs selectat */}
       {selectedProduct && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 md:p-6 overflow-y-auto animate-fade-in"
+          className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/95 backdrop-blur-sm p-0 md:p-6 overflow-y-auto animate-fade-in"
           onClick={() => setSelectedProduct(null)}
         >
           <div
-            className="max-w-2xl w-full liquid-glass-strong rounded-2xl overflow-hidden my-4"
+            className="max-w-2xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-hidden my-0 md:my-4 min-h-screen md:min-h-0"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative aspect-square">
+            <div className="relative aspect-square max-h-[50vh] md:max-h-none">
               <Image
                 src={selectedProduct.image}
                 alt={selectedProduct.name}
@@ -410,20 +410,20 @@ export default function Shop() {
               />
               <button
                 onClick={() => setSelectedProduct(null)}
-                className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+                className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            <div className="p-6">
-              <h2 className="text-3xl font-bold mb-2" style={{ fontFamily: "var(--font-playfair)" }}>
+            <div className="p-5 sm:p-6 overflow-y-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-2" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedProduct.name}
               </h2>
-              <p className="text-gray-300 mb-4">{selectedProduct.description}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-3xl font-bold text-white">
+              <p className="text-gray-300 text-sm sm:text-base mb-4">{selectedProduct.description}</p>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+                <span className="text-2xl sm:text-3xl font-bold text-white">
                   {formatPrice(selectedProduct.price)}
                 </span>
                 <button
@@ -432,7 +432,7 @@ export default function Shop() {
                     setSelectedProduct(null);
                   }}
                   disabled={!selectedProduct.inStock}
-                  className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                  className={`w-full sm:w-auto px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                     selectedProduct.inStock
                       ? "liquid-glass-button text-white"
                       : "bg-gray-700/50 text-gray-400 cursor-not-allowed opacity-50"

@@ -158,13 +158,10 @@ export default function Home() {
     };
   }, [isMobile, isTouching]);
 
-  // Previne scroll-ul pe mobile
+  // Permite scroll-ul vertical pe mobile, dar previne doar scroll-ul orizontal pentru branduri
   useEffect(() => {
-    if (isMobile) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    // Nu mai blocăm scroll-ul vertical pe mobil
+    // Scroll-ul orizontal pentru branduri este gestionat separat prin touch handlers
     return () => {
       document.body.style.overflow = '';
     };
@@ -405,7 +402,7 @@ export default function Home() {
           marginTop: viewportHeight < 700 ? '-2rem' : viewportHeight < 900 ? '-3rem' : '-4rem'
         }}
       >
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 px-2 drop-shadow-2xl text-white">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white">
           <Typewriter
             words={["Zoomout_crew"]}
             loop={false}
@@ -417,13 +414,13 @@ export default function Home() {
           />
         </h1>
 
-        <p className="text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 px-2 text-gray-100 drop-shadow-lg">
+        <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-5 md:mb-6 lg:mb-8 px-2 text-gray-100 drop-shadow-lg leading-tight md:leading-normal">
           {t("home.tagline")}
         </p>
 
         <a
           href="/portfolio"
-          className="inline-block liquid-glass-button text-white px-6 py-3 md:px-8 md:py-4 rounded-xl font-semibold text-sm md:text-base"
+          className="inline-block liquid-glass-button text-white px-5 py-2.5 md:px-8 md:py-4 rounded-xl font-semibold text-sm md:text-base"
           style={{ fontFamily: "var(--font-roboto)" }}
         >
           {t("home.cta")}
@@ -437,7 +434,7 @@ export default function Home() {
           paddingBottom: viewportHeight < 700 ? '1rem' : viewportHeight < 900 ? '1.5rem' : '2rem'
         }}
       >
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8 md:mb-12 px-2 drop-shadow-lg text-white" style={{ fontFamily: "var(--font-playfair)" }}>
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-6 md:mb-8 lg:mb-12 px-2 drop-shadow-lg text-white" style={{ fontFamily: "var(--font-playfair)" }}>
           {t("home.workedWith")}
         </h2>
         <div className={`relative w-full ${isMobile ? "overflow-x-auto" : "overflow-hidden"}`}>

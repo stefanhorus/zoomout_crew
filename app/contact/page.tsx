@@ -58,8 +58,8 @@ export default function Contact() {
           className="object-cover brightness-75"
         />
       </div>
-      <div className="relative z-10 max-w-2xl w-full text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
+      <div className="relative z-10 max-w-2xl w-full text-center mb-8 md:mb-12 px-4">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
           <Typewriter
             words={[t("contact.title")]}
             loop={false}
@@ -70,14 +70,14 @@ export default function Contact() {
             delaySpeed={999999}
           />
         </h1>
-        <p className="text-gray-300">
+        <p className="text-gray-300 text-sm sm:text-base">
           {t("contact.subtitle")}
         </p>
       </div>
 
       <form
         onSubmit={handleSubmit}
-        className="relative z-10 w-full max-w-lg liquid-glass-strong p-8 rounded-2xl liquid-glass-hover"
+        className="relative z-10 w-full max-w-lg liquid-glass-strong p-5 sm:p-6 md:p-8 rounded-2xl liquid-glass-hover mx-4"
       >
         <div className="mb-6">
           <label htmlFor="name" className="block text-left text-gray-300 mb-2">{t("contact.name")}</label>
