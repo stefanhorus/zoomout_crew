@@ -364,7 +364,7 @@ export default function Portfolio() {
           }}
         >
           <div
-            className="max-w-6xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-y-auto md:overflow-hidden my-0 md:my-4 flex flex-col md:flex-row relative min-h-screen md:min-h-0"
+            className="max-w-6xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-y-auto md:overflow-hidden my-0 md:my-4 flex flex-col md:flex-row relative min-h-screen md:min-h-0 md:max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button - Top Right Corner of Modal */}
@@ -384,8 +384,8 @@ export default function Portfolio() {
             {/* Video Section - Left Side */}
             <div className={`relative flex-1 shrink-0 ${
               selectedProject.muxVideos && selectedProject.muxVideos.length > 0
-                ? 'aspect-[9/16] md:aspect-auto md:h-[80vh] h-[50vh] md:h-auto' // Vertical aspect ratio pentru video-urile Big Belly
-                : 'aspect-video md:aspect-auto md:h-[80vh] h-[40vh] md:h-auto'
+                ? 'aspect-[9/16] md:aspect-auto md:h-[85vh] md:max-h-[85vh] h-[50vh]' // Vertical aspect ratio pentru video-urile Big Belly
+                : 'aspect-video md:aspect-auto md:h-[85vh] md:max-h-[85vh] h-[40vh]'
             }`}>
               {selectedProject.muxVideos && selectedProject.muxVideos.length > 0 ? (
                 <>
@@ -556,16 +556,16 @@ export default function Portfolio() {
             </div>
             
             {/* Description Section - Right Side */}
-            <div className="flex-1 p-6 md:p-8 flex flex-col justify-start md:justify-center bg-black/20 md:bg-transparent overflow-y-auto">
-              <h2 className="text-xl md:text-3xl font-bold mb-3 md:mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
+            <div className="flex-1 p-6 md:p-8 lg:p-10 flex flex-col justify-start md:justify-center bg-black/20 md:bg-transparent overflow-y-auto md:max-h-[85vh]">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 leading-tight" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedProject.title}
                 {selectedProject.muxVideos && selectedProject.muxVideos.length > 1 && selectedProject.muxVideos[selectedVideoIndex].title && (
-                  <span className="text-sm md:text-lg text-gray-400 ml-2 block md:inline mt-1 md:mt-0">
+                  <span className="text-sm md:text-base lg:text-lg text-gray-400 ml-2 block md:inline mt-1 md:mt-0">
                     - {selectedProject.muxVideos[selectedVideoIndex].title}
                   </span>
                 )}
               </h2>
-              <p className="text-gray-300 text-sm md:text-base leading-relaxed pb-6 md:pb-0">{selectedProject.description}</p>
+              <p className="text-gray-300 text-sm md:text-base lg:text-lg leading-relaxed pb-6 md:pb-0">{selectedProject.description}</p>
             </div>
           </div>
         </div>
