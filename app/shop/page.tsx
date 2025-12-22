@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
@@ -81,7 +81,53 @@ export default function Shop() {
   const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory>("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [newsletterStatus, setNewsletterStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const { addToCart } = useCart();
+
+  // Verifică dacă popup-ul a fost deja afișat
+  useEffect(() => {
+    const hasSeenPopup = localStorage.getItem("newsletter_popup_seen");
+    if (!hasSeenPopup) {
+      // Afișează popup după 1 secundă
+      const timer = setTimeout(() => {
+        setShowNewsletterPopup(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleNewsletterClose = () => {
+    setShowNewsletterPopup(false);
+    localStorage.setItem("newsletter_popup_seen", "true");
+  };
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setNewsletterStatus("sending");
+
+    try {
+      // Aici poți adăuga logica pentru trimiterea emailului către serviciul tău de newsletter
+      // De exemplu, către Resend sau alt serviciu
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: newsletterEmail }),
+      });
+
+      if (response.ok) {
+        setNewsletterStatus("success");
+        setTimeout(() => {
+          handleNewsletterClose();
+        }, 2000);
+      } else {
+        setNewsletterStatus("error");
+      }
+    } catch {
+      setNewsletterStatus("error");
+    }
+  };
 
   const categories = [
     { value: "all", label: "All Products", labelKey: "shop.allProducts" },
@@ -221,6 +267,97 @@ export default function Shop() {
           </div>
         )}
       </div>
+
+      {/* Newsletter Popup */}
+      {showNewsletterPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-6 animate-fade-in">
+          <div
+            className="max-w-md w-full liquid-glass-strong rounded-2xl overflow-hidden relative mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={handleNewsletterClose}
+              className="absolute top-3 right-3 md:top-4 md:right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10"
+              aria-label="Close newsletter popup"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Content */}
+            <div className="p-6 md:p-8 text-center">
+              <div className="mb-5 md:mb-6">
+                <svg
+                  className="w-12 h-12 md:w-16 md:h-16 mx-auto text-white mb-3 md:mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+                <h2
+                  className="text-2xl md:text-3xl font-bold mb-2 md:mb-3 text-white"
+                  style={{ fontFamily: "var(--font-playfair)" }}
+                >
+                  Subscribe to Our Newsletter
+                </h2>
+                <p className="text-gray-300 text-xs md:text-sm px-2">
+                  Stay updated with our latest products, exclusive offers, and aerial photography tips!
+                </p>
+              </div>
+
+              {newsletterStatus === "success" ? (
+                <div className="py-6 md:py-8">
+                  <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 bg-green-500/20 rounded-full flex items-center justify-center">
+                    <svg className="w-7 h-7 md:w-8 md:h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <p className="text-green-400 font-semibold text-sm md:text-base">Thank you for subscribing!</p>
+                </div>
+              ) : (
+                <form onSubmit={handleNewsletterSubmit} className="space-y-3 md:space-y-4">
+                  <div>
+                    <input
+                      type="email"
+                      value={newsletterEmail}
+                      onChange={(e) => setNewsletterEmail(e.target.value)}
+                      placeholder="Enter your email address"
+                      required
+                      className="w-full px-4 py-2.5 md:py-3 rounded-xl liquid-glass-input text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/20 text-sm md:text-base"
+                      disabled={newsletterStatus === "sending"}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={newsletterStatus === "sending" || !newsletterEmail}
+                    className="w-full liquid-glass-button text-white py-2.5 md:py-3 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
+                  >
+                    {newsletterStatus === "sending" ? "Subscribing..." : "Subscribe"}
+                  </button>
+                  {newsletterStatus === "error" && (
+                    <p className="text-red-400 text-xs md:text-sm">Something went wrong. Please try again.</p>
+                  )}
+                </form>
+              )}
+
+              <button
+                onClick={handleNewsletterClose}
+                className="mt-3 md:mt-4 text-gray-400 hover:text-white text-xs md:text-sm transition-colors"
+              >
+                Maybe later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal pentru produs selectat */}
       {selectedProduct && (
