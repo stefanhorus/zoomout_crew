@@ -24,13 +24,15 @@ export default function Contact() {
     setStatus("sending");
 
     try {
-      const res = await fetch("https://formspree.io/f/manlrkjr", {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      if (res.ok) {
+      const data = await res.json();
+
+      if (res.ok && data.success) {
         setStatus("success");
         setFormData({ name: "", email: "", message: "" });
       } else {
