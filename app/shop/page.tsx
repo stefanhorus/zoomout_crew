@@ -108,23 +108,25 @@ export default function Shop() {
     setNewsletterStatus("sending");
 
     try {
-      // Aici poți adăuga logica pentru trimiterea emailului către serviciul tău de newsletter
-      // De exemplu, către Resend sau alt serviciu
       const response = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: newsletterEmail }),
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (response.ok && data.success) {
         setNewsletterStatus("success");
         setTimeout(() => {
           handleNewsletterClose();
         }, 2000);
       } else {
+        console.error("Newsletter subscription error:", data.error);
         setNewsletterStatus("error");
       }
-    } catch {
+    } catch (error: any) {
+      console.error("Newsletter subscription error:", error);
       setNewsletterStatus("error");
     }
   };

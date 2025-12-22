@@ -25,22 +25,35 @@ export async function POST(req: Request) {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const fromEmail = process.env.EMAIL_FROM || "Zoomout Crew <contact@zoomoutcrew.com>";
     const adminEmail = process.env.CONTACT_EMAIL_TO || "curcaan@gmail.com";
+    const audienceId = process.env.RESEND_AUDIENCE_ID;
 
     // Salvează contactul în Resend Contacts
     try {
-      await resend.contacts.create({
+      const contactData: any = {
         email: email,
         unsubscribed: false,
-      });
+      };
+      
+      // Adaugă audienceId doar dacă este configurat
+      if (audienceId) {
+        contactData.audienceId = audienceId;
+      }
+      
+      await resend.contacts.create(contactData);
       console.log(`✅ Contact saved to Resend: ${email}`);
     } catch (contactError: any) {
-      // Dacă contactul există deja, continuă (nu e o eroare critică)
-      if (contactError.message?.includes("already exists") || contactError.statusCode === 422) {
-        console.log(`ℹ️ Contact already exists in Resend: ${email}`);
+      // Dacă contactul există deja sau dacă audienceId lipsește, continuă
+      if (
+        contactError.message?.includes("already exists") ||
+        contactError.statusCode === 422 ||
+        contactError.message?.includes("audience") ||
+        contactError.message?.includes("Audience")
+      ) {
+        console.log(`ℹ️ Contact issue (may need audienceId): ${email}`, contactError.message);
       } else {
-        console.error("Error saving contact to Resend:", contactError);
-        // Continuăm chiar dacă salvarea contactului eșuează
+        console.error("Error saving contact to Resend (non-critical):", contactError);
       }
+      // Continuăm chiar dacă salvarea contactului eșuează - emailul de confirmare este mai important
     }
 
     // Trimite email de confirmare către utilizator
