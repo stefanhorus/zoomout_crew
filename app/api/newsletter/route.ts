@@ -4,8 +4,10 @@ import { Resend } from "resend";
 export async function POST(req: Request) {
   try {
     const { email } = await req.json();
+    console.log("📧 Newsletter subscription request for:", email);
 
     if (!email || !email.includes("@")) {
+      console.error("❌ Invalid email:", email);
       return NextResponse.json(
         { error: "Valid email address is required" },
         { status: 400 }
@@ -13,7 +15,7 @@ export async function POST(req: Request) {
     }
 
     if (!process.env.RESEND_API_KEY) {
-      console.error("RESEND_API_KEY is not configured");
+      console.error("❌ RESEND_API_KEY is not configured");
       return NextResponse.json(
         {
           error: "Email service is not configured. Please contact the administrator.",
@@ -57,6 +59,7 @@ export async function POST(req: Request) {
     }
 
     // Trimite email de confirmare către utilizator
+    console.log("📤 Sending confirmation email to:", email);
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to: email,
@@ -141,12 +144,19 @@ Email: contact@zoomoutcrew.com
     });
 
     if (error) {
-      console.error("Resend error:", error);
+      console.error("❌ Resend email error:", error);
+      console.error("Error details:", JSON.stringify(error, null, 2));
       return NextResponse.json(
-        { error: error.message || "Failed to send email" },
+        { 
+          success: false,
+          error: error.message || "Failed to send email",
+          details: error 
+        },
         { status: 500 }
       );
     }
+    
+    console.log("✅ Confirmation email sent successfully:", data?.id);
 
     // Trimite notificare către admin (opțional)
     try {
@@ -174,9 +184,14 @@ Email: contact@zoomoutcrew.com
       id: data?.id,
     });
   } catch (error: any) {
-    console.error("Error subscribing to newsletter:", error);
+    console.error("❌ Unexpected error subscribing to newsletter:", error);
+    console.error("Error stack:", error.stack);
     return NextResponse.json(
-      { error: error.message || "Failed to subscribe" },
+      { 
+        success: false,
+        error: error.message || "Failed to subscribe",
+        details: error.toString()
+      },
       { status: 500 }
     );
   }

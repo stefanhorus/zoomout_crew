@@ -115,6 +115,7 @@ export default function Shop() {
       });
 
       const data = await response.json();
+      console.log("Newsletter API response:", data);
 
       if (response.ok && data.success) {
         setNewsletterStatus("success");
@@ -122,11 +123,12 @@ export default function Shop() {
           handleNewsletterClose();
         }, 2000);
       } else {
-        console.error("Newsletter subscription error:", data.error);
+        console.error("❌ Newsletter subscription error:", data.error || data);
+        console.error("Response status:", response.status);
         setNewsletterStatus("error");
       }
     } catch (error: any) {
-      console.error("Newsletter subscription error:", error);
+      console.error("❌ Newsletter subscription network error:", error);
       setNewsletterStatus("error");
     }
   };
