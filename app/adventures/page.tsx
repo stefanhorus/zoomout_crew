@@ -289,25 +289,29 @@ export default function Adventures() {
       {/* Modal */}
       {selectedAdventure && (
         <div
-          className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/95 backdrop-blur-sm p-0 md:p-6 overflow-y-auto animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 md:p-6 overflow-y-auto animate-fade-in"
           onClick={() => setSelectedAdventure(null)}
         >
           <div
-            className="max-w-5xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-hidden my-0 md:my-4 max-h-screen md:max-h-[90vh] flex flex-col min-h-screen md:min-h-0"
+            className="max-w-5xl w-full liquid-glass-strong rounded-2xl overflow-hidden my-auto max-h-[90vh] md:max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Media: Video ou image */}
-            <div className="relative w-full flex-shrink-0 bg-black overflow-hidden flex items-center justify-center max-h-[40vh] md:max-h-[60vh]">
+            <div className={`relative w-full flex-shrink-0 bg-black overflow-hidden flex items-center justify-center ${
+              selectedAdventure.images && selectedAdventure.images.length > 0
+                ? 'h-[60vh] md:h-[60vh]' // Taller for adventures with images
+                : 'h-[45vh] md:h-[60vh]' // Standard height for videos
+            }`}>
               {selectedAdventure.videoUrl ? (
                 <video
                   src={selectedAdventure.videoUrl}
                   controls
                   autoPlay
                   preload="metadata"
-                  className="w-full h-auto max-h-[40vh] md:max-h-[60vh] object-contain"
+                  className="w-full h-full object-contain"
                 />
               ) : (
-                <div className="relative w-full h-[40vh] md:h-[60vh]">
+                <div className="relative w-full h-full">
                   <Image
                   src={selectedAdventure.thumbnail}
                   alt={selectedAdventure.title}
@@ -321,7 +325,7 @@ export default function Adventures() {
               {/* Close Button */}
               <button
                 onClick={() => setSelectedAdventure(null)}
-                className="absolute top-4 right-4 bg-black/70 hover:bg-black/90 backdrop-blur-sm text-white rounded-full p-2.5 transition-all hover:scale-110 shadow-lg z-10"
+                className="absolute top-3 right-3 md:top-4 md:right-4 bg-black/70 hover:bg-black/90 backdrop-blur-sm text-white rounded-full p-2 md:p-2.5 transition-all hover:scale-110 shadow-lg z-10"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -330,7 +334,7 @@ export default function Adventures() {
             </div>
 
             {/* Content - Scrollable */}
-            <div className="p-5 sm:p-6 md:p-8 overflow-y-auto flex-1">
+            <div className="p-6 md:p-8 overflow-y-auto flex-1 min-h-0">
               {/* Header with date and location */}
               <div className="mb-5 md:mb-6 pb-3 md:pb-4 border-b border-white/10">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-3 mb-3 md:mb-4">
@@ -355,7 +359,7 @@ export default function Adventures() {
                 </h2>
               </div>
               
-              <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-6 md:mb-8 leading-relaxed">
+              <p className="text-gray-200 text-base md:text-lg mb-6 md:mb-8 leading-relaxed">
                 {selectedAdventure.description}
               </p>
 
