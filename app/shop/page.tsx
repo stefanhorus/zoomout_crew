@@ -193,10 +193,10 @@ export default function Shop() {
           className="object-cover"
         />
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="text-center mb-8 md:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2" style={{ fontFamily: "var(--font-playfair)" }}>
+        <div className="text-center mb-6 sm:mb-8 md:mb-12 pt-4 sm:pt-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-2 sm:mb-3 md:mb-4 px-2" style={{ fontFamily: "var(--font-playfair)" }}>
             <Typewriter
               words={[t("shop.title")]}
               loop={false}
@@ -207,18 +207,18 @@ export default function Shop() {
               delaySpeed={999999}
             />
           </h1>
-          <p className="text-gray-300 text-sm sm:text-base px-2">
+          <p className="text-gray-300 text-xs sm:text-sm md:text-base lg:text-lg px-2 sm:px-4 max-w-2xl mx-auto">
             {t("shop.subtitle")}
           </p>
         </div>
 
         {/* Filter Buttons */}
-        <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 md:mb-12 px-2">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mb-6 sm:mb-8 md:mb-12 px-2">
           {categories.map((category) => (
             <button
               key={category.value}
               onClick={() => setSelectedCategory(category.value as ProductCategory)}
-              className={`px-4 py-1.5 md:px-6 md:py-2 rounded-xl font-semibold transition-all duration-300 text-sm md:text-base ${
+              className={`px-4 py-2 sm:px-5 sm:py-2 md:px-6 md:py-2.5 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-sm md:text-base ${
                 selectedCategory === category.value
                   ? "liquid-glass-button text-white scale-105"
                   : "liquid-glass liquid-glass-hover text-white"
@@ -231,51 +231,51 @@ export default function Shop() {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 mb-8 sm:mb-12 px-2 sm:px-0">
           {filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="group relative overflow-hidden rounded-2xl liquid-glass liquid-glass-hover"
+              className="group relative overflow-visible rounded-2xl liquid-glass liquid-glass-hover transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20"
             >
               {/* Product Image */}
-              <div className="aspect-square relative overflow-hidden">
+              <div className="aspect-square relative overflow-hidden rounded-t-2xl">
                 <Image
                   src={product.image}
                   alt={product.name}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/10 group-hover:from-black/40 group-hover:via-black/20 group-hover:to-black/5 transition-all duration-300" />
                 
                 {/* Stock Badge */}
                 {product.inStock ? (
-                  <div className="absolute top-4 left-4 liquid-glass-button bg-green-500/30 text-white px-3 py-1 rounded-full text-xs font-semibold border-green-500/50">
+                  <div className="absolute top-3 left-3 sm:top-4 sm:left-4 liquid-glass-button bg-green-500/30 text-white px-2.5 py-1 sm:px-3 sm:py-1 rounded-full text-xs font-semibold border-green-500/50">
                     {t("shop.inStock")}
                   </div>
                 ) : (
-                  <div className="absolute top-4 left-4 liquid-glass-button bg-red-500/30 text-white px-3 py-1 rounded-full text-xs font-semibold border-red-500/50">
+                  <div className="absolute top-3 left-3 sm:top-4 sm:left-4 liquid-glass-button bg-red-500/30 text-white px-2.5 py-1 sm:px-3 sm:py-1 rounded-full text-xs font-semibold border-red-500/50">
                     {t("shop.outOfStock")}
                   </div>
                 )}
               </div>
 
               {/* Product Info */}
-              <div className="p-5 relative">
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-white transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
+              <div className="p-4 sm:p-5 md:p-6 relative">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-semibold mb-1.5 sm:mb-2 group-hover:text-white transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
                   {product.name}
                 </h3>
-                <p className="text-gray-400 text-sm mb-3 group-hover:text-gray-300 transition-colors">{product.description}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-white">
+                <p className="text-gray-400 text-xs sm:text-sm md:text-base mb-3 sm:mb-4 group-hover:text-gray-300 transition-colors line-clamp-2">{product.description}</p>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+                  <span className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
                     {formatPrice(product.price)}
                   </span>
                   <button
                     onClick={() => handleAddToCart(product)}
                     disabled={!product.inStock}
-                    className={`px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
+                    className={`w-full sm:w-auto px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-sm md:text-base ${
                       product.inStock
-                        ? "liquid-glass-button text-white"
+                        ? "liquid-glass-button text-white hover:scale-105"
                         : "bg-gray-700/50 text-gray-400 cursor-not-allowed opacity-50"
                     }`}
                     style={{ fontFamily: "var(--font-roboto)" }}
@@ -290,8 +290,8 @@ export default function Shop() {
 
         {/* Empty State */}
         {filteredProducts.length === 0 && (
-          <div className="text-center py-16">
-            <p className="text-xl text-gray-400">{t("shop.noProducts")}</p>
+          <div className="text-center py-12 sm:py-16 md:py-20">
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-400">{t("shop.noProducts")}</p>
           </div>
         )}
       </div>
@@ -393,37 +393,38 @@ export default function Shop() {
       {/* Modal pentru produs selectat */}
       {selectedProduct && (
         <div
-          className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/95 backdrop-blur-sm p-0 md:p-6 overflow-y-auto animate-fade-in"
+          className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/95 backdrop-blur-sm p-0 md:p-4 lg:p-6 overflow-y-auto animate-fade-in"
           onClick={() => setSelectedProduct(null)}
         >
           <div
-            className="max-w-2xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-hidden my-0 md:my-4 min-h-screen md:min-h-0"
+            className="max-w-2xl lg:max-w-3xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-hidden my-0 md:my-4 min-h-screen md:min-h-0 max-h-screen md:max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative aspect-square max-h-[50vh] md:max-h-none">
+            <div className="relative aspect-square max-h-[40vh] sm:max-h-[50vh] md:max-h-none md:aspect-video flex-shrink-0">
               <Image
                 src={selectedProduct.image}
                 alt={selectedProduct.name}
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 50vw"
                 className="object-cover"
               />
               <button
                 onClick={() => setSelectedProduct(null)}
-                className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10"
+                aria-label="Close modal"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            <div className="p-5 sm:p-6 overflow-y-auto">
-              <h2 className="text-2xl sm:text-3xl font-bold mb-2" style={{ fontFamily: "var(--font-playfair)" }}>
+            <div className="p-4 sm:p-5 md:p-6 lg:p-8 overflow-y-auto flex-1">
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedProduct.name}
               </h2>
-              <p className="text-gray-300 text-sm sm:text-base mb-4">{selectedProduct.description}</p>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
-                <span className="text-2xl sm:text-3xl font-bold text-white">
+              <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-4 sm:mb-6 leading-relaxed">{selectedProduct.description}</p>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
                   {formatPrice(selectedProduct.price)}
                 </span>
                 <button
@@ -432,14 +433,14 @@ export default function Shop() {
                     setSelectedProduct(null);
                   }}
                   disabled={!selectedProduct.inStock}
-                  className={`w-full sm:w-auto px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                  className={`w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 md:py-3.5 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base md:text-lg ${
                     selectedProduct.inStock
-                      ? "liquid-glass-button text-white"
+                      ? "liquid-glass-button text-white hover:scale-105"
                       : "bg-gray-700/50 text-gray-400 cursor-not-allowed opacity-50"
                   }`}
                   style={{ fontFamily: "var(--font-roboto)" }}
                 >
-                  Add to Cart
+                  {t("shop.addToCart")}
                 </button>
               </div>
             </div>

@@ -9,6 +9,8 @@ export default function About() {
   const { t, language } = useLanguage();
   const [showOriginalReview1, setShowOriginalReview1] = useState(false);
   const [showOriginalReview4, setShowOriginalReview4] = useState(false);
+  const [showOriginalReview5, setShowOriginalReview5] = useState(false);
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
 
   // Reset review 1 to translated when language changes to Romanian
   useEffect(() => {
@@ -21,6 +23,13 @@ export default function About() {
   useEffect(() => {
     if (language === "en") {
       setShowOriginalReview4(false);
+    }
+  }, [language]);
+
+  // Reset review 5 to translated when language changes to Romanian
+  useEffect(() => {
+    if (language === "ro") {
+      setShowOriginalReview5(false);
     }
   }, [language]);
   
@@ -209,44 +218,23 @@ export default function About() {
           </section>
 
           {/* Reviews Section */}
-          <section className="liquid-glass-strong rounded-2xl p-5 sm:p-6 md:p-8 lg:p-12 liquid-glass-hover animate-fade-in-up relative group overflow-hidden" style={{ animationDelay: '0.5s' }}>
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-transparent to-cyan-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl" />
+          <section className="liquid-glass-strong rounded-3xl p-5 sm:p-6 md:p-8 lg:p-12 liquid-glass-hover animate-fade-in-up relative group overflow-visible" style={{ animationDelay: '0.5s', backgroundColor: 'rgba(0, 0, 0, 0.4)' }}>
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-transparent to-cyan-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-3xl" />
             <div className="relative z-10">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 md:mb-12 text-center animate-text-shimmer text-white drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
                 {t("about.reviews.title")}
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 lg:gap-8">
+              
+              {/* Mobile: Grid Layout */}
+              <div className="grid grid-cols-1 md:hidden gap-4 p-2">
                 {/* Review 1 */}
-                <div className="liquid-glass rounded-2xl p-5 sm:p-6 md:p-8 liquid-glass-hover relative group/review overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20">
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/10 via-blue-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-2xl" />
+                <div className="liquid-glass rounded-3xl p-4 sm:p-5 md:p-6 lg:p-8 liquid-glass-hover relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/10 via-blue-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-3xl" />
                   <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
                   <div className="relative z-10">
-                    {/* Quote Icon */}
-                    <div className="mb-4 opacity-20 group-hover/review:opacity-40 transition-opacity">
-                      <svg className="w-12 h-12 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.996 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.984zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                      </svg>
-                    </div>
-                    <div className="flex items-center gap-1 mb-5">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 text-yellow-400 fill-current drop-shadow-lg transform transition-transform group-hover/review:scale-110" style={{ transitionDelay: `${i * 50}ms` }} viewBox="0 0 20 20">
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className="text-gray-100 mb-4 italic text-base leading-relaxed drop-shadow-md group-hover/review:text-white transition-colors" style={{ fontFamily: "var(--font-roboto)" }}>
-                      {language === "ro" ? (showOriginalReview1 ? t("about.reviews.review1.textOriginal") : t("about.reviews.review1.text")) : t("about.reviews.review1.textOriginal")}
-                    </p>
-                    {language === "ro" && (
-                      <button
-                        onClick={() => setShowOriginalReview1(!showOriginalReview1)}
-                        className="mb-4 text-xs text-gray-400 hover:text-cyan-300 transition-colors underline"
-                      >
-                        {showOriginalReview1 ? t("about.reviews.showTranslated") : t("about.reviews.showOriginalEnglish")}
-                      </button>
-                    )}
-                    <div className="flex items-center gap-4 pt-4 border-t border-white/10">
-                      <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg shadow-cyan-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-cyan-400/30">
+                    {/* Profile Picture and Name - Top */}
+                    <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-5 pb-3 md:pb-4 border-b border-white/10">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden shadow-lg shadow-cyan-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-cyan-400/30">
                         <Image
                           src="/assets/reviews/review1.png"
                           alt={t("about.reviews.review1.name")}
@@ -256,47 +244,208 @@ export default function About() {
                         />
                       </div>
                       <div>
-                        <p className="text-white font-semibold text-base group-hover/review:text-cyan-100 transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
+                        <p className="text-white font-semibold text-sm md:text-base group-hover/review:text-cyan-100 transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
                           {t("about.reviews.review1.name")}
                         </p>
-                        <p className="text-gray-400 text-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                        <p className="text-gray-400 text-xs md:text-sm" style={{ fontFamily: "var(--font-roboto)" }}>
                           {t("about.reviews.review1.role")}
                         </p>
                       </div>
                     </div>
-                  </div>
-                </div>
-
-                {/* Review 4 - Florin Marius */}
-                <div className="liquid-glass rounded-2xl p-6 md:p-8 liquid-glass-hover relative group/review overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-green-500/20">
-                  <div className="absolute inset-0 bg-gradient-to-br from-green-400/10 via-emerald-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-2xl" />
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
-                  <div className="relative z-10">
                     {/* Quote Icon */}
-                    <div className="mb-4 opacity-20 group-hover/review:opacity-40 transition-opacity">
-                      <svg className="w-12 h-12 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+                    <div className="mb-2 md:mb-4 opacity-20 group-hover/review:opacity-40 transition-opacity">
+                      <svg className="w-8 h-8 md:w-12 md:h-12 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.996 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.984zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                       </svg>
                     </div>
-                    <div className="flex items-center gap-1 mb-5">
+                    <div className="flex items-center gap-1 mb-3 md:mb-5">
                       {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 text-yellow-400 fill-current drop-shadow-lg transform transition-transform group-hover/review:scale-110" style={{ transitionDelay: `${i * 50}ms` }} viewBox="0 0 20 20">
+                        <svg key={i} className="w-4 h-4 md:w-5 md:h-5 text-yellow-400 fill-current drop-shadow-lg transform transition-transform group-hover/review:scale-110" style={{ transitionDelay: `${i * 50}ms` }} viewBox="0 0 20 20">
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
                       ))}
                     </div>
-                    <p className="text-gray-100 mb-4 italic text-base leading-relaxed drop-shadow-md group-hover/review:text-white transition-colors" style={{ fontFamily: "var(--font-roboto)" }}>
+                    <p className="text-gray-100 mb-3 md:mb-4 italic text-sm sm:text-base leading-relaxed drop-shadow-md group-hover/review:text-white transition-colors" style={{ fontFamily: "var(--font-roboto)" }}>
+                      {language === "ro" ? (showOriginalReview1 ? t("about.reviews.review1.textOriginal") : t("about.reviews.review1.text")) : t("about.reviews.review1.textOriginal")}
+                    </p>
+                    {language === "ro" && (
+                      <button
+                        onClick={() => setShowOriginalReview1(!showOriginalReview1)}
+                        className="mb-3 md:mb-4 text-xs text-gray-400 hover:text-cyan-300 transition-colors underline"
+                      >
+                        {showOriginalReview1 ? t("about.reviews.showTranslated") : t("about.reviews.showOriginalEnglish")}
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Review 4 - Florin Marius */}
+                <div className="liquid-glass rounded-3xl p-4 sm:p-5 md:p-6 lg:p-8 liquid-glass-hover relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/20" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-400/10 via-emerald-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-3xl" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
+                  <div className="relative z-10">
+                    {/* Profile Picture and Name - Top */}
+                    <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-5 pb-3 md:pb-4 border-b border-white/10">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden shadow-lg shadow-green-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-green-400/30">
+                        <Image
+                          src="/assets/reviews/review2.png"
+                          alt={t("about.reviews.review4.name")}
+                          width={48}
+                          height={48}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold text-sm md:text-base group-hover/review:text-green-100 transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
+                          {t("about.reviews.review4.name")}
+                        </p>
+                        <p className="text-gray-400 text-xs md:text-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                          {t("about.reviews.review4.role")}
+                        </p>
+                      </div>
+                    </div>
+                    {/* Quote Icon */}
+                    <div className="mb-2 md:mb-4 opacity-20 group-hover/review:opacity-40 transition-opacity">
+                      <svg className="w-8 h-8 md:w-12 md:h-12 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.996 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.984zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                      </svg>
+                    </div>
+                    <div className="flex items-center gap-1 mb-3 md:mb-5">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-4 h-4 md:w-5 md:h-5 text-yellow-400 fill-current drop-shadow-lg transform transition-transform group-hover/review:scale-110" style={{ transitionDelay: `${i * 50}ms` }} viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-gray-100 mb-3 md:mb-4 italic text-sm sm:text-base leading-relaxed drop-shadow-md group-hover/review:text-white transition-colors" style={{ fontFamily: "var(--font-roboto)" }}>
                       {language === "ro" ? t("about.reviews.review4.textOriginal") : (showOriginalReview4 ? t("about.reviews.review4.textOriginal") : t("about.reviews.review4.text"))}
                     </p>
                     {language === "en" && (
                       <button
                         onClick={() => setShowOriginalReview4(!showOriginalReview4)}
-                        className="mb-4 text-xs text-gray-400 hover:text-green-300 transition-colors underline"
+                        className="mb-3 md:mb-4 text-xs text-gray-400 hover:text-green-300 transition-colors underline"
                       >
                         {showOriginalReview4 ? t("about.reviews.showTranslated") : t("about.reviews.showOriginal")}
                       </button>
                     )}
-                    <div className="flex items-center gap-4 pt-4 border-t border-white/10">
+                  </div>
+                </div>
+
+                {/* Review 5 - Rotaract Charity Duck Race */}
+                <div className="liquid-glass rounded-3xl p-4 sm:p-5 md:p-6 lg:p-8 liquid-glass-hover relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400/10 via-pink-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-3xl" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
+                  <div className="relative z-10">
+                    {/* Profile Picture and Name - Top */}
+                    <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-5 pb-3 md:pb-4 border-b border-white/10">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden shadow-lg shadow-purple-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-purple-400/30 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
+                        <span className="text-white font-bold text-sm md:text-base">{t("about.reviews.review5.initials")}</span>
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold text-sm md:text-base group-hover/review:text-purple-100 transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
+                          {t("about.reviews.review5.name")}
+                        </p>
+                        <p className="text-gray-400 text-xs md:text-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                          {t("about.reviews.review5.role")}
+                        </p>
+                      </div>
+                    </div>
+                    {/* Quote Icon */}
+                    <div className="mb-2 md:mb-4 opacity-20 group-hover/review:opacity-40 transition-opacity">
+                      <svg className="w-8 h-8 md:w-12 md:h-12 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.996 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.984zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                      </svg>
+                    </div>
+                    <div className="flex items-center gap-1 mb-3 md:mb-5">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-4 h-4 md:w-5 md:h-5 text-yellow-400 fill-current drop-shadow-lg transform transition-transform group-hover/review:scale-110" style={{ transitionDelay: `${i * 50}ms` }} viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-gray-100 mb-3 md:mb-4 italic text-sm sm:text-base leading-relaxed drop-shadow-md group-hover/review:text-white transition-colors" style={{ fontFamily: "var(--font-roboto)" }}>
+                      {language === "ro" ? (showOriginalReview5 ? t("about.reviews.review5.textOriginal") : t("about.reviews.review5.text")) : t("about.reviews.review5.textOriginal")}
+                    </p>
+                    {language === "ro" && (
+                      <button
+                        onClick={() => setShowOriginalReview5(!showOriginalReview5)}
+                        className="mb-3 md:mb-4 text-xs text-gray-400 hover:text-purple-300 transition-colors underline"
+                      >
+                        {showOriginalReview5 ? t("about.reviews.showTranslated") : t("about.reviews.showOriginalEnglish")}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Desktop: Carousel Layout */}
+              <div className="hidden md:block relative px-12 md:px-16 lg:px-20 py-2">
+                <div className="relative overflow-hidden">
+                  <div 
+                    className="flex transition-transform duration-500 ease-in-out"
+                    style={{ transform: `translateX(-${currentReviewIndex * 50}%)` }}
+                  >
+                    {/* Review 1 */}
+                    <div className="w-1/2 flex-shrink-0 px-3 py-2">
+                      <div className="liquid-glass rounded-3xl p-6 lg:p-8 liquid-glass-hover relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20 h-full" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/10 via-blue-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-3xl" />
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
+                        <div className="relative z-10">
+                          {/* Profile Picture and Name - Top */}
+                          <div className="flex items-center gap-4 mb-5 pb-4 border-b border-white/10">
+                            <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg shadow-cyan-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-cyan-400/30">
+                              <Image
+                                src="/assets/reviews/review1.png"
+                                alt={t("about.reviews.review1.name")}
+                                width={48}
+                                height={48}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div>
+                              <p className="text-white font-semibold text-base group-hover/review:text-cyan-100 transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
+                                {t("about.reviews.review1.name")}
+                              </p>
+                              <p className="text-gray-400 text-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                                {t("about.reviews.review1.role")}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="mb-4 opacity-20 group-hover/review:opacity-40 transition-opacity">
+                            <svg className="w-12 h-12 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.996 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.984zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                            </svg>
+                          </div>
+                          <div className="flex items-center gap-1 mb-5">
+                            {[...Array(5)].map((_, i) => (
+                              <svg key={i} className="w-5 h-5 text-yellow-400 fill-current drop-shadow-lg transform transition-transform group-hover/review:scale-110" style={{ transitionDelay: `${i * 50}ms` }} viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            ))}
+                          </div>
+                          <p className="text-gray-100 mb-4 italic text-base leading-relaxed drop-shadow-md group-hover/review:text-white transition-colors" style={{ fontFamily: "var(--font-roboto)" }}>
+                            {language === "ro" ? (showOriginalReview1 ? t("about.reviews.review1.textOriginal") : t("about.reviews.review1.text")) : t("about.reviews.review1.textOriginal")}
+                          </p>
+                          {language === "ro" && (
+                            <button
+                              onClick={() => setShowOriginalReview1(!showOriginalReview1)}
+                              className="mb-4 text-xs text-gray-400 hover:text-cyan-300 transition-colors underline"
+                            >
+                              {showOriginalReview1 ? t("about.reviews.showTranslated") : t("about.reviews.showOriginalEnglish")}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Review 4 */}
+                    <div className="w-1/2 flex-shrink-0 px-3 py-2">
+                      <div className="liquid-glass rounded-3xl p-6 lg:p-8 liquid-glass-hover relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/20 h-full" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                        <div className="absolute inset-0 bg-gradient-to-br from-green-400/10 via-emerald-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-3xl" />
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
+                        <div className="relative z-10">
+                          {/* Profile Picture and Name - Top */}
+                          <div className="flex items-center gap-4 mb-5 pb-4 border-b border-white/10">
                       <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg shadow-green-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-green-400/30">
                         <Image
                           src="/assets/reviews/review2.png"
@@ -313,9 +462,130 @@ export default function About() {
                         <p className="text-gray-400 text-sm" style={{ fontFamily: "var(--font-roboto)" }}>
                           {t("about.reviews.review4.role")}
                         </p>
+                            </div>
+                          </div>
+                          <div className="mb-4 opacity-20 group-hover/review:opacity-40 transition-opacity">
+                            <svg className="w-12 h-12 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.996 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.984zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                            </svg>
+                          </div>
+                          <div className="flex items-center gap-1 mb-5">
+                            {[...Array(5)].map((_, i) => (
+                              <svg key={i} className="w-5 h-5 text-yellow-400 fill-current drop-shadow-lg transform transition-transform group-hover/review:scale-110" style={{ transitionDelay: `${i * 50}ms` }} viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            ))}
+                          </div>
+                          <p className="text-gray-100 mb-4 italic text-base leading-relaxed drop-shadow-md group-hover/review:text-white transition-colors" style={{ fontFamily: "var(--font-roboto)" }}>
+                            {language === "ro" ? t("about.reviews.review4.textOriginal") : (showOriginalReview4 ? t("about.reviews.review4.textOriginal") : t("about.reviews.review4.text"))}
+                          </p>
+                          {language === "en" && (
+                            <button
+                              onClick={() => setShowOriginalReview4(!showOriginalReview4)}
+                              className="mb-4 text-xs text-gray-400 hover:text-green-300 transition-colors underline"
+                            >
+                              {showOriginalReview4 ? t("about.reviews.showTranslated") : t("about.reviews.showOriginal")}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Review 5 */}
+                    <div className="w-1/2 flex-shrink-0 px-3 py-2">
+                      <div className="liquid-glass rounded-3xl p-6 lg:p-8 liquid-glass-hover relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 h-full" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                        <div className="absolute inset-0 bg-gradient-to-br from-purple-400/10 via-pink-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-3xl" />
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
+                        <div className="relative z-10">
+                          {/* Profile Picture and Name - Top */}
+                          <div className="flex items-center gap-4 mb-5 pb-4 border-b border-white/10">
+                            <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg shadow-purple-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-purple-400/30 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
+                              <span className="text-white font-bold text-base">{t("about.reviews.review5.initials")}</span>
+                            </div>
+                            <div>
+                              <p className="text-white font-semibold text-base group-hover/review:text-purple-100 transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
+                                {t("about.reviews.review5.name")}
+                              </p>
+                              <p className="text-gray-400 text-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                                {t("about.reviews.review5.role")}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="mb-4 opacity-20 group-hover/review:opacity-40 transition-opacity">
+                            <svg className="w-12 h-12 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.996 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.984zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                            </svg>
+                          </div>
+                          <div className="flex items-center gap-1 mb-5">
+                            {[...Array(5)].map((_, i) => (
+                              <svg key={i} className="w-5 h-5 text-yellow-400 fill-current drop-shadow-lg transform transition-transform group-hover/review:scale-110" style={{ transitionDelay: `${i * 50}ms` }} viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            ))}
+                          </div>
+                          <p className="text-gray-100 mb-4 italic text-base leading-relaxed drop-shadow-md group-hover/review:text-white transition-colors" style={{ fontFamily: "var(--font-roboto)" }}>
+                            {language === "ro" ? (showOriginalReview5 ? t("about.reviews.review5.textOriginal") : t("about.reviews.review5.text")) : t("about.reviews.review5.textOriginal")}
+                          </p>
+                          {language === "ro" && (
+                            <button
+                              onClick={() => setShowOriginalReview5(!showOriginalReview5)}
+                              className="mb-4 text-xs text-gray-400 hover:text-purple-300 transition-colors underline"
+                            >
+                              {showOriginalReview5 ? t("about.reviews.showTranslated") : t("about.reviews.showOriginalEnglish")}
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
+                </div>
+
+                {/* Navigation Arrows */}
+                <button
+                  onClick={() => setCurrentReviewIndex((prev) => (prev === 0 ? 1 : prev - 1))}
+                  disabled={currentReviewIndex === 0}
+                  className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 backdrop-blur-md text-white rounded-full p-3 md:p-4 transition-all shadow-lg border border-white/20 ${
+                    currentReviewIndex === 0
+                      ? 'bg-black/20 opacity-40 cursor-not-allowed'
+                      : 'liquid-glass-button hover:scale-110 hover:shadow-2xl cursor-pointer'
+                  }`}
+                  aria-label="Previous reviews"
+                >
+                  <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setCurrentReviewIndex((prev) => (prev === 1 ? 0 : prev + 1))}
+                  disabled={currentReviewIndex === 1}
+                  className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 backdrop-blur-md text-white rounded-full p-3 md:p-4 transition-all shadow-lg border border-white/20 ${
+                    currentReviewIndex === 1
+                      ? 'bg-black/20 opacity-40 cursor-not-allowed'
+                      : 'liquid-glass-button hover:scale-110 hover:shadow-2xl cursor-pointer'
+                  }`}
+                  aria-label="Next reviews"
+                >
+                  <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+
+                {/* Indicators */}
+                <div className="flex items-center justify-center gap-2 mt-8">
+                  <button
+                    onClick={() => setCurrentReviewIndex(0)}
+                    className={`h-2 rounded-full transition-all ${
+                      currentReviewIndex === 0 ? 'w-8 bg-white' : 'w-2 bg-white/50'
+                    }`}
+                    aria-label="Go to first page"
+                  />
+                  <button
+                    onClick={() => setCurrentReviewIndex(1)}
+                    className={`h-2 rounded-full transition-all ${
+                      currentReviewIndex === 1 ? 'w-8 bg-white' : 'w-2 bg-white/50'
+                    }`}
+                    aria-label="Go to second page"
+                  />
                 </div>
               </div>
             </div>
