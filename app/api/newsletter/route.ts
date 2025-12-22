@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
     const fromEmail = process.env.EMAIL_FROM || "Zoomout Crew <contact@zoomoutcrew.com>";
-    const adminEmail = process.env.CONTACT_EMAIL_TO || "curcaan@gmail.com";
+    const adminEmail = process.env.CONTACT_EMAIL_TO || "contact@zoomoutcrew.com";
     const audienceId = process.env.RESEND_AUDIENCE_ID;
 
     // Salvează contactul în Resend Contacts

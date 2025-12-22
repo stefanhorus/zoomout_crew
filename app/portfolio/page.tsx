@@ -356,7 +356,7 @@ export default function Portfolio() {
       {/* Modal pentru proiect selectat */}
       {selectedProject && (
         <div
-          className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/95 backdrop-blur-sm p-0 md:p-6 overflow-y-auto animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 md:p-6 overflow-y-auto animate-fade-in"
           onClick={() => {
             setSelectedProject(null);
             setSelectedVideoIndex(0);
@@ -364,7 +364,7 @@ export default function Portfolio() {
           }}
         >
           <div
-            className="max-w-6xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-y-auto md:overflow-hidden my-0 md:my-4 flex flex-col md:flex-row relative min-h-screen md:min-h-0 md:max-h-[90vh]"
+            className="max-w-6xl w-full liquid-glass-strong rounded-2xl overflow-y-auto md:overflow-hidden my-auto flex flex-col md:flex-row relative max-h-[90vh] md:max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button - Top Right Corner of Modal */}
@@ -374,7 +374,7 @@ export default function Portfolio() {
                 setSelectedVideoIndex(0);
                 setVideoLoaded(false);
               }}
-              className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-30"
+              className="absolute top-3 right-3 md:top-4 md:right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-30"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -382,10 +382,10 @@ export default function Portfolio() {
             </button>
 
             {/* Video Section - Left Side */}
-            <div className={`relative flex-1 shrink-0 ${
+            <div className={`relative flex-1 shrink-0 min-w-0 ${
               selectedProject.muxVideos && selectedProject.muxVideos.length > 0
-                ? 'aspect-[9/16] md:aspect-auto md:h-[85vh] md:max-h-[85vh] h-[50vh]' // Vertical aspect ratio pentru video-urile Big Belly
-                : 'aspect-video md:aspect-auto md:h-[85vh] md:max-h-[85vh] h-[40vh]'
+                ? 'aspect-[9/16] md:aspect-auto md:h-[85vh] md:max-h-[85vh]' // Vertical aspect ratio pentru video-urile Big Belly
+                : 'aspect-video md:aspect-auto md:h-[85vh] md:max-h-[85vh]'
             }`}>
               {selectedProject.muxVideos && selectedProject.muxVideos.length > 0 ? (
                 <>
@@ -556,7 +556,7 @@ export default function Portfolio() {
             </div>
             
             {/* Description Section - Right Side */}
-            <div className="flex-1 p-6 md:p-8 lg:p-10 flex flex-col justify-start md:justify-center bg-black/20 md:bg-transparent overflow-y-auto md:max-h-[85vh]">
+            <div className="flex-1 p-4 md:p-8 lg:p-10 flex flex-col justify-start md:justify-center bg-black/20 md:bg-transparent overflow-y-auto md:max-h-[85vh]">
               <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 leading-tight" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedProject.title}
                 {selectedProject.muxVideos && selectedProject.muxVideos.length > 1 && selectedProject.muxVideos[selectedVideoIndex].title && (

@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
     // Trimite email folosind Resend cu domeniul verificat
     const fromEmail = process.env.EMAIL_FROM || "Zoomout Crew <contact@zoomoutcrew.com>";
-    const toEmail = to || process.env.EMAIL_TO || "curcaan@gmail.com";
+    const toEmail = to || process.env.EMAIL_TO || "contact@zoomoutcrew.com";
     
     const { data, error } = await resend.emails.send({
       from: fromEmail,

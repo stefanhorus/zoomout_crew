@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     // Configurează adresa de email destinatar - poți schimba aici sau folosi variabila de mediu
-    const toEmail = process.env.CONTACT_EMAIL_TO || "curcaan@gmail.com";
+    const toEmail = process.env.CONTACT_EMAIL_TO || "contact@zoomoutcrew.com";
     const fromEmail = process.env.EMAIL_FROM || "Zoomout Crew <contact@zoomoutcrew.com>";
 
     // Trimite email către tine (proprietar)
