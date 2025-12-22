@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -31,7 +31,6 @@ const adventures: Adventure[] = [
     category: "asia",
     date: "2025-04-15",
     thumbnail: "/assets/adventures/kz-kg/5.jpg",
-    videoUrl: "/assets/adventures/kz-kg/kz-kg-video.mp4",
     description:
       "A breathtaking journey through Central Asia. From the surreal landscapes of Charyn Canyon to the alpine lakes of Kyrgyzstan...",
     highlights: [
@@ -117,6 +116,10 @@ export default function Adventures() {
   const [selectedCategory, setSelectedCategory] = useState<AdventureCategory>("all");
   const [selectedAdventure, setSelectedAdventure] = useState<Adventure | null>(null);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
 
   const categories: { value: AdventureCategory; label: string; labelKey: string }[] = [
     { value: "all", label: "All Adventures", labelKey: "adventures.all" },
@@ -137,6 +140,71 @@ export default function Adventures() {
     const date = new Date(dateString);
     const locale = language === "ro" ? "ro-RO" : "en-US";
     return date.toLocaleDateString(locale, { year: "numeric", month: "long" });
+  };
+
+  // Reset image index when adventure changes
+  useEffect(() => {
+    if (selectedAdventure) {
+      setSelectedImageIndex(0);
+      setIsFullscreen(false);
+    }
+  }, [selectedAdventure]);
+
+  // Handle swipe gestures
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!selectedAdventure?.images || selectedAdventure.images.length <= 1) return;
+    
+    const diff = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 50;
+
+    if (Math.abs(diff) > minSwipeDistance) {
+      if (diff > 0) {
+        // Swipe left - next image
+        setSelectedImageIndex((prev) => 
+          prev === selectedAdventure.images!.length - 1 ? 0 : prev + 1
+        );
+      } else {
+        // Swipe right - previous image
+        setSelectedImageIndex((prev) => 
+          prev === 0 ? selectedAdventure.images!.length - 1 : prev - 1
+        );
+      }
+    }
+  };
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    if (!selectedAdventure?.images || selectedAdventure.images.length <= 1) return;
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        setSelectedImageIndex((prev) => 
+          prev === 0 ? selectedAdventure.images!.length - 1 : prev - 1
+        );
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        setSelectedImageIndex((prev) => 
+          prev === selectedAdventure.images!.length - 1 ? 0 : prev + 1
+        );
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [selectedAdventure]);
+
+  // Handle fullscreen
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
   };
 
   return (
@@ -312,16 +380,99 @@ export default function Adventures() {
                     preload="metadata"
                     className="w-full h-full object-contain"
                   />
+                ) : selectedAdventure.images && selectedAdventure.images.length > 0 ? (
+                  <>
+                    {/* Image with swipe navigation */}
+                    <div 
+                      className="relative w-full h-full"
+                      onTouchStart={handleTouchStart}
+                      onTouchMove={handleTouchMove}
+                      onTouchEnd={handleTouchEnd}
+                    >
+                      <Image
+                        src={selectedAdventure.images[selectedImageIndex]}
+                        alt={selectedAdventure.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 80vw"
+                        className="object-contain"
+                      />
+                      
+                      {/* Navigation Arrows - only if more than one image */}
+                      {selectedAdventure.images.length > 1 && (
+                        <>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedImageIndex((prev) => 
+                                prev === 0 ? selectedAdventure.images!.length - 1 : prev - 1
+                              );
+                            }}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all hover:scale-110"
+                            aria-label="Previous image"
+                          >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                          </button>
+                          
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedImageIndex((prev) => 
+                                prev === selectedAdventure.images!.length - 1 ? 0 : prev + 1
+                              );
+                            }}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all hover:scale-110"
+                            aria-label="Next image"
+                          >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </button>
+                          
+                          {/* Image Indicator */}
+                          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center justify-center gap-2">
+                            {selectedAdventure.images.map((_, index) => (
+                              <div
+                                key={index}
+                                className={`h-2 rounded-full transition-all ${
+                                  selectedImageIndex === index
+                                    ? 'w-8 bg-white'
+                                    : 'w-2 bg-white/50'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </>
                 ) : (
                   <div className="relative w-full h-full">
                     <Image
-                    src={selectedAdventure.thumbnail}
-                    alt={selectedAdventure.title}
+                      src={selectedAdventure.thumbnail}
+                      alt={selectedAdventure.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 80vw"
                       className="object-contain"
-                  />
+                    />
                   </div>
+                )}
+
+                {/* Fullscreen Button - only for images */}
+                {selectedAdventure.images && selectedAdventure.images.length > 0 && !selectedAdventure.videoUrl && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFullscreen();
+                    }}
+                    className="absolute top-3 left-3 md:top-4 md:left-4 bg-black/70 hover:bg-black/90 backdrop-blur-sm text-white rounded-full p-2 md:p-2.5 transition-all hover:scale-110 shadow-lg z-10"
+                    aria-label="Fullscreen"
+                  >
+                    <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                  </button>
                 )}
 
                 {/* Close Button */}
@@ -348,14 +499,12 @@ export default function Adventures() {
                     {selectedAdventure.images.map((src, i) => (
                       <div
                         key={i}
-                        className="group relative aspect-video overflow-hidden rounded-lg cursor-pointer liquid-glass-hover"
-                        onClick={() =>
-                          setSelectedAdventure({
-                            ...selectedAdventure,
-                            videoUrl: undefined,
-                            thumbnail: src,
-                          })
-                        }
+                        className={`group relative aspect-video overflow-hidden rounded-lg cursor-pointer liquid-glass-hover ${
+                          selectedImageIndex === i ? 'ring-2 ring-white' : ''
+                        }`}
+                        onClick={() => {
+                          setSelectedImageIndex(i);
+                        }}
                       >
                         <Image
                           src={src}
@@ -429,6 +578,90 @@ export default function Adventures() {
               )}
 
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Fullscreen Image Modal */}
+      {isFullscreen && selectedAdventure && selectedAdventure.images && selectedAdventure.images.length > 0 && (
+        <div
+          className="fixed inset-0 z-[60] bg-black flex items-center justify-center"
+          onClick={toggleFullscreen}
+        >
+          <div 
+            className="relative w-full h-full flex items-center justify-center"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={selectedAdventure.images[selectedImageIndex]}
+              alt={selectedAdventure.title}
+              fill
+              sizes="100vw"
+              className="object-contain"
+            />
+            
+            {/* Navigation Arrows */}
+            {selectedAdventure.images.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedImageIndex((prev) => 
+                      prev === 0 ? selectedAdventure.images!.length - 1 : prev - 1
+                    );
+                  }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-4 transition-all hover:scale-110"
+                  aria-label="Previous image"
+                >
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedImageIndex((prev) => 
+                      prev === selectedAdventure.images!.length - 1 ? 0 : prev + 1
+                    );
+                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-4 transition-all hover:scale-110"
+                  aria-label="Next image"
+                >
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+                
+                {/* Image Indicator */}
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex items-center justify-center gap-2">
+                  {selectedAdventure.images.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`h-2 rounded-full transition-all ${
+                        selectedImageIndex === index
+                          ? 'w-8 bg-white'
+                          : 'w-2 bg-white/50'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+            
+            {/* Close Fullscreen Button */}
+            <button
+              onClick={toggleFullscreen}
+              className="absolute top-4 right-4 bg-black/70 hover:bg-black/90 backdrop-blur-sm text-white rounded-full p-3 transition-all hover:scale-110 shadow-lg z-10"
+              aria-label="Exit fullscreen"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         </div>
       )}
