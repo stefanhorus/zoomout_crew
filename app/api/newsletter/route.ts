@@ -60,62 +60,94 @@ export async function POST(req: Request) {
 
     // Trimite email de confirmare către utilizator
     console.log("📤 Sending confirmation email to:", email);
+    const websiteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoomoutcrew.com";
+    const logoUrl = `${websiteUrl}/assets/logo.png`;
+    
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to: email,
-      subject: "Welcome to Zoomout_crew Newsletter!",
+      subject: "Welcome to Zoomout Crew Newsletter! 🎬",
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
-          <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #333; margin: 0; font-size: 28px;">Zoomout_crew</h1>
-            <p style="color: #666; margin: 5px 0 0 0; font-size: 14px;">Professional Aerial Footage & Cinematography</p>
-          </div>
-          
-          <h2 style="color: #333; border-bottom: 2px solid #0070f3; padding-bottom: 10px; margin-top: 0;">
-            Welcome to Our Newsletter!
-          </h2>
-          
-          <p style="color: #555; line-height: 1.8; margin: 20px 0; font-size: 15px;">
-            Thank you for subscribing to the <strong>Zoomout_crew</strong> newsletter!
-          </p>
-          
-          <p style="color: #555; line-height: 1.8; margin: 20px 0; font-size: 15px;">
-            You'll now receive updates about:
-          </p>
-          
-          <ul style="color: #555; line-height: 1.8; margin: 20px 0; font-size: 15px; padding-left: 20px;">
-            <li>Latest products and exclusive offers</li>
-            <li>New aerial photography and videography content</li>
-            <li>Tips and tricks for drone cinematography</li>
-            <li>Behind-the-scenes from our adventures</li>
-          </ul>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="https://zoomoutcrew.com" style="display: inline-block; background-color: #0070f3; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 15px;">Visit Our Website</a>
-          </div>
-          
-          <p style="color: #555; line-height: 1.8; margin: 25px 0; font-size: 15px;">
-            We're excited to share our journey with you!
-          </p>
-          
-          <p style="color: #333; line-height: 1.8; margin: 25px 0; font-size: 15px;">
-            Best regards,<br>
-            <strong style="color: #0070f3;">The Zoomout_crew Team</strong>
-          </p>
-          
-          <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 40px 0 20px 0;">
-          
-          <div style="text-align: center; color: #999; font-size: 12px; line-height: 1.6;">
-            <p style="margin: 5px 0;">
-              <strong>Zoomout_crew</strong><br>
-              Professional Aerial Footage & Cinematography Services
-            </p>
-            <p style="margin: 10px 0;">
-              <a href="https://zoomoutcrew.com" style="color: #0070f3; text-decoration: none;">zoomoutcrew.com</a> | 
-              <a href="mailto:contact@zoomoutcrew.com" style="color: #0070f3; text-decoration: none;">contact@zoomoutcrew.com</a>
-            </p>
-          </div>
-        </div>
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #0a0a0a;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 20px;">
+            <tr>
+              <td align="center">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #1a1a1a; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);">
+                  <!-- Header with Logo -->
+                  <tr>
+                    <td style="background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); padding: 40px 30px; text-align: center;">
+                      <img src="${logoUrl}" alt="Zoomout Crew" style="max-width: 200px; height: auto; margin-bottom: 20px;" />
+                      <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">Welcome Aboard!</h1>
+                      <p style="color: #b0b0b0; margin: 10px 0 0 0; font-size: 16px;">Professional Aerial Footage & Cinematography</p>
+                    </td>
+                  </tr>
+                  
+                  <!-- Main Content -->
+                  <tr>
+                    <td style="padding: 40px 30px;">
+                      <h2 style="color: #ffffff; font-size: 24px; font-weight: 600; margin: 0 0 20px 0; line-height: 1.3;">
+                        Thank you for subscribing! 🎉
+                      </h2>
+                      
+                      <p style="color: #d0d0d0; line-height: 1.8; margin: 0 0 25px 0; font-size: 16px;">
+                        We're thrilled to have you join the <strong style="color: #ffffff;">Zoomout Crew</strong> community! Get ready to be inspired by stunning aerial cinematography and behind-the-scenes content.
+                      </p>
+                      
+                      <div style="background-color: #252525; border-left: 4px solid #ffffff; padding: 20px; margin: 30px 0; border-radius: 8px;">
+                        <p style="color: #ffffff; font-weight: 600; margin: 0 0 15px 0; font-size: 18px;">You'll receive:</p>
+                        <ul style="color: #d0d0d0; line-height: 2; margin: 0; padding-left: 20px; font-size: 15px;">
+                          <li>Latest products and exclusive offers</li>
+                          <li>New aerial photography and videography content</li>
+                          <li>Tips and tricks for drone cinematography</li>
+                          <li>Behind-the-scenes from our adventures</li>
+                        </ul>
+                      </div>
+                      
+                      <div style="text-align: center; margin: 35px 0;">
+                        <a href="${websiteUrl}" style="display: inline-block; background-color: #ffffff; color: #0a0a0a; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; letter-spacing: 0.5px; transition: all 0.3s ease;">Visit Our Website</a>
+                      </div>
+                      
+                      <p style="color: #d0d0d0; line-height: 1.8; margin: 30px 0 0 0; font-size: 16px;">
+                        We're excited to share our journey with you!
+                      </p>
+                      
+                      <p style="color: #ffffff; line-height: 1.8; margin: 25px 0 0 0; font-size: 16px;">
+                        Best regards,<br>
+                        <strong style="color: #ffffff; font-size: 18px;">The Zoomout Crew Team</strong>
+                      </p>
+                    </td>
+                  </tr>
+                  
+                  <!-- Footer -->
+                  <tr>
+                    <td style="background-color: #151515; padding: 30px; border-top: 1px solid #2a2a2a;">
+                      <div style="text-align: center; color: #808080; font-size: 14px; line-height: 1.8;">
+                        <p style="margin: 0 0 15px 0;">
+                          <strong style="color: #ffffff; font-size: 16px;">Zoomout Crew</strong><br>
+                          <span style="color: #b0b0b0;">Professional Aerial Footage & Cinematography Services</span>
+                        </p>
+                        <p style="margin: 15px 0;">
+                          <a href="${websiteUrl}" style="color: #ffffff; text-decoration: none; margin: 0 10px; font-weight: 500;">Website</a> | 
+                          <a href="mailto:contact@zoomoutcrew.com" style="color: #ffffff; text-decoration: none; margin: 0 10px; font-weight: 500;">Contact</a>
+                        </p>
+                        <p style="margin: 20px 0 0 0; font-size: 12px; color: #606060;">
+                          © ${new Date().getFullYear()} Zoomout Crew. All rights reserved.
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
       `,
       text: `
 Welcome to Our Newsletter!
