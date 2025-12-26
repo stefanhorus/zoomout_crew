@@ -410,7 +410,7 @@ export default function Adventures() {
                         fill
                         sizes="(max-width: 768px) 100vw, 80vw"
                         className="object-contain"
-                        unoptimized={selectedAdventure.images[selectedImageIndex].includes('.png')}
+                        unoptimized={true}
                       />
                       
                       {/* Navigation Arrows - only if more than one image */}
@@ -580,7 +580,7 @@ export default function Adventures() {
               fill
               sizes="100vw"
               className="object-contain"
-              unoptimized={selectedAdventure.images[selectedImageIndex].includes('.png')}
+              unoptimized={true}
             />
             
             {/* Navigation Arrows */}
