@@ -132,6 +132,7 @@ export default function Adventures() {
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [imageLoading, setImageLoading] = useState<boolean>(true);
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
 
@@ -161,8 +162,16 @@ export default function Adventures() {
     if (selectedAdventure) {
       setSelectedImageIndex(0);
       setIsFullscreen(false);
+      setImageLoading(true);
     }
   }, [selectedAdventure]);
+
+  // Reset loading state when image index changes
+  useEffect(() => {
+    if (selectedAdventure?.images) {
+      setImageLoading(true);
+    }
+  }, [selectedImageIndex, selectedAdventure]);
 
   // Handle swipe gestures
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -403,14 +412,24 @@ export default function Adventures() {
                       onTouchMove={handleTouchMove}
                       onTouchEnd={handleTouchEnd}
                     >
+                      {imageLoading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black z-0">
+                          <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        </div>
+                      )}
                       <Image
-                        key={selectedAdventure.images[selectedImageIndex]}
+                        key={`${selectedAdventure.id}-${selectedImageIndex}-${selectedAdventure.images[selectedImageIndex]}`}
                         src={selectedAdventure.images[selectedImageIndex]}
-                        alt={selectedAdventure.title}
+                        alt={`${selectedAdventure.title} - Image ${selectedImageIndex + 1}`}
                         fill
                         sizes="(max-width: 768px) 100vw, 80vw"
-                        className="object-contain"
+                        className={`object-contain transition-opacity duration-300 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
                         unoptimized={true}
+                        onLoad={() => setImageLoading(false)}
+                        onError={() => {
+                          console.error('Failed to load image:', selectedAdventure.images[selectedImageIndex]);
+                          setImageLoading(false);
+                        }}
                       />
                       
                       {/* Navigation Arrows - only if more than one image */}
@@ -573,14 +592,24 @@ export default function Adventures() {
             onTouchEnd={handleTouchEnd}
             onClick={(e) => e.stopPropagation()}
                       >
+                        {imageLoading && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black z-0">
+                            <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          </div>
+                        )}
                         <Image
-              key={`fullscreen-${selectedAdventure.images[selectedImageIndex]}`}
+              key={`fullscreen-${selectedAdventure.id}-${selectedImageIndex}-${selectedAdventure.images[selectedImageIndex]}`}
               src={selectedAdventure.images[selectedImageIndex]}
-              alt={selectedAdventure.title}
+              alt={`${selectedAdventure.title} - Image ${selectedImageIndex + 1}`}
               fill
               sizes="100vw"
-              className="object-contain"
+              className={`object-contain transition-opacity duration-300 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
               unoptimized={true}
+              onLoad={() => setImageLoading(false)}
+              onError={() => {
+                console.error('Failed to load fullscreen image:', selectedAdventure.images[selectedImageIndex]);
+                setImageLoading(false);
+              }}
             />
             
             {/* Navigation Arrows */}
