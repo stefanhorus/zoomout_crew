@@ -362,7 +362,9 @@ export default function Adventures() {
                     {adv.title}
                   </h3>
 
-                  <p className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">{adv.description}</p>
+                  <p className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors line-clamp-3">
+                    {adv.description.split('\n\n')[0] || adv.description.split('. ').slice(0, 3).join('. ') + (adv.description.split('. ').length > 3 ? '...' : '')}
+                  </p>
                 </div>
               </div>
             </div>
