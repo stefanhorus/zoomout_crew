@@ -103,7 +103,7 @@ const adventures: Adventure[] = [
     category: "europe",
     date: "2025-12-15",
     thumbnail: "/assets/adventures/edinburgh/edinburgh1.png",
-    description: "A two-day exploration of Edinburgh's historic charm and stunning architecture. We climbed up to Edinburgh Castle (though we didn't go inside), wandered through the Royal Mile and Dean's Village, hiked up Calton Hill for panoramic city views, explored Greyfriars Kirkyard, passed by Scott Monument, strolled through Circus Lane and Victoria Street, and visited St. Bernard's Well. Through aerial cinematography, we captured the city's unique character, from its ancient cobblestone streets to its breathtaking hilltop vistas.",
+    description: "A two-day exploration of Edinburgh's historic charm and stunning architecture. We climbed up to Edinburgh Castle, wandered through the Royal Mile and Dean's Village, hiked up Calton Hill for panoramic city views, explored Greyfriars Kirkyard, admired Scott Monument from a distance for the best view, strolled through Circus Lane and Victoria Street, and visited St. Bernard's Well. Through aerial cinematography, we captured the city's unique character, from its ancient cobblestone streets to its breathtaking hilltop vistas.",
     highlights: ["Edinburgh Castle", "Royal Mile", "Dean's Village", "Calton Hill", "Greyfriars Kirkyard", "Scott Monument", "Circus Lane", "Victoria Street", "St. Bernard's Well"],
     images: [
       "/assets/adventures/edinburgh/edinburgh1.png",
