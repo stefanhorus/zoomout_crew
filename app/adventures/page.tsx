@@ -427,7 +427,7 @@ export default function Adventures() {
                         unoptimized={true}
                         onLoad={() => setImageLoading(false)}
                         onError={() => {
-                          console.error('Failed to load image:', selectedAdventure.images[selectedImageIndex]);
+                          console.error('Failed to load image:', selectedAdventure.images?.[selectedImageIndex]);
                           setImageLoading(false);
                         }}
                       />
@@ -607,7 +607,7 @@ export default function Adventures() {
               unoptimized={true}
               onLoad={() => setImageLoading(false)}
               onError={() => {
-                console.error('Failed to load fullscreen image:', selectedAdventure.images[selectedImageIndex]);
+                console.error('Failed to load fullscreen image:', selectedAdventure.images?.[selectedImageIndex]);
                 setImageLoading(false);
               }}
             />
