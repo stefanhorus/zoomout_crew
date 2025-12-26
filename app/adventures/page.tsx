@@ -103,7 +103,7 @@ const adventures: Adventure[] = [
     category: "europe",
     date: "2025-12-15",
     thumbnail: "/assets/adventures/edinburgh/edinburgh1.png",
-    description: "A two-day exploration of Edinburgh's historic charm and stunning architecture. We climbed up to Edinburgh Castle, the iconic fortress that dominates the city skyline from its volcanic rock perch. We wandered through the Royal Mile, the historic heart of the Old Town connecting the castle to Holyrood Palace, and discovered the hidden gem of Dean's Village with its charming 19th-century architecture and peaceful Water of Leith. We hiked up Calton Hill for breathtaking panoramic views of the city and its surroundings. We explored Greyfriars Kirkyard, the historic cemetery that inspired J.K. Rowling's Harry Potter characters. We admired Scott Monument from a distance for the best view of this Gothic spire dedicated to Sir Walter Scott. We strolled through Circus Lane, a picturesque cobblestone street with colorful doors and flower boxes, and Victoria Street, the curved, colorful street that's said to have inspired Diagon Alley. We also visited St. Bernard's Well, the neoclassical structure overlooking the Water of Leith. During our adventure, we had a lovely photoshoot captured by Andreea Cucu. Through aerial cinematography, we captured the city's unique character, from its ancient cobblestone streets to its breathtaking hilltop vistas.",
+    description: "A two-day exploration of Edinburgh's historic charm and stunning architecture. We climbed up to Edinburgh Castle, the iconic fortress that dominates the city skyline from its volcanic rock perch. We wandered through the Royal Mile, the historic heart of the Old Town connecting the castle to Holyrood Palace, and discovered the hidden gem of Dean's Village with its charming 19th-century architecture and peaceful Water of Leith. We hiked up Calton Hill for breathtaking panoramic views of the city and its surroundings.\n\nWe explored Greyfriars Kirkyard, the historic cemetery that inspired J.K. Rowling's Harry Potter characters. We admired Scott Monument from a distance for the best view of this Gothic spire dedicated to Sir Walter Scott. We strolled through Circus Lane, a picturesque cobblestone street with colorful doors and flower boxes, and Victoria Street, the curved, colorful street that's said to have inspired Diagon Alley. We also visited St. Bernard's Well, the neoclassical structure overlooking the Water of Leith.\n\nDuring our adventure, we had a lovely photoshoot captured by Andreea Cucu. Through aerial cinematography, we captured the city's unique character, from its ancient cobblestone streets to its breathtaking hilltop vistas.",
     highlights: ["Edinburgh Castle", "Royal Mile", "Dean's Village", "Calton Hill", "Greyfriars Kirkyard", "Scott Monument", "Circus Lane", "Victoria Street", "St. Bernard's Well"],
     images: [
       "/assets/adventures/edinburgh/edinburgh1.png",
@@ -548,18 +548,12 @@ export default function Adventures() {
                 </h2>
               </div>
               
-              <div className="text-gray-200 text-base md:text-lg mb-6 md:mb-8 leading-loose space-y-4">
-                {selectedAdventure.description.split('. ').map((sentence, index, array) => {
-                  if (index === array.length - 1 && !sentence.trim()) return null;
-                  const trimmedSentence = sentence.trim();
-                  if (!trimmedSentence) return null;
-                  const finalSentence = index < array.length - 1 || sentence.endsWith('.') ? trimmedSentence : trimmedSentence + '.';
-                  return (
-                    <p key={index} className="mb-4 last:mb-0">
-                      {finalSentence}
-                    </p>
-                  );
-                })}
+              <div className="text-gray-200 text-base md:text-lg mb-6 md:mb-8 leading-relaxed">
+                {selectedAdventure.description.split('\n\n').map((paragraph, index) => (
+                  <p key={index} className="mb-4 last:mb-0">
+                    {paragraph.trim()}
+                  </p>
+                ))}
               </div>
 
               {/* Highlights */}
