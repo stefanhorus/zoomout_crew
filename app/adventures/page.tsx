@@ -199,6 +199,17 @@ export default function Adventures() {
         setSelectedImageIndex(targetIndex);
         setHighlightClicks({ ...highlightClicks, [highlightIndex]: 0 }); // Reset for next cycle
       }
+    } else if (highlightIndex === 2) {
+      // Third highlight: first click -> image 2 (index 1), second click -> image 11 (index 10)
+      if (clickCount === 0) {
+        const targetIndex = Math.min(1, totalImages - 1); // Image 2 (index 1)
+        setSelectedImageIndex(targetIndex);
+        setHighlightClicks({ ...highlightClicks, [highlightIndex]: 1 });
+      } else {
+        const targetIndex = Math.min(10, totalImages - 1); // Image 11 (index 10)
+        setSelectedImageIndex(targetIndex);
+        setHighlightClicks({ ...highlightClicks, [highlightIndex]: 0 }); // Reset for next cycle
+      }
     }
   };
 
