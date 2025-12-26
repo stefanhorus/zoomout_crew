@@ -437,10 +437,16 @@ export default function Adventures() {
                         <>
                           <button
                             onClick={(e) => {
+                              e.preventDefault();
                               e.stopPropagation();
-                              setSelectedImageIndex((prev) => 
-                                prev === 0 ? selectedAdventure.images!.length - 1 : prev - 1
-                              );
+                              const prevIndex = selectedImageIndex === 0 ? selectedAdventure.images!.length - 1 : selectedImageIndex - 1;
+                              setSelectedImageIndex(prevIndex);
+                            }}
+                            onTouchEnd={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const prevIndex = selectedImageIndex === 0 ? selectedAdventure.images!.length - 1 : selectedImageIndex - 1;
+                              setSelectedImageIndex(prevIndex);
                             }}
                             className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all hover:scale-110"
                             aria-label="Previous image"
@@ -452,10 +458,16 @@ export default function Adventures() {
                           
                           <button
                             onClick={(e) => {
+                              e.preventDefault();
                               e.stopPropagation();
-                              setSelectedImageIndex((prev) => 
-                                prev === selectedAdventure.images!.length - 1 ? 0 : prev + 1
-                              );
+                              const nextIndex = selectedImageIndex === selectedAdventure.images!.length - 1 ? 0 : selectedImageIndex + 1;
+                              setSelectedImageIndex(nextIndex);
+                            }}
+                            onTouchEnd={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const nextIndex = selectedImageIndex === selectedAdventure.images!.length - 1 ? 0 : selectedImageIndex + 1;
+                              setSelectedImageIndex(nextIndex);
                             }}
                             className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all hover:scale-110"
                             aria-label="Next image"
@@ -621,10 +633,16 @@ export default function Adventures() {
               <>
                 <button
                   onClick={(e) => {
+                    e.preventDefault();
                     e.stopPropagation();
-                    setSelectedImageIndex((prev) => 
-                      prev === 0 ? selectedAdventure.images!.length - 1 : prev - 1
-                    );
+                    const prevIndex = selectedImageIndex === 0 ? selectedAdventure.images!.length - 1 : selectedImageIndex - 1;
+                    setSelectedImageIndex(prevIndex);
+                  }}
+                  onTouchEnd={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const prevIndex = selectedImageIndex === 0 ? selectedAdventure.images!.length - 1 : selectedImageIndex - 1;
+                    setSelectedImageIndex(prevIndex);
                   }}
                   className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-4 transition-all hover:scale-110"
                   aria-label="Previous image"
@@ -636,10 +654,16 @@ export default function Adventures() {
                 
                 <button
                   onClick={(e) => {
+                    e.preventDefault();
                     e.stopPropagation();
-                    setSelectedImageIndex((prev) => 
-                      prev === selectedAdventure.images!.length - 1 ? 0 : prev + 1
-                    );
+                    const nextIndex = selectedImageIndex === selectedAdventure.images!.length - 1 ? 0 : selectedImageIndex + 1;
+                    setSelectedImageIndex(nextIndex);
+                  }}
+                  onTouchEnd={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const nextIndex = selectedImageIndex === selectedAdventure.images!.length - 1 ? 0 : selectedImageIndex + 1;
+                    setSelectedImageIndex(nextIndex);
                   }}
                   className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-4 transition-all hover:scale-110"
                   aria-label="Next image"
