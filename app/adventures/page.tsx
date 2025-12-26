@@ -408,9 +408,19 @@ export default function Adventures() {
                     {/* Image with swipe navigation */}
                     <div 
                       className="relative w-full h-full"
-                      onTouchStart={handleTouchStart}
-                      onTouchMove={handleTouchMove}
-                      onTouchEnd={handleTouchEnd}
+                      onTouchStart={(e) => {
+                        // Don't handle touch if clicking on navigation buttons
+                        if ((e.target as HTMLElement).closest('button')) return;
+                        handleTouchStart(e);
+                      }}
+                      onTouchMove={(e) => {
+                        if ((e.target as HTMLElement).closest('button')) return;
+                        handleTouchMove(e);
+                      }}
+                      onTouchEnd={(e) => {
+                        if ((e.target as HTMLElement).closest('button')) return;
+                        handleTouchEnd();
+                      }}
                     >
                       {imageLoading && (
                         <div className="absolute inset-0 flex items-center justify-center bg-black z-0">
