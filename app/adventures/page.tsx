@@ -18,6 +18,7 @@ interface Adventure {
   thumbnail: string;
   videoUrl?: string;
   description: string;
+  shortDescription?: string; // Short description for card view
   highlights: string[];
   images?: string[];
 }
@@ -363,7 +364,7 @@ export default function Adventures() {
                   </h3>
 
                   <p className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors line-clamp-3">
-                    {adv.description.split('\n\n')[0] || adv.description.split('. ').slice(0, 3).join('. ') + (adv.description.split('. ').length > 3 ? '...' : '')}
+                    {adv.shortDescription || adv.description.split('\n\n')[0] || adv.description.split('. ').slice(0, 3).join('. ') + (adv.description.split('. ').length > 3 ? '...' : '')}
                   </p>
                 </div>
               </div>
