@@ -386,12 +386,12 @@ export default function Adventures() {
                   ? 'h-[45vh] md:h-[50vh]' // Adjusted height when gallery is present
                   : 'h-[45vh] md:h-[60vh]' // Standard height for videos only
               }`}>
-                {selectedAdventure.videoUrl ? (
-                  <video
-                    src={selectedAdventure.videoUrl}
-                    controls
-                    autoPlay
-                    preload="metadata"
+              {selectedAdventure.videoUrl ? (
+                <video
+                  src={selectedAdventure.videoUrl}
+                  controls
+                  autoPlay
+                  preload="metadata"
                     className="w-full h-full object-contain"
                   />
                 ) : selectedAdventure.images && selectedAdventure.images.length > 0 ? (
@@ -404,11 +404,13 @@ export default function Adventures() {
                       onTouchEnd={handleTouchEnd}
                     >
                       <Image
+                        key={selectedAdventure.images[selectedImageIndex]}
                         src={selectedAdventure.images[selectedImageIndex]}
                         alt={selectedAdventure.title}
                         fill
                         sizes="(max-width: 768px) 100vw, 80vw"
                         className="object-contain"
+                        unoptimized={selectedAdventure.images[selectedImageIndex].includes('.png')}
                       />
                       
                       {/* Navigation Arrows - only if more than one image */}
@@ -463,15 +465,15 @@ export default function Adventures() {
                   </>
                 ) : (
                   <div className="relative w-full h-full">
-                    <Image
-                      src={selectedAdventure.thumbnail}
-                      alt={selectedAdventure.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 80vw"
-                      className="object-contain"
-                    />
-                  </div>
-                )}
+                  <Image
+                  src={selectedAdventure.thumbnail}
+                  alt={selectedAdventure.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 80vw"
+                    className="object-contain"
+                />
+                </div>
+              )}
 
                 {/* Fullscreen Button - only for images */}
                 {selectedAdventure.images && selectedAdventure.images.length > 0 && !selectedAdventure.videoUrl && (
@@ -487,17 +489,17 @@ export default function Adventures() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                     </svg>
                   </button>
-                )}
+              )}
 
-                {/* Close Button */}
-                <button
-                  onClick={() => setSelectedAdventure(null)}
+              {/* Close Button */}
+              <button
+                onClick={() => setSelectedAdventure(null)}
                   className="absolute top-3 right-3 md:top-4 md:right-4 bg-black/70 hover:bg-black/90 backdrop-blur-sm text-white rounded-full p-2 md:p-2.5 transition-all hover:scale-110 shadow-lg z-10"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
               </div>
             </div>
 
@@ -570,13 +572,15 @@ export default function Adventures() {
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
             onClick={(e) => e.stopPropagation()}
-          >
-            <Image
+                      >
+                        <Image
+              key={`fullscreen-${selectedAdventure.images[selectedImageIndex]}`}
               src={selectedAdventure.images[selectedImageIndex]}
               alt={selectedAdventure.title}
               fill
               sizes="100vw"
               className="object-contain"
+              unoptimized={selectedAdventure.images[selectedImageIndex].includes('.png')}
             />
             
             {/* Navigation Arrows */}
@@ -609,7 +613,7 @@ export default function Adventures() {
                 >
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                          </svg>
                 </button>
                 
                 {/* Image Indicator */}
