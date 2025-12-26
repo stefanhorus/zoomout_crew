@@ -123,6 +123,9 @@ const adventures: Adventure[] = [
       "/assets/adventures/edinburgh/edinburgh13.png",
       "/assets/adventures/edinburgh/edinburgh14.png",
       "/assets/adventures/edinburgh/edinburgh15.png",
+      "/assets/adventures/edinburgh/edinburgh16.png",
+      "/assets/adventures/edinburgh/edinburgh17.png",
+      "/assets/adventures/edinburgh/edinburgh18.png",
     ],
   },
 ];
@@ -215,6 +218,33 @@ export default function Adventures() {
       const imageSequence = [2, 5, 6, 14]; // Indices for images 3, 6, 7, 15
       const currentSequenceIndex = clickCount % imageSequence.length;
       const targetIndex = Math.min(imageSequence[currentSequenceIndex], totalImages - 1);
+      setSelectedImageIndex(targetIndex);
+      setHighlightClicks({ ...highlightClicks, [highlightIndex]: clickCount + 1 });
+    } else if (highlightIndex === 4) {
+      // Fifth highlight: navigate to image 16 (index 15)
+      const targetIndex = Math.min(15, totalImages - 1); // Image 16 (index 15)
+      setSelectedImageIndex(targetIndex);
+      setHighlightClicks({ ...highlightClicks, [highlightIndex]: clickCount + 1 });
+    } else if (highlightIndex === 5) {
+      // Sixth highlight: cycles between image 8 (index 7) and image 17 (index 16)
+      const imageSequence = [7, 16]; // Indices for images 8 and 17
+      const currentSequenceIndex = clickCount % imageSequence.length;
+      const targetIndex = Math.min(imageSequence[currentSequenceIndex], totalImages - 1);
+      setSelectedImageIndex(targetIndex);
+      setHighlightClicks({ ...highlightClicks, [highlightIndex]: clickCount + 1 });
+    } else if (highlightIndex === 6) {
+      // Seventh highlight: navigate to image 9 (index 8)
+      const targetIndex = Math.min(8, totalImages - 1); // Image 9 (index 8)
+      setSelectedImageIndex(targetIndex);
+      setHighlightClicks({ ...highlightClicks, [highlightIndex]: clickCount + 1 });
+    } else if (highlightIndex === 7) {
+      // Eighth highlight: navigate to image 18 (index 17)
+      const targetIndex = Math.min(17, totalImages - 1); // Image 18 (index 17)
+      setSelectedImageIndex(targetIndex);
+      setHighlightClicks({ ...highlightClicks, [highlightIndex]: clickCount + 1 });
+    } else if (highlightIndex === 8) {
+      // Ninth highlight: navigate to image 11 (index 10)
+      const targetIndex = Math.min(10, totalImages - 1); // Image 11 (index 10)
       setSelectedImageIndex(targetIndex);
       setHighlightClicks({ ...highlightClicks, [highlightIndex]: clickCount + 1 });
     }
