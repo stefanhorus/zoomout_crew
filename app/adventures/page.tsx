@@ -135,6 +135,7 @@ export default function Adventures() {
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [imageLoading, setImageLoading] = useState<boolean>(true);
+  const [highlightClicks, setHighlightClicks] = useState<{ [key: number]: number }>({});
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
 
@@ -165,8 +166,30 @@ export default function Adventures() {
       setSelectedImageIndex(0);
       setIsFullscreen(false);
       setImageLoading(true);
+      setHighlightClicks({});
     }
   }, [selectedAdventure]);
+
+  // Handle highlight click to navigate to specific images
+  const handleHighlightClick = (highlightIndex: number) => {
+    if (!selectedAdventure?.images || selectedAdventure.images.length === 0) return;
+    
+    const clickCount = highlightClicks[highlightIndex] || 0;
+    const totalImages = selectedAdventure.images.length;
+    
+    if (highlightIndex === 0) {
+      // First highlight: first click -> image 4 (index 3), second click -> second to last (index totalImages - 2)
+      if (clickCount === 0) {
+        const targetIndex = Math.min(3, totalImages - 1); // Image 4 (index 3)
+        setSelectedImageIndex(targetIndex);
+        setHighlightClicks({ ...highlightClicks, [highlightIndex]: 1 });
+      } else {
+        const targetIndex = Math.max(0, totalImages - 2); // Second to last
+        setSelectedImageIndex(targetIndex);
+        setHighlightClicks({ ...highlightClicks, [highlightIndex]: 0 }); // Reset for next cycle
+      }
+    }
+  };
 
   // Reset loading state when image index changes
   useEffect(() => {
@@ -593,12 +616,14 @@ export default function Adventures() {
                 </h3>
                   <div className="flex flex-wrap gap-2 md:gap-3">
                   {selectedAdventure.highlights.map((h, i) => (
-                      <span 
+                      <button
                         key={i} 
-                        className="liquid-glass px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl text-white text-xs sm:text-sm md:text-base font-medium transition-all hover:scale-105 cursor-default"
+                        onClick={() => handleHighlightClick(i)}
+                        className="liquid-glass px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl text-white text-xs sm:text-sm md:text-base font-medium transition-all hover:scale-105 cursor-pointer"
+                        disabled={!selectedAdventure.images || selectedAdventure.images.length === 0}
                       >
                       {h}
-                    </span>
+                    </button>
                   ))}
                 </div>
               </div>
