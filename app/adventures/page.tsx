@@ -548,9 +548,19 @@ export default function Adventures() {
                 </h2>
               </div>
               
-              <p className="text-gray-200 text-base md:text-lg mb-6 md:mb-8 leading-relaxed">
-                {selectedAdventure.description}
-              </p>
+              <div className="text-gray-200 text-base md:text-lg mb-6 md:mb-8 leading-loose space-y-4">
+                {selectedAdventure.description.split('. ').map((sentence, index, array) => {
+                  if (index === array.length - 1 && !sentence.trim()) return null;
+                  const trimmedSentence = sentence.trim();
+                  if (!trimmedSentence) return null;
+                  const finalSentence = index < array.length - 1 || sentence.endsWith('.') ? trimmedSentence : trimmedSentence + '.';
+                  return (
+                    <p key={index} className="mb-4 last:mb-0">
+                      {finalSentence}
+                    </p>
+                  );
+                })}
+              </div>
 
               {/* Highlights */}
               {selectedAdventure.highlights && selectedAdventure.highlights.length > 0 && (
