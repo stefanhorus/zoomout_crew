@@ -106,7 +106,7 @@ const adventures: Adventure[] = [
     thumbnail: "/assets/adventures/edinburgh/edinburgh1.png",
     shortDescription: "A perfect escape from overpopulated London, this two-day trip to Edinburgh offered a refreshing change of pace in the historic Scottish capital.",
     description: "A two-day exploration of Edinburgh's historic charm and stunning architecture. Our journey began at Edinburgh Castle, the iconic fortress that dominates the city skyline from its volcanic rock perch. Wandering through the Royal Mile, we discovered the historic heart of the Old Town connecting the castle to Holyrood Palace, and stumbled upon the hidden gem of Dean's Village with its charming 19th-century architecture and peaceful Water of Leith. The adventure continued up Calton Hill, offering breathtaking panoramic views of the city and its surroundings.\n\nExploring Greyfriars Kirkyard revealed the historic cemetery that inspired J.K. Rowling's Harry Potter characters. Scott Monument was admired from a distance for the best view of this Gothic spire dedicated to Sir Walter Scott. Strolling through Circus Lane, a picturesque cobblestone street with colorful doors and flower boxes, led us to Victoria Street, the curved, colorful street that's said to have inspired Diagon Alley. Our journey also included St. Bernard's Well, the neoclassical structure overlooking the Water of Leith.\n\nDuring our adventure, we had a lovely photoshoot captured by Andreea Cucu. Through aerial cinematography, the city's unique character was captured, from its ancient cobblestone streets to its breathtaking hilltop vistas.",
-    highlights: ["Edinburgh Castle", "Royal Mile", "Dean's Village", "Calton Hill", "Greyfriars Kirkyard", "Scott Monument", "Circus Lane", "Victoria Street", "St. Bernard's Well"],
+    highlights: ["Edinburgh Castle", "Royal Mile", "Dean's Village", "Calton Hill", "Greyfriars Kirkyard", "Scott Monument", "Circus Lane", "Victoria Street", "St. Bernard's Well", "timshel.pictures Photoshoot"],
     images: [
       "/assets/adventures/edinburgh/edinburgh1.png",
       "/assets/adventures/edinburgh/edinburgh2.png",
@@ -126,6 +126,8 @@ const adventures: Adventure[] = [
       "/assets/adventures/edinburgh/edinburgh16.png",
       "/assets/adventures/edinburgh/edinburgh17.png",
       "/assets/adventures/edinburgh/edinburgh18.png",
+      "/assets/adventures/edinburgh/edinburgh19.png",
+      "/assets/adventures/edinburgh/edinburgh20.png",
     ],
   },
 ];
@@ -181,16 +183,12 @@ export default function Adventures() {
     const totalImages = selectedAdventure.images.length;
     
     if (highlightIndex === 0) {
-      // First highlight: first click -> image 4 (index 3), second click -> second to last (index totalImages - 2)
-      if (clickCount === 0) {
-        const targetIndex = Math.min(3, totalImages - 1); // Image 4 (index 3)
-        setSelectedImageIndex(targetIndex);
-        setHighlightClicks({ ...highlightClicks, [highlightIndex]: 1 });
-      } else {
-        const targetIndex = Math.max(0, totalImages - 2); // Second to last
-        setSelectedImageIndex(targetIndex);
-        setHighlightClicks({ ...highlightClicks, [highlightIndex]: 0 }); // Reset for next cycle
-      }
+      // First highlight: cycles between image 4 (index 3) and image 14 (index 13)
+      const imageSequence = [3, 13]; // Indices for images 4 and 14
+      const currentSequenceIndex = clickCount % imageSequence.length;
+      const targetIndex = Math.min(imageSequence[currentSequenceIndex], totalImages - 1);
+      setSelectedImageIndex(targetIndex);
+      setHighlightClicks({ ...highlightClicks, [highlightIndex]: clickCount + 1 });
     } else if (highlightIndex === 1) {
       // Second highlight: first click -> image 5 (index 4), second click -> image 10 (index 9)
       if (clickCount === 0) {
@@ -245,6 +243,13 @@ export default function Adventures() {
     } else if (highlightIndex === 8) {
       // Ninth highlight: navigate to image 11 (index 10)
       const targetIndex = Math.min(10, totalImages - 1); // Image 11 (index 10)
+      setSelectedImageIndex(targetIndex);
+      setHighlightClicks({ ...highlightClicks, [highlightIndex]: clickCount + 1 });
+    } else if (highlightIndex === 9) {
+      // Tenth highlight: cycles between image 19 (index 18) and image 20 (index 19)
+      const imageSequence = [18, 19]; // Indices for images 19 and 20
+      const currentSequenceIndex = clickCount % imageSequence.length;
+      const targetIndex = Math.min(imageSequence[currentSequenceIndex], totalImages - 1);
       setSelectedImageIndex(targetIndex);
       setHighlightClicks({ ...highlightClicks, [highlightIndex]: clickCount + 1 });
     }
