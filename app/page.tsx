@@ -229,6 +229,7 @@ export default function Home() {
       '/assets/backgrounds/background6tiny.png',
       '/assets/backgrounds/background7tiny.jpg',
       '/assets/backgrounds/backgroundtiny.png',
+      '/assets/backgrounds/2.jpg',
     ];
 
     backgrounds.forEach((src) => {
