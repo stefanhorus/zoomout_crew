@@ -220,6 +220,26 @@ export default function Home() {
     };
   }, []);
 
+  // Preload all background images for other pages
+  useEffect(() => {
+    const backgrounds = [
+      '/assets/backgrounds/background2tiny.png',
+      '/assets/backgrounds/background3.jpg',
+      '/assets/backgrounds/background4tiny.png',
+      '/assets/backgrounds/background6tiny.png',
+      '/assets/backgrounds/background7tiny.jpg',
+      '/assets/backgrounds/backgroundtiny.png',
+    ];
+
+    backgrounds.forEach((src) => {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = src;
+      document.head.appendChild(link);
+    });
+  }, []);
+
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center bg-black text-white" style={{ minHeight: '100vh' }}>
       <style dangerouslySetInnerHTML={{__html: `
