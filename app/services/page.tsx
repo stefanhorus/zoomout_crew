@@ -32,7 +32,7 @@ const getServices = (t: (key: string) => string): Service[] => [
       t("services.aerialFilmingHour.feature3"),
       t("services.aerialFilmingHour.feature4")
     ],
-    image: "/assets/backgrounds/background4tiny.png",
+    image: "/assets/services/hour.jpg",
   },
   {
     id: 2,
@@ -47,7 +47,7 @@ const getServices = (t: (key: string) => string): Service[] => [
       t("services.aerialFilmingDay.feature3"),
       t("services.aerialFilmingDay.feature4")
     ],
-    image: "/assets/backgrounds/background5.jpg",
+    image: "/assets/services/fullday.png",
   },
   {
     id: 3,
@@ -63,7 +63,7 @@ const getServices = (t: (key: string) => string): Service[] => [
       t("services.postProduction.feature4"),
       t("services.postProduction.feature5")
     ],
-    image: "/assets/backgrounds/background3.jpg",
+    image: "/assets/services/postproduction.jpg",
   },
 ];
 
@@ -89,7 +89,7 @@ export default function Services() {
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
-          src="/assets/backgrounds/background5.jpg"
+          src="/assets/backgrounds/background7tiny.jpg"
           alt="Services background"
           fill
           priority
