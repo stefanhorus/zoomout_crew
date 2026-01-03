@@ -33,14 +33,18 @@ const adventures: Adventure[] = [
     date: "2025-04-15",
     thumbnail: "/assets/adventures/kz-kg/5.jpg",
     description:
-      "A breathtaking journey through Central Asia. From the surreal landscapes of Charyn Canyon to the alpine lakes of Kyrgyzstan...",
+      "A breathtaking 5-day journey through the heart of Central Asia, exploring the stunning landscapes of Kazakhstan and Kyrgyzstan. From the dramatic Charyn Canyon, often called Central Asia's mini-Grand Canyon, to the pristine alpine lakes of Kolsay and the unique submerged forest of Kaindy Lake. Cross into Kyrgyzstan through scenic mountain passes, discover the cultural gems of Karakol, and experience the vibrant Jety-Oguz Gorge with its famous red rock formations. Marvel at the powerful Barskoon Waterfall and explore the colorful Fairy-Tale Canyon. Witness the impressive tradition of eagle hunting in Bokonbaevo and enjoy an authentic stay in a traditional yurt. Immerse yourself in local culture, taste traditional Kyrgyz meals, and explore the bustling markets and landmarks of Bishkek. This immersive road trip captures the raw beauty and rich cultural heritage of Central Asia through aerial cinematography and authentic experiences.",
     highlights: [
       "Charyn Canyon",
-      "Altyn Emel National Park",
-      "Kolsai & Kaindy Lakes",
-      "Almaty Mountains",
-      "Song-Kul Lake",
-      "Karakol Valley",
+      "Kolsay Lake",
+      "Kaindy Lake",
+      "Jety-Oguz Gorge",
+      "Barskoon Waterfall",
+      "Fairy-Tale Canyon",
+      "Eagle Hunting Show",
+      "Traditional Yurt Stay",
+      "Issyk-Kul Lake",
+      "Bishkek",
     ],
     images: [
       "/assets/adventures/kz-kg/1.jpg",
@@ -66,12 +70,13 @@ const adventures: Adventure[] = [
     location: "United States",
     category: "americas",
     date: "2025-09-15",
-    thumbnail: "/assets/adventures/americasept/americasept1.png",
+    thumbnail: "/assets/backgrounds/background6tiny.png",
     description: "September exploration of America's breathtaking scenery, from coast to coast.",
     highlights: ["Fall Colors", "Desert Landscapes", "Historic Sites", "Natural Wonders"],
     images: [
-      "/assets/adventures/americasept/americasept1.png",
+      "/assets/backgrounds/background6tiny.png",
       "/assets/adventures/americasept/americasept2.png",
+      "/assets/adventures/americasept/americasept1.png",
       "/assets/adventures/americasept/americasept3.png",
       "/assets/adventures/americasept/americasept4.png",
       "/assets/adventures/americasept/americasept5.png",
@@ -402,7 +407,7 @@ export default function Adventures() {
                   unoptimized={adv.thumbnail.includes('tiny')}
                   onLoad={() => setLoadedImages(prev => new Set(prev).add(adv.id))}
                 />
-                {!adv.thumbnail.includes('americasept') && (
+                {!adv.thumbnail.includes('americasept') && !adv.thumbnail.includes('background6tiny') && (
                   <div className={`absolute inset-0 bg-gradient-to-t transition-all duration-300 ${
                     adv.thumbnail.includes('sardinia') 
                       ? 'from-black/50 via-black/25 to-black/8 group-hover:from-black/40 group-hover:via-black/20 group-hover:to-black/3'

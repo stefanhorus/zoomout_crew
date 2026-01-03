@@ -184,7 +184,7 @@ export default function Shop() {
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
-          src="/assets/backgrounds/background6tiny.png"
+          src="/assets/backgrounds/2.jpg"
           alt="Shop background"
           fill
           priority
