@@ -338,8 +338,14 @@ export default function About() {
                   <div className="relative z-10">
                     {/* Profile Picture and Name - Top */}
                     <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-5 pb-3 md:pb-4 border-b border-white/10">
-                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden shadow-lg shadow-purple-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-purple-400/30 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
-                        <span className="text-white font-bold text-sm md:text-base">{t("about.reviews.review5.initials")}</span>
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden shadow-lg shadow-purple-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-purple-400/30">
+                        <Image
+                          src="/assets/brands/rotaract.png"
+                          alt={t("about.reviews.review5.name")}
+                          width={48}
+                          height={48}
+                          className="w-full h-full object-contain bg-white/10"
+                        />
                       </div>
                       <div>
                         <p className="text-white font-semibold text-sm md:text-base group-hover/review:text-purple-100 transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
@@ -499,8 +505,14 @@ export default function About() {
                         <div className="relative z-10">
                           {/* Profile Picture and Name - Top */}
                           <div className="flex items-center gap-4 mb-5 pb-4 border-b border-white/10">
-                            <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg shadow-purple-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-purple-400/30 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
-                              <span className="text-white font-bold text-base">{t("about.reviews.review5.initials")}</span>
+                            <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg shadow-purple-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-purple-400/30">
+                              <Image
+                                src="/assets/brands/rotaract.png"
+                                alt={t("about.reviews.review5.name")}
+                                width={48}
+                                height={48}
+                                className="w-full h-full object-contain bg-white/10"
+                              />
                             </div>
                             <div>
                               <p className="text-white font-semibold text-base group-hover/review:text-purple-100 transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>

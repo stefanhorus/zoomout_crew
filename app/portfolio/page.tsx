@@ -339,7 +339,9 @@ export default function Portfolio() {
                 <h3 className="text-xl font-semibold mb-2 group-hover:text-white transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
                   {project.title}
                 </h3>
-                <p className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">{project.description}</p>
+                <p className="text-gray-200 text-sm group-hover:text-gray-100 transition-colors line-clamp-3">
+                  {project.description.split('. ').slice(0, 2).join('. ') + (project.description.split('. ').length > 2 ? '...' : '')}
+                </p>
               </div>
             </div>
           ))}
