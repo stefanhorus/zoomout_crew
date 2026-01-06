@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Construiește line items pentru Stripe
-    const lineItems = items.map((item: { product: { name: string; price: number }; quantity: number }) => ({
+    const lineItems = items.map((item: { product: { name: string; price: number; description?: string }; quantity: number }) => ({
       price_data: {
         currency: "ron", // Lei românești
         product_data: {
