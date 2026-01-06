@@ -2,15 +2,49 @@
 
 import { useCart } from "@/contexts/CartContext";
 import Image from "next/image";
+import { useState } from "react";
 
 export default function Cart({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("ro-RO", {
       style: "currency",
-      currency: "USD",
+      currency: "RON",
     }).format(price);
+  };
+
+  const handleCheckout = async () => {
+    if (cart.length === 0) return;
+
+    setIsProcessing(true);
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ items: cart }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create checkout session");
+      }
+
+      // Redirecționează către Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL received");
+      }
+    } catch (error: any) {
+      console.error("Checkout error:", error);
+      alert(error.message || "A apărut o eroare la procesarea plății. Te rugăm să încerci din nou.");
+      setIsProcessing(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -134,13 +168,12 @@ export default function Cart({ isOpen, onClose }: { isOpen: boolean; onClose: ()
               </span>
             </div>
             <button
-              onClick={() => {
-                alert("Checkout functionality coming soon!");
-              }}
-              className="w-full bg-white text-black py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+              onClick={handleCheckout}
+              disabled={isProcessing}
+              className="w-full bg-white text-black py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               style={{ fontFamily: "var(--font-roboto)" }}
             >
-              Checkout
+              {isProcessing ? "Se procesează..." : "Finalizează comanda"}
             </button>
             <button
               onClick={clearCart}
