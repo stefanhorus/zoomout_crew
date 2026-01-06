@@ -1,27 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-12-15.clover",
-});
-
 export async function POST(request: NextRequest) {
   try {
-    const { items } = await request.json();
-
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return NextResponse.json(
-        { error: "Cart items are required" },
-        { status: 400 }
-      );
-    }
-
     // Verifică dacă STRIPE_SECRET_KEY este setat
     if (!process.env.STRIPE_SECRET_KEY) {
       console.error("STRIPE_SECRET_KEY is not set");
       return NextResponse.json(
         { error: "Server configuration error" },
         { status: 500 }
+      );
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2025-12-15.clover",
+    });
+
+    const { items } = await request.json();
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return NextResponse.json(
+        { error: "Cart items are required" },
+        { status: 400 }
       );
     }
 
