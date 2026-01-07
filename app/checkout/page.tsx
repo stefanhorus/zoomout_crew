@@ -2,12 +2,14 @@
 
 import { useState, Suspense } from "react";
 import { useCart } from "@/contexts/CartContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
 function CheckoutContent() {
   const { cart, getTotalPrice } = useCart();
+  const { t } = useLanguage();
   const router = useRouter();
   const [discountCode, setDiscountCode] = useState("");
   const [discountApplied, setDiscountApplied] = useState(false);
@@ -49,7 +51,7 @@ function CheckoutContent() {
       setDiscountPercentage(validCodes[code]);
       setDiscountError("");
     } else {
-      setDiscountError("Cod de discount invalid sau expirat");
+      setDiscountError(t("checkout.discountInvalid"));
       setDiscountApplied(false);
       setDiscountPercentage(0);
     }
@@ -151,7 +153,7 @@ function CheckoutContent() {
         <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[60vh]">
           <div className="liquid-glass-strong rounded-2xl p-8 text-center">
             <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
-              Coșul tău este gol
+              {t("checkout.emptyCart")}
             </h2>
             <Link
               href="/shop"
@@ -184,9 +186,9 @@ function CheckoutContent() {
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ fontFamily: "var(--font-playfair)" }}>
-            Finalizează comanda
+            {t("checkout.title")}
           </h1>
-          <p className="text-gray-300">Verifică detaliile comenzii și completează plata</p>
+          <p className="text-gray-300">{t("checkout.orderSummary")}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -195,7 +197,7 @@ function CheckoutContent() {
             {/* Order Items */}
             <div className="liquid-glass-strong rounded-2xl p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
-                Produsele tale
+                {t("checkout.items")}
               </h2>
               <div className="space-y-4">
                 {cart.map((item) => (
@@ -214,7 +216,7 @@ function CheckoutContent() {
                         {item.product.name}
                       </h3>
                       <p className="text-gray-400 text-sm mb-2">
-                        Cantitate: {item.quantity}
+                        {t("checkout.quantity")}: {item.quantity}
                       </p>
                       <p className="text-white font-semibold">
                         {formatPrice(item.product.price * item.quantity)}
@@ -228,7 +230,7 @@ function CheckoutContent() {
             {/* Discount Code */}
             <div className="liquid-glass-strong rounded-2xl p-6">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
-                Cod de discount
+                {t("checkout.discountCode")}
               </h2>
               {!discountApplied ? (
                 <div className="flex gap-2">
@@ -236,7 +238,7 @@ function CheckoutContent() {
                     type="text"
                     value={discountCode}
                     onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
-                    placeholder="Introdu codul de discount"
+                    placeholder={t("checkout.discountCode")}
                     className="flex-1 px-4 py-3 rounded-xl liquid-glass-input text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/20"
                     style={{ fontFamily: "var(--font-roboto)" }}
                   />
@@ -246,17 +248,17 @@ function CheckoutContent() {
                     className="liquid-glass-button text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{ fontFamily: "var(--font-roboto)" }}
                   >
-                    Aplică
+                    {t("checkout.applyDiscount")}
                   </button>
                 </div>
               ) : (
                 <div className="flex items-center justify-between p-4 bg-green-500/20 rounded-xl border border-green-500/50">
                   <div>
                     <p className="text-green-400 font-semibold">
-                      Cod aplicat: {discountCode}
+                      {t("checkout.discountApplied")}: {discountCode}
                     </p>
                     <p className="text-gray-300 text-sm">
-                      Reducere: {discountPercentage}%
+                      {t("checkout.discount")}: {discountPercentage}%
                     </p>
                   </div>
                   <button
@@ -279,7 +281,7 @@ function CheckoutContent() {
           <div className="lg:col-span-1">
             <div className="liquid-glass-strong rounded-2xl p-6 sticky top-24">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
-                Rezumat comandă
+                {t("checkout.orderSummary")}
               </h2>
 
               {/* Payment Method Info */}
@@ -290,8 +292,8 @@ function CheckoutContent() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                     <div>
-                      <p className="text-yellow-400 font-semibold text-sm mb-1">Revolut Pay nu este disponibil</p>
-                      <p className="text-gray-300 text-xs">Folosim Stripe pentru această plată. Cardurile sunt acceptate.</p>
+                      <p className="text-yellow-400 font-semibold text-sm mb-1">{t("checkout.revolutPay")} {t("checkout.notAvailable")}</p>
+                      <p className="text-gray-300 text-xs">{t("checkout.stripeFallback")}</p>
                     </div>
                   </div>
                 </div>
@@ -302,8 +304,8 @@ function CheckoutContent() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div>
-                      <p className="text-blue-400 font-semibold text-sm">Plată prin Revolut Pay</p>
-                      <p className="text-gray-300 text-xs">Banii ajung direct în contul nostru Revolut Business</p>
+                      <p className="text-blue-400 font-semibold text-sm">{t("checkout.revolutPay")}</p>
+                      <p className="text-gray-300 text-xs">{t("checkout.revolutInfo")}</p>
                     </div>
                   </div>
                 </div>
@@ -311,17 +313,17 @@ function CheckoutContent() {
               
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-gray-300">
-                  <span>Subtotal</span>
+                  <span>{t("checkout.subtotal")}</span>
                   <span>{formatPrice(subtotal)}</span>
                 </div>
                 {discountApplied && (
                   <div className="flex justify-between text-green-400">
-                    <span>Reducere ({discountPercentage}%)</span>
+                    <span>{t("checkout.discount")} ({discountPercentage}%)</span>
                     <span>-{formatPrice(discountAmount)}</span>
                   </div>
                 )}
                 <div className="border-t border-gray-700 pt-3 flex justify-between text-white font-bold text-lg">
-                  <span>Total</span>
+                  <span>{t("checkout.total")}</span>
                   <span>{formatPrice(total)}</span>
                 </div>
               </div>
@@ -332,14 +334,14 @@ function CheckoutContent() {
                 className="w-full liquid-glass-button text-white py-4 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-center"
                 style={{ fontFamily: "var(--font-roboto)" }}
               >
-                {isProcessing ? "Se procesează..." : "Continuă către plată"}
+                {isProcessing ? t("checkout.processing") : t("checkout.continueToPayment")}
               </button>
 
               <Link
                 href="/shop"
                 className="block text-center text-gray-400 hover:text-white transition-colors mt-4 text-sm"
               >
-                ← Înapoi la magazin
+                {t("checkout.backToShop")}
               </Link>
             </div>
           </div>

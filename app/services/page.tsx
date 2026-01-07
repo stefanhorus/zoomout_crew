@@ -24,7 +24,7 @@ const getServices = (t: (key: string) => string): Service[] => [
     title: t("services.aerialFilmingHour"),
     category: "videography",
     icon: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-    price: "70€/hour",
+    price: `70€${t("services.price.hour")}`,
     description: t("services.aerialFilmingHour.desc"),
     features: [
       t("services.aerialFilmingHour.feature1"),
@@ -39,7 +39,7 @@ const getServices = (t: (key: string) => string): Service[] => [
     title: t("services.aerialFilmingDay"),
     category: "videography",
     icon: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-    price: "250€/day",
+    price: `250€${t("services.price.day")}`,
     description: t("services.aerialFilmingDay.desc"),
     features: [
       t("services.aerialFilmingDay.feature1"),
@@ -54,7 +54,7 @@ const getServices = (t: (key: string) => string): Service[] => [
     title: t("services.postProduction"),
     category: "production",
     icon: "M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h10a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z",
-    price: "50€/video (discount for multiple)",
+    price: `50€${t("services.price.video")} ${t("services.price.discountMultiple")}`,
     description: t("services.postProduction.desc"),
     features: [
       t("services.postProduction.feature1"),

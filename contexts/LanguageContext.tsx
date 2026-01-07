@@ -150,6 +150,10 @@ const translations: Record<Language, Record<string, string>> = {
     "services.postProduction.pricing3": "4+ videos:",
     "services.highlights": "Highlights",
     "services.noServices": "No services found in this category.",
+    "services.price.hour": "/hour",
+    "services.price.day": "/day",
+    "services.price.video": "/video",
+    "services.price.discountMultiple": "(discount for multiple)",
     
     // Adventures page
     "adventures.title": "Adventures",
@@ -189,6 +193,39 @@ const translations: Record<Language, Record<string, string>> = {
     "shop.outOfStock": "Out of Stock",
     "shop.addToCart": "Add to Cart",
     "shop.noProducts": "No products found in this category.",
+    
+    // Cart
+    "cart.title": "Shopping Cart",
+    "cart.empty": "Your cart is empty",
+    "cart.total": "Total:",
+    "cart.checkout": "Checkout",
+    "cart.clear": "Clear Cart",
+    "cart.close": "Close cart",
+    
+    // Checkout
+    "checkout.title": "Checkout",
+    "checkout.orderSummary": "Order Summary",
+    "checkout.items": "Items",
+    "checkout.subtotal": "Subtotal",
+    "checkout.discount": "Discount",
+    "checkout.total": "Total",
+    "checkout.discountCode": "Discount Code",
+    "checkout.applyDiscount": "Apply",
+    "checkout.removeDiscount": "Remove",
+    "checkout.discountInvalid": "Invalid or expired discount code",
+    "checkout.paymentMethod": "Payment Method",
+    "checkout.revolutPay": "Revolut Pay",
+    "checkout.stripeCard": "Card (Stripe)",
+    "checkout.finalizeOrder": "Finalize Order",
+    "checkout.processing": "Processing...",
+    "checkout.emptyCart": "Your cart is empty",
+    "checkout.continueToPayment": "Continue to Payment",
+    "checkout.backToShop": "← Back to shop",
+    "checkout.notAvailable": "is not available",
+    "checkout.stripeFallback": "We're using Stripe for this payment. Cards are accepted.",
+    "checkout.revolutInfo": "Money goes directly to our Revolut Business account",
+    "checkout.quantity": "Quantity",
+    "checkout.discountApplied": "Code applied",
   },
   ro: {
     // Navigation
@@ -327,6 +364,10 @@ const translations: Record<Language, Record<string, string>> = {
     "services.postProduction.pricing3": "4+ videoclipuri:",
     "services.highlights": "Caracteristici",
     "services.noServices": "Nu s-au găsit servicii în această categorie.",
+    "services.price.hour": "/oră",
+    "services.price.day": "/zi",
+    "services.price.video": "/videoclip",
+    "services.price.discountMultiple": "(reducere pentru mai multe)",
     
     // Adventures page
     "adventures.title": "Aventuri",
@@ -366,6 +407,39 @@ const translations: Record<Language, Record<string, string>> = {
     "shop.outOfStock": "Stoc Epuizat",
     "shop.addToCart": "Adaugă în Coș",
     "shop.noProducts": "Nu s-au găsit produse în această categorie.",
+    
+    // Cart
+    "cart.title": "Coș de Cumpărături",
+    "cart.empty": "Coșul tău este gol",
+    "cart.total": "Total:",
+    "cart.checkout": "Finalizează comanda",
+    "cart.clear": "Golește coșul",
+    "cart.close": "Închide coșul",
+    
+    // Checkout
+    "checkout.title": "Finalizare Comandă",
+    "checkout.orderSummary": "Rezumat comandă",
+    "checkout.items": "Produse",
+    "checkout.subtotal": "Subtotal",
+    "checkout.discount": "Reducere",
+    "checkout.total": "Total",
+    "checkout.discountCode": "Cod de reducere",
+    "checkout.applyDiscount": "Aplică",
+    "checkout.removeDiscount": "Elimină",
+    "checkout.discountInvalid": "Cod de discount invalid sau expirat",
+    "checkout.paymentMethod": "Metodă de plată",
+    "checkout.revolutPay": "Revolut Pay",
+    "checkout.stripeCard": "Card (Stripe)",
+    "checkout.finalizeOrder": "Finalizează comanda",
+    "checkout.processing": "Se procesează...",
+    "checkout.emptyCart": "Coșul tău este gol",
+    "checkout.continueToPayment": "Continuă către plată",
+    "checkout.backToShop": "← Înapoi la magazin",
+    "checkout.notAvailable": "nu este disponibil",
+    "checkout.stripeFallback": "Folosim Stripe pentru această plată. Cardurile sunt acceptate.",
+    "checkout.revolutInfo": "Banii ajung direct în contul nostru Revolut Business",
+    "checkout.quantity": "Cantitate",
+    "checkout.discountApplied": "Cod aplicat",
   },
 };
 

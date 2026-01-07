@@ -1,11 +1,13 @@
 "use client";
 
 import { useCart } from "@/contexts/CartContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Image from "next/image";
 import { useState } from "react";
 
 export default function Cart({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
+  const { t } = useLanguage();
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("ro-RO", {
@@ -35,12 +37,12 @@ export default function Cart({ isOpen, onClose }: { isOpen: boolean; onClose: ()
         {/* Header */}
         <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-700">
           <h2 className="text-xl md:text-2xl font-bold" style={{ fontFamily: "var(--font-playfair)" }}>
-            Shopping Cart
+            {t("cart.title")}
           </h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-white transition-colors"
-            aria-label="Close cart"
+            aria-label={t("cart.close")}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -65,7 +67,7 @@ export default function Cart({ isOpen, onClose }: { isOpen: boolean; onClose: ()
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              <p className="text-gray-400 text-lg">Your cart is empty</p>
+              <p className="text-gray-400 text-lg">{t("cart.empty")}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -135,7 +137,7 @@ export default function Cart({ isOpen, onClose }: { isOpen: boolean; onClose: ()
         {cart.length > 0 && (
           <div className="border-t border-gray-700 p-4 md:p-6 space-y-4">
             <div className="flex justify-between items-center text-lg">
-              <span className="text-gray-400">Total:</span>
+              <span className="text-gray-400">{t("cart.total")}</span>
               <span className="text-2xl font-bold text-white">
                 {formatPrice(getTotalPrice())}
               </span>
@@ -145,14 +147,14 @@ export default function Cart({ isOpen, onClose }: { isOpen: boolean; onClose: ()
               className="w-full bg-white text-black py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
               style={{ fontFamily: "var(--font-roboto)" }}
             >
-              Finalizează comanda
+              {t("cart.checkout")}
             </button>
             <button
               onClick={clearCart}
               className="w-full bg-gray-700 text-white py-2 rounded-lg font-semibold hover:bg-gray-600 transition-colors text-sm"
               style={{ fontFamily: "var(--font-roboto)" }}
             >
-              Clear Cart
+              {t("cart.clear")}
             </button>
           </div>
         )}
