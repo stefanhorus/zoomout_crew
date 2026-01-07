@@ -147,12 +147,13 @@ export default function AdminOrdersPage() {
                   Username
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleLogin()}
+                  autoComplete="off"
                   className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-white"
-                  placeholder="stefanhorus@zoomoutcrew.com"
+                  placeholder="Introdu username-ul"
                 />
               </div>
               <div>
@@ -164,6 +165,7 @@ export default function AdminOrdersPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleLogin()}
+                  autoComplete="new-password"
                   className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-white"
                   placeholder="Introdu parola"
                 />
