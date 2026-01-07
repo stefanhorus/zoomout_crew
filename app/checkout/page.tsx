@@ -35,6 +35,7 @@ function CheckoutContent() {
       "SAVE20": 20,
       "ZOOMOUT15": 15,
       "FIRST25": 25,
+      "ALIS20": 20,
     };
 
     const code = discountCode.trim().toUpperCase();
