@@ -14,6 +14,7 @@ function CheckoutContent() {
   const [discountError, setDiscountError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState<"stripe" | "revolut">("revolut");
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("ro-RO", {
@@ -63,7 +64,11 @@ function CheckoutContent() {
 
     setIsProcessing(true);
     try {
-      const response = await fetch("/api/checkout", {
+      const apiEndpoint = paymentMethod === "revolut" 
+        ? "/api/revolut/checkout" 
+        : "/api/checkout";
+
+      const response = await fetch(apiEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -81,9 +86,13 @@ function CheckoutContent() {
         throw new Error(data.error || "Failed to create checkout session");
       }
 
-      // Redirecționează către Stripe Checkout
-      if (data.url) {
-        window.location.href = data.url;
+      // Redirecționează către checkout
+      const checkoutUrl = paymentMethod === "revolut" 
+        ? data.checkoutUrl 
+        : data.url;
+
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
       } else {
         throw new Error("No checkout URL received");
       }
@@ -241,6 +250,53 @@ function CheckoutContent() {
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
                 Rezumat comandă
               </h2>
+
+              {/* Payment Method Selection */}
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-300 mb-3">Metodă de plată</h3>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => setPaymentMethod("revolut")}
+                    className={`w-full p-3 rounded-xl border-2 transition-all text-left ${
+                      paymentMethod === "revolut"
+                        ? "border-white bg-white/10"
+                        : "border-gray-700 bg-gray-800/50 hover:border-gray-600"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold text-white">Revolut Pay</p>
+                        <p className="text-xs text-gray-400">Plată directă în Revolut</p>
+                      </div>
+                      {paymentMethod === "revolut" && (
+                        <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                          <div className="w-3 h-3 rounded-full bg-black"></div>
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setPaymentMethod("stripe")}
+                    className={`w-full p-3 rounded-xl border-2 transition-all text-left ${
+                      paymentMethod === "stripe"
+                        ? "border-white bg-white/10"
+                        : "border-gray-700 bg-gray-800/50 hover:border-gray-600"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold text-white">Card (Stripe)</p>
+                        <p className="text-xs text-gray-400">Visa, Mastercard, etc.</p>
+                      </div>
+                      {paymentMethod === "stripe" && (
+                        <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                          <div className="w-3 h-3 rounded-full bg-black"></div>
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                </div>
+              </div>
               
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-gray-300">
