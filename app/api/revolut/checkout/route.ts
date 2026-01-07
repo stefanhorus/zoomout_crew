@@ -48,8 +48,11 @@ export async function POST(request: NextRequest) {
     });
 
     // Creează order în Revolut
-    const baseUrl = process.env.REVOLUT_API_URL || "https://merchant.revolut.com/api/1.0";
-    const response = await fetch(`${baseUrl}/orders`, {
+    // URL-ul corect: https://merchant.revolut.com/api/1.0/orders (producție)
+    // Sandbox: https://sandbox-merchant.revolut.com/api/1.0/orders
+    const baseUrl = process.env.REVOLUT_API_URL || "https://merchant.revolut.com";
+    const apiVersion = "1.0";
+    const response = await fetch(`${baseUrl}/api/${apiVersion}/orders`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.REVOLUT_SECRET_KEY}`,
