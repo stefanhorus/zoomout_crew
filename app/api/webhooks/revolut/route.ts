@@ -1,7 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import crypto from "crypto";
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
+
+// Verifică semnătura webhook-ului Revolut
+function verifyRevolutSignature(
+  payload: string,
+  signature: string,
+  timestamp: string,
+  secret: string
+): boolean {
+  try {
+    const signedPayload = `${timestamp}.${payload}`;
+    const expectedSignature = crypto
+      .createHmac("sha256", secret)
+      .update(signedPayload)
+      .digest("hex");
+    
+    return crypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(expectedSignature)
+    );
+  } catch (error) {
+    console.error("Error verifying signature:", error);
+    return false;
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,15 +38,60 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
-    const eventType = body.type;
+    // Obține body-ul ca text pentru verificarea semnăturii
+    const bodyText = await request.text();
+    const signature = request.headers.get("revolut-signature");
+    const timestamp = request.headers.get("revolut-request-timestamp");
+
+    // Verifică semnătura dacă avem signing secret
+    if (process.env.REVOLUT_WEBHOOK_SECRET && signature && timestamp) {
+      const isValid = verifyRevolutSignature(
+        bodyText,
+        signature,
+        timestamp,
+        process.env.REVOLUT_WEBHOOK_SECRET
+      );
+
+      if (!isValid) {
+        console.error("Invalid Revolut webhook signature");
+        return NextResponse.json(
+          { error: "Invalid signature" },
+          { status: 401 }
+        );
+      }
+    }
+
+    const body = JSON.parse(bodyText);
+    const eventType = body.event;
 
     // Verifică dacă este un eveniment de plată completată
     if (eventType === "ORDER_COMPLETED" || eventType === "ORDER_AUTHORISED") {
-      const order = body.data;
+      const orderId = body.order_id;
+
+      // Trebuie să obținem detaliile order-ului din Revolut API
+      if (!process.env.REVOLUT_SECRET_KEY) {
+        console.error("REVOLUT_SECRET_KEY is not set");
+        return NextResponse.json({ received: true });
+      }
+
+      // Obține detaliile order-ului
+      const baseUrl = process.env.REVOLUT_API_URL || "https://merchant.revolut.com";
+      const orderResponse = await fetch(`${baseUrl}/api/1.0/orders/${orderId}`, {
+        headers: {
+          "Authorization": `Bearer ${process.env.REVOLUT_SECRET_KEY}`,
+          "Revolut-Api-Version": "2024-05-01",
+        },
+      });
+
+      if (!orderResponse.ok) {
+        console.error("Failed to fetch order details");
+        return NextResponse.json({ received: true });
+      }
+
+      const order = await orderResponse.json();
 
       try {
-        const customerEmail = order.customer?.email || order.email;
+        const customerEmail = order.customer?.email || order.email || order.customer_email;
         const amountTotal = order.amount || 0;
         const currency = order.currency || "RON";
         const orderItems = order.items || [];
