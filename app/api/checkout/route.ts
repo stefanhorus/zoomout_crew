@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       apiVersion: "2025-12-15.clover",
     });
 
-    const { items } = await request.json();
+    const { items, discountPercentage } = await request.json();
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -26,17 +26,26 @@ export async function POST(request: NextRequest) {
     }
 
     // Construiește line items pentru Stripe
-    const lineItems = items.map((item: { product: { name: string; price: number; description?: string }; quantity: number }) => ({
-      price_data: {
-        currency: "ron", // Lei românești
-        product_data: {
-          name: item.product.name,
-          description: item.product.description || "",
+    const lineItems = items.map((item: { product: { name: string; price: number; description?: string }; quantity: number }) => {
+      let unitAmount = Math.round(item.product.price * 100);
+      
+      // Aplică discount dacă există
+      if (discountPercentage && discountPercentage > 0) {
+        unitAmount = Math.round(unitAmount * (1 - discountPercentage / 100));
+      }
+
+      return {
+        price_data: {
+          currency: "ron", // Lei românești
+          product_data: {
+            name: item.product.name,
+            description: item.product.description || "",
+          },
+          unit_amount: unitAmount,
         },
-        unit_amount: Math.round(item.product.price * 100), // Stripe folosește cenți/bani
-      },
-      quantity: item.quantity,
-    }));
+        quantity: item.quantity,
+      };
+    });
 
     // Creează sesiunea de checkout
     const session = await stripe.checkout.sessions.create({
