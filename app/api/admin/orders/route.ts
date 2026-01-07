@@ -1,30 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { verifyAdminCredentials } from "@/lib/admin-users";
 
 export async function GET(request: NextRequest) {
   try {
-    // Verifică parola admin (simplă protecție)
-    const adminPassword = request.headers.get("x-admin-password");
-    const expectedPassword = process.env.ADMIN_PASSWORD;
+    // Verifică autentificarea cu username și parolă
+    const username = request.headers.get("x-admin-username");
+    const password = request.headers.get("x-admin-password");
     
-    // Debug logging (doar în development)
-    if (process.env.NODE_ENV === "development") {
-      console.log("Admin auth check:", {
-        hasHeader: !!adminPassword,
-        hasExpected: !!expectedPassword,
-        headerValue: adminPassword?.substring(0, 2) + "**",
-      });
-    }
-    
-    if (expectedPassword && adminPassword !== expectedPassword) {
+    if (!username || !password) {
       return NextResponse.json(
-        { error: "Unauthorized" },
+        { error: "Username and password required" },
         { status: 401 }
       );
     }
+
+    // Verifică credențialele
+    const isValid = await verifyAdminCredentials(username, password);
     
-    // Dacă nu există parolă setată, permite accesul (pentru development)
-    // În producție, ar trebui să existe întotdeauna ADMIN_PASSWORD
+    if (!isValid) {
+      return NextResponse.json(
+        { error: "Invalid username or password" },
+        { status: 401 }
+      );
+    }
 
     // Verifică dacă avem cheile necesare
     if (!process.env.STRIPE_SECRET_KEY || !process.env.REVOLUT_SECRET_KEY) {

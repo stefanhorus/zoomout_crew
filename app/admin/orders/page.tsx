@@ -24,17 +24,22 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState("");
 
   useEffect(() => {
-    // Verifică dacă există parola salvată în sessionStorage
+    // Verifică dacă există credențiale salvate în sessionStorage
+    const savedUsername = sessionStorage.getItem("admin_username");
     const savedPassword = sessionStorage.getItem("admin_password");
-    if (savedPassword) {
+    if (savedUsername && savedPassword) {
+      setUsername(savedUsername);
       setPassword(savedPassword);
       setIsAuthenticated(true);
-      fetchOrders(savedPassword);
+      fetchOrders(savedUsername, savedPassword);
+    } else {
+      setLoading(false);
     }
   }, []);
 
@@ -43,16 +48,23 @@ export default function AdminOrdersPage() {
       setAuthError("");
       setLoading(true);
       
+      if (!username || !password) {
+        setAuthError("Te rugăm să introduci username-ul și parola");
+        setLoading(false);
+        return;
+      }
+      
       const response = await fetch("/api/admin/orders", {
         method: "GET",
         headers: {
+          "x-admin-username": username,
           "x-admin-password": password,
           "Content-Type": "application/json",
         },
       });
 
       if (response.status === 401) {
-        setAuthError("Parolă incorectă");
+        setAuthError("Username sau parolă incorectă");
         setLoading(false);
         return;
       }
@@ -63,26 +75,32 @@ export default function AdminOrdersPage() {
       }
 
       setIsAuthenticated(true);
+      sessionStorage.setItem("admin_username", username);
       sessionStorage.setItem("admin_password", password);
-      await fetchOrders(password);
+      await fetchOrders(username, password);
     } catch (err: any) {
       setAuthError(err.message || "Eroare la autentificare");
       setLoading(false);
     }
   };
 
-  const fetchOrders = async (adminPassword?: string) => {
+  const fetchOrders = async (adminUsername?: string, adminPassword?: string) => {
     try {
       setLoading(true);
       const headers: Record<string, string> = {};
-      if (adminPassword || password) {
-        headers["x-admin-password"] = adminPassword || password;
+      if (adminUsername && adminPassword) {
+        headers["x-admin-username"] = adminUsername;
+        headers["x-admin-password"] = adminPassword;
+      } else if (username && password) {
+        headers["x-admin-username"] = username;
+        headers["x-admin-password"] = password;
       }
       
       const response = await fetch("/api/admin/orders", { headers });
       if (!response.ok) {
         if (response.status === 401) {
           setIsAuthenticated(false);
+          sessionStorage.removeItem("admin_username");
           sessionStorage.removeItem("admin_password");
           setAuthError("Sesiunea a expirat. Te rugăm să te autentifici din nou.");
           return;
@@ -127,7 +145,20 @@ export default function AdminOrdersPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-semibold mb-2">
-                  Parolă Admin
+                  Username
+                </label>
+                <input
+                  type="email"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && handleLogin()}
+                  className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-white"
+                  placeholder="stefanhorus@zoomoutcrew.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-2">
+                  Parolă
                 </label>
                 <input
                   type="password"
@@ -145,9 +176,10 @@ export default function AdminOrdersPage() {
               )}
               <button
                 onClick={handleLogin}
-                className="w-full px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-200 transition font-semibold"
+                disabled={loading}
+                className="w-full px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-200 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Autentificare
+                {loading ? "Se autentifică..." : "Autentificare"}
               </button>
             </div>
           </div>
@@ -275,7 +307,10 @@ export default function AdminOrdersPage() {
           </div>
         )}
 
-        <div className="mt-8 flex gap-4">
+        <div className="mt-8 flex gap-4 items-center">
+          <div className="text-sm text-gray-400">
+            Logat ca: <span className="text-white font-semibold">{username}</span>
+          </div>
           <button
             onClick={() => fetchOrders()}
             className="px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-200 transition font-semibold"
@@ -285,7 +320,9 @@ export default function AdminOrdersPage() {
           <button
             onClick={() => {
               setIsAuthenticated(false);
+              sessionStorage.removeItem("admin_username");
               sessionStorage.removeItem("admin_password");
+              setUsername("");
               setPassword("");
             }}
             className="px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition font-semibold"
