@@ -15,6 +15,7 @@ function CheckoutContent() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState<"stripe" | "revolut">("revolut");
+  const [showStripeFallback, setShowStripeFallback] = useState(false);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("ro-RO", {
@@ -65,11 +66,44 @@ function CheckoutContent() {
 
     setIsProcessing(true);
     try {
-      const apiEndpoint = paymentMethod === "revolut" 
-        ? "/api/revolut/checkout" 
-        : "/api/checkout";
+      // Încearcă întâi Revolut Pay (metoda principală)
+      if (paymentMethod === "revolut" || !showStripeFallback) {
+        try {
+          const response = await fetch("/api/revolut/checkout", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ 
+              items: cart,
+              discountCode: discountApplied ? discountCode : undefined,
+              discountPercentage: discountApplied ? discountPercentage : undefined,
+            }),
+          });
 
-      const response = await fetch(apiEndpoint, {
+          const data = await response.json();
+
+          if (response.ok && data.checkoutUrl) {
+            window.location.href = data.checkoutUrl;
+            return;
+          } else {
+            // Dacă Revolut eșuează, oferă Stripe ca fallback
+            console.warn("Revolut checkout failed, offering Stripe fallback");
+            setShowStripeFallback(true);
+            setPaymentMethod("stripe");
+            // Continuă cu Stripe mai jos
+          }
+        } catch (revolutError) {
+          // Dacă Revolut eșuează, oferă Stripe ca fallback
+          console.warn("Revolut checkout error, offering Stripe fallback:", revolutError);
+          setShowStripeFallback(true);
+          setPaymentMethod("stripe");
+          // Continuă cu Stripe mai jos
+        }
+      }
+
+      // Fallback la Stripe (pentru țări fără Revolut Pay sau dacă Revolut eșuează)
+      const response = await fetch("/api/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,13 +121,8 @@ function CheckoutContent() {
         throw new Error(data.error || "Failed to create checkout session");
       }
 
-      // Redirecționează către checkout
-      const checkoutUrl = paymentMethod === "revolut" 
-        ? data.checkoutUrl 
-        : data.url;
-
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl;
+      if (data.url) {
+        window.location.href = data.url;
       } else {
         throw new Error("No checkout URL received");
       }
@@ -252,52 +281,32 @@ function CheckoutContent() {
                 Rezumat comandă
               </h2>
 
-              {/* Payment Method Selection */}
-              <div className="mb-6">
-                <h3 className="text-sm font-semibold text-gray-300 mb-3">Metodă de plată</h3>
-                <div className="space-y-2">
-                  <button
-                    onClick={() => setPaymentMethod("revolut")}
-                    className={`w-full p-3 rounded-xl border-2 transition-all text-left ${
-                      paymentMethod === "revolut"
-                        ? "border-white bg-white/10"
-                        : "border-gray-700 bg-gray-800/50 hover:border-gray-600"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-semibold text-white">Revolut Pay</p>
-                        <p className="text-xs text-gray-400">Plată directă în Revolut</p>
-                      </div>
-                      {paymentMethod === "revolut" && (
-                        <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
-                          <div className="w-3 h-3 rounded-full bg-black"></div>
-                        </div>
-                      )}
+              {/* Payment Method Info */}
+              {showStripeFallback ? (
+                <div className="mb-6 p-4 bg-yellow-500/20 rounded-xl border border-yellow-500/50">
+                  <div className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-yellow-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <div>
+                      <p className="text-yellow-400 font-semibold text-sm mb-1">Revolut Pay nu este disponibil</p>
+                      <p className="text-gray-300 text-xs">Folosim Stripe pentru această plată. Cardurile sunt acceptate.</p>
                     </div>
-                  </button>
-                  <button
-                    onClick={() => setPaymentMethod("stripe")}
-                    className={`w-full p-3 rounded-xl border-2 transition-all text-left ${
-                      paymentMethod === "stripe"
-                        ? "border-white bg-white/10"
-                        : "border-gray-700 bg-gray-800/50 hover:border-gray-600"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-semibold text-white">Card (Stripe)</p>
-                        <p className="text-xs text-gray-400">Visa, Mastercard, etc.</p>
-                      </div>
-                      {paymentMethod === "stripe" && (
-                        <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
-                          <div className="w-3 h-3 rounded-full bg-black"></div>
-                        </div>
-                      )}
-                    </div>
-                  </button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="mb-6 p-4 bg-blue-500/20 rounded-xl border border-blue-500/50">
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="text-blue-400 font-semibold text-sm">Plată prin Revolut Pay</p>
+                      <p className="text-gray-300 text-xs">Banii ajung direct în contul nostru Revolut Business</p>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-gray-300">
