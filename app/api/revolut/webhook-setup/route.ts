@@ -2,6 +2,28 @@ import { NextRequest, NextResponse } from "next/server";
 
 // Acest endpoint creează webhook-ul în Revolut prin API
 // Poți apela acest endpoint o singură dată pentru a configura webhook-ul
+export async function GET(request: NextRequest) {
+  // Returnează instrucțiuni pentru configurare
+  return NextResponse.json({
+    message: "Use POST method to create webhook",
+    instructions: "Use curl or Postman to POST to this endpoint",
+    curl_example: `curl -X POST ${process.env.NEXT_PUBLIC_BASE_URL || request.headers.get("origin")}/api/revolut/webhook-setup`,
+    manual_setup: {
+      url: "https://merchant.revolut.com/api/1.0/webhooks",
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer YOUR_REVOLUT_SECRET_KEY",
+        "Content-Type": "application/json",
+        "Revolut-Api-Version": "2024-05-01"
+      },
+      body: {
+        url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://zoomoutcrew.com"}/api/webhooks/revolut`,
+        events: ["ORDER_COMPLETED", "ORDER_AUTHORISED"]
+      }
+    }
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
     if (!process.env.REVOLUT_SECRET_KEY) {
