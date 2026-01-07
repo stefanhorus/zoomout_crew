@@ -30,12 +30,11 @@ export default function AdminOrdersPage() {
   const [authError, setAuthError] = useState("");
 
   useEffect(() => {
-    // Verifică dacă există credențiale salvate în sessionStorage
+    // Verifică dacă există credențiale salvate în sessionStorage pentru autentificare automată
     const savedUsername = sessionStorage.getItem("admin_username");
     const savedPassword = sessionStorage.getItem("admin_password");
     if (savedUsername && savedPassword) {
-      setUsername(savedUsername);
-      setPassword(savedPassword);
+      // Folosește credențialele salvate pentru autentificare automată, dar nu le afișa în formular
       setIsAuthenticated(true);
       fetchOrders(savedUsername, savedPassword);
     } else {
@@ -324,6 +323,7 @@ export default function AdminOrdersPage() {
               sessionStorage.removeItem("admin_password");
               setUsername("");
               setPassword("");
+              setLoading(false);
             }}
             className="px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition font-semibold"
           >
