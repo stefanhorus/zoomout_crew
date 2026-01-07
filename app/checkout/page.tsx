@@ -32,6 +32,7 @@ function CheckoutContent() {
     
     // Coduri de discount simple (poți extinde cu o bază de date sau API)
     const validCodes: { [key: string]: number } = {
+      "FREE": 100,
       "WELCOME10": 10,
       "SAVE20": 20,
       "ZOOMOUT15": 15,
