@@ -9,7 +9,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
 
 export default function Home() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+
+  // Update page title when language changes
+  useEffect(() => {
+    document.title = "Zoomout_crew - Professional aerial footage and more";
+  }, [language]);
   
   const brands = [
     { id: 1, name: "Big Belly", logo: "/assets/brands/bigbelly.png", width: 320, height: 160 },
@@ -395,6 +400,8 @@ export default function Home() {
             )}
           </video>
         )}
+        {/* Dark overlay pentru a întuneca video-ul */}
+        <div className="absolute inset-0 w-full h-full bg-black/40 z-0" />
       </div>
 
       {/* Hidden Game Button - Left Middle - Invisible but still clickable */}
@@ -425,6 +432,7 @@ export default function Home() {
       >
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white">
           <Typewriter
+            key={language}
             words={["Zoomout_crew"]}
             loop={false}
             cursor
@@ -468,14 +476,14 @@ export default function Home() {
                 return (
                   <div
                     key={brand.id}
-                    className="flex-shrink-0 w-40 md:w-48 lg:w-64 h-20 md:h-24 flex items-center justify-center liquid-glass rounded-xl p-3 md:p-4 group mx-2 md:mx-4"
+                    className="flex-shrink-0 w-40 md:w-48 lg:w-64 h-20 md:h-24 flex items-center justify-center liquid-glass rounded-xl p-3 md:p-4 group mx-2 md:mx-4 backdrop-blur-md"
                   >
                     <Image
                       src={brand.logo}
                       alt={brand.name}
                       width={brand.width}
                       height={brand.height}
-                      className="object-contain w-auto h-auto opacity-70 group-hover:opacity-100 transition-opacity grayscale group-hover:grayscale-0"
+                      className="object-contain w-auto h-auto opacity-70 group-hover:opacity-100 transition-opacity"
                       style={{ 
                         height: isLarge ? `${brand.height}px` : `${brand.height}px`,
                         maxHeight: isLarge ? `${brand.height}px` : `${brand.height}px`, 
@@ -492,14 +500,14 @@ export default function Home() {
                 return (
                   <div
                     key={`${brand.id}-duplicate`}
-                    className="flex-shrink-0 w-40 md:w-48 lg:w-64 h-20 md:h-24 flex items-center justify-center liquid-glass rounded-xl p-3 md:p-4 group mx-2 md:mx-4"
+                    className="flex-shrink-0 w-40 md:w-48 lg:w-64 h-20 md:h-24 flex items-center justify-center liquid-glass rounded-xl p-3 md:p-4 group mx-2 md:mx-4 backdrop-blur-md"
                   >
                     <Image
                       src={brand.logo}
                       alt={brand.name}
                       width={brand.width}
                       height={brand.height}
-                      className="object-contain w-auto h-auto opacity-70 group-hover:opacity-100 transition-opacity grayscale group-hover:grayscale-0"
+                      className="object-contain w-auto h-auto opacity-70 group-hover:opacity-100 transition-opacity"
                       style={{ 
                         height: isLarge ? `${brand.height}px` : `${brand.height}px`,
                         maxHeight: isLarge ? `${brand.height}px` : `${brand.height}px`, 
@@ -539,7 +547,7 @@ export default function Home() {
                 return (
                   <div
                     key={brand.id}
-                    className="flex-shrink-0 w-32 h-20 flex items-center justify-center liquid-glass rounded-xl p-3 group mx-2 active:scale-95"
+                    className="flex-shrink-0 w-32 h-20 flex items-center justify-center liquid-glass rounded-xl p-3 group mx-2 active:scale-95 backdrop-blur-md"
                     style={{
                       background: 'rgba(255, 255, 255, 0.15)',
                       borderColor: 'rgba(255, 255, 255, 0.3)',
@@ -570,7 +578,7 @@ export default function Home() {
                 return (
                   <div
                     key={`${brand.id}-duplicate`}
-                    className="flex-shrink-0 w-32 h-20 flex items-center justify-center liquid-glass rounded-xl p-3 group mx-2 active:scale-95"
+                    className="flex-shrink-0 w-32 h-20 flex items-center justify-center liquid-glass rounded-xl p-3 group mx-2 active:scale-95 backdrop-blur-md"
                     style={{
                       background: 'rgba(255, 255, 255, 0.15)',
                       borderColor: 'rgba(255, 255, 255, 0.3)',

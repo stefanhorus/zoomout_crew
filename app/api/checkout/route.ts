@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       apiVersion: "2025-12-15.clover",
     });
 
-    const { items, discountPercentage } = await request.json();
+    const { items, discountPercentage, customerEmail, language } = await request.json();
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -52,10 +52,12 @@ export async function POST(request: NextRequest) {
       payment_method_types: ["card", "revolut_pay"],
       line_items: lineItems,
       mode: "payment",
+      customer_email: customerEmail || undefined, // Adaugă emailul clientului dacă este furnizat
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL || request.headers.get("origin")}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || request.headers.get("origin")}/checkout/cancel`,
       metadata: {
-        // Poți adăuga metadata suplimentar aici dacă e nevoie
+        customer_email: customerEmail || "",
+        language: language || "en",
       },
     });
 

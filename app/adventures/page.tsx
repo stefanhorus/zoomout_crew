@@ -170,6 +170,11 @@ export default function Adventures() {
     return date.toLocaleDateString(locale, { year: "numeric", month: "long" });
   };
 
+  // Update page title when language changes
+  useEffect(() => {
+    document.title = `${t("adventures.title")} - Zoomout_crew`;
+  }, [language, t]);
+
   // Reset image index when adventure changes
   useEffect(() => {
     if (selectedAdventure) {
@@ -348,6 +353,7 @@ export default function Adventures() {
             style={{ fontFamily: "var(--font-playfair)" }}
           >
             <Typewriter
+              key={language}
               words={[t("adventures.title")]}
               loop={false}
               cursor
@@ -386,7 +392,7 @@ export default function Adventures() {
             <div
               key={adv.id}
               onClick={() => setSelectedAdventure(adv)}
-              className="group relative overflow-hidden rounded-2xl cursor-pointer liquid-glass liquid-glass-hover h-full flex flex-col"
+              className="group relative overflow-hidden rounded-2xl cursor-pointer liquid-glass liquid-glass-hover backdrop-blur-md h-full flex flex-col"
             >
               <div className="aspect-video relative overflow-hidden bg-gray-900">
                 {!loadedImages.has(adv.id) && (

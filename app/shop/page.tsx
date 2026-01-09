@@ -17,6 +17,7 @@ interface Product {
   price: number;
   description: string;
   inStock: boolean;
+  downloadUrl?: string; // Link de download pentru produsele digitale
 }
 
 // Date de exemplu - poți înlocui cu produsele tale reale
@@ -47,6 +48,7 @@ const products: Product[] = [
     price: 15,
     description: "A collection of professional LUTs for video color grading.",
     inStock: true,
+    downloadUrl: "https://drive.google.com/drive/folders/YOUR_LUT_PACK_FOLDER_ID", // Înlocuiește cu link-ul tău real
   },
   {
     id: 4,
@@ -56,6 +58,7 @@ const products: Product[] = [
     price: 12,
     description: "Lightroom preset pack for clean and cinematic looks.",
     inStock: true,
+    downloadUrl: "https://drive.google.com/drive/folders/YOUR_PRESET_PACK_FOLDER_ID", // Înlocuiește cu link-ul tău real
   },
   {
     id: 5,
@@ -65,6 +68,7 @@ const products: Product[] = [
     price: 20,
     description: "Professional cinematic color grading presets for video editing. Transform your footage with our carefully crafted presets designed to give your videos that cinematic look.",
     inStock: true,
+    downloadUrl: "https://drive.google.com/drive/folders/YOUR_CINEMATIC_PRESETS_FOLDER_ID", // Înlocuiește cu link-ul tău real
   },
   {
     id: 6,
@@ -74,17 +78,23 @@ const products: Product[] = [
     price: 15,
     description: "A stunning collection of majestic wallpapers featuring breathtaking aerial landscapes and cinematic scenes. Perfect for desktop, mobile, and tablet backgrounds.",
     inStock: true,
+    downloadUrl: "https://drive.google.com/drive/folders/YOUR_WALLPAPER_PACK_FOLDER_ID", // Înlocuiește cu link-ul tău real
   },
 ];
 
 export default function Shop() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory>("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterStatus, setNewsletterStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const { addToCart } = useCart();
+
+  // Update page title when language changes
+  useEffect(() => {
+    document.title = `${t("shop.title")} - Zoomout_crew`;
+  }, [language, t]);
 
   // Verifică dacă popup-ul a fost deja afișat
   useEffect(() => {
@@ -198,6 +208,7 @@ export default function Shop() {
         <div className="text-center mb-6 sm:mb-8 md:mb-12 pt-4 sm:pt-6">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-2 sm:mb-3 md:mb-4 px-2" style={{ fontFamily: "var(--font-playfair)" }}>
             <Typewriter
+              key={language}
               words={[t("shop.title")]}
               loop={false}
               cursor
@@ -235,7 +246,7 @@ export default function Shop() {
           {filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="group relative overflow-visible rounded-xl sm:rounded-2xl liquid-glass liquid-glass-hover transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20"
+              className="group relative overflow-visible rounded-xl sm:rounded-2xl liquid-glass liquid-glass-hover backdrop-blur-md transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20"
             >
               {/* Product Image */}
               <div className="aspect-square relative overflow-hidden rounded-t-xl sm:rounded-t-2xl">

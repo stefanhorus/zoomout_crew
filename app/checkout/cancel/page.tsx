@@ -20,7 +20,7 @@ export default function CheckoutCancel() {
       </div>
 
       <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="liquid-glass-strong rounded-2xl p-6 md:p-8 text-center">
+        <div className="liquid-glass-strong rounded-2xl p-6 md:p-8 text-center backdrop-blur-md">
           {/* Cancel Icon */}
           <div className="mb-6">
             <div className="w-20 h-20 md:w-24 md:h-24 mx-auto bg-yellow-500/20 rounded-full flex items-center justify-center mb-4">

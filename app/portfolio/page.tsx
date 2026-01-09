@@ -143,12 +143,17 @@ const projects: Project[] = [
 ];
 
 export default function Portfolio() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<ProjectCategory>("all");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
   const [selectedVideoIndex, setSelectedVideoIndex] = useState<number>(0);
   const [videoLoaded, setVideoLoaded] = useState(false);
+
+  // Update page title when language changes
+  useEffect(() => {
+    document.title = `${t("portfolio.title")} - Zoomout_crew`;
+  }, [language, t]);
 
   const categories: { value: ProjectCategory; label: string; labelKey: string }[] = [
     { value: "all", label: "All Projects", labelKey: "portfolio.allProjects" },
@@ -221,6 +226,7 @@ export default function Portfolio() {
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
             <Typewriter
+              key={language}
               words={[t("portfolio.title")]}
               loop={false}
               cursor

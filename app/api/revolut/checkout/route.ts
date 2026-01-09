@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { items, discountPercentage } = await request.json();
+    const { items, discountPercentage, customerEmail, language } = await request.json();
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -64,11 +64,14 @@ export async function POST(request: NextRequest) {
         currency: "RON",
         capture_mode: "AUTOMATIC",
         customer_id: undefined, // Poți adăuga customer_id dacă ai
+        email: customerEmail || undefined, // Adaugă emailul clientului
         description: `Order from Zoomout Crew - ${items.length} item(s)`,
         items: orderItems,
         metadata: {
           discount_percentage: discountPercentage || 0,
           items_count: items.length,
+          customer_email: customerEmail || "",
+          language: language || "en",
         },
       }),
     });

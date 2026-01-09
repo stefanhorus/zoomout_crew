@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 interface OrderItem {
   name: string;
@@ -138,9 +139,61 @@ export default function AdminOrdersPage() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-8">
-        <div className="max-w-md mx-auto mt-20">
-          <div className="bg-gray-800/50 rounded-lg p-8 border border-gray-700">
-            <h1 className="text-2xl font-bold mb-6">Admin - Comenzi</h1>
+        <style jsx>{`
+          @keyframes logoRotateY {
+            0% {
+              transform: rotateY(0deg);
+            }
+            100% {
+              transform: rotateY(360deg);
+            }
+          }
+          @keyframes logoPulse {
+            0%, 100% {
+              opacity: 1;
+              filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+            }
+            50% {
+              opacity: 0.9;
+              filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.6));
+            }
+          }
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          .logo-animated {
+            animation: logoRotateY 8s linear infinite, logoPulse 2s ease-in-out infinite;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+          }
+          .form-animated {
+            animation: fadeInUp 0.6s ease-out;
+          }
+        `}</style>
+        <div className="max-w-md mx-auto mt-10">
+          {/* Logo animat */}
+          <div className="flex justify-center mb-8">
+            <div className="logo-animated">
+              <Image
+                src="/assets/logo.png"
+                alt="Zoomout Crew Logo"
+                width={120}
+                height={120}
+                className="object-contain"
+                priority
+              />
+            </div>
+          </div>
+          
+          <div className="bg-gray-800/50 rounded-lg p-8 border border-gray-700 form-animated">
+            <h1 className="text-2xl font-bold mb-6 text-center">Admin - Comenzi</h1>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-semibold mb-2">
@@ -222,13 +275,50 @@ export default function AdminOrdersPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-4 md:p-8">
+      <style jsx>{`
+        @keyframes logoRotateY {
+          0% {
+            transform: rotateY(0deg);
+          }
+          100% {
+            transform: rotateY(360deg);
+          }
+        }
+        @keyframes logoPulse {
+          0%, 100% {
+            opacity: 1;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+          }
+          50% {
+            opacity: 0.95;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
+          }
+        }
+        .logo-animated-header {
+          animation: logoRotateY 8s linear infinite, logoPulse 3s ease-in-out infinite;
+          transform-style: preserve-3d;
+          perspective: 1000px;
+        }
+      `}</style>
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">Comenzi</h1>
-          <p className="text-gray-400">
-            Total: {orders.length} comenzi •{" "}
-            {formatPrice(totalAmount, "RON")}
-          </p>
+        {/* Logo animat în header */}
+        <div className="flex items-center gap-4 mb-8">
+          <div className="logo-animated-header">
+            <Image
+              src="/assets/logo.png"
+              alt="Zoomout Crew Logo"
+              width={60}
+              height={60}
+              className="object-contain"
+            />
+          </div>
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">Comenzi</h1>
+            <p className="text-gray-400">
+              Total: {orders.length} comenzi •{" "}
+              {formatPrice(totalAmount, "RON")}
+            </p>
+          </div>
         </div>
 
         {orders.length === 0 ? (

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Contact() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [currentYear, setCurrentYear] = useState<number | null>(null);
@@ -14,6 +14,11 @@ export default function Contact() {
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
   }, []);
+
+  // Update page title when language changes
+  useEffect(() => {
+    document.title = `${t("contact.title")} - Zoomout_crew`;
+  }, [language, t]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -61,6 +66,7 @@ export default function Contact() {
       <div className="relative z-10 max-w-2xl w-full text-center mb-8 md:mb-12 px-4">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
           <Typewriter
+            key={language}
             words={[t("contact.title")]}
             loop={false}
             cursor
@@ -77,7 +83,7 @@ export default function Contact() {
 
       <form
         onSubmit={handleSubmit}
-        className="relative z-10 w-full max-w-lg liquid-glass-strong p-5 sm:p-6 md:p-8 rounded-2xl liquid-glass-hover mx-4"
+        className="relative z-10 w-full max-w-lg liquid-glass-strong p-5 sm:p-6 md:p-8 rounded-2xl liquid-glass-hover backdrop-blur-md mx-4"
       >
         <div className="mb-6">
           <label htmlFor="name" className="block text-left text-gray-300 mb-2">{t("contact.name")}</label>

@@ -8,8 +8,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 function CheckoutContent() {
-  const { cart, getTotalPrice } = useCart();
-  const { t } = useLanguage();
+  const { cart, getTotalPrice, clearCart } = useCart();
+  const { t, language } = useLanguage();
   const router = useRouter();
   const [discountCode, setDiscountCode] = useState("");
   const [discountApplied, setDiscountApplied] = useState(false);
@@ -18,6 +18,8 @@ function CheckoutContent() {
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState<"stripe" | "revolut">("revolut");
   const [showStripeFallback, setShowStripeFallback] = useState(false);
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("ro-RO", {
@@ -67,6 +69,55 @@ function CheckoutContent() {
   const handleCheckout = async () => {
     if (cart.length === 0) return;
 
+    // Validează emailul
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!customerEmail.trim()) {
+      setEmailError(t("checkout.emailError.required"));
+      return;
+    }
+    if (!emailRegex.test(customerEmail.trim())) {
+      setEmailError(t("checkout.emailError.invalid"));
+      return;
+    }
+    setEmailError("");
+
+    // Verifică dacă comanda este gratuită (0 lei)
+    if (total <= 0) {
+      setIsProcessing(true);
+      try {
+        // Procesează comanda gratuită direct, fără gateway de plată
+        const response = await fetch("/api/checkout/free", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            items: cart,
+            customerEmail: customerEmail.trim(),
+            discountPercentage: discountApplied ? discountPercentage : undefined,
+            language: language,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Șterge coșul după procesarea comenzii gratuite
+          clearCart();
+          // Redirecționează la pagina de success
+          router.push("/checkout/success?free=true");
+          return;
+        } else {
+          throw new Error(data.error || "Failed to process free order");
+        }
+      } catch (error: any) {
+        console.error("Free order error:", error);
+        alert(error.message || t("checkout.error.freeOrder"));
+        setIsProcessing(false);
+        return;
+      }
+    }
+
     setIsProcessing(true);
     try {
       // Încearcă întâi Revolut Pay (metoda principală)
@@ -81,6 +132,8 @@ function CheckoutContent() {
               items: cart,
               discountCode: discountApplied ? discountCode : undefined,
               discountPercentage: discountApplied ? discountPercentage : undefined,
+              customerEmail: customerEmail.trim(),
+              language: language,
             }),
           });
 
@@ -115,6 +168,8 @@ function CheckoutContent() {
           items: cart,
           discountCode: discountApplied ? discountCode : undefined,
           discountPercentage: discountApplied ? discountPercentage : undefined,
+          customerEmail: customerEmail.trim(),
+          language: language,
         }),
       });
 
@@ -195,7 +250,7 @@ function CheckoutContent() {
           {/* Left Column - Order Summary */}
           <div className="lg:col-span-2 space-y-6">
             {/* Order Items */}
-            <div className="liquid-glass-strong rounded-2xl p-6">
+            <div className="liquid-glass-strong rounded-2xl p-6 backdrop-blur-md">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
                 {t("checkout.items")}
               </h2>
@@ -227,8 +282,41 @@ function CheckoutContent() {
               </div>
             </div>
 
+            {/* Customer Email */}
+            <div className="liquid-glass-strong rounded-2xl p-6 backdrop-blur-md">
+              <h2 className="text-xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
+                {t("checkout.contactInfo")}
+              </h2>
+              <div className="mb-4">
+                <label htmlFor="customerEmail" className="block text-gray-300 mb-2 text-sm font-semibold">
+                  {t("checkout.emailAddress")} <span className="text-red-400">*</span>
+                </label>
+                <input
+                  id="customerEmail"
+                  type="email"
+                  value={customerEmail}
+                  onChange={(e) => {
+                    setCustomerEmail(e.target.value);
+                    setEmailError("");
+                  }}
+                  placeholder="exemplu@email.com"
+                  required
+                  className={`w-full px-4 py-3 rounded-xl liquid-glass-input text-white placeholder-gray-400 focus:outline-none focus:ring-2 ${
+                    emailError ? "focus:ring-red-500 border-red-500" : "focus:ring-white/20"
+                  }`}
+                  style={{ fontFamily: "var(--font-roboto)" }}
+                />
+                {emailError && (
+                  <p className="text-red-400 text-sm mt-2">{emailError}</p>
+                )}
+                <p className="text-gray-400 text-xs mt-2">
+                  {t("checkout.emailHelper")}
+                </p>
+              </div>
+            </div>
+
             {/* Discount Code */}
-            <div className="liquid-glass-strong rounded-2xl p-6">
+            <div className="liquid-glass-strong rounded-2xl p-6 backdrop-blur-md">
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
                 {t("checkout.discountCode")}
               </h2>
@@ -330,12 +418,17 @@ function CheckoutContent() {
 
               <button
                 onClick={handleCheckout}
-                disabled={isProcessing}
+                disabled={isProcessing || !customerEmail.trim()}
                 className="w-full liquid-glass-button text-white py-4 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-center"
                 style={{ fontFamily: "var(--font-roboto)" }}
               >
                 {isProcessing ? t("checkout.processing") : t("checkout.continueToPayment")}
               </button>
+              {!customerEmail.trim() && (
+                <p className="text-yellow-400 text-xs mt-2 text-center">
+                  {t("checkout.emailRequired")}
+                </p>
+              )}
 
               <Link
                 href="/shop"

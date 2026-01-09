@@ -12,6 +12,11 @@ export default function About() {
   const [showOriginalReview5, setShowOriginalReview5] = useState(false);
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
 
+  // Update page title when language changes
+  useEffect(() => {
+    document.title = `${t("about.title")} - Zoomout_crew`;
+  }, [language, t]);
+
   // Reset review 1 to translated when language changes to Romanian
   useEffect(() => {
     if (language === "ro") {
@@ -64,6 +69,7 @@ export default function About() {
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full blur-lg opacity-20 animate-pulse-ring" />
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 relative px-2" style={{ fontFamily: "var(--font-playfair)" }}>
               <Typewriter
+                key={language}
                 words={[t("about.title")]}
                 loop={false}
                 cursor
@@ -82,7 +88,7 @@ export default function About() {
         {/* Main Content */}
         <div className="space-y-8 md:space-y-12">
           {/* Mission Section */}
-          <section className="liquid-glass-strong rounded-2xl p-5 sm:p-6 md:p-8 lg:p-12 liquid-glass-hover animate-fade-in-up relative group overflow-hidden">
+          <section className="liquid-glass-strong rounded-2xl p-5 sm:p-6 md:p-8 lg:p-12 liquid-glass-hover backdrop-blur-md animate-fade-in-up relative group overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-transparent to-purple-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl" />
             <div className="relative z-10">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 md:mb-6 animate-text-shimmer text-white drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
@@ -105,7 +111,7 @@ export default function About() {
                 {t("about.whatWeDo")}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                <div className="liquid-glass rounded-xl p-4 sm:p-5 md:p-6 liquid-glass-hover relative group overflow-hidden">
+                <div className="liquid-glass rounded-xl p-4 sm:p-5 md:p-6 liquid-glass-hover backdrop-blur-md relative group overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
                   <div className="relative z-10">
                     <h3 className="text-lg sm:text-xl font-semibold mb-2 md:mb-3 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
@@ -116,7 +122,7 @@ export default function About() {
                     </p>
                   </div>
                 </div>
-                <div className="liquid-glass rounded-xl p-4 sm:p-5 md:p-6 liquid-glass-hover relative group overflow-hidden">
+                <div className="liquid-glass rounded-xl p-4 sm:p-5 md:p-6 liquid-glass-hover backdrop-blur-md relative group overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-pink-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
                   <div className="relative z-10">
                     <h3 className="text-lg sm:text-xl font-semibold mb-2 md:mb-3 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
@@ -127,7 +133,7 @@ export default function About() {
                     </p>
                   </div>
                 </div>
-                <div className="liquid-glass rounded-xl p-4 sm:p-5 md:p-6 liquid-glass-hover relative group overflow-hidden">
+                <div className="liquid-glass rounded-xl p-4 sm:p-5 md:p-6 liquid-glass-hover backdrop-blur-md relative group overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
                   <div className="relative z-10">
                     <h3 className="text-lg sm:text-xl font-semibold mb-2 md:mb-3 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
@@ -138,7 +144,7 @@ export default function About() {
                     </p>
                   </div>
                 </div>
-                <div className="liquid-glass rounded-xl p-4 sm:p-5 md:p-6 liquid-glass-hover relative group overflow-hidden">
+                <div className="liquid-glass rounded-xl p-4 sm:p-5 md:p-6 liquid-glass-hover backdrop-blur-md relative group overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-pink-400 to-purple-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
                   <div className="relative z-10">
                     <h3 className="text-lg sm:text-xl font-semibold mb-2 md:mb-3 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>

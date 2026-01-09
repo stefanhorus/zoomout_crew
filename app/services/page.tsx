@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -68,9 +68,14 @@ const getServices = (t: (key: string) => string): Service[] => [
 ];
 
 export default function Services() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory>("all");
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+
+  // Update page title when language changes
+  useEffect(() => {
+    document.title = `${t("services.title")} - Zoomout_crew`;
+  }, [language, t]);
 
   const categories: { value: ServiceCategory; label: string; labelKey: string }[] = [
     { value: "all", label: "All Services", labelKey: "services.allServices" },
@@ -105,6 +110,7 @@ export default function Services() {
         <div className="text-center mb-8 md:mb-12">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2" style={{ fontFamily: "var(--font-playfair)" }}>
             <Typewriter
+              key={language}
               words={[t("services.title")]}
               loop={false}
               cursor
@@ -143,7 +149,7 @@ export default function Services() {
             <div
               key={service.id}
               onClick={() => setSelectedService(service)}
-              className="group relative overflow-hidden rounded-2xl cursor-pointer liquid-glass liquid-glass-hover h-full flex flex-col"
+              className="group relative overflow-hidden rounded-2xl cursor-pointer liquid-glass liquid-glass-hover backdrop-blur-md h-full flex flex-col"
             >
               {/* Service Image */}
               <div className="aspect-video relative overflow-hidden">
