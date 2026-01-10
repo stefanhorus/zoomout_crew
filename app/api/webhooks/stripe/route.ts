@@ -3,6 +3,8 @@ import Stripe from "stripe";
 import { Resend } from "resend";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
 import { getDownloadUrl, isDigitalProduct } from "@/lib/digital-products";
+import connectDB from "@/lib/mongodb";
+import Order from "@/lib/models/Order";
 
 export async function POST(request: NextRequest) {
   if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
@@ -54,6 +56,9 @@ export async function POST(request: NextRequest) {
     const session = event.data.object as Stripe.Checkout.Session;
 
     try {
+      // Conectează la MongoDB
+      await connectDB();
+
       // Retrieve full session details including line items
       const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
         expand: ["line_items", "line_items.data.price.product"],
@@ -61,14 +66,87 @@ export async function POST(request: NextRequest) {
 
       const customerEmail = session.customer_details?.email;
       const amountTotal = session.amount_total || 0;
-      const currency = session.currency?.toUpperCase() || "RON";
+      const currency = (session.currency?.toUpperCase() || "RON");
       const lineItems = fullSession.line_items?.data || [];
-      const language = (fullSession.metadata?.language as "en" | "ro") || "en";
+      const metadata = fullSession.metadata || {};
+      const language = (metadata.language as "en" | "ro") || "en";
 
       if (!customerEmail) {
         console.error("No customer email found in session");
         return NextResponse.json({ received: true });
       }
+
+      // Extrage informații din metadata pentru conversie
+      const totalAmountRONFromMetadata = metadata.total_amount_ron ? parseFloat(metadata.total_amount_ron) : null;
+      const amountInCurrency = metadata.amount_in_currency ? parseFloat(metadata.amount_in_currency) : null;
+      const exchangeRate = metadata.exchange_rate ? parseFloat(metadata.exchange_rate) : null;
+      
+      // Rate-uri inverse pentru fallback
+      const inverseExchangeRates: Record<string, number> = {
+        RON: 1,
+        EUR: 5,
+        USD: 4.545,
+        GBP: 5.556,
+      };
+
+      // Calculează amount în RON
+      const amountInCurrencyDecimal = amountTotal / 100;
+      let amountRON = amountInCurrencyDecimal;
+      
+      if (totalAmountRONFromMetadata && totalAmountRONFromMetadata > 0) {
+        amountRON = totalAmountRONFromMetadata;
+      } else if (currency !== "RON") {
+        if (exchangeRate) {
+          amountRON = amountInCurrencyDecimal / exchangeRate;
+        } else if (inverseExchangeRates[currency]) {
+          amountRON = amountInCurrencyDecimal * inverseExchangeRates[currency];
+        }
+      }
+
+      // Format items pentru salvare
+      const formattedItems = lineItems.map((item) => {
+        const itemPriceInCurrency = item.price?.unit_amount ? item.price.unit_amount / 100 : 0;
+        let itemPriceInRON = itemPriceInCurrency;
+        
+        // Convertim în RON dacă e necesar
+        if (currency !== "RON" && amountRON && amountInCurrencyDecimal > 0) {
+          const itemQuantity = item.quantity || 1;
+          const itemTotalInCurrency = itemPriceInCurrency * itemQuantity;
+          const itemPercentage = itemTotalInCurrency / amountInCurrencyDecimal;
+          itemPriceInRON = (amountRON * itemPercentage) / itemQuantity;
+        }
+        
+        return {
+          name: item.description || item.price?.nickname || "Product",
+          quantity: item.quantity || 1,
+          price: itemPriceInRON,
+        };
+      });
+
+      // Salvează sau actualizează comanda în MongoDB
+      await Order.findOneAndUpdate(
+        { orderId: session.id },
+        {
+          orderId: session.id,
+          provider: "stripe",
+          customerEmail,
+          amountRON,
+          amountCurrency: amountInCurrencyDecimal,
+          currency,
+          status: session.payment_status || "paid",
+          paymentIntentId: session.payment_intent as string,
+          items: formattedItems,
+          discountPercentage: metadata.discount_percentage ? parseFloat(metadata.discount_percentage) : undefined,
+          discountCode: metadata.discount_code,
+          metadata: {
+            ...metadata,
+            originalCurrency: metadata.original_currency || "RON",
+          },
+        },
+        { upsert: true, new: true }
+      );
+
+      console.log(`✅ Order ${session.id} saved to MongoDB`);
 
       // Format products list and collect digital downloads
       const digitalDownloads: Array<{ productName: string; downloadUrl: string }> = [];

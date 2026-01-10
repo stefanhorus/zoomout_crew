@@ -3,6 +3,8 @@ import { Resend } from "resend";
 import crypto from "crypto";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
 import { getDownloadUrl, isDigitalProduct } from "@/lib/digital-products";
+import connectDB from "@/lib/mongodb";
+import Order from "@/lib/models/Order";
 
 // Verifică semnătura webhook-ului Revolut
 function verifyRevolutSignature(
@@ -91,16 +93,91 @@ export async function POST(request: NextRequest) {
       const order = await orderResponse.json();
 
       try {
+        // Conectează la MongoDB
+        await connectDB();
+
         const customerEmail = order.customer?.email || order.email || order.customer_email;
         const amountTotal = order.amount || 0;
-        const currency = order.currency || "RON";
+        const currency = (order.currency || "RON").toUpperCase();
         const orderItems = order.items || [];
-        const language = (order.metadata?.language as "en" | "ro") || "en";
+        const metadata = order.metadata || {};
+        const language = (metadata.language as "en" | "ro") || "en";
 
         if (!customerEmail) {
           console.error("No customer email found in order");
           return NextResponse.json({ received: true });
         }
+
+        // Extrage informații din metadata pentru conversie
+        const totalAmountRONFromMetadata = metadata.total_amount_ron ? parseFloat(metadata.total_amount_ron) : null;
+        const amountInCurrency = metadata.amount_in_currency ? parseFloat(metadata.amount_in_currency) : null;
+        const exchangeRate = metadata.exchange_rate ? parseFloat(metadata.exchange_rate) : null;
+        
+        // Rate-uri inverse pentru fallback
+        const inverseExchangeRates: Record<string, number> = {
+          RON: 1,
+          EUR: 5,
+          USD: 4.545,
+          GBP: 5.556,
+        };
+
+        // Calculează amount în RON
+        const amountInCurrencyDecimal = amountTotal / 100;
+        let amountRON = amountInCurrencyDecimal;
+        
+        if (totalAmountRONFromMetadata && totalAmountRONFromMetadata > 0) {
+          amountRON = totalAmountRONFromMetadata;
+        } else if (currency !== "RON") {
+          if (exchangeRate) {
+            amountRON = amountInCurrencyDecimal / exchangeRate;
+          } else if (inverseExchangeRates[currency]) {
+            amountRON = amountInCurrencyDecimal * inverseExchangeRates[currency];
+          }
+        }
+
+        // Format items pentru salvare
+        const formattedItems = orderItems.map((item: any) => {
+          const itemPriceInCurrency = item.unit_price ? item.unit_price / 100 : 0;
+          let itemPriceInRON = itemPriceInCurrency;
+          
+          // Convertim în RON dacă e necesar
+          if (currency !== "RON" && amountRON && amountInCurrencyDecimal > 0) {
+            const itemTotalInCurrency = itemPriceInCurrency * (item.quantity || 1);
+            const itemPercentage = itemTotalInCurrency / amountInCurrencyDecimal;
+            itemPriceInRON = (amountRON * itemPercentage) / (item.quantity || 1);
+          }
+          
+          return {
+            name: item.name || "Product",
+            quantity: item.quantity || 1,
+            price: itemPriceInRON,
+          };
+        });
+
+        // Salvează sau actualizează comanda în MongoDB
+        await Order.findOneAndUpdate(
+          { orderId: orderId },
+          {
+            orderId: orderId,
+            provider: "revolut",
+            customerEmail,
+            amountRON,
+            amountCurrency: amountInCurrencyDecimal,
+            currency,
+            status: order.state || "COMPLETED",
+            paymentIntentId: order.public_id,
+            items: formattedItems,
+            discountPercentage: metadata.discount_percentage ? parseFloat(metadata.discount_percentage) : undefined,
+            discountCode: metadata.discount_code,
+            metadata: {
+              ...metadata,
+              originalCurrency: metadata.original_currency || "RON",
+            },
+          },
+          { upsert: true, new: true }
+        );
+
+        console.log(`✅ Order ${orderId} saved to MongoDB`);
 
         // Format products list and collect digital downloads
         const digitalDownloads: Array<{ productName: string; downloadUrl: string }> = [];

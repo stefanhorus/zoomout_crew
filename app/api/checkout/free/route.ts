@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
 import { getDownloadUrl, isDigitalProduct } from "@/lib/digital-products";
+import connectDB from "@/lib/mongodb";
+import Order from "@/lib/models/Order";
 
 export async function POST(request: NextRequest) {
   try {
@@ -110,11 +112,49 @@ export async function POST(request: NextRequest) {
 
     console.log("✅ Free order confirmation email sent to:", customerEmail);
 
-    return NextResponse.json({
-      success: true,
-      message: "Order confirmed and email sent",
-      orderId: `free-${Date.now()}`,
-    });
+    // Salvează comanda în MongoDB
+    try {
+      await connectDB();
+      
+      const orderId = `free-${Date.now()}`;
+      const formattedItems = items.map((item: { product: { name: string; price: number }; quantity: number }) => ({
+        name: item.product.name || "Product",
+        quantity: item.quantity || 1,
+        price: item.product.price, // Prețul în RON
+      }));
+
+      await Order.create({
+        orderId,
+        provider: "free",
+        customerEmail,
+        amountRON: 0,
+        amountCurrency: 0,
+        currency: selectedCurrency,
+        status: "completed",
+        items: formattedItems,
+        discountPercentage: discountPercentage || undefined,
+        metadata: {
+          language: lang,
+          originalCurrency: "RON",
+        },
+      });
+
+      console.log(`✅ Free order ${orderId} saved to MongoDB`);
+
+      return NextResponse.json({
+        success: true,
+        message: "Order confirmed and email sent",
+        orderId,
+      });
+    } catch (dbError: any) {
+      console.error("❌ Error saving free order to MongoDB:", dbError);
+      // Return success anyway since email was sent
+      return NextResponse.json({
+        success: true,
+        message: "Order confirmed and email sent (database save failed)",
+        orderId: `free-${Date.now()}`,
+      });
+    }
   } catch (error: any) {
     console.error("❌ Error processing free order:", error);
     return NextResponse.json(
