@@ -13,8 +13,10 @@ interface Order {
   id: string;
   provider: "stripe" | "revolut";
   customerEmail: string;
-  amount: number;
-  currency: string;
+  amount: number; // Amount în RON
+  currency: string; // Currency-ul folosit la checkout
+  originalCurrency?: string;
+  amountInCurrency?: number; // Amount în currency-ul original (dacă există)
   status: string;
   createdAt: string;
   items: OrderItem[];
@@ -368,8 +370,13 @@ export default function AdminOrdersPage() {
                   </div>
                   <div className="text-right">
                     <p className="text-2xl font-bold">
-                      {formatPrice(order.amount, order.currency)}
+                      {formatPrice(order.amount, "RON")}
                     </p>
+                    {order.currency && order.currency !== "RON" && order.amountInCurrency && (
+                      <p className="text-sm text-gray-400 mt-1">
+                        ({formatPrice(order.amountInCurrency, order.currency)})
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -387,7 +394,7 @@ export default function AdminOrdersPage() {
                           {item.name} × {item.quantity}
                         </span>
                         <span className="font-semibold">
-                          {formatPrice(item.price * item.quantity, order.currency)}
+                          {formatPrice(item.price * item.quantity, "RON")}
                         </span>
                       </div>
                     ))}

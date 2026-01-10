@@ -41,6 +41,19 @@ export async function POST(request: NextRequest) {
     // Stripe folosește coduri de currency în lowercase
     const stripeCurrency = selectedCurrency.toLowerCase();
 
+    // Calculează totalul în RON (prețurile din items sunt în RON)
+    let totalAmountRON = items.reduce((sum: number, item: { product: { price: number }; quantity: number }) => {
+      return sum + item.product.price * item.quantity;
+    }, 0);
+
+    // Aplică discount dacă există
+    if (discountPercentage && discountPercentage > 0) {
+      totalAmountRON = totalAmountRON * (1 - discountPercentage / 100);
+    }
+
+    // Convertește în currency-ul selectat
+    const totalAmount = totalAmountRON * exchangeRate;
+
     // Construiește line items pentru Stripe
     const lineItems = items.map((item: { product: { name: string; price: number; description?: string }; quantity: number }) => {
       // Prețul este în RON, trebuie convertit
@@ -80,7 +93,10 @@ export async function POST(request: NextRequest) {
         customer_email: customerEmail || "",
         language: language || "en",
         original_currency: "RON",
+        payment_currency: selectedCurrency,
         exchange_rate: exchangeRate.toString(),
+        total_amount_ron: totalAmountRON.toFixed(2), // Prețul exact în RON la momentul checkout-ului
+        amount_in_currency: totalAmount.toFixed(2), // Prețul în currency-ul selectat
       },
     });
 

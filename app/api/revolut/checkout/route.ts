@@ -93,7 +93,10 @@ export async function POST(request: NextRequest) {
           customer_email: customerEmail || "",
           language: language || "en",
           original_currency: "RON",
-          exchange_rate: exchangeRate,
+          payment_currency: selectedCurrency,
+          exchange_rate: exchangeRate.toString(),
+          total_amount_ron: totalAmountRON.toFixed(2), // Prețul exact în RON la momentul checkout-ului
+          amount_in_currency: totalAmount.toFixed(2), // Prețul în currency-ul selectat
         },
       }),
     });
