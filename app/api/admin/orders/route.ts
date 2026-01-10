@@ -123,19 +123,38 @@ export async function GET(request: NextRequest) {
 
           if (orderDetailResponse.ok) {
             const orderDetail = await orderDetailResponse.json();
+            
+            // Calculează suma din items dacă amount nu este disponibil sau este 0
+            const items = (orderDetail.items || []).map((item: any) => ({
+              name: item.name || "Product",
+              quantity: item.quantity || 1,
+              price: item.unit_price ? item.unit_price / 100 : 0,
+            }));
+            
+            // Calculează suma totală
+            let calculatedAmount = 0;
+            if (orderDetail.amount && orderDetail.amount > 0) {
+              calculatedAmount = orderDetail.amount / 100;
+            } else {
+              // Calculează din items dacă amount nu este disponibil
+              calculatedAmount = items.reduce((sum: number, item: any) => {
+                return sum + (item.price * item.quantity);
+              }, 0);
+              // Dacă tot nu avem sumă, folosește amount din lista inițială
+              if (calculatedAmount === 0 && order.amount) {
+                calculatedAmount = order.amount / 100;
+              }
+            }
+            
             return {
               id: order.id,
               provider: "revolut",
               customerEmail: orderDetail.customer?.email || orderDetail.email || "N/A",
-              amount: orderDetail.amount ? orderDetail.amount / 100 : 0,
+              amount: calculatedAmount,
               currency: orderDetail.currency || "RON",
               status: orderDetail.state,
               createdAt: orderDetail.created_at || new Date().toISOString(),
-              items: (orderDetail.items || []).map((item: any) => ({
-                name: item.name || "Product",
-                quantity: item.quantity || 1,
-                price: item.unit_price ? item.unit_price / 100 : 0,
-              })),
+              items,
             };
           }
           return null;
