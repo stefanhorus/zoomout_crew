@@ -88,23 +88,20 @@ export default function About() {
         {/* Main Content */}
         <div className="space-y-8 md:space-y-12">
           {/* Mission Section */}
-          <section className="liquid-glass-strong rounded-2xl p-5 sm:p-6 md:p-8 lg:p-12 liquid-glass-hover backdrop-blur-md animate-fade-in-up relative group overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-transparent to-purple-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl" />
-            <div className="relative z-10">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 md:mb-6 animate-text-shimmer text-white drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
-                {t("about.mission")}
-              </h2>
-              <p className="text-gray-100 text-base sm:text-lg leading-relaxed mb-3 md:mb-4 drop-shadow-md" style={{ fontFamily: "var(--font-roboto)" }}>
-                {t("about.mission.text1")}
-              </p>
-              <p className="text-gray-100 text-base sm:text-lg leading-relaxed drop-shadow-md" style={{ fontFamily: "var(--font-roboto)" }}>
-                {t("about.mission.text2")}
-              </p>
-            </div>
+          <section className="liquid-glass liquid-glass-hover rounded-2xl p-5 sm:p-6 md:p-8 lg:p-12 backdrop-blur-md animate-fade-in-up relative group overflow-hidden">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 md:mb-6 animate-text-shimmer text-white drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
+              {t("about.mission")}
+            </h2>
+            <p className="text-gray-100 text-base sm:text-lg leading-relaxed mb-3 md:mb-4 drop-shadow-md" style={{ fontFamily: "var(--font-roboto)" }}>
+              {t("about.mission.text1")}
+            </p>
+            <p className="text-gray-100 text-base sm:text-lg leading-relaxed drop-shadow-md" style={{ fontFamily: "var(--font-roboto)" }}>
+              {t("about.mission.text2")}
+            </p>
           </section>
 
           {/* Services Section */}
-          <section className="liquid-glass-strong rounded-2xl p-5 sm:p-6 md:p-8 lg:p-12 liquid-glass-hover animate-fade-in-up relative group overflow-hidden" style={{ animationDelay: '0.2s' }}>
+          <section className="liquid-glass rounded-2xl p-5 sm:p-6 md:p-8 lg:p-12 liquid-glass-hover animate-fade-in-up relative group overflow-hidden" style={{ animationDelay: '0.2s' }}>
             <div className="absolute inset-0 bg-gradient-to-l from-purple-500 via-transparent to-cyan-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl" />
             <div className="relative z-10">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 md:mb-6 animate-text-shimmer text-white drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
@@ -160,67 +157,64 @@ export default function About() {
           </section>
 
           {/* Why Choose Us Section */}
-          <section className="liquid-glass-strong rounded-2xl p-5 sm:p-6 md:p-8 lg:p-12 liquid-glass-hover animate-fade-in-up relative group overflow-hidden" style={{ animationDelay: '0.4s' }}>
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-transparent to-purple-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl" />
-            <div className="relative z-10">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 md:mb-6 animate-text-shimmer text-white drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
-                {t("about.whyChoose")}
-              </h2>
-              <ul className="space-y-3 md:space-y-4">
-                <li className="flex items-start gap-3 md:gap-4 group/item">
-                  <svg className="w-5 h-5 md:w-6 md:h-6 text-white mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="group-hover/item:translate-x-2 transition-transform duration-300">
-                    <h3 className="text-base sm:text-lg font-semibold mb-1 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
-                      {t("about.professionalEquipment")}
-                    </h3>
-                    <p className="text-gray-100 text-sm sm:text-base drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
-                      {t("about.professionalEquipment.desc")}
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 md:gap-4 group/item">
-                  <svg className="w-5 h-5 md:w-6 md:h-6 text-white mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="group-hover/item:translate-x-2 transition-transform duration-300">
-                    <h3 className="text-base sm:text-lg font-semibold mb-1 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
-                      {t("about.creativeVision")}
-                    </h3>
-                    <p className="text-gray-100 text-sm sm:text-base drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
-                      {t("about.creativeVision.desc")}
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 md:gap-4 group/item">
-                  <svg className="w-5 h-5 md:w-6 md:h-6 text-white mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="group-hover/item:translate-x-2 transition-transform duration-300">
-                    <h3 className="text-base sm:text-lg font-semibold mb-1 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
-                      {t("about.experiencedTeam")}
-                    </h3>
-                    <p className="text-gray-100 text-sm sm:text-base drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
-                      {t("about.experiencedTeam.desc")}
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 md:gap-4 group/item">
-                  <svg className="w-5 h-5 md:w-6 md:h-6 text-white mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="group-hover/item:translate-x-2 transition-transform duration-300">
-                    <h3 className="text-base sm:text-lg font-semibold mb-1 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
-                      {t("about.reliableService")}
-                    </h3>
-                    <p className="text-gray-100 text-sm sm:text-base drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
-                      {t("about.reliableService.desc")}
-                    </p>
-                  </div>
-                </li>
-              </ul>
-            </div>
+          <section className="liquid-glass liquid-glass-hover rounded-2xl p-5 sm:p-6 md:p-8 lg:p-12 backdrop-blur-md animate-fade-in-up relative group overflow-hidden" style={{ animationDelay: '0.4s' }}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 md:mb-6 animate-text-shimmer text-white drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
+              {t("about.whyChoose")}
+            </h2>
+            <ul className="space-y-3 md:space-y-4">
+              <li className="flex items-start gap-3 md:gap-4 group/item">
+                <svg className="w-5 h-5 md:w-6 md:h-6 text-white mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <div className="group-hover/item:translate-x-2 transition-transform duration-300">
+                  <h3 className="text-base sm:text-lg font-semibold mb-1 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
+                    {t("about.professionalEquipment")}
+                  </h3>
+                  <p className="text-gray-100 text-sm sm:text-base drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                    {t("about.professionalEquipment.desc")}
+                  </p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3 md:gap-4 group/item">
+                <svg className="w-5 h-5 md:w-6 md:h-6 text-white mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <div className="group-hover/item:translate-x-2 transition-transform duration-300">
+                  <h3 className="text-base sm:text-lg font-semibold mb-1 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
+                    {t("about.creativeVision")}
+                  </h3>
+                  <p className="text-gray-100 text-sm sm:text-base drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                    {t("about.creativeVision.desc")}
+                  </p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3 md:gap-4 group/item">
+                <svg className="w-5 h-5 md:w-6 md:h-6 text-white mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <div className="group-hover/item:translate-x-2 transition-transform duration-300">
+                  <h3 className="text-base sm:text-lg font-semibold mb-1 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
+                    {t("about.experiencedTeam")}
+                  </h3>
+                  <p className="text-gray-100 text-sm sm:text-base drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                    {t("about.experiencedTeam.desc")}
+                  </p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3 md:gap-4 group/item">
+                <svg className="w-5 h-5 md:w-6 md:h-6 text-white mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <div className="group-hover/item:translate-x-2 transition-transform duration-300">
+                  <h3 className="text-base sm:text-lg font-semibold mb-1 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
+                    {t("about.reliableService")}
+                  </h3>
+                  <p className="text-gray-100 text-sm sm:text-base drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                    {t("about.reliableService.desc")}
+                  </p>
+                </div>
+              </li>
+            </ul>
           </section>
 
           {/* Reviews Section */}
@@ -234,10 +228,7 @@ export default function About() {
               {/* Mobile: Grid Layout */}
               <div className="grid grid-cols-1 md:hidden gap-4 p-2">
                 {/* Review 1 */}
-                <div className="liquid-glass rounded-3xl p-4 sm:p-5 md:p-6 lg:p-8 liquid-glass-hover relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/10 via-blue-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-3xl" />
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
-                  <div className="relative z-10">
+                <div className="liquid-glass liquid-glass-hover rounded-3xl p-4 sm:p-5 md:p-6 lg:p-8 backdrop-blur-md relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
                     {/* Profile Picture and Name - Top */}
                     <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-5 pb-3 md:pb-4 border-b border-white/10">
                       <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden shadow-lg shadow-cyan-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-cyan-400/30">
@@ -282,14 +273,10 @@ export default function About() {
                         {showOriginalReview1 ? t("about.reviews.showTranslated") : t("about.reviews.showOriginalEnglish")}
                       </button>
                     )}
-                  </div>
                 </div>
 
                 {/* Review 4 - Florin Marius */}
-                <div className="liquid-glass rounded-3xl p-4 sm:p-5 md:p-6 lg:p-8 liquid-glass-hover relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/20" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                  <div className="absolute inset-0 bg-gradient-to-br from-green-400/10 via-emerald-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-3xl" />
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
-                  <div className="relative z-10">
+                <div className="liquid-glass liquid-glass-hover rounded-3xl p-4 sm:p-5 md:p-6 lg:p-8 backdrop-blur-md relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/20">
                     {/* Profile Picture and Name - Top */}
                     <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-5 pb-3 md:pb-4 border-b border-white/10">
                       <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden shadow-lg shadow-green-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-green-400/30">
@@ -334,14 +321,10 @@ export default function About() {
                         {showOriginalReview4 ? t("about.reviews.showTranslated") : t("about.reviews.showOriginal")}
                       </button>
                     )}
-                  </div>
                 </div>
 
                 {/* Review 5 - Rotaract Charity Duck Race */}
-                <div className="liquid-glass rounded-3xl p-4 sm:p-5 md:p-6 lg:p-8 liquid-glass-hover relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400/10 via-pink-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-3xl" />
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
-                  <div className="relative z-10">
+                <div className="liquid-glass liquid-glass-hover rounded-3xl p-4 sm:p-5 md:p-6 lg:p-8 backdrop-blur-md relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20">
                     {/* Profile Picture and Name - Top */}
                     <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-5 pb-3 md:pb-4 border-b border-white/10">
                       <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden shadow-lg shadow-purple-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-purple-400/30">
@@ -386,7 +369,6 @@ export default function About() {
                         {showOriginalReview5 ? t("about.reviews.showTranslated") : t("about.reviews.showOriginalEnglish")}
                       </button>
                     )}
-                  </div>
                 </div>
               </div>
 
@@ -399,10 +381,7 @@ export default function About() {
                   >
                     {/* Review 1 */}
                     <div className="w-1/2 flex-shrink-0 px-3 py-2">
-                      <div className="liquid-glass rounded-3xl p-6 lg:p-8 liquid-glass-hover relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20 h-full" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/10 via-blue-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-3xl" />
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
-                        <div className="relative z-10">
+                      <div className="liquid-glass liquid-glass-hover rounded-3xl p-6 lg:p-8 backdrop-blur-md relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20 h-full">
                           {/* Profile Picture and Name - Top */}
                           <div className="flex items-center gap-4 mb-5 pb-4 border-b border-white/10">
                             <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg shadow-cyan-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-cyan-400/30">
@@ -446,16 +425,12 @@ export default function About() {
                               {showOriginalReview1 ? t("about.reviews.showTranslated") : t("about.reviews.showOriginalEnglish")}
                             </button>
                           )}
-                        </div>
                       </div>
                     </div>
 
                     {/* Review 4 */}
                     <div className="w-1/2 flex-shrink-0 px-3 py-2">
-                      <div className="liquid-glass rounded-3xl p-6 lg:p-8 liquid-glass-hover relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/20 h-full" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                        <div className="absolute inset-0 bg-gradient-to-br from-green-400/10 via-emerald-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-3xl" />
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
-                        <div className="relative z-10">
+                      <div className="liquid-glass liquid-glass-hover rounded-3xl p-6 lg:p-8 backdrop-blur-md relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/20 h-full">
                           {/* Profile Picture and Name - Top */}
                           <div className="flex items-center gap-4 mb-5 pb-4 border-b border-white/10">
                       <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg shadow-green-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-green-400/30">
@@ -499,16 +474,12 @@ export default function About() {
                               {showOriginalReview4 ? t("about.reviews.showTranslated") : t("about.reviews.showOriginal")}
                             </button>
                           )}
-                        </div>
                       </div>
                     </div>
 
                     {/* Review 5 */}
                     <div className="w-1/2 flex-shrink-0 px-3 py-2">
-                      <div className="liquid-glass rounded-3xl p-6 lg:p-8 liquid-glass-hover relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 h-full" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-400/10 via-pink-500/5 to-transparent opacity-0 group-hover/review:opacity-100 transition-opacity duration-500 rounded-3xl" />
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/5 to-transparent rounded-full blur-3xl opacity-0 group-hover/review:opacity-100 transition-opacity duration-500" />
-                        <div className="relative z-10">
+                      <div className="liquid-glass liquid-glass-hover rounded-3xl p-6 lg:p-8 backdrop-blur-md relative group/review overflow-visible transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 h-full">
                           {/* Profile Picture and Name - Top */}
                           <div className="flex items-center gap-4 mb-5 pb-4 border-b border-white/10">
                             <div className="w-12 h-12 rounded-lg overflow-hidden shadow-lg shadow-purple-500/30 transform group-hover/review:scale-110 transition-transform ring-2 ring-purple-400/30">
@@ -552,7 +523,6 @@ export default function About() {
                               {showOriginalReview5 ? t("about.reviews.showTranslated") : t("about.reviews.showOriginalEnglish")}
                             </button>
                           )}
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -610,23 +580,20 @@ export default function About() {
           </section>
 
           {/* CTA Section */}
-          <section className="text-center liquid-glass-strong rounded-2xl p-5 sm:p-6 md:p-8 lg:p-12 liquid-glass-hover animate-fade-in-up relative group overflow-hidden" style={{ animationDelay: '0.6s' }}>
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl" />
-            <div className="relative z-10">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4 animate-text-shimmer text-white drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
-                {t("about.readyToWork")}
-              </h2>
-              <p className="text-gray-100 text-base sm:text-lg mb-5 md:mb-6 drop-shadow-md" style={{ fontFamily: "var(--font-roboto)" }}>
-                {t("about.readyToWork.text")}
-              </p>
-              <a
-                href="/contact"
-                className="inline-block liquid-glass-button text-white px-8 py-3 rounded-xl font-semibold relative transform hover:scale-105 transition-transform"
-                style={{ fontFamily: "var(--font-roboto)" }}
-              >
-                <span className="relative z-10">{t("about.getInTouch")}</span>
-              </a>
-            </div>
+          <section className="text-center liquid-glass liquid-glass-hover rounded-2xl p-5 sm:p-6 md:p-8 lg:p-12 backdrop-blur-md animate-fade-in-up relative group overflow-hidden" style={{ animationDelay: '0.6s' }}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4 animate-text-shimmer text-white drop-shadow-lg" style={{ fontFamily: "var(--font-playfair)" }}>
+              {t("about.readyToWork")}
+            </h2>
+            <p className="text-gray-100 text-base sm:text-lg mb-5 md:mb-6 drop-shadow-md" style={{ fontFamily: "var(--font-roboto)" }}>
+              {t("about.readyToWork.text")}
+            </p>
+            <a
+              href="/contact"
+              className="inline-block liquid-glass-button text-white px-8 py-3 rounded-xl font-semibold relative transform hover:scale-105 transition-transform"
+              style={{ fontFamily: "var(--font-roboto)" }}
+            >
+              <span className="relative z-10">{t("about.getInTouch")}</span>
+            </a>
           </section>
         </div>
       </div>

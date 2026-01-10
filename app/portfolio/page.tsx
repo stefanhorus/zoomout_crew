@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -24,124 +24,6 @@ interface Project {
   description: string;
 }
 
-// Portfolio Projects
-const projects: Project[] = [
-  {
-    id: 1,
-    title: "Big Belly - New Restaurant Location Opening",
-    category: ["events", "commercial"],
-    thumbnail: "/assets/brands/bigbelly.png",
-    muxVideos: [
-      {
-        playbackId: "DbdlbHpdu541nz100c9oOc700DsUnduPJ6EkEmNIFCzOo",
-        title: "",
-        assetId: "5802zN02zVKzhO3n7ZMBmNmHEbyOOBnjkv23szggUGE6Q",
-      },
-      {
-        playbackId: "p1LpNG3CjEe01QQhHDOPG3j5L8kywtmmLSKdJaU51Tjg",
-        title: "",
-        assetId: "CGUXZUf8ZQhCvZ24mvF6UstEj2RzCCXz9agK1I00Qxnc",
-      },
-    ],
-    description: "We were honored to be invited to Big Belly's exclusive private opening event for their new location. Capturing the celebration through aerial cinematography, we documented an evening filled with exceptional atmosphere and outstanding cuisine. The warm, welcoming ambiance combined with the delicious food created the perfect setting for this memorable launch event. This project was a collaborative effort with photographers Dragos Pasniciuc and Dan Gaspar.",
-  },
-  {
-    id: 2,
-    title: "Multiverse Party - Advertisement",
-    category: "events",
-    thumbnail: "/assets/brands/multiverse.png",
-    muxVideos: [
-      {
-        playbackId: "Xi5sUxm00g8N5UJGPn7D9Mut4JsMfUFULA01Qn02woUOwo",
-        title: "",
-        assetId: "01Dl02H4Nql5FM5vD3bxu1awLfSXOqOvg7DKo1LHF00KYk",
-      },
-    ],
-    description: "We filmed a dynamic advertisement video for the Multiverse party event, capturing the vibrant energy and electrifying atmosphere of this unforgettable rooftop party. Our footage highlighted the event's distinctive style and the memorable moments that defined the night.",
-  },
-  {
-    id: 3,
-    title: "Remote Tiny House Retreat - Promo Videos",
-    category: "real-estate",
-    thumbnail: "/assets/brands/cabanuta.png",
-    muxVideos: [
-      {
-        playbackId: "ILANTrld964hQ4OanXs6lq02kqN01q745BRJGgfqPy7Kk",
-        title: "",
-        assetId: "bhUSdN7wq8dC4E46Fd7oTbjdhiFpGWKYuJiI9NhS1TQ",
-      },
-    ],
-    description: "We created promotional materials for Remote Tiny House Retreat, capturing the unique charm and serene atmosphere of this beautiful accommodation cabin. Through aerial cinematography, we showcased the retreat's natural surroundings and cozy accommodations, highlighting the perfect escape for those seeking tranquility and connection with nature.",
-  },
-  {
-    id: 4,
-    title: "Outdoor Lounge - Aerial Filming",
-    category: "commercial",
-    thumbnail: "/assets/brands/aerlounge.png",
-    muxVideos: [
-      {
-        playbackId: "c5jDLrljSoSJid7Du9P9XQb37yzRRrIKqFHYzqpKG8c",
-        title: "",
-        assetId: "cTKE4Xu5idbGw3DAqK02UivmpqNNhkwsMZ52C5ghzLRY",
-      },
-    ],
-    description: "This was among the first materials we filmed after purchasing our drone, making it particularly special to us. It's fascinating to look back and see how much we've evolved in both filming and editing since then. This aerial cinematography project for the outdoor lounge venue captures our early work and showcases the foundation of our creative journey.",
-  },
-  {
-    id: 5,
-    title: "Casa Numaa - Fine Dining Restaurant",
-    category: "commercial",
-    thumbnail: "/assets/brands/casanumaa.png",
-    muxVideos: [
-      {
-        playbackId: "BaZoibIrmiaFjm1oPbGIWlhQAZrZHCV9NcIMW4HQN014",
-        title: "",
-        assetId: "UWLY1HppsMNTiG01pLNf02EcG00J01n33vjrJnkHryDkKoM",
-      },
-      {
-        playbackId: "mUlM3T9v62Udt6bf02520200cihk49QMbiSc7zYCQDvldk",
-        title: "",
-        assetId: "pwcjT01l3vry006Qgy00sjGW01crDlMbDU0101YKrSNRMuGlE",
-      },
-    ],
-    description: "We created advertising materials for Casa Numaa, an exceptional fine dining restaurant. Through aerial cinematography, we captured the elegant ambiance and sophisticated atmosphere that defines this culinary destination, showcasing the restaurant's unique character and inviting setting.",
-  },
-  {
-    id: 6,
-    title: "Utopic Party - Event Promotion",
-    category: "events",
-    thumbnail: "/assets/brands/utopic.png",
-    muxVideos: [
-      {
-        playbackId: "CY6gQczar8Ompqq02jXDHskFOwuuB1W8yng5ZOtXTq800",
-        title: "",
-        assetId: "tSi00hlAkFljNSy00QDvqPyhdCBPuoJi2fSZNe3n02iD3g",
-      },
-    ],
-    description: "We created promotional content for the Utopic party event, capturing the vibrant atmosphere and energy through aerial cinematography. Our footage was designed to showcase the event's unique character and attract attendees, highlighting the dynamic setting and unforgettable experience.",
-  },
-  {
-    id: 7,
-    title: "LA VILLA SUNHOUSE - Sardinia",
-    category: "real-estate",
-    thumbnail: "/assets/photos/sardinia1.jpeg",
-    images: ["/assets/photos/sardinia1.jpeg", "/assets/photos/sardinia2.jpeg"],
-    description: "We captured the stunning beauty of LA VILLA SUNHOUSE, a luxurious property nestled in the breathtaking landscape of Sardinia. Through aerial cinematography and photography, we showcased the villa's exceptional architecture, pristine surroundings, and the Mediterranean elegance that makes this property truly unique.",
-  },
-  {
-    id: 8,
-    title: "Rotaract - Charity Rubber Duck Race",
-    category: "events",
-    thumbnail: "/assets/brands/rotaract.png",
-    images: [
-      "/assets/photos/ratuste1.png",
-      "/assets/photos/ratuste2.png",
-      "/assets/photos/ratuste3.png",
-    ],
-    description: "We documented the heartwarming Charity Rubber Duck Race organized by Rotaract, capturing the spirit of community and philanthropy through aerial cinematography. This unique fundraising event brought together participants of all ages for a fun and meaningful cause, showcasing the power of community engagement and charitable giving.",
-  },
-];
-
 export default function Portfolio() {
   const { t, language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<ProjectCategory>("all");
@@ -149,6 +31,139 @@ export default function Portfolio() {
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
   const [selectedVideoIndex, setSelectedVideoIndex] = useState<number>(0);
   const [videoLoaded, setVideoLoaded] = useState(false);
+
+  // Portfolio Projects with translations - memoized to only recreate when language changes
+  const projects: Project[] = useMemo(() => [
+    {
+      id: 1,
+      title: t("portfolio.project1.title"),
+      category: ["events", "commercial"],
+      thumbnail: "/assets/brands/bigbelly.png",
+      muxVideos: [
+        {
+          playbackId: "DbdlbHpdu541nz100c9oOc700DsUnduPJ6EkEmNIFCzOo",
+          title: "",
+          assetId: "5802zN02zVKzhO3n7ZMBmNmHEbyOOBnjkv23szggUGE6Q",
+        },
+        {
+          playbackId: "p1LpNG3CjEe01QQhHDOPG3j5L8kywtmmLSKdJaU51Tjg",
+          title: "",
+          assetId: "CGUXZUf8ZQhCvZ24mvF6UstEj2RzCCXz9agK1I00Qxnc",
+        },
+      ],
+      description: t("portfolio.project1.description"),
+    },
+    {
+      id: 2,
+      title: t("portfolio.project2.title"),
+      category: "events",
+      thumbnail: "/assets/brands/multiverse.png",
+      muxVideos: [
+        {
+          playbackId: "Xi5sUxm00g8N5UJGPn7D9Mut4JsMfUFULA01Qn02woUOwo",
+          title: "",
+          assetId: "01Dl02H4Nql5FM5vD3bxu1awLfSXOqOvg7DKo1LHF00KYk",
+        },
+      ],
+      description: t("portfolio.project2.description"),
+    },
+    {
+      id: 3,
+      title: t("portfolio.project3.title"),
+      category: "real-estate",
+      thumbnail: "/assets/brands/cabanuta.png",
+      muxVideos: [
+        {
+          playbackId: "ILANTrld964hQ4OanXs6lq02kqN01q745BRJGgfqPy7Kk",
+          title: "",
+          assetId: "bhUSdN7wq8dC4E46Fd7oTbjdhiFpGWKYuJiI9NhS1TQ",
+        },
+      ],
+      description: t("portfolio.project3.description"),
+    },
+    {
+      id: 4,
+      title: t("portfolio.project4.title"),
+      category: "commercial",
+      thumbnail: "/assets/brands/aerlounge.png",
+      muxVideos: [
+        {
+          playbackId: "c5jDLrljSoSJid7Du9P9XQb37yzRRrIKqFHYzqpKG8c",
+          title: "",
+          assetId: "cTKE4Xu5idbGw3DAqK02UivmpqNNhkwsMZ52C5ghzLRY",
+        },
+      ],
+      description: t("portfolio.project4.description"),
+    },
+    {
+      id: 5,
+      title: t("portfolio.project5.title"),
+      category: "commercial",
+      thumbnail: "/assets/brands/casanumaa.png",
+      muxVideos: [
+        {
+          playbackId: "BaZoibIrmiaFjm1oPbGIWlhQAZrZHCV9NcIMW4HQN014",
+          title: "",
+          assetId: "UWLY1HppsMNTiG01pLNf02EcG00J01n33vjrJnkHryDkKoM",
+        },
+        {
+          playbackId: "mUlM3T9v62Udt6bf02520200cihk49QMbiSc7zYCQDvldk",
+          title: "",
+          assetId: "pwcjT01l3vry006Qgy00sjGW01crDlMbDU0101YKrSNRMuGlE",
+        },
+      ],
+      description: t("portfolio.project5.description"),
+    },
+    {
+      id: 6,
+      title: t("portfolio.project6.title"),
+      category: "events",
+      thumbnail: "/assets/brands/utopic.png",
+      muxVideos: [
+        {
+          playbackId: "CY6gQczar8Ompqq02jXDHskFOwuuB1W8yng5ZOtXTq800",
+          title: "",
+          assetId: "tSi00hlAkFljNSy00QDvqPyhdCBPuoJi2fSZNe3n02iD3g",
+        },
+      ],
+      description: t("portfolio.project6.description"),
+    },
+    {
+      id: 7,
+      title: t("portfolio.project7.title"),
+      category: "real-estate",
+      thumbnail: "/assets/photos/sardinia1.jpeg",
+      images: ["/assets/photos/sardinia1.jpeg", "/assets/photos/sardinia2.jpeg"],
+      description: t("portfolio.project7.description"),
+    },
+    {
+      id: 8,
+      title: t("portfolio.project8.title"),
+      category: "events",
+      thumbnail: "/assets/brands/rotaract.png",
+      images: [
+        "/assets/photos/ratuste1.png",
+        "/assets/photos/ratuste2.png",
+        "/assets/photos/ratuste3.png",
+      ],
+      description: t("portfolio.project8.description"),
+    },
+  ], [t, language]);
+
+  const prevLanguageRef = useRef(language);
+  
+  // Reset selected project when language changes to update translations
+  useEffect(() => {
+    if (prevLanguageRef.current !== language && selectedProject) {
+      const updatedProject = projects.find(p => p.id === selectedProject.id);
+      if (updatedProject) {
+        setSelectedProject(updatedProject);
+        setSelectedVideoIndex(0);
+        setVideoLoaded(false);
+      }
+    }
+    prevLanguageRef.current = language;
+  }, [language, projects, selectedProject]);
 
   // Update page title when language changes
   useEffect(() => {
