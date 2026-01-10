@@ -4,8 +4,6 @@ import crypto from "crypto";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
 import { getDownloadUrl, isDigitalProduct } from "@/lib/digital-products";
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
-
 // Verifică semnătura webhook-ului Revolut
 function verifyRevolutSignature(
   payload: string,
@@ -146,6 +144,7 @@ export async function POST(request: NextRequest) {
         });
 
         // Send confirmation email to customer
+        const resend = new Resend(process.env.RESEND_API_KEY);
         const { data, error } = await resend.emails.send({
           from: fromEmail,
           to: customerEmail,

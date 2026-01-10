@@ -3,8 +3,6 @@ import { Resend } from "resend";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
 import { getDownloadUrl, isDigitalProduct } from "@/lib/digital-products";
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
-
 export async function POST(request: NextRequest) {
   try {
     if (!process.env.RESEND_API_KEY) {
@@ -13,6 +11,8 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     const { items, customerEmail, discountPercentage, language } = await request.json();
 

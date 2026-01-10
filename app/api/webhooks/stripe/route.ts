@@ -16,7 +16,12 @@ export async function POST(request: NextRequest) {
     apiVersion: "2025-12-15.clover",
   });
 
-  const resend = new Resend(process.env.RESEND_API_KEY!);
+  if (!process.env.RESEND_API_KEY) {
+    console.error("RESEND_API_KEY is not configured");
+    // Continue without sending email
+  }
+
+  const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
   const body = await request.text();
   const signature = request.headers.get("stripe-signature");
@@ -107,6 +112,11 @@ export async function POST(request: NextRequest) {
       });
 
       // Send confirmation email to customer
+      if (!resend) {
+        console.error("Resend is not configured, skipping email");
+        return NextResponse.json({ received: true });
+      }
+
       const { data, error } = await resend.emails.send({
         from: fromEmail,
         to: customerEmail,
