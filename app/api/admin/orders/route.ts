@@ -58,6 +58,14 @@ export async function GET(request: NextRequest) {
       revolutOrders = Array.isArray(revolutData) ? revolutData : [];
     }
 
+    // Rate-uri de schimb inverse (pentru conversie înapoi la RON)
+    const inverseExchangeRates: Record<string, number> = {
+      RON: 1,
+      EUR: 5,    // 1 EUR = 5 RON
+      USD: 4.545, // 1 USD = ~4.545 RON
+      GBP: 5.556, // 1 GBP = ~5.556 RON
+    };
+
     // Formatează comenzile Stripe
     // Pentru fiecare sesiune, trebuie să obținem line_items separat
     const stripeOrdersPromises = stripeSessions.data
@@ -84,18 +92,56 @@ export async function GET(request: NextRequest) {
           lineItems = items.data;
         }
 
-        const items = lineItems.map((item) => ({
-          name: item.description || item.price?.nickname || "Product",
-          quantity: item.quantity || 1,
-          price: item.price?.unit_amount ? item.price.unit_amount / 100 : 0,
-        }));
+        const sessionCurrency = (session.currency || "ron").toUpperCase();
+        const exchangeRate = session.metadata?.exchange_rate ? parseFloat(session.metadata.exchange_rate) : null;
+        const originalCurrency = session.metadata?.original_currency || "RON";
+
+        const items = lineItems.map((item) => {
+          // Prețul item-ului este în currency-ul sesiunii
+          const itemPriceInSessionCurrency = item.price?.unit_amount ? item.price.unit_amount / 100 : 0;
+          
+          // Convertim înapoi la RON dacă este necesar
+          let itemPriceInRON = itemPriceInSessionCurrency;
+          if (sessionCurrency !== "RON") {
+            if (exchangeRate && originalCurrency === "RON") {
+              itemPriceInRON = itemPriceInSessionCurrency / exchangeRate;
+            } else if (inverseExchangeRates[sessionCurrency]) {
+              itemPriceInRON = itemPriceInSessionCurrency * inverseExchangeRates[sessionCurrency];
+            }
+          }
+          
+          return {
+            name: item.description || item.price?.nickname || "Product",
+            quantity: item.quantity || 1,
+            price: itemPriceInRON, // Returnează prețul în RON
+          };
+        });
+
+        // Calculează amount în RON
+        let amountInRON = 0;
+        if (session.amount_total) {
+          const amountInSessionCurrency = session.amount_total / 100;
+          
+          if (sessionCurrency === "RON") {
+            amountInRON = amountInSessionCurrency;
+          } else {
+            if (exchangeRate && originalCurrency === "RON") {
+              amountInRON = amountInSessionCurrency / exchangeRate;
+            } else if (inverseExchangeRates[sessionCurrency]) {
+              amountInRON = amountInSessionCurrency * inverseExchangeRates[sessionCurrency];
+            } else {
+              amountInRON = amountInSessionCurrency;
+            }
+          }
+        }
 
         return {
           id: session.id,
           provider: "stripe",
           customerEmail: session.customer_details?.email || "N/A",
-          amount: session.amount_total ? session.amount_total / 100 : 0,
-          currency: session.currency?.toUpperCase() || "RON",
+          amount: amountInRON, // Totul în RON pentru consistență
+          currency: sessionCurrency, // Păstrăm currency-ul original pentru afișare
+          originalCurrency: originalCurrency,
           status: session.payment_status,
           createdAt: new Date(session.created * 1000).toISOString(),
           items,
@@ -124,25 +170,82 @@ export async function GET(request: NextRequest) {
           if (orderDetailResponse.ok) {
             const orderDetail = await orderDetailResponse.json();
             
-            // Calculează suma din items dacă amount nu este disponibil sau este 0
-            const items = (orderDetail.items || []).map((item: any) => ({
-              name: item.name || "Product",
-              quantity: item.quantity || 1,
-              price: item.unit_price ? item.unit_price / 100 : 0,
-            }));
+            // Rate-uri de schimb inverse (pentru conversie înapoi la RON)
+            // Dacă 1 RON = 0.2 EUR, atunci 1 EUR = 5 RON
+            const inverseExchangeRates: Record<string, number> = {
+              RON: 1,
+              EUR: 5,    // 1 EUR = 5 RON (1 / 0.2)
+              USD: 4.545, // 1 USD = ~4.545 RON (1 / 0.22)
+              GBP: 5.556, // 1 GBP = ~5.556 RON (1 / 0.18)
+            };
             
-            // Calculează suma totală
-            let calculatedAmount = 0;
+            // Obține currency-ul comenzii
+            const orderCurrency = (orderDetail.currency || "RON").toUpperCase();
+            
+            // Verifică metadata pentru exchange rate (dacă există)
+            const metadata = orderDetail.metadata || {};
+            const exchangeRate = metadata.exchange_rate ? parseFloat(metadata.exchange_rate) : null;
+            const originalCurrency = metadata.original_currency || "RON";
+            
+            // Calculează suma din items dacă amount nu este disponibil sau este 0
+            const items = (orderDetail.items || []).map((item: any) => {
+              // Prețul item-ului este în currency-ul comenzii
+              const itemPriceInOrderCurrency = item.unit_price ? item.unit_price / 100 : 0;
+              
+              // Convertim înapoi la RON dacă este necesar
+              let itemPriceInRON = itemPriceInOrderCurrency;
+              if (orderCurrency !== "RON") {
+                if (exchangeRate && originalCurrency === "RON") {
+                  // Folosim exchange rate din metadata dacă există
+                  itemPriceInRON = itemPriceInOrderCurrency / exchangeRate;
+                } else if (inverseExchangeRates[orderCurrency]) {
+                  // Folosim rate-urile inverse
+                  itemPriceInRON = itemPriceInOrderCurrency * inverseExchangeRates[orderCurrency];
+                }
+              }
+              
+              return {
+                name: item.name || "Product",
+                quantity: item.quantity || 1,
+                price: itemPriceInRON, // Returnează prețul în RON
+              };
+            });
+            
+            // Calculează suma totală în RON
+            let calculatedAmountInRON = 0;
             if (orderDetail.amount && orderDetail.amount > 0) {
-              calculatedAmount = orderDetail.amount / 100;
+              // Amount este în currency-ul comenzii
+              const amountInOrderCurrency = orderDetail.amount / 100;
+              
+              // Convertim înapoi la RON
+              if (orderCurrency === "RON") {
+                calculatedAmountInRON = amountInOrderCurrency;
+              } else {
+                if (exchangeRate && originalCurrency === "RON") {
+                  // Folosim exchange rate din metadata dacă există
+                  calculatedAmountInRON = amountInOrderCurrency / exchangeRate;
+                } else if (inverseExchangeRates[orderCurrency]) {
+                  // Folosim rate-urile inverse
+                  calculatedAmountInRON = amountInOrderCurrency * inverseExchangeRates[orderCurrency];
+                } else {
+                  calculatedAmountInRON = amountInOrderCurrency;
+                }
+              }
             } else {
               // Calculează din items dacă amount nu este disponibil
-              calculatedAmount = items.reduce((sum: number, item: any) => {
+              calculatedAmountInRON = items.reduce((sum: number, item: any) => {
                 return sum + (item.price * item.quantity);
               }, 0);
               // Dacă tot nu avem sumă, folosește amount din lista inițială
-              if (calculatedAmount === 0 && order.amount) {
-                calculatedAmount = order.amount / 100;
+              if (calculatedAmountInRON === 0 && order.amount) {
+                const orderAmountInCurrency = order.amount / 100;
+                if (orderCurrency === "RON") {
+                  calculatedAmountInRON = orderAmountInCurrency;
+                } else if (inverseExchangeRates[orderCurrency]) {
+                  calculatedAmountInRON = orderAmountInCurrency * inverseExchangeRates[orderCurrency];
+                } else {
+                  calculatedAmountInRON = orderAmountInCurrency;
+                }
               }
             }
             
@@ -150,8 +253,9 @@ export async function GET(request: NextRequest) {
               id: order.id,
               provider: "revolut",
               customerEmail: orderDetail.customer?.email || orderDetail.email || "N/A",
-              amount: calculatedAmount,
-              currency: orderDetail.currency || "RON",
+              amount: calculatedAmountInRON, // Totul în RON pentru consistență
+              currency: orderCurrency, // Păstrăm currency-ul original pentru afișare
+              originalCurrency: originalCurrency,
               status: orderDetail.state,
               createdAt: orderDetail.created_at || new Date().toISOString(),
               items,
