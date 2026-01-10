@@ -101,15 +101,18 @@ export async function GET(request: NextRequest) {
         const originalCurrency = metadata.original_currency || "RON";
 
         const items = lineItems.map((item) => {
+          const itemQuantity = item.quantity || 1; // Handle null quantity
           const itemPriceInSessionCurrency = item.price?.unit_amount ? item.price.unit_amount / 100 : 0;
           
           // Dacă avem metadata cu total_amount_ron, calculăm proporțional
           let itemPriceInRON = itemPriceInSessionCurrency;
           if (totalAmountRONFromMetadata && session.amount_total) {
             const totalInCurrency = session.amount_total / 100;
-            if (totalInCurrency > 0) {
-              const itemPercentage = (itemPriceInSessionCurrency * item.quantity) / totalInCurrency;
-              itemPriceInRON = totalAmountRONFromMetadata * itemPercentage / item.quantity;
+            if (totalInCurrency > 0 && itemQuantity > 0) {
+              const itemTotalInCurrency = itemPriceInSessionCurrency * itemQuantity;
+              const itemPercentage = itemTotalInCurrency / totalInCurrency;
+              const itemTotalInRON = totalAmountRONFromMetadata * itemPercentage;
+              itemPriceInRON = itemTotalInRON / itemQuantity; // Preț per unitate
             }
           } else if (sessionCurrency !== "RON") {
             if (exchangeRate && originalCurrency === "RON") {
@@ -121,7 +124,7 @@ export async function GET(request: NextRequest) {
           
           return {
             name: item.description || item.price?.nickname || "Product",
-            quantity: item.quantity || 1,
+            quantity: itemQuantity,
             price: itemPriceInRON,
           };
         });
@@ -206,6 +209,7 @@ export async function GET(request: NextRequest) {
             
             // Calculează suma din items pentru afișare
             const items = (orderDetail.items || []).map((item: any) => {
+              const itemQuantity = item.quantity || 1; // Handle null/undefined quantity
               const itemPriceInOrderCurrency = item.unit_price ? item.unit_price / 100 : 0;
               
               // Dacă avem metadata cu total_amount_ron, calculăm proporțional
@@ -213,9 +217,11 @@ export async function GET(request: NextRequest) {
               if (totalAmountRONFromMetadata && orderDetail.amount) {
                 // Calculează procentul din total
                 const totalInCurrency = orderDetail.amount / 100;
-                if (totalInCurrency > 0) {
-                  const itemPercentage = (itemPriceInOrderCurrency * item.quantity) / totalInCurrency;
-                  itemPriceInRON = totalAmountRONFromMetadata * itemPercentage / item.quantity;
+                if (totalInCurrency > 0 && itemQuantity > 0) {
+                  const itemTotalInCurrency = itemPriceInOrderCurrency * itemQuantity;
+                  const itemPercentage = itemTotalInCurrency / totalInCurrency;
+                  const itemTotalInRON = totalAmountRONFromMetadata * itemPercentage;
+                  itemPriceInRON = itemTotalInRON / itemQuantity; // Preț per unitate
                 }
               } else if (orderCurrency !== "RON") {
                 // Fallback: convertim folosind exchange rate sau inverse rates
@@ -228,7 +234,7 @@ export async function GET(request: NextRequest) {
               
               return {
                 name: item.name || "Product",
-                quantity: item.quantity || 1,
+                quantity: itemQuantity,
                 price: itemPriceInRON,
               };
             });
