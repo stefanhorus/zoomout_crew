@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { items, discountPercentage, customerEmail, language } = await request.json();
+    const { items, discountPercentage, customerEmail, language, currency = "RON" } = await request.json();
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -20,24 +20,44 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Calculează totalul
-    let totalAmount = items.reduce((sum: number, item: { product: { price: number }; quantity: number }) => {
+    // Rate-uri de schimb (trebuie să fie identice cu cele din CurrencyContext)
+    const exchangeRates: Record<string, number> = {
+      RON: 1,
+      EUR: 0.2,
+      USD: 0.22,
+      GBP: 0.18,
+    };
+
+    // Validează currency-ul și folosește RON dacă nu este suportat
+    const validCurrencies = ["RON", "EUR", "USD", "GBP"];
+    const selectedCurrency = validCurrencies.includes(currency) ? currency : "RON";
+    const exchangeRate = exchangeRates[selectedCurrency] || 1;
+
+    // Calculează totalul în RON (prețurile din items sunt în RON)
+    let totalAmountRON = items.reduce((sum: number, item: { product: { price: number }; quantity: number }) => {
       return sum + item.product.price * item.quantity;
     }, 0);
 
     // Aplică discount dacă există
     if (discountPercentage && discountPercentage > 0) {
-      totalAmount = totalAmount * (1 - discountPercentage / 100);
+      totalAmountRON = totalAmountRON * (1 - discountPercentage / 100);
     }
+
+    // Convertește în currency-ul selectat
+    const totalAmount = totalAmountRON * exchangeRate;
 
     // Construiește order items pentru Revolut
     const orderItems = items.map((item: { product: { name: string; price: number; description?: string }; quantity: number }) => {
-      let unitPrice = item.product.price;
+      // Prețul este în RON, trebuie convertit
+      let unitPriceRON = item.product.price;
       
       // Aplică discount dacă există
       if (discountPercentage && discountPercentage > 0) {
-        unitPrice = unitPrice * (1 - discountPercentage / 100);
+        unitPriceRON = unitPriceRON * (1 - discountPercentage / 100);
       }
+
+      // Convertește în currency-ul selectat
+      const unitPrice = unitPriceRON * exchangeRate;
 
       return {
         name: item.product.name,
@@ -60,8 +80,8 @@ export async function POST(request: NextRequest) {
         "Revolut-Api-Version": "2024-05-01",
       },
       body: JSON.stringify({
-        amount: Math.round(totalAmount * 100), // Total în cenți
-        currency: "RON",
+        amount: Math.round(totalAmount * 100), // Total în cenți în currency-ul selectat
+        currency: selectedCurrency,
         capture_mode: "AUTOMATIC",
         customer_id: undefined, // Poți adăuga customer_id dacă ai
         email: customerEmail || undefined, // Adaugă emailul clientului
@@ -72,6 +92,8 @@ export async function POST(request: NextRequest) {
           items_count: items.length,
           customer_email: customerEmail || "",
           language: language || "en",
+          original_currency: "RON",
+          exchange_rate: exchangeRate,
         },
       }),
     });

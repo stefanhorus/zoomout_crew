@@ -2,19 +2,14 @@
 
 import { useCart } from "@/contexts/CartContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import Image from "next/image";
 import { useState } from "react";
 
 export default function Cart({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
   const { t } = useLanguage();
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("ro-RO", {
-      style: "currency",
-      currency: "RON",
-    }).format(price);
-  };
+  const { formatPrice } = useCurrency();
 
   const handleCheckout = () => {
     if (cart.length === 0) return;

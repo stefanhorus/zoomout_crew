@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import Cart from "./Cart";
 
 export default function Header() {
@@ -14,6 +15,8 @@ export default function Header() {
   const headerRef = useRef<HTMLElement>(null);
   const { getTotalItems } = useCart();
   const { language, setLanguage, t } = useLanguage();
+  const { currency, setCurrency } = useCurrency();
+  const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
@@ -54,6 +57,17 @@ export default function Header() {
       document.body.style.overflow = "unset";
     };
   }, [isMobileMenuOpen]);
+
+  // Închide currency dropdown când se face click în afara lui
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isCurrencyOpen && !(event.target as Element).closest('.currency-selector')) {
+        setIsCurrencyOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isCurrencyOpen]);
 
   const navLinks = [
     { href: "/", labelKey: "nav.home", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
@@ -111,7 +125,7 @@ export default function Header() {
               ))}
             </ul>
             
-            {/* Language Selector */}
+            {/* Language & Currency Selectors */}
             <div className="flex items-center gap-2 ml-2">
               <button
                 onClick={() => setLanguage(language === "en" ? "ro" : "en")}
@@ -123,6 +137,48 @@ export default function Header() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
                 </svg>
               </button>
+              
+              {/* Currency Selector */}
+              <div className="relative currency-selector">
+                <button
+                  onClick={() => setIsCurrencyOpen(!isCurrencyOpen)}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg liquid-glass text-white text-sm font-medium hover:opacity-90 transition-all duration-300 group"
+                  aria-label="Change currency"
+                >
+                  <span className="text-xs font-bold">{currency}</span>
+                  <svg className={`w-3.5 h-3.5 transition-transform ${isCurrencyOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                
+                {/* Currency Dropdown */}
+                {isCurrencyOpen && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setIsCurrencyOpen(false)}
+                    />
+                    <div className="absolute right-0 top-full mt-2 w-32 rounded-lg liquid-glass border border-white/20 overflow-hidden z-20 shadow-xl">
+                      {(["RON", "EUR", "USD", "GBP"] as const).map((curr) => (
+                        <button
+                          key={curr}
+                          onClick={() => {
+                            setCurrency(curr);
+                            setIsCurrencyOpen(false);
+                          }}
+                          className={`w-full px-3 py-2 text-left text-sm transition-colors ${
+                            currency === curr
+                              ? "bg-white/20 text-white font-semibold"
+                              : "text-gray-300 hover:bg-white/10 hover:text-white"
+                          }`}
+                        >
+                          {curr}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
             {/* Cart Icon - când există produse sau când cart-ul este deschis */}
             {(getTotalItems() > 0 || isCartOpen) && (
@@ -265,8 +321,8 @@ export default function Header() {
             </ul>
           </nav>
 
-          {/* Language Selector Mobile */}
-          <div className="px-3 py-3 border-t border-white/10">
+          {/* Language & Currency Selectors Mobile */}
+          <div className="px-3 py-3 border-t border-white/10 space-y-2">
             <button
               onClick={() => {
                 setLanguage(language === "en" ? "ro" : "en");
@@ -280,6 +336,41 @@ export default function Header() {
               </svg>
               <span className="text-xs opacity-75">{language === "en" ? "Switch to Romanian" : "Schimbă la Engleză"}</span>
             </button>
+            
+            {/* Currency Selector Mobile */}
+            <div className="relative currency-selector">
+              <button
+                onClick={() => setIsCurrencyOpen(!isCurrencyOpen)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg liquid-glass text-white text-sm font-medium hover:opacity-90 transition-all duration-300"
+              >
+                <span className="text-sm font-bold">{currency}</span>
+                <svg className={`w-4 h-4 transition-transform ${isCurrencyOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {/* Currency Dropdown Mobile */}
+              {isCurrencyOpen && (
+                <div className="mt-2 w-full rounded-lg liquid-glass border border-white/20 overflow-hidden">
+                  {(["RON", "EUR", "USD", "GBP"] as const).map((curr) => (
+                    <button
+                      key={curr}
+                      onClick={() => {
+                        setCurrency(curr);
+                        setIsCurrencyOpen(false);
+                      }}
+                      className={`w-full px-4 py-2.5 text-left text-sm transition-colors ${
+                        currency === curr
+                          ? "bg-white/20 text-white font-semibold"
+                          : "text-gray-300 hover:bg-white/10 hover:text-white"
+                      }`}
+                    >
+                      {curr}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Footer */}

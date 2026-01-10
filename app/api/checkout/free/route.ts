@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const { items, customerEmail, discountPercentage, language } = await request.json();
+    const { items, customerEmail, discountPercentage, language, currency = "RON" } = await request.json();
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -48,7 +48,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const currency = "RON";
+    // Pentru free orders, currency-ul nu contează (totalul este 0), dar îl acceptăm pentru consistență
+    const selectedCurrency = currency || "RON";
     const lang = (language as "en" | "ro") || "en";
 
     // Format products list and collect digital downloads
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
     const emailContent = generateOrderConfirmationEmail({
       productsList,
       amountTotal: 0,
-      currency,
+      currency: selectedCurrency,
       websiteUrl,
       logoUrl,
       language: lang,

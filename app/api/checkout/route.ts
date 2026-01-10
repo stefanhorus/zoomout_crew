@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       apiVersion: "2025-12-15.clover",
     });
 
-    const { items, discountPercentage, customerEmail, language } = await request.json();
+    const { items, discountPercentage, customerEmail, language, currency = "RON" } = await request.json();
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -25,18 +25,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Rate-uri de schimb (trebuie să fie identice cu cele din CurrencyContext)
+    const exchangeRates: Record<string, number> = {
+      RON: 1,
+      EUR: 0.2,
+      USD: 0.22,
+      GBP: 0.18,
+    };
+
+    // Validează currency-ul și folosește RON dacă nu este suportat
+    const validCurrencies = ["RON", "EUR", "USD", "GBP"];
+    const selectedCurrency = validCurrencies.includes(currency) ? currency : "RON";
+    const exchangeRate = exchangeRates[selectedCurrency] || 1;
+    
+    // Stripe folosește coduri de currency în lowercase
+    const stripeCurrency = selectedCurrency.toLowerCase();
+
     // Construiește line items pentru Stripe
     const lineItems = items.map((item: { product: { name: string; price: number; description?: string }; quantity: number }) => {
-      let unitAmount = Math.round(item.product.price * 100);
+      // Prețul este în RON, trebuie convertit
+      let unitPriceRON = item.product.price;
       
       // Aplică discount dacă există
       if (discountPercentage && discountPercentage > 0) {
-        unitAmount = Math.round(unitAmount * (1 - discountPercentage / 100));
+        unitPriceRON = unitPriceRON * (1 - discountPercentage / 100);
       }
+
+      // Convertește în currency-ul selectat
+      const unitPrice = unitPriceRON * exchangeRate;
+      const unitAmount = Math.round(unitPrice * 100);
 
       return {
         price_data: {
-          currency: "ron", // Lei românești
+          currency: stripeCurrency,
           product_data: {
             name: item.product.name,
             description: item.product.description || "",
@@ -58,6 +79,8 @@ export async function POST(request: NextRequest) {
       metadata: {
         customer_email: customerEmail || "",
         language: language || "en",
+        original_currency: "RON",
+        exchange_rate: exchangeRate.toString(),
       },
     });
 

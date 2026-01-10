@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -10,6 +11,7 @@ import Image from "next/image";
 function CheckoutContent() {
   const { cart, getTotalPrice, clearCart } = useCart();
   const { t, language } = useLanguage();
+  const { formatPrice, currency } = useCurrency();
   const router = useRouter();
   const [discountCode, setDiscountCode] = useState("");
   const [discountApplied, setDiscountApplied] = useState(false);
@@ -20,13 +22,6 @@ function CheckoutContent() {
   const [showStripeFallback, setShowStripeFallback] = useState(false);
   const [customerEmail, setCustomerEmail] = useState("");
   const [emailError, setEmailError] = useState("");
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("ro-RO", {
-      style: "currency",
-      currency: "RON",
-    }).format(price);
-  };
 
   const subtotal = getTotalPrice();
   const discountAmount = discountApplied ? subtotal * (discountPercentage / 100) : 0;
@@ -86,18 +81,19 @@ function CheckoutContent() {
       setIsProcessing(true);
       try {
         // Procesează comanda gratuită direct, fără gateway de plată
-        const response = await fetch("/api/checkout/free", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            items: cart,
-            customerEmail: customerEmail.trim(),
-            discountPercentage: discountApplied ? discountPercentage : undefined,
-            language: language,
-          }),
-        });
+          const response = await fetch("/api/checkout/free", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              items: cart,
+              customerEmail: customerEmail.trim(),
+              discountPercentage: discountApplied ? discountPercentage : undefined,
+              language: language,
+              currency: currency,
+            }),
+          });
 
         const data = await response.json();
 
@@ -134,6 +130,7 @@ function CheckoutContent() {
               discountPercentage: discountApplied ? discountPercentage : undefined,
               customerEmail: customerEmail.trim(),
               language: language,
+              currency: currency,
             }),
           });
 
@@ -170,6 +167,7 @@ function CheckoutContent() {
           discountPercentage: discountApplied ? discountPercentage : undefined,
           customerEmail: customerEmail.trim(),
           language: language,
+          currency: currency,
         }),
       });
 

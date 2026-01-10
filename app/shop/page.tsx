@@ -5,6 +5,7 @@ import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 // Tipuri de produse pentru filtrare
 type ProductCategory = "all" | "physical" | "digital";
@@ -84,6 +85,7 @@ const products: Product[] = [
 
 export default function Shop() {
   const { t, language } = useLanguage();
+  const { formatPrice } = useCurrency();
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory>("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
@@ -180,13 +182,6 @@ export default function Shop() {
 
   const handleAddToCart = (product: Product) => {
     addToCart(product);
-  };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("ro-RO", {
-      style: "currency",
-      currency: "RON",
-    }).format(price);
   };
 
   return (
