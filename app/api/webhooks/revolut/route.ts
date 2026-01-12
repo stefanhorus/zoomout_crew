@@ -136,8 +136,18 @@ export async function POST(request: NextRequest) {
         const metadata = order.metadata || {};
         const language = (metadata.language as "en" | "ro") || "en";
 
+        console.log("📧 Email check:", {
+          customerEmail,
+          hasCustomer: !!order.customer,
+          orderEmail: order.email,
+          customerEmailField: order.customer_email,
+          hasResendKey: !!process.env.RESEND_API_KEY,
+        });
+
         if (!customerEmail) {
-          console.error("No customer email found in order");
+          console.error("❌ No customer email found in order");
+          console.error("📋 Order object keys:", Object.keys(order));
+          console.error("📋 Order customer:", order.customer);
           return NextResponse.json({ received: true });
         }
 
@@ -264,9 +274,19 @@ export async function POST(request: NextRequest) {
         });
 
         // Send confirmation email to customer (dacă este configurat)
+        console.log("📧 Attempting to send email...");
+        console.log("📧 Email details:", {
+          to: customerEmail,
+          from: fromEmail,
+          hasResendKey: !!process.env.RESEND_API_KEY,
+          subject: emailContent.subject,
+        });
+
         if (process.env.RESEND_API_KEY) {
           try {
             const resend = new Resend(process.env.RESEND_API_KEY);
+            console.log("📧 Sending email via Resend...");
+            
             const { data, error } = await resend.emails.send({
               from: fromEmail,
               to: customerEmail,
@@ -277,11 +297,15 @@ export async function POST(request: NextRequest) {
 
             if (error) {
               console.error("❌ Error sending purchase confirmation email:", error);
+              console.error("❌ Error details:", JSON.stringify(error, null, 2));
             } else {
-              console.log("✅ Purchase confirmation email sent to:", customerEmail);
+              console.log("✅ Purchase confirmation email sent successfully!");
+              console.log("✅ Email sent to:", customerEmail);
+              console.log("✅ Resend response:", data);
             }
           } catch (emailError: any) {
-            console.error("❌ Error sending email:", emailError);
+            console.error("❌ Exception sending email:", emailError);
+            console.error("❌ Error stack:", emailError.stack);
             // Nu returnăm eroare, comanda este deja salvată
           }
         } else {
