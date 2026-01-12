@@ -276,7 +276,7 @@ export default function AdminOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white pt-20 md:pt-24 p-4 md:p-8">
       <style jsx>{`
         @keyframes logoRotateY {
           0% {
@@ -355,6 +355,8 @@ export default function AdminOrdersPage() {
                           order.status === "COMPLETED" ||
                           order.status === "AUTHORISED"
                             ? "bg-green-500/20 text-green-300 border border-green-500/50"
+                            : order.status === "pending"
+                            ? "bg-orange-500/20 text-orange-300 border border-orange-500/50"
                             : "bg-yellow-500/20 text-yellow-300 border border-yellow-500/50"
                         }`}
                       >

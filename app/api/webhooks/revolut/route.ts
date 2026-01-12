@@ -32,6 +32,8 @@ function verifyRevolutSignature(
 
 export async function POST(request: NextRequest) {
   try {
+    console.log("🔔 Revolut webhook received");
+    
     if (!process.env.RESEND_API_KEY) {
       console.error("RESEND_API_KEY is not set");
       return NextResponse.json(
@@ -44,6 +46,11 @@ export async function POST(request: NextRequest) {
     const bodyText = await request.text();
     const signature = request.headers.get("revolut-signature");
     const timestamp = request.headers.get("revolut-request-timestamp");
+    
+    console.log("📝 Webhook headers:", {
+      hasSignature: !!signature,
+      hasTimestamp: !!timestamp,
+    });
 
     // Verifică semnătura dacă avem signing secret
     if (process.env.REVOLUT_WEBHOOK_SECRET && signature && timestamp) {
@@ -68,7 +75,9 @@ export async function POST(request: NextRequest) {
 
     // Verifică dacă este un eveniment de plată completată
     if (eventType === "ORDER_COMPLETED" || eventType === "ORDER_AUTHORISED") {
+      console.log("🔔 Revolut webhook received:", eventType);
       const orderId = body.order_id;
+      console.log("📦 Order ID:", orderId);
 
       // Trebuie să obținem detaliile order-ului din Revolut API
       if (!process.env.REVOLUT_SECRET_KEY) {
@@ -94,7 +103,9 @@ export async function POST(request: NextRequest) {
 
       try {
         // Conectează la MongoDB
+        console.log("🔌 Connecting to MongoDB...");
         await connectDB();
+        console.log("✅ Connected to MongoDB");
 
         const customerEmail = order.customer?.email || order.email || order.customer_email;
         const amountTotal = order.amount || 0;
@@ -155,7 +166,16 @@ export async function POST(request: NextRequest) {
         });
 
         // Salvează sau actualizează comanda în MongoDB
-        await Order.findOneAndUpdate(
+        console.log("💾 Saving order to MongoDB...");
+        console.log("📊 Order data:", {
+          orderId: orderId,
+          amountRON,
+          amountCurrency: amountInCurrencyDecimal,
+          currency,
+          itemsCount: formattedItems.length,
+        });
+        
+        const savedOrder = await Order.findOneAndUpdate(
           { orderId: orderId },
           {
             orderId: orderId,
@@ -177,7 +197,8 @@ export async function POST(request: NextRequest) {
           { upsert: true, new: true }
         );
 
-        console.log(`✅ Order ${orderId} saved to MongoDB`);
+        console.log(`✅ Order ${orderId} saved to MongoDB successfully`);
+        console.log("📋 Saved order:", savedOrder);
 
         // Format products list and collect digital downloads
         const digitalDownloads: Array<{ productName: string; downloadUrl: string }> = [];
@@ -237,6 +258,12 @@ export async function POST(request: NextRequest) {
         }
       } catch (error: any) {
         console.error("❌ Error processing Revolut order:", error);
+        console.error("❌ Error stack:", error.stack);
+        console.error("❌ Error details:", {
+          message: error.message,
+          name: error.name,
+          orderId: orderId,
+        });
       }
     }
 

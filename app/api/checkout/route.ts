@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import connectDB from "@/lib/mongodb";
+import Order from "@/lib/models/Order";
 
 export async function POST(request: NextRequest) {
   try {
@@ -99,6 +101,53 @@ export async function POST(request: NextRequest) {
         amount_in_currency: totalAmount.toFixed(2), // Prețul în currency-ul selectat
       },
     });
+
+    // Salvează comanda în MongoDB cu status "pending" imediat după crearea checkout-ului
+    try {
+      await connectDB();
+      
+      const formattedItems = items.map((item: { product: { name: string; price: number }; quantity: number }) => {
+        let unitPriceRON = item.product.price;
+        if (discountPercentage && discountPercentage > 0) {
+          unitPriceRON = unitPriceRON * (1 - discountPercentage / 100);
+        }
+        
+        return {
+          name: item.product.name,
+          quantity: item.quantity || 1,
+          price: unitPriceRON,
+        };
+      });
+
+      await Order.findOneAndUpdate(
+        { orderId: session.id },
+        {
+          orderId: session.id,
+          provider: "stripe",
+          customerEmail: customerEmail || "",
+          amountRON: totalAmountRON,
+          amountCurrency: totalAmount,
+          currency: selectedCurrency,
+          status: "pending",
+          items: formattedItems,
+          discountPercentage: discountPercentage || undefined,
+          metadata: {
+            language: language || "en",
+            original_currency: "RON",
+            payment_currency: selectedCurrency,
+            exchange_rate: exchangeRate.toString(),
+            total_amount_ron: totalAmountRON.toFixed(2),
+            amount_in_currency: totalAmount.toFixed(2),
+          },
+        },
+        { upsert: true, new: true }
+      );
+
+      console.log(`✅ Order ${session.id} saved to MongoDB with status "pending"`);
+    } catch (error: any) {
+      console.error("❌ Error saving order to MongoDB at checkout:", error);
+      // Nu returnăm eroare, continuăm cu checkout-ul
+    }
 
     return NextResponse.json({ sessionId: session.id, url: session.url });
   } catch (error: any) {

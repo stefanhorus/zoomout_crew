@@ -53,11 +53,16 @@ export async function POST(request: NextRequest) {
 
   // Handle the checkout.session.completed event
   if (event.type === "checkout.session.completed") {
+    console.log("🔔 Stripe webhook received: checkout.session.completed");
     const session = event.data.object as Stripe.Checkout.Session;
+    console.log("📦 Session ID:", session.id);
+    console.log("📧 Customer Email:", session.customer_details?.email);
 
     try {
       // Conectează la MongoDB
+      console.log("🔌 Connecting to MongoDB...");
       await connectDB();
+      console.log("✅ Connected to MongoDB");
 
       // Retrieve full session details including line items
       const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
@@ -124,7 +129,16 @@ export async function POST(request: NextRequest) {
       });
 
       // Salvează sau actualizează comanda în MongoDB
-      await Order.findOneAndUpdate(
+      console.log("💾 Saving order to MongoDB...");
+      console.log("📊 Order data:", {
+        orderId: session.id,
+        amountRON,
+        amountCurrency: amountInCurrencyDecimal,
+        currency,
+        itemsCount: formattedItems.length,
+      });
+      
+      const savedOrder = await Order.findOneAndUpdate(
         { orderId: session.id },
         {
           orderId: session.id,
@@ -146,7 +160,8 @@ export async function POST(request: NextRequest) {
         { upsert: true, new: true }
       );
 
-      console.log(`✅ Order ${session.id} saved to MongoDB`);
+      console.log(`✅ Order ${session.id} saved to MongoDB successfully`);
+      console.log("📋 Saved order:", savedOrder);
 
       // Format products list and collect digital downloads
       const digitalDownloads: Array<{ productName: string; downloadUrl: string }> = [];
@@ -210,6 +225,12 @@ export async function POST(request: NextRequest) {
       }
     } catch (error: any) {
       console.error("❌ Error processing checkout.session.completed:", error);
+      console.error("❌ Error stack:", error.stack);
+      console.error("❌ Error details:", {
+        message: error.message,
+        name: error.name,
+        sessionId: session.id,
+      });
     }
   }
 
