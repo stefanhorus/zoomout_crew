@@ -31,6 +31,7 @@ export default function AdminOrdersPage() {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState("");
+  const [syncing, setSyncing] = useState(false);
 
   useEffect(() => {
     // Verifică dacă există credențiale salvate în sessionStorage pentru autentificare automată
@@ -136,6 +137,44 @@ export default function AdminOrdersPage() {
       style: "currency",
       currency: currency,
     }).format(amount);
+  };
+
+  const syncOrders = async () => {
+    try {
+      setSyncing(true);
+      const savedUsername = sessionStorage.getItem("admin_username");
+      const savedPassword = sessionStorage.getItem("admin_password");
+      
+      if (!savedUsername || !savedPassword) {
+        alert("Te rugăm să te autentifici din nou");
+        return;
+      }
+
+      const response = await fetch("/api/admin/sync-orders", {
+        method: "POST",
+        headers: {
+          "x-admin-username": savedUsername,
+          "x-admin-password": savedPassword,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to sync orders");
+      }
+
+      const data = await response.json();
+      alert(`Sincronizare completă!\nVerificate: ${data.checked}\nActualizate: ${data.updated}`);
+      
+      // Reîncarcă comenzile după sincronizare
+      await fetchOrders(savedUsername, savedPassword);
+    } catch (err: any) {
+      alert(`Eroare la sincronizare: ${err.message}`);
+      console.error("Error syncing orders:", err);
+    } finally {
+      setSyncing(false);
+    }
   };
 
   if (!isAuthenticated) {
@@ -407,7 +446,7 @@ export default function AdminOrdersPage() {
           </div>
         )}
 
-        <div className="mt-8 flex gap-4 items-center">
+        <div className="mt-8 flex gap-4 items-center flex-wrap">
           <div className="text-sm text-gray-400">
             Logat ca: <span className="text-white font-semibold">{username}</span>
           </div>
@@ -416,6 +455,13 @@ export default function AdminOrdersPage() {
             className="px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-200 transition font-semibold"
           >
             Refresh
+          </button>
+          <button
+            onClick={syncOrders}
+            disabled={syncing}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {syncing ? "Sincronizare..." : "Sync Orders"}
           </button>
           <button
             onClick={() => {

@@ -33,14 +33,8 @@ function verifyRevolutSignature(
 export async function POST(request: NextRequest) {
   try {
     console.log("🔔 Revolut webhook received");
-    
-    if (!process.env.RESEND_API_KEY) {
-      console.error("RESEND_API_KEY is not set");
-      return NextResponse.json(
-        { error: "Server configuration error" },
-        { status: 500 }
-      );
-    }
+    console.log("📋 Full request URL:", request.url);
+    console.log("📋 Request method:", request.method);
 
     // Obține body-ul ca text pentru verificarea semnăturii
     const bodyText = await request.text();
@@ -72,6 +66,9 @@ export async function POST(request: NextRequest) {
 
     const body = JSON.parse(bodyText);
     const eventType = body.event;
+    
+    console.log("📦 Webhook body:", JSON.stringify(body, null, 2));
+    console.log("📦 Event type:", eventType);
 
     // Verifică dacă este un eveniment de plată completată
     if (eventType === "ORDER_COMPLETED" || eventType === "ORDER_AUTHORISED") {
@@ -241,20 +238,29 @@ export async function POST(request: NextRequest) {
           digitalDownloads: digitalDownloads.length > 0 ? digitalDownloads : undefined,
         });
 
-        // Send confirmation email to customer
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        const { data, error } = await resend.emails.send({
-          from: fromEmail,
-          to: customerEmail,
-          subject: emailContent.subject,
-          html: emailContent.html,
-          text: emailContent.text,
-        });
+        // Send confirmation email to customer (dacă este configurat)
+        if (process.env.RESEND_API_KEY) {
+          try {
+            const resend = new Resend(process.env.RESEND_API_KEY);
+            const { data, error } = await resend.emails.send({
+              from: fromEmail,
+              to: customerEmail,
+              subject: emailContent.subject,
+              html: emailContent.html,
+              text: emailContent.text,
+            });
 
-        if (error) {
-          console.error("❌ Error sending purchase confirmation email:", error);
+            if (error) {
+              console.error("❌ Error sending purchase confirmation email:", error);
+            } else {
+              console.log("✅ Purchase confirmation email sent to:", customerEmail);
+            }
+          } catch (emailError: any) {
+            console.error("❌ Error sending email:", emailError);
+            // Nu returnăm eroare, comanda este deja salvată
+          }
         } else {
-          console.log("✅ Purchase confirmation email sent to:", customerEmail);
+          console.warn("⚠️ RESEND_API_KEY not set, skipping email");
         }
       } catch (error: any) {
         console.error("❌ Error processing Revolut order:", error);
@@ -265,6 +271,9 @@ export async function POST(request: NextRequest) {
           orderId: orderId,
         });
       }
+    } else {
+      console.log("⚠️ Unhandled event type:", eventType);
+      console.log("📦 Full body:", JSON.stringify(body, null, 2));
     }
 
     return NextResponse.json({ received: true });
