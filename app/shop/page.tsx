@@ -293,9 +293,9 @@ export default function Shop() {
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     const duration = Math.min(1000, distance * 1.2); // Durată bazată pe distanță, max 1000ms
 
-    // Aplică animația (scale mai mare pentru a rămâne mai vizibil)
+    // Aplică animația
     flyingCard.style.transition = `transform ${duration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity ${duration}ms ease-out`;
-    flyingCard.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.4)`;
+    flyingCard.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.2)`;
     flyingCard.style.opacity = '0';
 
     // Restaurează opacitatea card-ului original și șterge elementul după animație
@@ -386,7 +386,7 @@ export default function Shop() {
                   alt={product.name}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/10 group-hover:from-black/40 group-hover:via-black/20 group-hover:to-black/5 transition-all duration-300" />
                 
