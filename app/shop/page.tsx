@@ -209,10 +209,16 @@ export default function Shop() {
       : products.filter((product) => product.category === selectedCategory);
 
   const animateToCart = (buttonElement: HTMLElement) => {
-    // Găsește poziția butonului
-    const buttonRect = buttonElement.getBoundingClientRect();
-    const startX = buttonRect.left + buttonRect.width / 2;
-    const startY = buttonRect.top + buttonRect.height / 2;
+    // Găsește card-ul de produs (părintele care conține butonul)
+    const productCard = buttonElement.closest('.group.relative') as HTMLElement;
+    if (!productCard) return;
+
+    // Găsește poziția card-ului
+    const cardRect = productCard.getBoundingClientRect();
+    const startX = cardRect.left;
+    const startY = cardRect.top;
+    const cardWidth = cardRect.width;
+    const cardHeight = cardRect.height;
 
     // Găsește iconița coșului din header
     const cartIcon = document.querySelector('button[aria-label="Open shopping cart"]') as HTMLElement;
@@ -222,52 +228,56 @@ export default function Shop() {
     const endX = cartRect.left + cartRect.width / 2;
     const endY = cartRect.top + cartRect.height / 2;
 
-    // Creează elementul animat
-    const flyingItem = document.createElement('div');
-    flyingItem.className = 'flying-item';
-    flyingItem.style.cssText = `
+    // Creează o copie a card-ului de produs
+    const flyingCard = productCard.cloneNode(true) as HTMLElement;
+    
+    // Setează stilurile pentru animație
+    flyingCard.style.cssText = `
       position: fixed;
       left: ${startX}px;
       top: ${startY}px;
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(147, 51, 234, 0.9));
-      border-radius: 50%;
+      width: ${cardWidth}px;
+      height: ${cardHeight}px;
       pointer-events: none;
       z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+      opacity: 0.95;
+      transform-origin: center center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     `;
 
-    // Adaugă iconița de coș în elementul animat
-    flyingItem.innerHTML = `
-      <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
-        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-      </svg>
-    `;
+    // Elimină event listeners și butoanele din copie
+    const buttons = flyingCard.querySelectorAll('button');
+    buttons.forEach(btn => {
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.8';
+    });
 
-    document.body.appendChild(flyingItem);
+    // Adaugă card-ul zburător în body
+    document.body.appendChild(flyingCard);
+
+    // Face card-ul original invizibil temporar
+    productCard.style.opacity = '0.3';
+    productCard.style.transition = 'opacity 0.3s';
 
     // Forțează reflow pentru a începe animația
-    flyingItem.offsetHeight;
+    flyingCard.offsetHeight;
 
-    // Calculează distanța și unghiul
-    const deltaX = endX - startX;
-    const deltaY = endY - startY;
+    // Calculează distanța
+    const deltaX = endX - (startX + cardWidth / 2);
+    const deltaY = endY - (startY + cardHeight / 2);
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-    const duration = Math.min(800, distance * 1.5); // Durată bazată pe distanță, max 800ms
+    const duration = Math.min(1000, distance * 1.2); // Durată bazată pe distanță, max 1000ms
 
     // Aplică animația
-    flyingItem.style.transition = `transform ${duration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity ${duration}ms ease-out`;
-    flyingItem.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.5)`;
-    flyingItem.style.opacity = '0';
+    flyingCard.style.transition = `transform ${duration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity ${duration}ms ease-out`;
+    flyingCard.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.2)`;
+    flyingCard.style.opacity = '0';
 
-    // Șterge elementul după animație
+    // Restaurează opacitatea card-ului original și șterge elementul după animație
     setTimeout(() => {
-      if (flyingItem.parentNode) {
-        flyingItem.parentNode.removeChild(flyingItem);
+      productCard.style.opacity = '1';
+      if (flyingCard.parentNode) {
+        flyingCard.parentNode.removeChild(flyingCard);
       }
     }, duration);
   };
