@@ -565,13 +565,13 @@ export default function Shop() {
             className="max-w-2xl lg:max-w-3xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-hidden my-0 md:my-4 min-h-screen md:min-h-0 max-h-screen md:max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative aspect-square max-h-[40vh] sm:max-h-[50vh] md:max-h-none md:aspect-video flex-shrink-0">
+            <div className="relative aspect-square max-h-[35vh] sm:max-h-[40vh] md:max-h-[50vh] md:aspect-video flex-shrink-0">
               <Image
                 src={selectedProduct.image}
                 alt={selectedProduct.name}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 50vw"
-                className="object-cover"
+                className="object-contain"
               />
               <button
                 onClick={() => setSelectedProduct(null)}
