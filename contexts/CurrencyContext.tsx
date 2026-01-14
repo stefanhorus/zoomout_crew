@@ -38,10 +38,21 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("currency", curr);
   };
 
-  // Convert price from RON to selected currency
+  // Convert price from RON to selected currency and round to .98 or .99
   const convertPrice = (priceInRON: number): number => {
     const rate = exchangeRates[currency];
-    return priceInRON * rate;
+    const converted = priceInRON * rate;
+    
+    // Round to nearest .98 or .99 (whichever is closer)
+    const floor = Math.floor(converted);
+    const decimals = converted - floor;
+    
+    // If decimals are close to .98 or .99, keep them; otherwise round to nearest .98 or .99
+    if (decimals < 0.985) {
+      return floor + 0.98;
+    } else {
+      return floor + 0.99;
+    }
   };
 
   // Format price with currency symbol
