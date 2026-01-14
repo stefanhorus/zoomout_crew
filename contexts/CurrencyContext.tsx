@@ -16,9 +16,9 @@ const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined
 // Rate-uri de schimb (poți actualiza aceste rate-uri sau să folosești un API pentru rate-uri în timp real)
 const exchangeRates: Record<Currency, number> = {
   RON: 1,      // RON este moneda de bază
-  EUR: 0.2,    // 1 RON = 0.2 EUR (5 RON = 1 EUR)
-  USD: 0.22,   // 1 RON = 0.22 USD (~4.5 RON = 1 USD)
-  GBP: 0.18,   // 1 RON = 0.18 GBP (~5.5 RON = 1 GBP)
+  EUR: 0.2,    // 1 RON = 0.2 EUR (5 RON = 1 EUR) - 100 RON = 20 EUR
+  USD: 0.25,   // 1 RON = 0.25 USD (4 RON = 1 USD) - 100 RON = 25 USD
+  GBP: 0.18,   // 1 RON = 0.18 GBP (~5.5 RON = 1 GBP) - 100 RON = 18 GBP
 };
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
