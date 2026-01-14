@@ -577,7 +577,7 @@ export default function Shop() {
             className="max-w-2xl lg:max-w-3xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-hidden my-0 md:my-4 min-h-screen md:min-h-0 max-h-screen md:max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative aspect-square max-h-[40vh] sm:max-h-[45vh] md:max-h-[50vh] md:aspect-video flex-shrink-0">
+            <div className="relative aspect-square max-h-[35vh] sm:max-h-[40vh] md:max-h-[50vh] md:aspect-video flex-shrink-0">
               <Image
                 src={selectedProduct.image}
                 alt={selectedProduct.name}
@@ -587,32 +587,32 @@ export default function Shop() {
               />
               <button
                 onClick={() => setSelectedProduct(null)}
-                className="absolute top-4 right-4 bg-black/70 hover:bg-black/90 text-white rounded-full p-2.5 transition-colors z-10 backdrop-blur-sm"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10"
                 aria-label="Close modal"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            <div className="p-5 sm:p-6 md:p-6 lg:p-8 overflow-y-auto flex-1">
-              <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
+            <div className="p-4 sm:p-5 md:p-6 lg:p-8 overflow-y-auto flex-1">
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedProduct.name}
               </h2>
-              <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 leading-relaxed">{selectedProduct.description}</p>
-              <div className="flex flex-col gap-4 sm:gap-4">
-                <div className="flex flex-col items-start gap-2">
+              <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-4 sm:mb-6 leading-relaxed">{selectedProduct.description}</p>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                <div className="flex flex-col items-start">
                   {selectedProduct.originalPrice && (
-                    <span className="text-base sm:text-lg md:text-xl text-gray-500 line-through">
+                    <span className="text-base sm:text-lg md:text-xl text-gray-500 line-through mb-1">
                       {formatPrice(selectedProduct.originalPrice)}
                     </span>
                   )}
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <span className="text-3xl sm:text-4xl md:text-4xl font-bold text-white">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
                       {formatPrice(selectedProduct.price)}
                     </span>
                     {selectedProduct.discountPercentage && (
-                      <span className="text-base sm:text-lg font-semibold text-green-400 bg-green-500/20 px-3 py-1.5 rounded-lg">
+                      <span className="text-sm sm:text-base font-semibold text-green-400 bg-green-500/20 px-2 py-1 rounded">
                         -{selectedProduct.discountPercentage}%
                       </span>
                     )}
@@ -624,9 +624,9 @@ export default function Shop() {
                     setSelectedProduct(null);
                   }}
                   disabled={!selectedProduct.inStock}
-                  className={`w-full px-6 py-4 sm:px-8 sm:py-3.5 md:py-3.5 rounded-xl font-semibold transition-all duration-300 text-base sm:text-lg md:text-lg ${
+                  className={`w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 md:py-3.5 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base md:text-lg ${
                     selectedProduct.inStock
-                      ? "liquid-glass-button text-white hover:scale-105 active:scale-95"
+                      ? "liquid-glass-button text-white hover:scale-105"
                       : "bg-gray-700/50 text-gray-400 cursor-not-allowed opacity-50"
                   }`}
                   style={{ fontFamily: "var(--font-roboto)" }}
