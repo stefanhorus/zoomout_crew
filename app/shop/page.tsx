@@ -15,7 +15,9 @@ interface Product {
   name: string;
   category: ProductCategory;
   image: string;
-  price: number;
+  price: number; // Prețul actual (după reducere)
+  originalPrice?: number; // Prețul inițial (înainte de reducere)
+  discountPercentage?: number; // Procentul de reducere
   description: string;
   inStock: boolean;
   downloadUrl?: string; // Link de download pentru produsele digitale
@@ -29,6 +31,8 @@ const products: Product[] = [
     category: "digital",
     image: "/assets/shop/CINEMATICLUT.jpg",
     price: 100,
+    originalPrice: 125,
+    discountPercentage: 20,
     description: "The Cinematic LUT pack is is a carefully crafted collection of cinematic color presets designed to give your footage an instantly polished and emotional visual tone. Inspired by the rich aesthetics of analog film, these LUTs are ideal for filmmakers, content creators, and editors who want to add style, depth, and mood to their visuals with just a few clicks. Whether you're working on music videos, short films, branded content, or reels—these LUTs bring your footage to life perfectly if you follow the Golden Rule.",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_CINEMATIC_LUT_FOLDER_ID",
@@ -39,6 +43,8 @@ const products: Product[] = [
     category: "digital",
     image: "/assets/shop/MOVIELUT.jpg",
     price: 125,
+    originalPrice: 160,
+    discountPercentage: 22,
     description: "The Movie Looks LUT pack is your ticket to the big screen. Inspired by the color palettes of iconic modern cinema, these presets are designed to give your footage that distinct \"Blockbuster\" atmosphere. From the gritty greens of sci-fi thrillers to the rich teal-and-orange of action movies, this collection allows you to tell a stronger visual story. Whether you are grading a narrative short, a music video, or a dramatic sequence, these LUTs provide the heavy-hitting, stylized look of a high-budget production if you follow the Golden Rule.",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_MOVIE_LUT_FOLDER_ID",
@@ -49,6 +55,8 @@ const products: Product[] = [
     category: "digital",
     image: "/assets/shop/FILMLUT.jpg",
     price: 100,
+    originalPrice: 130,
+    discountPercentage: 23,
     description: "The Film Looks LUT pack is a tribute to the golden age of analog cinema. Designed to break the \"digital sharpness\" of modern cameras, these presets infuse your footage with organic texture, rich skin tones, and the timeless character of celluloid. Inspired by classic Kodak and Fujifilm stocks, these LUTs are perfect for storytellers who want to evoke nostalgia. Whether you are creating a documentary, a music video, or a moody travel piece, this collection brings the soul of 35mm film to your digital timeline perfectly if you follow the Golden Rule.",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_FILM_LUT_FOLDER_ID",
@@ -59,6 +67,8 @@ const products: Product[] = [
     category: "digital",
     image: "/assets/shop/VINTAGELUT.jpg",
     price: 100,
+    originalPrice: 135,
+    discountPercentage: 26,
     description: "The Vintage Film LUT pack is your time machine. Designed to replicate the charm and imperfections of old home movies, these presets bring the nostalgic aesthetic of Super 8 and 16mm film straight to your digital footage. Perfect for travel memories, music videos, or dreamlike sequences, this collection embraces faded shadows, warm highlights, and that distinct \"retro\" vibe that makes footage feel timeless and personal if you follow the Golden Rule.",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_VINTAGE_LUT_FOLDER_ID",
@@ -69,6 +79,8 @@ const products: Product[] = [
     category: "digital",
     image: "/assets/shop/IPHONE.jpg",
     price: 100,
+    originalPrice: 140,
+    discountPercentage: 29,
     description: "Specialized LUTs optimized for iPhone footage. Enhance your mobile videos with professional color grading designed specifically for iPhone cameras.",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_IPHONE_LUT_FOLDER_ID",
@@ -79,6 +91,8 @@ const products: Product[] = [
     category: "digital",
     image: "/assets/shop/SOUNDDESIGN.jpg",
     price: 100,
+    originalPrice: 150,
+    discountPercentage: 33,
     description: "Professional sound design library featuring cinematic sound effects, ambient textures, and audio elements perfect for video production and filmmaking.",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_SOUND_DESIGN_FOLDER_ID",
@@ -89,6 +103,8 @@ const products: Product[] = [
     category: "digital",
     image: "/assets/shop/Wallpaper.jpg",
     price: 50,
+    originalPrice: 65,
+    discountPercentage: 23,
     description: "A stunning collection of majestic wallpapers featuring breathtaking aerial landscapes and cinematic scenes. Perfect for desktop, mobile, and tablet backgrounds.",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_WALLPAPER_PACK_FOLDER_ID",
@@ -267,6 +283,12 @@ export default function Shop() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/10 group-hover:from-black/40 group-hover:via-black/20 group-hover:to-black/5 transition-all duration-300" />
                 
+                {/* Discount Badge */}
+                {product.discountPercentage && (
+                  <div className="absolute top-2 right-2 sm:top-3 sm:right-3 liquid-glass-button bg-red-500/30 text-white px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold border-red-500/50 z-10">
+                    -{product.discountPercentage}%
+                  </div>
+                )}
                 {/* Stock Badge */}
                 {product.inStock ? (
                   <div className="absolute top-2 left-2 sm:top-3 sm:left-3 liquid-glass-button bg-green-500/30 text-white px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold border-green-500/50">
@@ -286,9 +308,23 @@ export default function Shop() {
                 </h3>
                 <p className="text-gray-400 text-[10px] sm:text-xs md:text-sm mb-2 sm:mb-3 group-hover:text-gray-300 transition-colors line-clamp-2">{product.description}</p>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
-                  <span className="text-base sm:text-lg md:text-xl font-bold text-white">
-                    {formatPrice(product.price)}
-                  </span>
+                  <div className="flex flex-col items-start">
+                    {product.originalPrice && (
+                      <span className="text-[10px] sm:text-xs text-gray-500 line-through mb-0.5">
+                        {formatPrice(product.originalPrice)}
+                      </span>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <span className="text-base sm:text-lg md:text-xl font-bold text-white">
+                        {formatPrice(product.price)}
+                      </span>
+                      {product.discountPercentage && (
+                        <span className="text-[10px] sm:text-xs font-semibold text-green-400 bg-green-500/20 px-1.5 py-0.5 rounded">
+                          -{product.discountPercentage}%
+                        </span>
+                      )}
+                    </div>
+                  </div>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -446,9 +482,23 @@ export default function Shop() {
               </h2>
               <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-4 sm:mb-6 leading-relaxed">{selectedProduct.description}</p>
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-                <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
-                  {formatPrice(selectedProduct.price)}
-                </span>
+                <div className="flex flex-col items-start">
+                  {selectedProduct.originalPrice && (
+                    <span className="text-base sm:text-lg md:text-xl text-gray-500 line-through mb-1">
+                      {formatPrice(selectedProduct.originalPrice)}
+                    </span>
+                  )}
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
+                      {formatPrice(selectedProduct.price)}
+                    </span>
+                    {selectedProduct.discountPercentage && (
+                      <span className="text-sm sm:text-base font-semibold text-green-400 bg-green-500/20 px-2 py-1 rounded">
+                        -{selectedProduct.discountPercentage}%
+                      </span>
+                    )}
+                  </div>
+                </div>
                 <button
                   onClick={() => {
                     handleAddToCart(selectedProduct);
