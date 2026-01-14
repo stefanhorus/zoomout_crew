@@ -601,7 +601,7 @@ export default function Shop() {
               <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedProduct.name}
               </h2>
-              <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-4 sm:mb-6 leading-relaxed">{selectedProduct.description}</p>
+              <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-4 sm:mb-6 leading-relaxed whitespace-pre-line">{selectedProduct.description}</p>
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                 <div className="flex flex-col items-start">
                   {selectedProduct.originalPrice && (
