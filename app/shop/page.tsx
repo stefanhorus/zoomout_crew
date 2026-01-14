@@ -208,8 +208,80 @@ export default function Shop() {
       ? products
       : products.filter((product) => product.category === selectedCategory);
 
-  const handleAddToCart = (product: Product) => {
-    addToCart(product);
+  const animateToCart = (buttonElement: HTMLElement) => {
+    // Găsește poziția butonului
+    const buttonRect = buttonElement.getBoundingClientRect();
+    const startX = buttonRect.left + buttonRect.width / 2;
+    const startY = buttonRect.top + buttonRect.height / 2;
+
+    // Găsește iconița coșului din header
+    const cartIcon = document.querySelector('button[aria-label="Open shopping cart"]') as HTMLElement;
+    if (!cartIcon) return;
+
+    const cartRect = cartIcon.getBoundingClientRect();
+    const endX = cartRect.left + cartRect.width / 2;
+    const endY = cartRect.top + cartRect.height / 2;
+
+    // Creează elementul animat
+    const flyingItem = document.createElement('div');
+    flyingItem.className = 'flying-item';
+    flyingItem.style.cssText = `
+      position: fixed;
+      left: ${startX}px;
+      top: ${startY}px;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(147, 51, 234, 0.9));
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+    `;
+
+    // Adaugă iconița de coș în elementul animat
+    flyingItem.innerHTML = `
+      <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
+        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+      </svg>
+    `;
+
+    document.body.appendChild(flyingItem);
+
+    // Forțează reflow pentru a începe animația
+    flyingItem.offsetHeight;
+
+    // Calculează distanța și unghiul
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    const duration = Math.min(800, distance * 1.5); // Durată bazată pe distanță, max 800ms
+
+    // Aplică animația
+    flyingItem.style.transition = `transform ${duration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity ${duration}ms ease-out`;
+    flyingItem.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.5)`;
+    flyingItem.style.opacity = '0';
+
+    // Șterge elementul după animație
+    setTimeout(() => {
+      if (flyingItem.parentNode) {
+        flyingItem.parentNode.removeChild(flyingItem);
+      }
+    }, duration);
+  };
+
+  const handleAddToCart = (product: Product, event?: React.MouseEvent<HTMLButtonElement>) => {
+    // Animație dacă există event (butonul a fost apăsat)
+    if (event && event.currentTarget) {
+      animateToCart(event.currentTarget);
+    }
+    
+    // Adaugă produsul în coș după un mic delay pentru a sincroniza cu animația
+    setTimeout(() => {
+      addToCart(product);
+    }, 50);
   };
 
   return (
@@ -328,7 +400,7 @@ export default function Shop() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleAddToCart(product);
+                      handleAddToCart(product, e);
                     }}
                     disabled={!product.inStock}
                     className={`w-full sm:w-auto px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-[10px] sm:text-xs md:text-sm ${
@@ -500,8 +572,8 @@ export default function Shop() {
                   </div>
                 </div>
                 <button
-                  onClick={() => {
-                    handleAddToCart(selectedProduct);
+                  onClick={(e) => {
+                    handleAddToCart(selectedProduct, e);
                     setSelectedProduct(null);
                   }}
                   disabled={!selectedProduct.inStock}
