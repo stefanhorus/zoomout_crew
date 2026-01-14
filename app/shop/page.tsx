@@ -213,15 +213,40 @@ export default function Shop() {
     const productCard = buttonElement.closest('.group.relative') as HTMLElement;
     if (!productCard) return;
 
-    // Găsește poziția card-ului
+    // Găsește poziția card-ului (getBoundingClientRect este relativ la viewport, perfect pentru fixed)
     const cardRect = productCard.getBoundingClientRect();
     const startX = cardRect.left;
     const startY = cardRect.top;
     const cardWidth = cardRect.width;
     const cardHeight = cardRect.height;
 
-    // Găsește iconița coșului din header
-    const cartIcon = document.querySelector('button[aria-label="Open shopping cart"]') as HTMLElement;
+    // Găsește iconița coșului din header (găsește butonul vizibil)
+    const allCartButtons = document.querySelectorAll('button[aria-label="Open shopping cart"]') as NodeListOf<HTMLElement>;
+    let cartIcon: HTMLElement | null = null;
+    
+    // Găsește butonul care este vizibil în viewport
+    for (const btn of Array.from(allCartButtons)) {
+      const rect = btn.getBoundingClientRect();
+      const isVisible = rect.width > 0 && rect.height > 0 && 
+                       rect.top >= 0 && rect.left >= 0 &&
+                       rect.bottom <= window.innerHeight && 
+                       rect.right <= window.innerWidth;
+      
+      // Verifică și dacă elementul nu este ascuns prin CSS
+      const style = window.getComputedStyle(btn);
+      const isNotHidden = style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+      
+      if (isVisible && isNotHidden) {
+        cartIcon = btn;
+        break;
+      }
+    }
+    
+    // Dacă nu găsește unul vizibil, folosește primul disponibil
+    if (!cartIcon && allCartButtons.length > 0) {
+      cartIcon = allCartButtons[0];
+    }
+    
     if (!cartIcon) return;
 
     const cartRect = cartIcon.getBoundingClientRect();
