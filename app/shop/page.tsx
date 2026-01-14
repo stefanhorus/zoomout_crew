@@ -29,7 +29,7 @@ const products: Product[] = [
     category: "digital",
     image: "/assets/shop/CINEMATICLUT.jpg",
     price: 20,
-    description: "Professional cinematic color grading LUTs for video editing. Transform your footage with our carefully crafted LUTs designed to give your videos that cinematic look.",
+    description: "Welcome to the team! The Cinematic LUT pack is is a carefully crafted collection of cinematic color presets designed to give your footage an instantly polished and emotional visual tone. Inspired by the rich aesthetics of analog film, these LUTs are ideal for filmmakers, content creators, and editors who want to add style, depth, and mood to their visuals with just a few clicks. Whether you're working on music videos, short films, branded content, or reels—these LUTs bring your footage to life perfectly if you follow the Golden Rule.",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_CINEMATIC_LUT_FOLDER_ID",
   },
@@ -39,7 +39,7 @@ const products: Product[] = [
     category: "digital",
     image: "/assets/shop/MOVIELUT.jpg",
     price: 18,
-    description: "Premium movie-style LUTs for professional video color grading. Perfect for creating that Hollywood film look in your projects.",
+    description: "Welcome to the team! The Movie Looks LUT pack is your ticket to the big screen. Inspired by the color palettes of iconic modern cinema, these presets are designed to give your footage that distinct \"Blockbuster\" atmosphere. From the gritty greens of sci-fi thrillers to the rich teal-and-orange of action movies, this collection allows you to tell a stronger visual story. Whether you are grading a narrative short, a music video, or a dramatic sequence, these LUTs provide the heavy-hitting, stylized look of a high-budget production if you follow the Golden Rule.",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_MOVIE_LUT_FOLDER_ID",
   },
@@ -49,7 +49,7 @@ const products: Product[] = [
     category: "digital",
     image: "/assets/shop/FILMLUT.jpg",
     price: 19,
-    description: "Classic film emulation LUTs that recreate the look of iconic film stocks. Add timeless character to your video projects.",
+    description: "Welcome to the team! The Film Looks LUT pack is a tribute to the golden age of analog cinema. Designed to break the \"digital sharpness\" of modern cameras, these presets infuse your footage with organic texture, rich skin tones, and the timeless character of celluloid. Inspired by classic Kodak and Fujifilm stocks, these LUTs are perfect for storytellers who want to evoke nostalgia. Whether you are creating a documentary, a music video, or a moody travel piece, this collection brings the soul of 35mm film to your digital timeline perfectly if you follow the Golden Rule.",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_FILM_LUT_FOLDER_ID",
   },
@@ -59,7 +59,7 @@ const products: Product[] = [
     category: "digital",
     image: "/assets/shop/VINTAGELUT.jpg",
     price: 17,
-    description: "Retro and vintage-inspired LUTs for creating nostalgic, timeless looks in your video content. Perfect for period pieces and artistic projects.",
+    description: "Welcome to the team! The Vintage Film LUT pack is your time machine. Designed to replicate the charm and imperfections of old home movies, these presets bring the nostalgic aesthetic of Super 8 and 16mm film straight to your digital footage. Perfect for travel memories, music videos, or dreamlike sequences, this collection embraces faded shadows, warm highlights, and that distinct \"retro\" vibe that makes footage feel timeless and personal if you follow the Golden Rule.",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_VINTAGE_LUT_FOLDER_ID",
   },
@@ -253,7 +253,8 @@ export default function Shop() {
           {filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="group relative overflow-visible rounded-xl sm:rounded-2xl liquid-glass liquid-glass-hover backdrop-blur-md transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20"
+              onClick={() => setSelectedProduct(product)}
+              className="group relative overflow-visible rounded-xl sm:rounded-2xl liquid-glass liquid-glass-hover backdrop-blur-md transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20 cursor-pointer"
             >
               {/* Product Image */}
               <div className="aspect-square relative overflow-hidden rounded-t-xl sm:rounded-t-2xl">
@@ -289,7 +290,10 @@ export default function Shop() {
                     {formatPrice(product.price)}
                   </span>
                   <button
-                    onClick={() => handleAddToCart(product)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddToCart(product);
+                    }}
                     disabled={!product.inStock}
                     className={`w-full sm:w-auto px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-[10px] sm:text-xs md:text-sm ${
                       product.inStock
