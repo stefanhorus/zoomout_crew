@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Metadata } from "next";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -20,9 +21,32 @@ const roboto = Roboto({
   variable: "--font-roboto",
 });
 
-export const metadata = {
-  title: "Zoomout_crew",
-  description: "Professional aerial footage and more",
+export const metadata: Metadata = {
+  title: {
+    default: "Zoomout_crew - Professional Aerial Footage & Cinematography",
+    template: "%s | Zoomout_crew",
+  },
+  description: "Professional aerial footage and cinematography services. Capturing your vision from above. Specialized in drone videography, real estate, events, and commercial projects.",
+  keywords: ["aerial footage", "drone cinematography", "aerial videography", "drone services", "real estate videography", "event coverage", "commercial videography"],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://zoomoutcrew.com",
+    siteName: "Zoomout_crew",
+    title: "Zoomout_crew - Professional Aerial Footage & Cinematography",
+    description: "Professional aerial footage and cinematography services. Capturing your vision from above.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
