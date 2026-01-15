@@ -123,6 +123,18 @@ const products: Product[] = [
   },
   {
     id: 9,
+    name: "Transitions & Burns Pack",
+    category: "bundle",
+    image: "/assets/shop/tranzitions.jpg",
+    price: 99.99,
+    originalPrice: 124.98,
+    discountPercentage: 20,
+    description: "The Transitions & Burns pack by Dopamine is crafted to bring raw, analog-style energy to your edits. Inspired by real film burns, light leaks, and in-camera transitions, this pack adds warmth, texture, and movement to your footage—perfect for music videos, reels, fashion films, or any project that needs that organic, imperfect feel. Whether you're aiming for subtle vintage motion or explosive transitions, these overlays offer you endless creative possibilities.\n\n📦 What's Included:\n• 50 Video Film Burn Overlays\n• 64 Static Film Burn Overlays\n• Total: 114 Professional Film Burn & Transition Overlays",
+    inStock: true,
+    downloadUrl: "https://drive.google.com/drive/folders/YOUR_TRANSITIONS_BURNS_FOLDER_ID",
+  },
+  {
+    id: 10,
     name: "Signature Bundle",
     category: "bundle",
     image: "/assets/shop/SIGNATURE.jpg",
