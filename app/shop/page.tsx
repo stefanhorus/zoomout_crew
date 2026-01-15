@@ -239,8 +239,8 @@ export default function Shop() {
     { value: "lightroom-presets", label: "Lightroom Presets", labelKey: "shop.lightroomPresets" },
     { value: "sound-design", label: "Sound Design", labelKey: "shop.soundDesign" },
     { value: "transitions", label: "Transitions", labelKey: "shop.transitions" },
-    { value: "wallpaper", label: "Wallpaper", labelKey: "shop.wallpaper" },
-    { value: "bundle", label: "Bundle", labelKey: "shop.bundle" },
+    { value: "wallpaper", label: "Wallpapers", labelKey: "shop.wallpaper" },
+    { value: "bundle", label: "Bundles", labelKey: "shop.bundle" },
   ];
 
   const filteredProducts =
