@@ -8,7 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
 // Tipuri de produse pentru filtrare
-type ProductCategory = "all" | "physical" | "digital";
+type ProductCategory = "all" | "luts" | "lightroom-presets" | "sound-design" | "bundle";
 
 interface Product {
   id: number;
@@ -28,7 +28,7 @@ const products: Product[] = [
   {
     id: 1,
     name: "Cinematic Video LUTs",
-    category: "digital",
+    category: "luts",
     image: "/assets/shop/CINEMATICLUT.jpg",
     price: 99.99,
     originalPrice: 124.98,
@@ -40,7 +40,7 @@ const products: Product[] = [
   {
     id: 2,
     name: "Movie LUTs",
-    category: "digital",
+    category: "luts",
     image: "/assets/shop/MOVIELUT.jpg",
     price: 124.99,
     originalPrice: 159.98,
@@ -52,7 +52,7 @@ const products: Product[] = [
   {
     id: 3,
     name: "Film LUTs",
-    category: "digital",
+    category: "luts",
     image: "/assets/shop/FILMLUT.jpg",
     price: 99.99,
     originalPrice: 129.98,
@@ -64,7 +64,7 @@ const products: Product[] = [
   {
     id: 4,
     name: "Vintage LUTs",
-    category: "digital",
+    category: "luts",
     image: "/assets/shop/VINTAGELUT.jpg",
     price: 99.99,
     originalPrice: 134.98,
@@ -76,7 +76,7 @@ const products: Product[] = [
   {
     id: 5,
     name: "iPhone Video LUTs",
-    category: "digital",
+    category: "luts",
     image: "/assets/shop/IPHONE.jpg",
     price: 99.99,
     originalPrice: 139.98,
@@ -88,7 +88,7 @@ const products: Product[] = [
   {
     id: 6,
     name: "Sound Design Pack",
-    category: "digital",
+    category: "sound-design",
     image: "/assets/shop/SOUNDDESIGN.jpg",
     price: 99.99,
     originalPrice: 149.98,
@@ -100,7 +100,7 @@ const products: Product[] = [
   {
     id: 7,
     name: "Majestic Wallpaper Pack",
-    category: "digital",
+    category: "bundle",
     image: "/assets/shop/Wallpaper.jpg",
     price: 49.99,
     originalPrice: 64.98,
@@ -112,7 +112,7 @@ const products: Product[] = [
   {
     id: 8,
     name: "Lightroom Photo Presets",
-    category: "digital",
+    category: "lightroom-presets",
     image: "/assets/shop/Lightroom.jpg",
     price: 99.99,
     originalPrice: 124.98,
@@ -124,7 +124,7 @@ const products: Product[] = [
   {
     id: 9,
     name: "Signature Bundle",
-    category: "digital",
+    category: "bundle",
     image: "/assets/shop/SIGNATURE.jpg",
     price: 399.99,
     originalPrice: 499.98,
@@ -223,8 +223,10 @@ export default function Shop() {
 
   const categories = [
     { value: "all", label: "All Products", labelKey: "shop.allProducts" },
-    { value: "physical", label: "Physical", labelKey: "shop.physical" },
-    { value: "digital", label: "Digital", labelKey: "shop.digital" },
+    { value: "luts", label: "LUTs", labelKey: "shop.luts" },
+    { value: "lightroom-presets", label: "Lightroom Presets", labelKey: "shop.lightroomPresets" },
+    { value: "sound-design", label: "Sound Design", labelKey: "shop.soundDesign" },
+    { value: "bundle", label: "Bundle", labelKey: "shop.bundle" },
   ];
 
   const filteredProducts =
