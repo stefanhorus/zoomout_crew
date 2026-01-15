@@ -201,7 +201,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Shop page
     "shop.title": "Shop",
-    "shop.subtitle": "Discover our premium selection of drones, accessories, and merchandise",
+    "shop.subtitle": "Discover our premium collection of professional LUTs, Lightroom presets, sound effects, transitions, and creative assets",
     "shop.allProducts": "All Products",
     "shop.physical": "Physical",
     "shop.digital": "Digital",
@@ -445,7 +445,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Shop page
     "shop.title": "Magazin",
-    "shop.subtitle": "Descoperă selecția noastră premium de drone, accesorii și mărfuri",
+    "shop.subtitle": "Descoperă colecția noastră premium de LUT-uri profesionale, preseturi Lightroom, efecte sonore, tranziții și asset-uri creative",
     "shop.allProducts": "Toate Produsele",
     "shop.physical": "Fizice",
     "shop.digital": "Digitale",
