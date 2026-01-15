@@ -392,7 +392,7 @@ export default function Shop() {
               }`}
               style={{ fontFamily: "var(--font-roboto)" }}
             >
-              {t(category.labelKey)}
+              {category.label}
             </button>
           ))}
         </div>
