@@ -8,7 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
 // Tipuri de produse pentru filtrare
-type ProductCategory = "all" | "luts" | "lightroom-presets" | "sound-design" | "transitions" | "bundle";
+type ProductCategory = "all" | "luts" | "lightroom-presets" | "sound-design" | "transitions" | "wallpaper" | "bundle";
 
 interface Product {
   id: number;
@@ -100,7 +100,7 @@ const products: Product[] = [
   {
     id: 7,
     name: "Majestic Wallpaper Pack",
-    category: "bundle",
+    category: "wallpaper",
     image: "/assets/shop/Wallpaper.jpg",
     price: 49.99,
     originalPrice: 64.98,
@@ -239,6 +239,7 @@ export default function Shop() {
     { value: "lightroom-presets", label: "Lightroom Presets", labelKey: "shop.lightroomPresets" },
     { value: "sound-design", label: "Sound Design", labelKey: "shop.soundDesign" },
     { value: "transitions", label: "Transitions", labelKey: "shop.transitions" },
+    { value: "wallpaper", label: "Wallpaper", labelKey: "shop.wallpaper" },
     { value: "bundle", label: "Bundle", labelKey: "shop.bundle" },
   ];
 
