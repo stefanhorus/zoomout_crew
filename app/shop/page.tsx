@@ -111,6 +111,18 @@ const products: Product[] = [
   },
   {
     id: 8,
+    name: "Lightroom Photo Presets",
+    category: "digital",
+    image: "/assets/shop/Lightroom.jpg",
+    price: 99.99,
+    originalPrice: 124.98,
+    discountPercentage: 20,
+    description: "Transform your photography with our comprehensive Lightroom Presets collection. This bundle includes 5 carefully curated preset packs, each designed to give your photos a distinct and professional look. Whether you're shooting portraits, landscapes, street photography, or lifestyle content, these presets will elevate your images with just one click.\n\n📦 What's Included:\n• Black Looks Pack - 12 Professional Presets\n• Cinematic Looks Pack - 12 Professional Presets\n• Classic Looks Pack - 12 Professional Presets\n• iPhone Looks Pack - 12 Professional Presets\n• Retro Looks Pack - 12 Professional Presets\n• Total: 60 Professional Lightroom Presets (.lrtemplate format)",
+    inStock: true,
+    downloadUrl: "https://drive.google.com/drive/folders/YOUR_LIGHTROOM_PRESETS_FOLDER_ID",
+  },
+  {
+    id: 9,
     name: "Signature Bundle",
     category: "digital",
     image: "/assets/shop/SIGNATURE.jpg",
