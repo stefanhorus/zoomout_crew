@@ -8,7 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
 // Tipuri de produse pentru filtrare
-type ProductCategory = "all" | "luts" | "lightroom-presets" | "sound-design" | "bundle";
+type ProductCategory = "all" | "luts" | "lightroom-presets" | "sound-design" | "transitions" | "bundle";
 
 interface Product {
   id: number;
@@ -124,11 +124,11 @@ const products: Product[] = [
   {
     id: 9,
     name: "Transitions & Burns Pack",
-    category: "bundle",
+    category: "transitions",
     image: "/assets/shop/tranzitions.jpg",
-    price: 99.99,
+    price: 79.99,
     originalPrice: 124.98,
-    discountPercentage: 20,
+    discountPercentage: 36,
     description: "The Transitions & Burns pack by Dopamine is crafted to bring raw, analog-style energy to your edits. Inspired by real film burns, light leaks, and in-camera transitions, this pack adds warmth, texture, and movement to your footage—perfect for music videos, reels, fashion films, or any project that needs that organic, imperfect feel. Whether you're aiming for subtle vintage motion or explosive transitions, these overlays offer you endless creative possibilities.\n\n📦 What's Included:\n• 50 Video Film Burn Overlays\n• 64 Static Film Burn Overlays\n• Total: 114 Professional Film Burn & Transition Overlays",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_TRANSITIONS_BURNS_FOLDER_ID",
@@ -238,6 +238,7 @@ export default function Shop() {
     { value: "luts", label: "LUTs", labelKey: "shop.luts" },
     { value: "lightroom-presets", label: "Lightroom Presets", labelKey: "shop.lightroomPresets" },
     { value: "sound-design", label: "Sound Design", labelKey: "shop.soundDesign" },
+    { value: "transitions", label: "Transitions", labelKey: "shop.transitions" },
     { value: "bundle", label: "Bundle", labelKey: "shop.bundle" },
   ];
 
