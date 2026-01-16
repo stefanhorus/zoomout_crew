@@ -135,6 +135,18 @@ const products: Product[] = [
   },
   {
     id: 10,
+    name: "Film Artifacts Pack",
+    category: "transitions",
+    image: "/assets/shop/FILMARTIFACTS.jpg",
+    price: 89.99,
+    originalPrice: 129.98,
+    discountPercentage: 31,
+    description: "The Film Artifacts Pack brings the authentic character of analog cinema to your digital footage. This collection features meticulously crafted film artifacts including scratches, dust particles, grain textures, light leaks, and vintage imperfections that add depth, nostalgia, and cinematic authenticity to your projects. Perfect for filmmakers and content creators who want to break away from the sterile digital look and infuse their work with the organic, imperfect beauty of classic film. Whether you're creating music videos, short films, documentaries, or social media content, these artifacts will transform your footage into something truly timeless.\n\n📦 What's Included:\n• 100+ Professional Film Artifact Overlays\n• Film Scratches & Dust Particles\n• Vintage Grain Textures\n• Light Leaks & Flares\n• Film Burn Effects\n• Compatible with all major editing software (Premiere Pro, Final Cut Pro, DaVinci Resolve, After Effects)",
+    inStock: true,
+    downloadUrl: "https://drive.google.com/drive/folders/YOUR_FILM_ARTIFACTS_FOLDER_ID",
+  },
+  {
+    id: 11,
     name: "Signature Bundle",
     category: "bundle",
     image: "/assets/shop/SIGNATURE.jpg",
