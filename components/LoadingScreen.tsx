@@ -10,7 +10,6 @@ interface LoadingScreenProps {
 
 export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScreenProps) {
   const [shouldRender, setShouldRender] = useState(true);
-  const [progress, setProgress] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
 
@@ -20,7 +19,6 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
   useEffect(() => {
     if (!isLoading) {
       setDisplayText("");
-      setProgress(0);
       return;
     }
 
@@ -30,17 +28,8 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
     const DELETE_CHAR_DELAY = 30; // 30ms per caracter la ștergere
     const DELAY_BETWEEN = 1000;
     const FINAL_DELAY = 1000;
-    const TOTAL_DURATION = START_DELAY + (text1.length * TYPE_CHAR_DELAY) + DELAY_BETWEEN + (text1.length * DELETE_CHAR_DELAY) + (text2.length * TYPE_CHAR_DELAY) + FINAL_DELAY;
     
     const timers: (NodeJS.Timeout | null)[] = [];
-    
-    // Progress bar animation
-    const progressInterval = 50;
-    const progressIncrement = (100 / TOTAL_DURATION) * progressInterval;
-    const progressTimer = setInterval(() => {
-      setProgress((prev) => Math.min(prev + progressIncrement, 100));
-    }, progressInterval);
-    timers.push(progressTimer as any);
 
     let elapsed = 0;
 
@@ -78,7 +67,6 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
                     
                     // Final delay
                     const finalTimer = setTimeout(() => {
-                      setProgress(100);
                       if (onTextComplete) {
                         onTextComplete();
                       }
@@ -105,7 +93,6 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
           clearInterval(timer as any);
         }
       });
-      clearInterval(progressTimer);
     };
   }, [isLoading, onTextComplete, text1, text2]);
 
@@ -180,22 +167,6 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
           {displayText}
           {showCursor && <span className="cursor-blink">|</span>}
         </h1>
-        
-        {/* Loading Progress Bar - lățime și înălțime fixă */}
-        <div className="mt-8 w-full max-w-md mx-auto">
-          <div className="bg-white/20 rounded-full overflow-hidden relative" style={{ width: '400px', height: '4px', maxWidth: '100%' }}>
-            <div 
-              className="absolute top-0 left-0 bg-white/80 rounded-full transition-all duration-300 ease-out"
-              style={{ 
-                width: `${progress}%`,
-                height: '100%',
-                minWidth: '0',
-                maxWidth: '100%',
-                boxShadow: '0 0 10px rgba(255, 255, 255, 0.5)'
-              }}
-            />
-          </div>
-        </div>
       </div>
     </div>
   );
