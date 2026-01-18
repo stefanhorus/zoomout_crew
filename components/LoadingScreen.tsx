@@ -135,12 +135,16 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
             <Typewriter
               key="loading-typewriter"
               words={["See the bigger picture...", "Welcome to Zoomout_crew website !"]}
-              loop={1}
+              loop={true}
               cursor
               cursorStyle="|"
               typeSpeed={50}
               deleteSpeed={30}
               delaySpeed={1000}
+              onLoopDone={() => {
+                // Oprește animația după primul ciclu complet
+                // (ambele texte au fost afișate)
+              }}
             />
           </h1>
         )}
