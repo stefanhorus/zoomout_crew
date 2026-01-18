@@ -51,7 +51,7 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
       }`}
     >
       <div className="flex flex-col items-center justify-center px-4">
-        {/* Logo cu animație de fade-in și scale */}
+        {/* Logo cu animație de fade-in, scale și rotație */}
         <div
           className={`transform transition-all duration-700 ${
             isLoading ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
@@ -63,7 +63,10 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
             width={200}
             height={200}
             priority
-            className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 object-contain"
+            className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 object-contain animate-spin-slow"
+            style={{
+              animation: 'spin 3s linear infinite'
+            }}
           />
         </div>
         
