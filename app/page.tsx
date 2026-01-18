@@ -6,32 +6,30 @@ import Image from "next/image";
 import Video from 'next-video';
 import videoLoop from '/videos/bg.mp4';
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useCookie } from "@/contexts/CookieContext";
 import Link from "next/link";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function Home() {
   const { t, language } = useLanguage();
-  const { showBanner } = useCookie();
   const [shouldStartTypewriter, setShouldStartTypewriter] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Update page title when language changes
   useEffect(() => {
     document.title = "Zoomout_crew - Professional aerial footage and more";
   }, [language]);
 
-  // Pornește animația Typewriter doar după ce banner-ul de cookie-uri este închis
+  // Pornește animația Typewriter după ce loading-ul este terminat
   useEffect(() => {
-    if (!showBanner) {
-      // Dacă banner-ul nu este afișat, pornește animația după un mic delay
+    if (!isLoading) {
       const timer = setTimeout(() => {
         setShouldStartTypewriter(true);
-      }, 300); // Mic delay pentru tranziție fluidă
+      }, 300);
       return () => clearTimeout(timer);
     } else {
-      // Dacă banner-ul este afișat, oprește animația
       setShouldStartTypewriter(false);
     }
-  }, [showBanner]);
+  }, [isLoading]);
   
   const brands = [
     { id: 1, name: "Big Belly", logo: "/assets/brands/bigbelly.png", width: 320, height: 160 },
@@ -205,6 +203,7 @@ export default function Home() {
 
     const handleCanPlay = () => {
       setVideoLoaded(true);
+      setIsLoading(false); // Oprește loading screen când video-ul este gata
       // Forțează play după ce video-ul poate fi redat
       video.play().catch((err) => {
         console.error("Video autoplay failed:", err);
@@ -222,6 +221,7 @@ export default function Home() {
     const handleError = (e: Event) => {
       console.error("Video loading error:", e);
       setVideoError(true);
+      setIsLoading(false); // Oprește loading screen chiar dacă video-ul nu se încarcă
     };
 
     const handleLoadedMetadata = () => {
@@ -272,6 +272,9 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center bg-black text-white" style={{ minHeight: '100vh' }}>
+      {/* Loading Screen cu logo Zoomout_crew */}
+      <LoadingScreen isLoading={isLoading} />
+      
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes scroll {
           0% {
@@ -347,6 +350,7 @@ export default function Home() {
                 className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
                 onLoad={() => {
                   setVideoLoaded(true);
+                  setIsLoading(false); // Oprește loading screen
                   // Forțează play imediat după încărcare (reduc delay pentru încărcare mai rapidă)
                   const iframe = document.querySelector('iframe[src*="1ZNl7mG4dyczA01qMJ6TVCQyxJfuHDwNbw1q00bB1brhg"]') as HTMLIFrameElement;
                   if (iframe && iframe.contentWindow) {
@@ -367,6 +371,7 @@ export default function Home() {
                 onError={() => {
                   console.error('Mux video error for mobile');
                   setVideoError(true);
+                  setIsLoading(false); // Oprește loading screen chiar dacă video-ul nu se încarcă
                 }}
               />
             ) : (
@@ -391,6 +396,7 @@ export default function Home() {
               className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => {
                 setVideoLoaded(true);
+                setIsLoading(false); // Oprește loading screen
                 // Forțează play imediat după încărcare (reduc delay pentru încărcare mai rapidă)
                 const iframe = document.querySelector('iframe[src*="rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo"]') as HTMLIFrameElement;
                 if (iframe && iframe.contentWindow) {
@@ -411,6 +417,7 @@ export default function Home() {
                 onError={() => {
                   console.error('Mux video error for desktop');
                   setVideoError(true);
+                  setIsLoading(false); // Oprește loading screen chiar dacă video-ul nu se încarcă
                 }}
             />
             )}

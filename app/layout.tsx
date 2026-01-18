@@ -2,7 +2,6 @@ import "./globals.css";
 import { Playfair_Display, Roboto } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import CookieBanner from "@/components/CookieBanner";
 import ConditionalAnalytics from "@/components/ConditionalAnalytics";
 import { CartProvider } from "@/contexts/CartContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -85,7 +84,6 @@ export default function RootLayout({
                 {children}
               </main>
               <Footer />
-                <CookieBanner />
             </CartProvider>
           </CurrencyProvider>
         </LanguageProvider>
