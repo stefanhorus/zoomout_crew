@@ -93,48 +93,38 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
           />
         </div>
         
-        {/* Prima linie cu animație Typewriter */}
+        {/* Prima linie cu animație Typewriter - stil exact ca titlul de pe home screen */}
         {showFirstText && (
-          <div className="mt-8 mb-4">
-            <p
-              className="text-white/90 text-lg md:text-xl lg:text-2xl font-medium text-center min-h-[1.5em]"
-              style={{ fontFamily: "var(--font-playfair)" }}
-            >
-              {showFirstText && (
-                <Typewriter
-                  words={["See the bigger picture..."]}
-                  loop={false}
-                  cursor
-                  cursorStyle="|"
-                  typeSpeed={70}
-                  deleteSpeed={50}
-                  delaySpeed={1000}
-                />
-              )}
-            </p>
-          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white mt-8">
+            {showFirstText && (
+              <Typewriter
+                words={["See the bigger picture..."]}
+                loop={false}
+                cursor
+                cursorStyle="|"
+                typeSpeed={90}
+                deleteSpeed={50}
+                delaySpeed={7000}
+              />
+            )}
+          </h1>
         )}
         
-        {/* A doua linie cu animație Typewriter */}
+        {/* A doua linie cu animație Typewriter - stil exact ca titlul de pe home screen */}
         {showSecondText && (
-          <div className="mt-2">
-            <p
-              className="text-white/80 text-base md:text-lg lg:text-xl font-medium text-center min-h-[1.5em]"
-              style={{ fontFamily: "var(--font-roboto)" }}
-            >
-              {showSecondText && (
-                <Typewriter
-                  words={["Welcome to Zoomout_crew website !"]}
-                  loop={false}
-                  cursor
-                  cursorStyle="|"
-                  typeSpeed={70}
-                  deleteSpeed={50}
-                  delaySpeed={1000}
-                />
-              )}
-            </p>
-          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white">
+            {showSecondText && (
+              <Typewriter
+                words={["Welcome to Zoomout_crew website !"]}
+                loop={false}
+                cursor
+                cursorStyle="|"
+                typeSpeed={90}
+                deleteSpeed={50}
+                delaySpeed={7000}
+              />
+            )}
+          </h1>
         )}
       </div>
     </div>
