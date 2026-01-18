@@ -26,85 +26,85 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
 
     // Timpi exacti conform cerințelor
     const START_DELAY = 500;
-    const TEXT1_TYPE_DURATION = 1250; // ~25 chars × 50ms
+    const TYPE_CHAR_DELAY = 50; // 50ms per caracter la scriere
+    const DELETE_CHAR_DELAY = 30; // 30ms per caracter la ștergere
     const DELAY_BETWEEN = 1000;
-    const DELETE_DURATION = 750; // ~25 chars × 30ms
-    const TEXT2_TYPE_DURATION = 1750; // ~35 chars × 50ms
     const FINAL_DELAY = 1000;
-    const TOTAL_DURATION = START_DELAY + TEXT1_TYPE_DURATION + DELAY_BETWEEN + DELETE_DURATION + TEXT2_TYPE_DURATION + FINAL_DELAY; // 6250ms
-
-    let charIndex = 0;
-    let phase: 'start' | 'type1' | 'wait1' | 'delete' | 'type2' | 'wait2' | 'done' = 'start';
+    const TOTAL_DURATION = START_DELAY + (text1.length * TYPE_CHAR_DELAY) + DELAY_BETWEEN + (text1.length * DELETE_CHAR_DELAY) + (text2.length * TYPE_CHAR_DELAY) + FINAL_DELAY;
+    
+    const timers: (NodeJS.Timeout | null)[] = [];
     
     // Progress bar animation
-    const progressInterval = 50; // Update la fiecare 50ms
+    const progressInterval = 50;
     const progressIncrement = (100 / TOTAL_DURATION) * progressInterval;
     const progressTimer = setInterval(() => {
       setProgress((prev) => Math.min(prev + progressIncrement, 100));
     }, progressInterval);
+    timers.push(progressTimer as any);
+
+    let elapsed = 0;
 
     // Start delay
+    elapsed += START_DELAY;
     const startTimer = setTimeout(() => {
-      phase = 'type1';
-      charIndex = 0;
-    }, START_DELAY);
-
-    // Type first text
-    const type1CharDelay = TEXT1_TYPE_DURATION / text1.length; // ~50ms per char
-    const type1Timer = setTimeout(() => {
-      let currentChar = 0;
+      // Type first text character by character
+      let charIndex = 0;
       const type1Interval = setInterval(() => {
-        if (currentChar < text1.length) {
-          setDisplayText(text1.substring(0, currentChar + 1));
-          currentChar++;
+        if (charIndex < text1.length) {
+          setDisplayText(text1.substring(0, charIndex + 1));
+          charIndex++;
         } else {
           clearInterval(type1Interval);
-          phase = 'wait1';
           
           // Wait between texts
-          setTimeout(() => {
-            phase = 'delete';
-            let deleteChar = text1.length;
+          const waitTimer = setTimeout(() => {
+            // Delete first text character by character
+            let deleteIndex = text1.length;
             const deleteInterval = setInterval(() => {
-              if (deleteChar > 0) {
-                setDisplayText(text1.substring(0, deleteChar - 1));
-                deleteChar--;
+              if (deleteIndex > 0) {
+                setDisplayText(text1.substring(0, deleteIndex - 1));
+                deleteIndex--;
               } else {
                 clearInterval(deleteInterval);
-                phase = 'type2';
-                charIndex = 0;
                 
-                // Type second text
-                let currentChar2 = 0;
-                const type2CharDelay = TEXT2_TYPE_DURATION / text2.length; // ~50ms per char
+                // Type second text character by character
+                let charIndex2 = 0;
                 const type2Interval = setInterval(() => {
-                  if (currentChar2 < text2.length) {
-                    setDisplayText(text2.substring(0, currentChar2 + 1));
-                    currentChar2++;
+                  if (charIndex2 < text2.length) {
+                    setDisplayText(text2.substring(0, charIndex2 + 1));
+                    charIndex2++;
                   } else {
                     clearInterval(type2Interval);
-                    phase = 'wait2';
                     
                     // Final delay
-                    setTimeout(() => {
-                      phase = 'done';
+                    const finalTimer = setTimeout(() => {
                       setProgress(100);
                       if (onTextComplete) {
                         onTextComplete();
                       }
                     }, FINAL_DELAY);
+                    timers.push(finalTimer);
                   }
-                }, type2CharDelay);
+                }, TYPE_CHAR_DELAY);
+                timers.push(type2Interval as any);
               }
-            }, DELETE_DURATION / text1.length); // ~30ms per char
+            }, DELETE_CHAR_DELAY);
+            timers.push(deleteInterval as any);
           }, DELAY_BETWEEN);
+          timers.push(waitTimer);
         }
-      }, type1CharDelay);
+      }, TYPE_CHAR_DELAY);
+      timers.push(type1Interval as any);
     }, START_DELAY);
+    timers.push(startTimer);
 
     return () => {
-      clearTimeout(startTimer);
-      clearTimeout(type1Timer);
+      timers.forEach(timer => {
+        if (timer) {
+          clearTimeout(timer);
+          clearInterval(timer as any);
+        }
+      });
       clearInterval(progressTimer);
     };
   }, [isLoading, onTextComplete, text1, text2]);
