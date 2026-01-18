@@ -59,9 +59,9 @@ export default function CookieBanner() {
 
   return (
     <>
-      {/* Overlay pentru întunecare și blur */}
+      {/* Overlay pentru întunecare și blur - fără blur pe mobile pentru a nu bloca video-ul */}
       <div 
-        className="fixed inset-0 z-[90] bg-black/60 backdrop-blur-md animate-fade-in transition-all duration-300"
+        className="fixed inset-0 z-[10] bg-black/30 md:bg-black/60 backdrop-blur-none md:backdrop-blur-md animate-fade-in transition-all duration-300"
         style={{ pointerEvents: 'none' }}
       />
       

@@ -67,6 +67,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* Prioritate maximă pentru video - preconnect pentru Mux înainte de toate */}
+        <link rel="preconnect" href="https://player.mux.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://player.mux.com" />
+        <link rel="preconnect" href="https://stream.mux.com" crossOrigin="anonymous" />
+      </head>
       <body
         className={`${roboto.variable} ${playfair.variable} bg-black text-white antialiased flex flex-col min-h-screen`}
       >

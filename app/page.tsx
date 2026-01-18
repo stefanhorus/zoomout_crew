@@ -242,29 +242,7 @@ export default function Home() {
     };
   }, []);
 
-  // Prioritate maximă pentru încărcarea video-ului de fundal
-  useEffect(() => {
-    // Preconnect pentru domeniul Mux pentru conexiune mai rapidă
-    const preconnect = document.createElement('link');
-    preconnect.rel = 'preconnect';
-    preconnect.href = 'https://player.mux.com';
-    preconnect.crossOrigin = 'anonymous';
-    document.head.appendChild(preconnect);
-
-    // DNS prefetch pentru domeniul Mux
-    const dnsPrefetch = document.createElement('link');
-    dnsPrefetch.rel = 'dns-prefetch';
-    dnsPrefetch.href = 'https://player.mux.com';
-    document.head.appendChild(dnsPrefetch);
-
-    return () => {
-      // Cleanup (opțional, pentru performanță)
-      const existingPreconnect = document.querySelector('link[href="https://player.mux.com"][rel="preconnect"]');
-      const existingDnsPrefetch = document.querySelector('link[href="https://player.mux.com"][rel="dns-prefetch"]');
-      if (existingPreconnect) document.head.removeChild(existingPreconnect);
-      if (existingDnsPrefetch) document.head.removeChild(existingDnsPrefetch);
-    };
-  }, []);
+  // Preconnect este adăugat în layout.tsx head pentru încărcare mai rapidă (SSR)
 
   // Preload all background images for other pages (după video)
   useEffect(() => {
@@ -327,8 +305,8 @@ export default function Home() {
         }
       `}} />
       
-      {/* Video de fundal cu overlay gradient */}
-      <div className="absolute inset-0 w-full h-full z-0">
+      {/* Video de fundal cu overlay gradient - Mutat sus pentru prioritate maximă */}
+      <div className="absolute inset-0 w-full h-full z-0" style={{ willChange: 'transform' }}>
         {/* Fallback image dacă video-ul nu se încarcă */}
         {videoError && (
           <div className="absolute inset-0 w-full h-full bg-black">
@@ -369,17 +347,22 @@ export default function Home() {
                 className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
                 onLoad={() => {
                   setVideoLoaded(true);
-                  // Forțează play după ce iframe-ul se încarcă
-                  setTimeout(() => {
-                    const iframe = document.querySelector('iframe[src*="1ZNl7mG4dyczA01qMJ6TVCQyxJfuHDwNbw1q00bB1brhg"]') as HTMLIFrameElement;
-                    if (iframe && iframe.contentWindow) {
-                      try {
-                        iframe.contentWindow.postMessage({ command: 'play' }, '*');
-                      } catch (e) {
-                        console.log('Mux player autoplay mobile');
-                      }
+                  // Forțează play imediat după încărcare (reduc delay pentru încărcare mai rapidă)
+                  const iframe = document.querySelector('iframe[src*="1ZNl7mG4dyczA01qMJ6TVCQyxJfuHDwNbw1q00bB1brhg"]') as HTMLIFrameElement;
+                  if (iframe && iframe.contentWindow) {
+                    // Încearcă imediat, apoi retry după 200ms dacă nu funcționează
+                    try {
+                      iframe.contentWindow.postMessage({ command: 'play' }, '*');
+                    } catch (e) {
+                      console.log('Mux player autoplay mobile');
                     }
-                  }, 500);
+                    // Retry pentru siguranță
+                    setTimeout(() => {
+                      try {
+                        iframe.contentWindow?.postMessage({ command: 'play' }, '*');
+                      } catch (e) {}
+                    }, 200);
+                  }
                 }}
                 onError={() => {
                   console.error('Mux video error for mobile');
@@ -408,17 +391,22 @@ export default function Home() {
               className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => {
                 setVideoLoaded(true);
-                // Forțează play după ce iframe-ul se încarcă
-                setTimeout(() => {
-                    const iframe = document.querySelector('iframe[src*="rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo"]') as HTMLIFrameElement;
-                  if (iframe && iframe.contentWindow) {
-                    try {
-                      iframe.contentWindow.postMessage({ command: 'play' }, '*');
-                    } catch (e) {
-                        console.log('Mux player autoplay desktop');
-                    }
+                // Forțează play imediat după încărcare (reduc delay pentru încărcare mai rapidă)
+                const iframe = document.querySelector('iframe[src*="rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo"]') as HTMLIFrameElement;
+                if (iframe && iframe.contentWindow) {
+                  // Încearcă imediat, apoi retry după 200ms dacă nu funcționează
+                  try {
+                    iframe.contentWindow.postMessage({ command: 'play' }, '*');
+                  } catch (e) {
+                    console.log('Mux player autoplay desktop');
                   }
-                }, 500);
+                  // Retry pentru siguranță
+                  setTimeout(() => {
+                    try {
+                      iframe.contentWindow?.postMessage({ command: 'play' }, '*');
+                    } catch (e) {}
+                  }, 200);
+                }
               }}
                 onError={() => {
                   console.error('Mux video error for desktop');
@@ -477,7 +465,7 @@ export default function Home() {
 
       {/* Conținutul de deasupra video-ului */}
       <div 
-        className="relative z-10 text-center px-4 md:px-6 max-w-4xl animate-fade-in"
+        className="relative z-[20] text-center px-4 md:px-6 max-w-4xl animate-fade-in"
         style={{
           marginBottom: viewportHeight < 700 ? '1rem' : viewportHeight < 900 ? '2rem' : '3rem',
           marginTop: viewportHeight < 700 ? '-2rem' : viewportHeight < 900 ? '-3rem' : '-4rem'
