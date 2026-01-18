@@ -26,7 +26,7 @@ export default function Cart({ isOpen, onClose }: { isOpen: boolean; onClose: ()
         className="fixed inset-0 bg-black/50 z-50"
         onClick={onClose}
       />
-      
+
       {/* Cart Sidebar */}
       <div className="fixed right-0 top-0 h-full w-full sm:w-96 bg-gray-900 z-50 shadow-2xl flex flex-col">
         {/* Header */}
