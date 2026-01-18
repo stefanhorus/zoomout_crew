@@ -50,7 +50,30 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
         isLoading ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >
-      <div className="flex flex-col items-center justify-center px-4">
+      {/* Background Image cu efect liquid glass */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <Image
+          src="/assets/backgrounds/background7tiny.jpg"
+          alt="Loading background"
+          fill
+          priority
+          quality={85}
+          sizes="100vw"
+          className="object-cover opacity-60"
+        />
+        {/* Liquid glass overlay */}
+        <div className="absolute inset-0 liquid-glass" style={{
+          background: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(60px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(60px) saturate(200%)',
+          border: 'none',
+        }} />
+        {/* Dark overlay pentru contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
+      </div>
+      
+      {/* Conținutul */}
+      <div className="relative z-10 flex flex-col items-center justify-center px-4">
         {/* Logo cu animație de fade-in, scale și rotație */}
         <div
           className={`transform transition-all duration-700 ${
