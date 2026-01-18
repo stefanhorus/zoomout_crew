@@ -67,11 +67,15 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
       
       {/* Conținutul */}
       <div className="relative z-10 flex flex-col items-center justify-center px-4">
-        {/* Logo cu animație de fade-in, scale și rotație */}
+        {/* Logo cu animație de fade-in, scale și rotație în jurul axei Y */}
         <div
           className={`transform transition-all duration-700 ${
             isLoading ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
           }`}
+          style={{
+            transformStyle: 'preserve-3d',
+            perspective: '1000px'
+          }}
         >
           <Image
             src="/assets/logo.png"
@@ -79,9 +83,10 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
             width={200}
             height={200}
             priority
-            className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 object-contain animate-spin-slow"
+            className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 object-contain"
             style={{
-              animation: 'spin 3s linear infinite'
+              animation: 'rotateY 3s linear infinite',
+              transformStyle: 'preserve-3d'
             }}
           />
         </div>
@@ -96,7 +101,7 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
               cursorStyle="|"
               typeSpeed={90}
               deleteSpeed={50}
-              delaySpeed={2000}
+              delaySpeed={7000}
             />
           </h1>
         )}

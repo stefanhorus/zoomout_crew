@@ -504,6 +504,15 @@ html {
   animation: spin-slow 3s linear infinite;
 }
 
+@keyframes rotateY {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
 /* Footer Glass Effect */
 .footer-glass {
   background: rgba(0, 0, 0, 0.6);
