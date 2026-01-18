@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useTypewriter, Cursor } from "react-simple-typewriter";
 
 interface LoadingScreenProps {
   isLoading: boolean;
@@ -11,66 +10,104 @@ interface LoadingScreenProps {
 
 export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScreenProps) {
   const [shouldRender, setShouldRender] = useState(true);
-  const [showText, setShowText] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [displayText, setDisplayText] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
 
-  // Folosesc useTypewriter hook în loc de Typewriter component pentru a afișa ambele texte
-  const { text } = useTypewriter({
-    words: ["See the bigger picture...", "Welcome to Zoomout_crew website !"],
-    loop: 1,
-    typeSpeed: 50,
-    deleteSpeed: 30,
-    delaySpeed: 1000,
-  });
+  const text1 = "See the bigger picture...";
+  const text2 = "Welcome to Zoomout_crew website !";
 
   useEffect(() => {
-    if (isLoading) {
-      // Pornește textul după un mic delay
-      const timer1 = setTimeout(() => {
-        setShowText(true);
-      }, 500);
-      
-      // Animație pentru progress bar (6.5 secunde total - sincronizat cu textele)
-      const totalDuration = 6500; // ms - același timp cât durează textele
-      const interval = 50; // Update la fiecare 50ms
-      const increment = (100 / totalDuration) * interval;
-      
-      const progressTimer = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(progressTimer);
-            return 100;
-          }
-          return Math.min(prev + increment, 100);
-        });
-      }, interval);
-      
-      // Calculează când se termină al doilea text:
-      // 500ms (start) + 1250ms (primul text ~25 chars × 50ms) + 1000ms (delay) + 
-      // 750ms (ștergere ~25 chars × 30ms) + 1750ms (al doilea text ~35 chars × 50ms) + 
-      // 1000ms (delay final) = ~6250ms total
-      // Opresc loading screen-ul după ~6.5 secunde de la start - progress bar ajunge exact la 100%
-      const timer2 = setTimeout(() => {
-        // Asigură-te că progress bar ajunge la 100% înainte de a opri
-        setProgress(100);
-        // Mic delay pentru a se asigura că progress bar ajunge vizual la 100%
-        setTimeout(() => {
-          if (onTextComplete) {
-            onTextComplete();
-          }
-        }, 100);
-      }, totalDuration);
-      
-      return () => {
-        clearTimeout(timer1);
-        clearTimeout(timer2);
-        clearInterval(progressTimer);
-      };
-    } else {
-      // Reset progress când loading-ul se termină
+    if (!isLoading) {
+      setDisplayText("");
       setProgress(0);
+      return;
     }
-  }, [isLoading, onTextComplete]);
+
+    // Timpi exacti conform cerințelor
+    const START_DELAY = 500;
+    const TEXT1_TYPE_DURATION = 1250; // ~25 chars × 50ms
+    const DELAY_BETWEEN = 1000;
+    const DELETE_DURATION = 750; // ~25 chars × 30ms
+    const TEXT2_TYPE_DURATION = 1750; // ~35 chars × 50ms
+    const FINAL_DELAY = 1000;
+    const TOTAL_DURATION = START_DELAY + TEXT1_TYPE_DURATION + DELAY_BETWEEN + DELETE_DURATION + TEXT2_TYPE_DURATION + FINAL_DELAY; // 6250ms
+
+    let charIndex = 0;
+    let phase: 'start' | 'type1' | 'wait1' | 'delete' | 'type2' | 'wait2' | 'done' = 'start';
+    
+    // Progress bar animation
+    const progressInterval = 50; // Update la fiecare 50ms
+    const progressIncrement = (100 / TOTAL_DURATION) * progressInterval;
+    const progressTimer = setInterval(() => {
+      setProgress((prev) => Math.min(prev + progressIncrement, 100));
+    }, progressInterval);
+
+    // Start delay
+    const startTimer = setTimeout(() => {
+      phase = 'type1';
+      charIndex = 0;
+    }, START_DELAY);
+
+    // Type first text
+    const type1CharDelay = TEXT1_TYPE_DURATION / text1.length; // ~50ms per char
+    const type1Timer = setTimeout(() => {
+      let currentChar = 0;
+      const type1Interval = setInterval(() => {
+        if (currentChar < text1.length) {
+          setDisplayText(text1.substring(0, currentChar + 1));
+          currentChar++;
+        } else {
+          clearInterval(type1Interval);
+          phase = 'wait1';
+          
+          // Wait between texts
+          setTimeout(() => {
+            phase = 'delete';
+            let deleteChar = text1.length;
+            const deleteInterval = setInterval(() => {
+              if (deleteChar > 0) {
+                setDisplayText(text1.substring(0, deleteChar - 1));
+                deleteChar--;
+              } else {
+                clearInterval(deleteInterval);
+                phase = 'type2';
+                charIndex = 0;
+                
+                // Type second text
+                let currentChar2 = 0;
+                const type2CharDelay = TEXT2_TYPE_DURATION / text2.length; // ~50ms per char
+                const type2Interval = setInterval(() => {
+                  if (currentChar2 < text2.length) {
+                    setDisplayText(text2.substring(0, currentChar2 + 1));
+                    currentChar2++;
+                  } else {
+                    clearInterval(type2Interval);
+                    phase = 'wait2';
+                    
+                    // Final delay
+                    setTimeout(() => {
+                      phase = 'done';
+                      setProgress(100);
+                      if (onTextComplete) {
+                        onTextComplete();
+                      }
+                    }, FINAL_DELAY);
+                  }
+                }, type2CharDelay);
+              }
+            }, DELETE_DURATION / text1.length); // ~30ms per char
+          }, DELAY_BETWEEN);
+        }
+      }, type1CharDelay);
+    }, START_DELAY);
+
+    return () => {
+      clearTimeout(startTimer);
+      clearTimeout(type1Timer);
+      clearInterval(progressTimer);
+    };
+  }, [isLoading, onTextComplete, text1, text2]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -139,12 +176,10 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
         </div>
         
         {/* Text cu animație Typewriter - scrie "See...", apoi se șterge și scrie "Welcome..." în același loc */}
-        {showText && (
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white mt-8 min-h-[1.5em] text-center">
-            {text}
-            <Cursor cursorStyle="|" />
-          </h1>
-        )}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white mt-8 min-h-[1.5em] text-center">
+          {displayText}
+          {showCursor && <span className="cursor-blink">|</span>}
+        </h1>
         
         {/* Loading Progress Bar - lățime și înălțime fixă */}
         <div className="mt-8 w-full max-w-md mx-auto">
