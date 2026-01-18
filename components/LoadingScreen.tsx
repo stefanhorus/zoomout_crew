@@ -140,13 +140,15 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
           </h1>
         )}
         
-        {/* Loading Progress Bar */}
+        {/* Loading Progress Bar - fix, nu se mărește */}
         <div className="mt-8 w-full max-w-md mx-auto">
-          <div className="h-1 bg-white/20 rounded-full overflow-hidden">
+          <div className="h-1 bg-white/20 rounded-full overflow-hidden relative" style={{ height: '4px' }}>
             <div 
-              className="h-full bg-white/80 rounded-full transition-all duration-300 ease-out"
+              className="absolute top-0 left-0 h-full bg-white/80 rounded-full transition-all duration-300 ease-out"
               style={{ 
                 width: `${progress}%`,
+                height: '100%',
+                maxHeight: '4px',
                 boxShadow: '0 0 10px rgba(255, 255, 255, 0.5)'
               }}
             />
