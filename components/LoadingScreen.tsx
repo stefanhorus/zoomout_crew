@@ -130,7 +130,7 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white mt-8 min-h-[1.5em] text-center">
             <Typewriter
               words={["See the bigger picture...", "Welcome to Zoomout_crew website !"]}
-              loop={false}
+              loop={1}
               cursor
               cursorStyle="|"
               typeSpeed={50}
@@ -140,15 +140,16 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
           </h1>
         )}
         
-        {/* Loading Progress Bar - fix, nu se mărește */}
+        {/* Loading Progress Bar - lățime și înălțime fixă */}
         <div className="mt-8 w-full max-w-md mx-auto">
-          <div className="h-1 bg-white/20 rounded-full overflow-hidden relative" style={{ height: '4px' }}>
+          <div className="bg-white/20 rounded-full overflow-hidden relative" style={{ width: '400px', height: '4px', maxWidth: '100%' }}>
             <div 
-              className="absolute top-0 left-0 h-full bg-white/80 rounded-full transition-all duration-300 ease-out"
+              className="absolute top-0 left-0 bg-white/80 rounded-full transition-all duration-300 ease-out"
               style={{ 
                 width: `${progress}%`,
                 height: '100%',
-                maxHeight: '4px',
+                minWidth: '0',
+                maxWidth: '100%',
                 boxShadow: '0 0 10px rgba(255, 255, 255, 0.5)'
               }}
             />
