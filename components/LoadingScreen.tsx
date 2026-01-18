@@ -93,7 +93,7 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
         
         {/* Text cu animație Typewriter - scrie "See...", apoi se șterge și scrie "Welcome..." în același loc */}
         {showText && (
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white mt-8 min-h-[1.5em]">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white mt-8 min-h-[1.5em] text-center">
             <Typewriter
               words={["See the bigger picture...", "Welcome to Zoomout_crew website !"]}
               loop={false}
