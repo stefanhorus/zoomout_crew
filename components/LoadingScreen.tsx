@@ -99,9 +99,9 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
               loop={false}
               cursor
               cursorStyle="|"
-              typeSpeed={90}
-              deleteSpeed={50}
-              delaySpeed={7000}
+              typeSpeed={50}
+              deleteSpeed={30}
+              delaySpeed={1000}
             />
           </h1>
         )}
