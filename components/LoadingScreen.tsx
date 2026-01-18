@@ -10,24 +10,17 @@ interface LoadingScreenProps {
 
 export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
   const [shouldRender, setShouldRender] = useState(true);
-  const [showFirstText, setShowFirstText] = useState(false);
-  const [showSecondText, setShowSecondText] = useState(false);
+  const [showText, setShowText] = useState(false);
 
   useEffect(() => {
     if (isLoading) {
-      // Pornește primul text după un mic delay
-      const timer1 = setTimeout(() => {
-        setShowFirstText(true);
+      // Pornește textul după un mic delay
+      const timer = setTimeout(() => {
+        setShowText(true);
       }, 500);
       
-      // Pornește al doilea text după primul
-      const timer2 = setTimeout(() => {
-        setShowSecondText(true);
-      }, 3000);
-      
       return () => {
-        clearTimeout(timer1);
-        clearTimeout(timer2);
+        clearTimeout(timer);
       };
     }
   }, [isLoading]);
@@ -93,37 +86,18 @@ export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
           />
         </div>
         
-        {/* Prima linie cu animație Typewriter - stil exact ca titlul de pe home screen */}
-        {showFirstText && (
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white mt-8">
-            {showFirstText && (
-              <Typewriter
-                words={["See the bigger picture..."]}
-                loop={false}
-                cursor
-                cursorStyle="|"
-                typeSpeed={90}
-                deleteSpeed={50}
-                delaySpeed={7000}
-              />
-            )}
-          </h1>
-        )}
-        
-        {/* A doua linie cu animație Typewriter - stil exact ca titlul de pe home screen */}
-        {showSecondText && (
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white">
-            {showSecondText && (
-              <Typewriter
-                words={["Welcome to Zoomout_crew website !"]}
-                loop={false}
-                cursor
-                cursorStyle="|"
-                typeSpeed={90}
-                deleteSpeed={50}
-                delaySpeed={7000}
-              />
-            )}
+        {/* Text cu animație Typewriter - scrie "See...", apoi se șterge și scrie "Welcome..." în același loc */}
+        {showText && (
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white mt-8 min-h-[1.5em]">
+            <Typewriter
+              words={["See the bigger picture...", "Welcome to Zoomout_crew website !"]}
+              loop={false}
+              cursor
+              cursorStyle="|"
+              typeSpeed={90}
+              deleteSpeed={50}
+              delaySpeed={2000}
+            />
           </h1>
         )}
       </div>
