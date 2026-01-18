@@ -203,13 +203,7 @@ export default function Home() {
 
     const handleCanPlay = () => {
       setVideoLoaded(true);
-      // Așteaptă să se termine al doilea text complet + 1 secundă înainte de a opri loading screen
-      // Calculare: 500ms (start) + 1250ms (prima scriere) + 1000ms (delay) + 750ms (ștergere) + 1750ms (a doua scriere) + 1000ms (delay final) = 6250ms
-      // Dar dacă video-ul se încarcă înainte de a începe textul, trebuie să așteptăm mai mult
-      // Folosim delay maxim pentru a garanta că textul se termină: ~7.5 secunde minim de la mount + 1 secundă = 8.5 secunde
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 9500); // ~7.5 secunde pentru ambele texte + 1.5 secunde suplimentare pentru siguranță
+      // Loading screen-ul se va opri automat când textul se termină (callback din LoadingScreen)
       // Forțează play după ce video-ul poate fi redat
       video.play().catch((err) => {
         console.error("Video autoplay failed:", err);
@@ -279,7 +273,7 @@ export default function Home() {
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center bg-black text-white" style={{ minHeight: '100vh' }}>
       {/* Loading Screen cu logo Zoomout_crew */}
-      <LoadingScreen isLoading={isLoading} />
+      <LoadingScreen isLoading={isLoading} onTextComplete={() => setIsLoading(false)} />
       
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes scroll {
@@ -356,10 +350,7 @@ export default function Home() {
                 className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
                 onLoad={() => {
                   setVideoLoaded(true);
-                  // Așteaptă să se termine al doilea text complet + 1 secundă înainte de a opri loading screen
-                  setTimeout(() => {
-                    setIsLoading(false);
-                  }, 9500); // ~7.5 secunde pentru ambele texte + 1.5 secunde suplimentare pentru siguranță
+                  // Loading screen-ul se va opri automat când textul se termină (callback din LoadingScreen)
                   // Forțează play imediat după încărcare (reduc delay pentru încărcare mai rapidă)
                   const iframe = document.querySelector('iframe[src*="1ZNl7mG4dyczA01qMJ6TVCQyxJfuHDwNbw1q00bB1brhg"]') as HTMLIFrameElement;
                   if (iframe && iframe.contentWindow) {
@@ -405,10 +396,7 @@ export default function Home() {
               className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => {
                 setVideoLoaded(true);
-                // Așteaptă să se termine al doilea text complet + 1 secundă înainte de a opri loading screen
-                setTimeout(() => {
-                  setIsLoading(false);
-                }, 9500); // ~7.5 secunde pentru ambele texte + 1.5 secunde suplimentare pentru siguranță
+                // Loading screen-ul se va opri automat când textul se termină (callback din LoadingScreen)
                 // Forțează play imediat după încărcare (reduc delay pentru încărcare mai rapidă)
                 const iframe = document.querySelector('iframe[src*="rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo"]') as HTMLIFrameElement;
                 if (iframe && iframe.contentWindow) {

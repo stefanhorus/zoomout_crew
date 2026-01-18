@@ -6,24 +6,37 @@ import { Typewriter } from "react-simple-typewriter";
 
 interface LoadingScreenProps {
   isLoading: boolean;
+  onTextComplete?: () => void;
 }
 
-export default function LoadingScreen({ isLoading }: LoadingScreenProps) {
+export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScreenProps) {
   const [shouldRender, setShouldRender] = useState(true);
   const [showText, setShowText] = useState(false);
 
   useEffect(() => {
     if (isLoading) {
       // Pornește textul după un mic delay
-      const timer = setTimeout(() => {
+      const timer1 = setTimeout(() => {
         setShowText(true);
       }, 500);
       
+      // Calculează când se termină al doilea text:
+      // 500ms (start) + 1250ms (primul text ~25 chars × 50ms) + 1000ms (delay) + 
+      // 750ms (ștergere ~25 chars × 30ms) + 1750ms (al doilea text ~35 chars × 50ms) + 
+      // 1000ms (delay final) = ~6250ms total
+      // Opresc loading screen-ul după ~6.5 secunde de la start
+      const timer2 = setTimeout(() => {
+        if (onTextComplete) {
+          onTextComplete();
+        }
+      }, 6500);
+      
       return () => {
-        clearTimeout(timer);
+        clearTimeout(timer1);
+        clearTimeout(timer2);
       };
     }
-  }, [isLoading]);
+  }, [isLoading, onTextComplete]);
 
   useEffect(() => {
     if (!isLoading) {
