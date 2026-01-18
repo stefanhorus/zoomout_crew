@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+// Loading screen component - no progress bar
+
 interface LoadingScreenProps {
   isLoading: boolean;
   onTextComplete?: () => void;
