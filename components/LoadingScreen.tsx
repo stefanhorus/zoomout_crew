@@ -12,6 +12,7 @@ interface LoadingScreenProps {
 export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScreenProps) {
   const [shouldRender, setShouldRender] = useState(true);
   const [showText, setShowText] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (isLoading) {
@@ -20,21 +21,41 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
         setShowText(true);
       }, 500);
       
+      // Animație pentru progress bar (6.5 secunde total)
+      const totalDuration = 6500; // ms
+      const interval = 50; // Update la fiecare 50ms
+      const increment = (100 / totalDuration) * interval;
+      
+      const progressTimer = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(progressTimer);
+            return 100;
+          }
+          return Math.min(prev + increment, 100);
+        });
+      }, interval);
+      
       // Calculează când se termină al doilea text:
       // 500ms (start) + 1250ms (primul text ~25 chars × 50ms) + 1000ms (delay) + 
       // 750ms (ștergere ~25 chars × 30ms) + 1750ms (al doilea text ~35 chars × 50ms) + 
       // 1000ms (delay final) = ~6250ms total
       // Opresc loading screen-ul după ~6.5 secunde de la start
       const timer2 = setTimeout(() => {
+        setProgress(100);
         if (onTextComplete) {
           onTextComplete();
         }
-      }, 6500);
+      }, totalDuration);
       
       return () => {
         clearTimeout(timer1);
         clearTimeout(timer2);
+        clearInterval(progressTimer);
       };
+    } else {
+      // Reset progress când loading-ul se termină
+      setProgress(0);
     }
   }, [isLoading, onTextComplete]);
 
@@ -118,6 +139,19 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
             />
           </h1>
         )}
+        
+        {/* Loading Progress Bar */}
+        <div className="mt-8 w-full max-w-md mx-auto">
+          <div className="h-1 bg-white/20 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-white/80 rounded-full transition-all duration-300 ease-out"
+              style={{ 
+                width: `${progress}%`,
+                boxShadow: '0 0 10px rgba(255, 255, 255, 0.5)'
+              }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
