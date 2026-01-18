@@ -258,13 +258,13 @@ export default function Home() {
 
     // Delay pentru preload-ul imaginilor, prioritate la video
     const timer = setTimeout(() => {
-      backgrounds.forEach((src) => {
-        const link = document.createElement('link');
-        link.rel = 'preload';
-        link.as = 'image';
-        link.href = src;
-        document.head.appendChild(link);
-      });
+    backgrounds.forEach((src) => {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = src;
+      document.head.appendChild(link);
+    });
     }, 100);
 
     return () => clearTimeout(timer);
@@ -352,14 +352,14 @@ export default function Home() {
                   setVideoLoaded(true);
                   // Loading screen-ul se va opri automat când textul se termină (callback din LoadingScreen)
                   // Forțează play imediat după încărcare (reduc delay pentru încărcare mai rapidă)
-                  const iframe = document.querySelector('iframe[src*="1ZNl7mG4dyczA01qMJ6TVCQyxJfuHDwNbw1q00bB1brhg"]') as HTMLIFrameElement;
-                  if (iframe && iframe.contentWindow) {
+                    const iframe = document.querySelector('iframe[src*="1ZNl7mG4dyczA01qMJ6TVCQyxJfuHDwNbw1q00bB1brhg"]') as HTMLIFrameElement;
+                    if (iframe && iframe.contentWindow) {
                     // Încearcă imediat, apoi retry după 200ms dacă nu funcționează
-                    try {
-                      iframe.contentWindow.postMessage({ command: 'play' }, '*');
-                    } catch (e) {
-                      console.log('Mux player autoplay mobile');
-                    }
+                      try {
+                        iframe.contentWindow.postMessage({ command: 'play' }, '*');
+                      } catch (e) {
+                        console.log('Mux player autoplay mobile');
+                      }
                     // Retry pentru siguranță
                     setTimeout(() => {
                       try {
@@ -398,14 +398,14 @@ export default function Home() {
                 setVideoLoaded(true);
                 // Loading screen-ul se va opri automat când textul se termină (callback din LoadingScreen)
                 // Forțează play imediat după încărcare (reduc delay pentru încărcare mai rapidă)
-                const iframe = document.querySelector('iframe[src*="rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo"]') as HTMLIFrameElement;
-                if (iframe && iframe.contentWindow) {
+                    const iframe = document.querySelector('iframe[src*="rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo"]') as HTMLIFrameElement;
+                  if (iframe && iframe.contentWindow) {
                   // Încearcă imediat, apoi retry după 200ms dacă nu funcționează
-                  try {
-                    iframe.contentWindow.postMessage({ command: 'play' }, '*');
-                  } catch (e) {
-                    console.log('Mux player autoplay desktop');
-                  }
+                    try {
+                      iframe.contentWindow.postMessage({ command: 'play' }, '*');
+                    } catch (e) {
+                        console.log('Mux player autoplay desktop');
+                    }
                   // Retry pentru siguranță
                   setTimeout(() => {
                     try {
@@ -480,16 +480,16 @@ export default function Home() {
       >
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white">
           {shouldStartTypewriter ? (
-            <Typewriter
-              key={language}
-              words={["Zoomout_crew"]}
-              loop={false}
-              cursor
-              cursorStyle="|"
-              typeSpeed={90}
-              deleteSpeed={50}
-              delaySpeed={7000}
-            />
+          <Typewriter
+            key={language}
+            words={["Zoomout_crew"]}
+            loop={false}
+            cursor
+            cursorStyle="|"
+            typeSpeed={90}
+            deleteSpeed={50}
+            delaySpeed={7000}
+          />
           ) : (
             <span>Zoomout_crew</span>
           )}
