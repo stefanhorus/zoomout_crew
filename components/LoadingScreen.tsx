@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Typewriter } from "react-simple-typewriter";
+import { useTypewriter, Cursor } from "react-simple-typewriter";
 
 interface LoadingScreenProps {
   isLoading: boolean;
@@ -13,6 +13,15 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
   const [shouldRender, setShouldRender] = useState(true);
   const [showText, setShowText] = useState(false);
   const [progress, setProgress] = useState(0);
+
+  // Folosesc useTypewriter hook în loc de Typewriter component pentru a afișa ambele texte
+  const { text } = useTypewriter({
+    words: ["See the bigger picture...", "Welcome to Zoomout_crew website !"],
+    loop: 1,
+    typeSpeed: 50,
+    deleteSpeed: 30,
+    delaySpeed: 1000,
+  });
 
   useEffect(() => {
     if (isLoading) {
@@ -132,20 +141,8 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
         {/* Text cu animație Typewriter - scrie "See...", apoi se șterge și scrie "Welcome..." în același loc */}
         {showText && (
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white mt-8 min-h-[1.5em] text-center">
-            <Typewriter
-              key="loading-typewriter"
-              words={["See the bigger picture...", "Welcome to Zoomout_crew website !"]}
-              loop={true}
-              cursor
-              cursorStyle="|"
-              typeSpeed={50}
-              deleteSpeed={30}
-              delaySpeed={1000}
-              onLoopDone={() => {
-                // Oprește animația după primul ciclu complet
-                // (ambele texte au fost afișate)
-              }}
-            />
+            {text}
+            <Cursor cursorStyle="|" />
           </h1>
         )}
         
