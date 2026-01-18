@@ -21,8 +21,8 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
         setShowText(true);
       }, 500);
       
-      // Animație pentru progress bar (6.5 secunde total)
-      const totalDuration = 6500; // ms
+      // Animație pentru progress bar (6.5 secunde total - sincronizat cu textele)
+      const totalDuration = 6500; // ms - același timp cât durează textele
       const interval = 50; // Update la fiecare 50ms
       const increment = (100 / totalDuration) * interval;
       
@@ -40,12 +40,16 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
       // 500ms (start) + 1250ms (primul text ~25 chars × 50ms) + 1000ms (delay) + 
       // 750ms (ștergere ~25 chars × 30ms) + 1750ms (al doilea text ~35 chars × 50ms) + 
       // 1000ms (delay final) = ~6250ms total
-      // Opresc loading screen-ul după ~6.5 secunde de la start
+      // Opresc loading screen-ul după ~6.5 secunde de la start - progress bar ajunge exact la 100%
       const timer2 = setTimeout(() => {
+        // Asigură-te că progress bar ajunge la 100% înainte de a opri
         setProgress(100);
-        if (onTextComplete) {
-          onTextComplete();
-        }
+        // Mic delay pentru a se asigura că progress bar ajunge vizual la 100%
+        setTimeout(() => {
+          if (onTextComplete) {
+            onTextComplete();
+          }
+        }, 100);
       }, totalDuration);
       
       return () => {
