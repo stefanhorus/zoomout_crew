@@ -133,6 +133,7 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
         {showText && (
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white mt-8 min-h-[1.5em] text-center">
             <Typewriter
+              key="loading-typewriter"
               words={["See the bigger picture...", "Welcome to Zoomout_crew website !"]}
               loop={1}
               cursor
