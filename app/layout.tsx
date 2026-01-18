@@ -2,10 +2,12 @@ import "./globals.css";
 import { Playfair_Display, Roboto } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CookieBanner from "@/components/CookieBanner";
+import ConditionalAnalytics from "@/components/ConditionalAnalytics";
 import { CartProvider } from "@/contexts/CartContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
-import { Analytics } from "@vercel/analytics/next";
+import { CookieProvider } from "@/contexts/CookieContext";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 
@@ -68,19 +70,22 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} ${playfair.variable} bg-black text-white antialiased flex flex-col min-h-screen`}
       >
-        <LanguageProvider>
-          <CurrencyProvider>
-            <CartProvider>
-              <Header />
-              <main className="flex-1">
-                {children}
-              </main>
-              <Footer />
-            </CartProvider>
-          </CurrencyProvider>
-        </LanguageProvider>
-        <Analytics />
-        <SpeedInsights />
+        <CookieProvider>
+          <LanguageProvider>
+            <CurrencyProvider>
+              <CartProvider>
+                <Header />
+                <main className="flex-1">
+                  {children}
+                </main>
+                <Footer />
+                <CookieBanner />
+              </CartProvider>
+            </CurrencyProvider>
+          </LanguageProvider>
+          <ConditionalAnalytics />
+          <SpeedInsights />
+        </CookieProvider>
       </body>
     </html>
   );
