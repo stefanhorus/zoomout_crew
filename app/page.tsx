@@ -6,15 +6,32 @@ import Image from "next/image";
 import Video from 'next-video';
 import videoLoop from '/videos/bg.mp4';
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCookie } from "@/contexts/CookieContext";
 import Link from "next/link";
 
 export default function Home() {
   const { t, language } = useLanguage();
+  const { showBanner } = useCookie();
+  const [shouldStartTypewriter, setShouldStartTypewriter] = useState(false);
 
   // Update page title when language changes
   useEffect(() => {
     document.title = "Zoomout_crew - Professional aerial footage and more";
   }, [language]);
+
+  // Pornește animația Typewriter doar după ce banner-ul de cookie-uri este închis
+  useEffect(() => {
+    if (!showBanner) {
+      // Dacă banner-ul nu este afișat, pornește animația după un mic delay
+      const timer = setTimeout(() => {
+        setShouldStartTypewriter(true);
+      }, 300); // Mic delay pentru tranziție fluidă
+      return () => clearTimeout(timer);
+    } else {
+      // Dacă banner-ul este afișat, oprește animația
+      setShouldStartTypewriter(false);
+    }
+  }, [showBanner]);
   
   const brands = [
     { id: 1, name: "Big Belly", logo: "/assets/brands/bigbelly.png", width: 320, height: 160 },
@@ -225,7 +242,31 @@ export default function Home() {
     };
   }, []);
 
-  // Preload all background images for other pages
+  // Prioritate maximă pentru încărcarea video-ului de fundal
+  useEffect(() => {
+    // Preconnect pentru domeniul Mux pentru conexiune mai rapidă
+    const preconnect = document.createElement('link');
+    preconnect.rel = 'preconnect';
+    preconnect.href = 'https://player.mux.com';
+    preconnect.crossOrigin = 'anonymous';
+    document.head.appendChild(preconnect);
+
+    // DNS prefetch pentru domeniul Mux
+    const dnsPrefetch = document.createElement('link');
+    dnsPrefetch.rel = 'dns-prefetch';
+    dnsPrefetch.href = 'https://player.mux.com';
+    document.head.appendChild(dnsPrefetch);
+
+    return () => {
+      // Cleanup (opțional, pentru performanță)
+      const existingPreconnect = document.querySelector('link[href="https://player.mux.com"][rel="preconnect"]');
+      const existingDnsPrefetch = document.querySelector('link[href="https://player.mux.com"][rel="dns-prefetch"]');
+      if (existingPreconnect) document.head.removeChild(existingPreconnect);
+      if (existingDnsPrefetch) document.head.removeChild(existingDnsPrefetch);
+    };
+  }, []);
+
+  // Preload all background images for other pages (după video)
   useEffect(() => {
     const backgrounds = [
       '/assets/backgrounds/background2tiny.png',
@@ -237,13 +278,18 @@ export default function Home() {
       '/assets/backgrounds/2.jpg',
     ];
 
-    backgrounds.forEach((src) => {
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'image';
-      link.href = src;
-      document.head.appendChild(link);
-    });
+    // Delay pentru preload-ul imaginilor, prioritate la video
+    const timer = setTimeout(() => {
+      backgrounds.forEach((src) => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = src;
+        document.head.appendChild(link);
+      });
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -304,6 +350,7 @@ export default function Home() {
             {isMobile ? (
               <iframe
                 src="https://player.mux.com/1ZNl7mG4dyczA01qMJ6TVCQyxJfuHDwNbw1q00bB1brhg?metadata-video-title=Drone-Hero-mobile-1080&video-title=Drone-Hero-mobile-1080&autoplay=muted&loop=true&controls=false&muted=true&preload=auto"
+                loading="eager"
                 style={{ 
                   width: '100vw',
                   height: '177.78vw', // 9/16 aspect ratio (16/9 inversat pentru vertical)
@@ -314,7 +361,8 @@ export default function Home() {
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
                   border: 'none',
-                  pointerEvents: 'none'
+                  pointerEvents: 'none',
+                  zIndex: 1 // Asigură că video-ul este sub conținut dar deasupra fundalului
                 }}
                 allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
                 allowFullScreen={false}
@@ -341,6 +389,7 @@ export default function Home() {
             ) : (
             <iframe
                 src="https://player.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo?metadata-video-title=Drone-Hero-2-2k-clean&video-title=Drone-Hero-2-2k-clean&autoplay=muted&loop=true&controls=false&muted=true&preload=auto"
+                loading="eager"
               style={{ 
                 width: '100vw', 
                 height: '56.25vw', // 16:9 aspect ratio
@@ -351,7 +400,8 @@ export default function Home() {
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 border: 'none',
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                zIndex: 1 // Asigură că video-ul este sub conținut dar deasupra fundalului
               }}
               allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
               allowFullScreen={false}
@@ -387,7 +437,10 @@ export default function Home() {
             preload="auto"
             crossOrigin="anonymous"
             className={`w-full h-full object-cover transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
-            style={{ backgroundColor: '#000' }}
+            style={{ 
+              backgroundColor: '#000',
+              zIndex: 1 // Asigură că video-ul este sub conținut dar deasupra fundalului
+            }}
           >
             {/* Video local pentru development */}
             {isMobile ? (
@@ -431,16 +484,20 @@ export default function Home() {
         }}
       >
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 px-2 drop-shadow-2xl text-white">
-          <Typewriter
-            key={language}
-            words={["Zoomout_crew"]}
-            loop={false}
-            cursor
-            cursorStyle="|"
-            typeSpeed={90}
-            deleteSpeed={50}
-            delaySpeed={7000}
-          />
+          {shouldStartTypewriter ? (
+            <Typewriter
+              key={language}
+              words={["Zoomout_crew"]}
+              loop={false}
+              cursor
+              cursorStyle="|"
+              typeSpeed={90}
+              deleteSpeed={50}
+              delaySpeed={7000}
+            />
+          ) : (
+            <span>Zoomout_crew</span>
+          )}
         </h1>
 
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-5 md:mb-6 lg:mb-8 px-2 text-gray-100 drop-shadow-lg leading-tight md:leading-normal">

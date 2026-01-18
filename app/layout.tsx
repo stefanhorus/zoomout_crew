@@ -71,20 +71,20 @@ export default function RootLayout({
         className={`${roboto.variable} ${playfair.variable} bg-black text-white antialiased flex flex-col min-h-screen`}
       >
         <CookieProvider>
-          <LanguageProvider>
-            <CurrencyProvider>
-              <CartProvider>
-                <Header />
-                <main className="flex-1">
-                  {children}
-                </main>
-                <Footer />
+        <LanguageProvider>
+          <CurrencyProvider>
+            <CartProvider>
+              <Header />
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
                 <CookieBanner />
-              </CartProvider>
-            </CurrencyProvider>
-          </LanguageProvider>
+            </CartProvider>
+          </CurrencyProvider>
+        </LanguageProvider>
           <ConditionalAnalytics />
-          <SpeedInsights />
+        <SpeedInsights />
         </CookieProvider>
       </body>
     </html>
