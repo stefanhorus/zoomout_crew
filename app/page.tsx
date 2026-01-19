@@ -310,7 +310,7 @@ export default function Home() {
         {process.env.NODE_ENV === 'production' ? (
           <div className="absolute inset-0 w-full h-full overflow-hidden">
             <iframe
-              src="https://iframe.mediadelivery.net/play/583025/e8980643-bf10-440c-97da-a49375fc247c?autoplay=true&loop=true&muted=true&responsive=true&preload=true"
+              src="https://iframe.mediadelivery.net/play/583025/e8980643-bf10-440c-97da-a49375fc247c?autoplay=true&loop=true&muted=true&responsive=true&preload=true&controls=false"
               loading="eager"
               style={{ 
                 width: '100vw', 
@@ -325,7 +325,7 @@ export default function Home() {
                 pointerEvents: 'none',
                 zIndex: 1
               }}
-              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+              allow="accelerometer; gyroscope; autoplay; encrypted-media;"
               allowFullScreen={false}
               className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => {
