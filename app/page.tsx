@@ -310,7 +310,7 @@ export default function Home() {
         {process.env.NODE_ENV === 'production' ? (
           <div className="absolute inset-0 w-full h-full overflow-hidden">
             <iframe
-              src="https://iframe.mediadelivery.net/play/583025/e8980643-bf10-440c-97da-a49375fc247c?autoplay=true&loop=true&muted=true&responsive=true&preload=true&controls=false"
+              src="https://iframe.mediadelivery.net/play/583025/e8980643-bf10-440c-97da-a49375fc247c?autoplay=true&loop=true&muted=true&responsive=true&preload=true"
               loading="eager"
               style={{ 
                 width: '100vw', 
@@ -334,6 +334,14 @@ export default function Home() {
               onError={() => {
                 console.error('Bunny.net video error');
                 setVideoError(true);
+              }}
+            />
+            {/* Overlay pentru a ascunde controalele */}
+            <div 
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                zIndex: 2,
+                background: 'transparent'
               }}
             />
           </div>
