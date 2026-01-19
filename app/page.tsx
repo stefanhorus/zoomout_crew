@@ -31,7 +31,13 @@ export default function Home() {
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    // Check imediat dacă e disponibil (pentru SSR-safe)
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
   const [viewportHeight, setViewportHeight] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isTouching, setIsTouching] = useState(false);
@@ -42,13 +48,19 @@ export default function Home() {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      // Reset video loaded state când se schimbă device-ul pentru a forța reîncărcare
+      if (videoRef.current) {
+        setVideoLoaded(false);
+      }
     };
 
     const updateViewportHeight = () => {
       setViewportHeight(window.innerHeight);
     };
     
+    // Check imediat (pentru SSR/hydration)
     checkMobile();
     updateViewportHeight();
     const handleResize = () => {
@@ -310,6 +322,7 @@ export default function Home() {
         {process.env.NODE_ENV === 'production' ? (
           <div className="absolute inset-0 w-full h-full overflow-hidden">
             <video
+              key={isMobile ? 'mobile' : 'desktop'}
               ref={videoRef}
               autoPlay
               muted
