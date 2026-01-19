@@ -194,25 +194,35 @@ export default function Home() {
     };
   }, []);
 
-  // Video loading și error handling
+  // Video loading și error handling - forțează autoplay pe toate device-urile
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
+    const tryPlayVideo = async () => {
+      if (!video) return;
+      try {
+        await video.play();
+        setVideoLoaded(true);
+      } catch (err) {
+        console.log("Video autoplay blocked, will retry on user interaction");
+        // Dacă autoplay eșuează, adaugă event listeners pentru interacțiune utilizator
+        const playOnInteraction = () => {
+          video.play().catch(() => {});
+          document.removeEventListener('click', playOnInteraction);
+          document.removeEventListener('touchstart', playOnInteraction);
+          document.removeEventListener('keydown', playOnInteraction);
+        };
+        document.addEventListener('click', playOnInteraction, { once: true });
+        document.addEventListener('touchstart', playOnInteraction, { once: true });
+        document.addEventListener('keydown', playOnInteraction, { once: true });
+      }
+    };
+
     const handleCanPlay = () => {
       setVideoLoaded(true);
-      // Forțează play după ce video-ul poate fi redat
-      video.play().catch((err) => {
-        console.error("Video autoplay failed:", err);
-        // Dacă autoplay eșuează, încercă din nou când utilizatorul interacționează
-        const tryPlay = () => {
-          video.play().catch(() => {});
-          document.removeEventListener('click', tryPlay);
-          document.removeEventListener('touchstart', tryPlay);
-        };
-        document.addEventListener('click', tryPlay, { once: true });
-        document.addEventListener('touchstart', tryPlay, { once: true });
-      });
+      // Forțează play imediat când video-ul poate fi redat
+      tryPlayVideo();
     };
 
     const handleError = (e: Event) => {
@@ -223,16 +233,33 @@ export default function Home() {
     const handleLoadedMetadata = () => {
       // Încearcă să pornească video-ul când metadata este încărcată
       if (video.readyState >= 2) {
-        video.play().catch(() => {});
+        tryPlayVideo();
       }
     };
 
+    // Încearcă play imediat când video-ul e gata
+    const handleLoadedData = () => {
+      tryPlayVideo();
+    };
+
     video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('canplaythrough', handleCanPlay);
+    video.addEventListener('loadeddata', handleLoadedData);
     video.addEventListener('error', handleError);
     video.addEventListener('loadedmetadata', handleLoadedMetadata);
 
+    // Retry play după un scurt delay
+    const retryTimer = setTimeout(() => {
+      if (video.readyState >= 2 && video.paused) {
+        tryPlayVideo();
+      }
+    }, 500);
+
     return () => {
+      clearTimeout(retryTimer);
       video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('canplaythrough', handleCanPlay);
+      video.removeEventListener('loadeddata', handleLoadedData);
       video.removeEventListener('error', handleError);
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
     };
@@ -347,7 +374,28 @@ export default function Home() {
               onCanPlay={() => {
                 setVideoLoaded(true);
                 const video = videoRef.current;
-                if (video) {
+                if (video && video.paused) {
+                  // Forțează play cu retry pentru browser-e care blochează autoplay
+                  const tryPlay = async () => {
+                    try {
+                      await video.play();
+                    } catch (err) {
+                      // Dacă autoplay eșuează, încercă la interacțiune utilizator
+                      const playOnInteraction = () => {
+                        video.play().catch(() => {});
+                        document.removeEventListener('click', playOnInteraction);
+                        document.removeEventListener('touchstart', playOnInteraction);
+                      };
+                      document.addEventListener('click', playOnInteraction, { once: true });
+                      document.addEventListener('touchstart', playOnInteraction, { once: true });
+                    }
+                  };
+                  tryPlay();
+                }
+              }}
+              onLoadedData={() => {
+                const video = videoRef.current;
+                if (video && video.paused) {
                   video.play().catch(() => {});
                 }
               }}
