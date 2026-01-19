@@ -306,12 +306,18 @@ export default function Home() {
           </div>
         )}
         
-        {/* Folosim Bunny.net Stream iframe pentru video-ul "Hero" în producție */}
+        {/* Folosim Bunny.net Stream HLS direct pentru video-ul "Hero" în producție */}
         {process.env.NODE_ENV === 'production' ? (
           <div className="absolute inset-0 w-full h-full overflow-hidden">
-            <iframe
-              src="https://iframe.mediadelivery.net/play/583025/e8980643-bf10-440c-97da-a49375fc247c?autoplay=true&loop=true&muted=true&responsive=true&preload=true"
-              loading="eager"
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              controls={false}
+              className={`w-full h-full object-cover transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
               style={{ 
                 width: '100vw', 
                 height: '56.25vw', // 16:9 aspect ratio
@@ -321,29 +327,25 @@ export default function Home() {
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
-                border: 'none',
-                pointerEvents: 'none',
-                zIndex: 1
+                backgroundColor: '#000',
+                zIndex: 1,
+                pointerEvents: 'none'
               }}
-              allow="accelerometer; gyroscope; autoplay; encrypted-media;"
-              allowFullScreen={false}
-              className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
-              onLoad={() => {
+              onCanPlay={() => {
                 setVideoLoaded(true);
+                const video = videoRef.current;
+                if (video) {
+                  video.play().catch(() => {});
+                }
               }}
               onError={() => {
                 console.error('Bunny.net video error');
                 setVideoError(true);
               }}
-            />
-            {/* Overlay pentru a ascunde controalele */}
-            <div 
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                zIndex: 2,
-                background: 'transparent'
-              }}
-            />
+            >
+              {/* Bunny.net Stream HLS Playlist URL - adaptive bitrate streaming */}
+              <source src="https://vz-b2ef903c-299.b-cdn.net/e8980643-bf10-440c-97da-a49375fc247c/playlist.m3u8" type="application/x-mpegURL" />
+            </video>
           </div>
         ) : (
           <video
