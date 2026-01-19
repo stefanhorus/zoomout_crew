@@ -14,9 +14,65 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
   const [shouldRender, setShouldRender] = useState(true);
   const [displayText, setDisplayText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
+  const [loadingText, setLoadingText] = useState("");
 
   const text1 = "See the bigger picture...";
   const text2 = "Welcome to Zoomout_crew website !";
+  const loadingTextContent = "Loading...";
+
+  // Loading text animation - scrie "Loading..." o dată, apoi doar punctele se reîncarcă
+  useEffect(() => {
+    if (!isLoading) {
+      setLoadingText("");
+      return;
+    }
+
+    const baseText = "Loading";
+    let dotsCount = 0;
+    const dotsDelay = 500; // 500ms între fiecare punct
+    let hasWrittenLoading = false;
+
+    const animateLoading = () => {
+      if (!hasWrittenLoading) {
+        // Scrie "Loading" complet o singură dată
+        setLoadingText(baseText);
+        hasWrittenLoading = true;
+        // Apoi adaugă punctele
+        dotsCount = 1;
+        setLoadingText(baseText + ".");
+        setTimeout(() => {
+          dotsCount = 2;
+          setLoadingText(baseText + "..");
+          setTimeout(() => {
+            dotsCount = 3;
+            setLoadingText(baseText + "...");
+            // După "Loading...", începe loop-ul cu punctele
+            setTimeout(animateDots, dotsDelay);
+          }, dotsDelay);
+        }, dotsDelay);
+      }
+    };
+
+    const animateDots = () => {
+      // Loop: Loading. -> Loading.. -> Loading... -> Loading. -> ...
+      dotsCount++;
+      if (dotsCount > 3) {
+        dotsCount = 1;
+      }
+      
+      setLoadingText(baseText + ".".repeat(dotsCount));
+      setTimeout(animateDots, dotsDelay);
+    };
+
+    // Start animația
+    const initialDelay = setTimeout(() => {
+      animateLoading();
+    }, 300);
+
+    return () => {
+      clearTimeout(initialDelay);
+    };
+  }, [isLoading]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -140,6 +196,12 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
       
       {/* Conținutul */}
       <div className="relative z-10 flex flex-col items-center justify-center px-4">
+        {/* Loading text deasupra logo-ului - înălțime fixă pentru a preveni layout shift */}
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-6 px-2 drop-shadow-lg text-white text-center min-h-[2em] flex items-center justify-center">
+          {loadingText}
+          {showCursor && loadingText.length > 0 && <span className="cursor-blink">|</span>}
+        </h2>
+
         {/* Logo cu animație de fade-in, scale și rotație în jurul axei Y */}
         <div
           className={`transform transition-all duration-700 ${
