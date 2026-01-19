@@ -67,10 +67,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Prioritate maximă pentru video - preconnect pentru Mux înainte de toate */}
-        <link rel="preconnect" href="https://player.mux.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://player.mux.com" />
-        <link rel="preconnect" href="https://stream.mux.com" crossOrigin="anonymous" />
+        {/* Prioritate maximă pentru video - preconnect pentru Bunny.net Stream */}
+        <link rel="preconnect" href="https://iframe.mediadelivery.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://iframe.mediadelivery.net" />
+        <link rel="preconnect" href="https://vz-*.b-cdn.net" crossOrigin="anonymous" />
       </head>
       <body
         className={`${roboto.variable} ${playfair.variable} bg-black text-white antialiased flex flex-col min-h-screen`}

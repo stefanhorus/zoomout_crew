@@ -7,29 +7,17 @@ import Video from 'next-video';
 import videoLoop from '/videos/bg.mp4';
 import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
-import LoadingScreen from "@/components/LoadingScreen";
 
 export default function Home() {
   const { t, language } = useLanguage();
-  const [shouldStartTypewriter, setShouldStartTypewriter] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [shouldStartTypewriter, setShouldStartTypewriter] = useState(true);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   // Update page title when language changes
   useEffect(() => {
     document.title = "Zoomout_crew - Professional aerial footage and more";
   }, [language]);
-
-  // Pornește animația Typewriter după ce loading-ul este terminat
-  useEffect(() => {
-    if (!isLoading) {
-      const timer = setTimeout(() => {
-        setShouldStartTypewriter(true);
-      }, 300);
-      return () => clearTimeout(timer);
-    } else {
-      setShouldStartTypewriter(false);
-    }
-  }, [isLoading]);
   
   const brands = [
     { id: 1, name: "Big Belly", logo: "/assets/brands/bigbelly.png", width: 320, height: 160 },
@@ -51,8 +39,6 @@ export default function Home() {
   const startXRef = useRef<number>(0);
   const scrollLeftRef = useRef<number>(0);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoError, setVideoError] = useState(false);
-  const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -203,7 +189,6 @@ export default function Home() {
 
     const handleCanPlay = () => {
       setVideoLoaded(true);
-      // Loading screen-ul se va opri automat când textul se termină (callback din LoadingScreen)
       // Forțează play după ce video-ul poate fi redat
       video.play().catch((err) => {
         console.error("Video autoplay failed:", err);
@@ -221,7 +206,6 @@ export default function Home() {
     const handleError = (e: Event) => {
       console.error("Video loading error:", e);
       setVideoError(true);
-      setIsLoading(false); // Oprește loading screen chiar dacă video-ul nu se încarcă
     };
 
     const handleLoadedMetadata = () => {
@@ -272,9 +256,6 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center bg-black text-white" style={{ minHeight: '100vh' }}>
-      {/* Loading Screen cu logo Zoomout_crew */}
-      <LoadingScreen isLoading={isLoading} onTextComplete={() => setIsLoading(false)} />
-      
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes scroll {
           0% {
@@ -325,59 +306,12 @@ export default function Home() {
           </div>
         )}
         
-        {/* Folosim Mux Player iframe pentru video-ul "Hero" în producție */}
+        {/* Folosim Bunny.net Stream iframe pentru video-ul "Hero" în producție */}
         {process.env.NODE_ENV === 'production' ? (
           <div className="absolute inset-0 w-full h-full overflow-hidden">
-            {isMobile ? (
-              <iframe
-                src="https://player.mux.com/1ZNl7mG4dyczA01qMJ6TVCQyxJfuHDwNbw1q00bB1brhg?metadata-video-title=Drone-Hero-mobile-1080&video-title=Drone-Hero-mobile-1080&autoplay=muted&loop=true&controls=false&muted=true&preload=auto"
-                loading="eager"
-                style={{ 
-                  width: '100vw',
-                  height: '177.78vw', // 9/16 aspect ratio (16/9 inversat pentru vertical)
-                  minHeight: '100vh',
-                  minWidth: '56.25vh', // 9/16 aspect ratio inversat
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  border: 'none',
-                  pointerEvents: 'none',
-                  zIndex: 1 // Asigură că video-ul este sub conținut dar deasupra fundalului
-                }}
-                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-                allowFullScreen={false}
-                className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
-                onLoad={() => {
-                  setVideoLoaded(true);
-                  // Loading screen-ul se va opri automat când textul se termină (callback din LoadingScreen)
-                  // Forțează play imediat după încărcare (reduc delay pentru încărcare mai rapidă)
-                    const iframe = document.querySelector('iframe[src*="1ZNl7mG4dyczA01qMJ6TVCQyxJfuHDwNbw1q00bB1brhg"]') as HTMLIFrameElement;
-                    if (iframe && iframe.contentWindow) {
-                    // Încearcă imediat, apoi retry după 200ms dacă nu funcționează
-                      try {
-                        iframe.contentWindow.postMessage({ command: 'play' }, '*');
-                      } catch (e) {
-                        console.log('Mux player autoplay mobile');
-                      }
-                    // Retry pentru siguranță
-                    setTimeout(() => {
-                      try {
-                        iframe.contentWindow?.postMessage({ command: 'play' }, '*');
-                      } catch (e) {}
-                    }, 200);
-                  }
-                }}
-                onError={() => {
-                  console.error('Mux video error for mobile');
-                  setVideoError(true);
-                  setIsLoading(false); // Oprește loading screen chiar dacă video-ul nu se încarcă
-                }}
-              />
-            ) : (
             <iframe
-                src="https://player.mux.com/rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo?metadata-video-title=Drone-Hero-2-2k-clean&video-title=Drone-Hero-2-2k-clean&autoplay=muted&loop=true&controls=false&muted=true&preload=auto"
-                loading="eager"
+              src="https://iframe.mediadelivery.net/play/583025/e8980643-bf10-440c-97da-a49375fc247c?autoplay=true&loop=true&muted=true&responsive=true&preload=true"
+              loading="eager"
               style={{ 
                 width: '100vw', 
                 height: '56.25vw', // 16:9 aspect ratio
@@ -389,38 +323,19 @@ export default function Home() {
                 transform: 'translate(-50%, -50%)',
                 border: 'none',
                 pointerEvents: 'none',
-                zIndex: 1 // Asigură că video-ul este sub conținut dar deasupra fundalului
+                zIndex: 1
               }}
               allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
               allowFullScreen={false}
               className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => {
                 setVideoLoaded(true);
-                // Loading screen-ul se va opri automat când textul se termină (callback din LoadingScreen)
-                // Forțează play imediat după încărcare (reduc delay pentru încărcare mai rapidă)
-                    const iframe = document.querySelector('iframe[src*="rPkrPLnjqozMsmWc0202RmP6vsJMmPRTh400013oNIpBxVo"]') as HTMLIFrameElement;
-                  if (iframe && iframe.contentWindow) {
-                  // Încearcă imediat, apoi retry după 200ms dacă nu funcționează
-                    try {
-                      iframe.contentWindow.postMessage({ command: 'play' }, '*');
-                    } catch (e) {
-                        console.log('Mux player autoplay desktop');
-                    }
-                  // Retry pentru siguranță
-                  setTimeout(() => {
-                    try {
-                      iframe.contentWindow?.postMessage({ command: 'play' }, '*');
-                    } catch (e) {}
-                  }, 200);
-                }
               }}
-                onError={() => {
-                  console.error('Mux video error for desktop');
-                  setVideoError(true);
-                  setIsLoading(false); // Oprește loading screen chiar dacă video-ul nu se încarcă
-                }}
+              onError={() => {
+                console.error('Bunny.net video error');
+                setVideoError(true);
+              }}
             />
-            )}
           </div>
         ) : (
           <video
