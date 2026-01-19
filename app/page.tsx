@@ -320,9 +320,9 @@ export default function Home() {
               className={`w-full h-full object-cover transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
               style={{ 
                 width: '100vw', 
-                height: '56.25vw', // 16:9 aspect ratio
+                height: isMobile ? '177.78vw' : '56.25vw', // 9/16 pentru mobile, 16/9 pentru desktop
                 minHeight: '100vh',
-                minWidth: '177.78vh', // 16:9 aspect ratio inversat
+                minWidth: isMobile ? '56.25vh' : '177.78vh',
                 position: 'absolute',
                 top: '50%',
                 left: '50%',
@@ -344,7 +344,12 @@ export default function Home() {
               }}
             >
               {/* Bunny.net Stream HLS Playlist URL - adaptive bitrate streaming */}
-              <source src="https://vz-b2ef903c-299.b-cdn.net/e8980643-bf10-440c-97da-a49375fc247c/playlist.m3u8" type="application/x-mpegURL" />
+              {/* Mobile: b40d5d38-5d2e-4440-acda-740942aee683, Desktop: e8980643-bf10-440c-97da-a49375fc247c */}
+              {isMobile ? (
+                <source src="https://vz-b2ef903c-299.b-cdn.net/b40d5d38-5d2e-4440-acda-740942aee683/playlist.m3u8" type="application/x-mpegURL" />
+              ) : (
+                <source src="https://vz-b2ef903c-299.b-cdn.net/e8980643-bf10-440c-97da-a49375fc247c/playlist.m3u8" type="application/x-mpegURL" />
+              )}
             </video>
           </div>
         ) : (
