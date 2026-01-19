@@ -357,11 +357,11 @@ export default function Home() {
               }}
             >
               {/* Bunny.net Stream HLS Playlist URL - adaptive bitrate streaming */}
-              {/* Mobile: b40d5d38-5d2e-4440-acda-740942aee683, Desktop: e8980643-bf10-440c-97da-a49375fc247c */}
+              {/* Mobile: fbe2794c-4978-44d7-be45-18b9f305a2b3 (1080p), Desktop: 27ea52de-c96c-4210-9ffb-06c6520809fc (2K) */}
               {isMobile ? (
-                <source src="https://vz-b2ef903c-299.b-cdn.net/b40d5d38-5d2e-4440-acda-740942aee683/playlist.m3u8" type="application/x-mpegURL" />
+                <source src="https://vz-b2ef903c-299.b-cdn.net/fbe2794c-4978-44d7-be45-18b9f305a2b3/playlist.m3u8" type="application/x-mpegURL" />
               ) : (
-                <source src="https://vz-b2ef903c-299.b-cdn.net/e8980643-bf10-440c-97da-a49375fc247c/playlist.m3u8" type="application/x-mpegURL" />
+                <source src="https://vz-b2ef903c-299.b-cdn.net/27ea52de-c96c-4210-9ffb-06c6520809fc/playlist.m3u8" type="application/x-mpegURL" />
               )}
             </video>
           </div>
