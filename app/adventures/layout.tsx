@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Adventures - Cinematic Travel Journal",
-  description: "Our cinematic travel journal — unique journeys captured from above. Explore breathtaking destinations through aerial cinematography and photography.",
+  description: "Our cinematic travel journal — unique journeys captured from above. Explore breathtaking destinations through aerial videography and photography.",
   openGraph: {
     title: "Adventures - Cinematic Travel Journal | Zoomout_crew",
     description: "Our cinematic travel journal — unique journeys captured from above.",

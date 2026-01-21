@@ -120,7 +120,7 @@ export default function Services() {
               delaySpeed={999999}
             />
           </h1>
-          <p className="text-gray-300 text-sm sm:text-base px-2">
+          <p className="text-gray-300 text-base sm:text-lg md:text-xl px-2">
             {t("services.subtitle")}
           </p>
         </div>

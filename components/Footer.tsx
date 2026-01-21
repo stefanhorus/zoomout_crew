@@ -43,7 +43,7 @@ export default function Footer() {
               Zoomout_crew
             </h3>
             <p className="text-gray-300 text-sm mb-6 leading-relaxed">
-              Professional aerial footage and cinematography services. Capturing your vision from above.
+              Professional aerial footage and videography services. Capturing your vision from above.
             </p>
             {/* Social Media Links */}
             <div className="flex gap-4">

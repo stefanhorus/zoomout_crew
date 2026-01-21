@@ -23,7 +23,7 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.about": "About",
     "nav.game": "Game",
     "nav.contact": "Contact",
-    
+
     // Game page
     "game.title": "Drone Games",
     "game.subtitle": "Choose your game mode and start playing!",
@@ -48,12 +48,12 @@ const translations: Record<Language, Record<string, string>> = {
     "game.playAgain": "Play Again",
     "game.menu": "Menu",
     "game.controls": "🖱️ Move mouse/touch to move • 🖱️ Click/Tap or ⌨️ Space to shoot • ⚔️ Destroy all enemies!",
-    
+
     // Home page
     "home.tagline": "Professional aerial footage & more",
     "home.cta": "See portfolio",
     "home.workedWith": "Proudly Worked With:",
-    
+
     // About page
     "about.title": "About Us",
     "about.subtitle": "Professional aerial footage and cinematography services",
@@ -61,7 +61,7 @@ const translations: Record<Language, Record<string, string>> = {
     "about.mission.text1": "At Zoomout_crew, we specialize in capturing breathtaking aerial footage that tells your story from a unique perspective. Whether it's real estate showcases, event coverage, commercial projects, or cinematic adventures, we bring professional drone cinematography to every project.",
     "about.mission.text2": "Our passion for aerial photography and videography drives us to deliver exceptional quality and creative vision that elevates your content above the rest.",
     "about.whatWeDo": "What We Do",
-    "about.aerialCinematography": "Aerial Cinematography",
+    "about.aerialCinematography": "Aerial Videography",
     "about.aerialCinematography.desc": "Stunning aerial footage for films, documentaries, and creative projects.",
     "about.realEstate": "Real Estate",
     "about.realEstate.desc": "Professional property showcases that highlight unique features and locations.",
@@ -75,7 +75,7 @@ const translations: Record<Language, Record<string, string>> = {
     "about.creativeVision": "Creative Vision",
     "about.creativeVision.desc": "Unique perspectives and creative storytelling that make your content stand out.",
     "about.experiencedTeam": "Experienced Team",
-    "about.experiencedTeam.desc": "Skilled pilots and cinematographers with years of experience in aerial videography.",
+    "about.experiencedTeam.desc": "Skilled pilots and videographers with years of experience.",
     "about.reliableService": "Reliable Service",
     "about.reliableService.desc": "Professional, punctual, and committed to delivering exceptional results on time.",
     "about.readyToWork": "Ready to Work Together?",
@@ -108,10 +108,10 @@ const translations: Record<Language, Record<string, string>> = {
     "about.reviews.showOriginal": "Show original (Romanian)",
     "about.reviews.showOriginalEnglish": "Show original (English)",
     "about.reviews.showTranslated": "Show translated",
-    
+
     // Portfolio page
     "portfolio.title": "Portfolio",
-    "portfolio.subtitle": "Explore our collection of professional aerial footage and cinematography",
+    "portfolio.subtitle": "Discover our curated collection of professional aerial videography projects. From real estate showcases and event coverage to commercial productions and creative storytelling, each project represents our commitment to capturing unique perspectives from above.",
     "portfolio.allProjects": "All Projects",
     "portfolio.aerial": "Aerial",
     "portfolio.realEstate": "Real Estate",
@@ -119,22 +119,22 @@ const translations: Record<Language, Record<string, string>> = {
     "portfolio.commercial": "Commercial",
     "portfolio.noProjects": "No projects found in this category.",
     "portfolio.project1.title": "Big Belly - New Restaurant Location Opening",
-    "portfolio.project1.description": "We were honored to be invited to Big Belly's exclusive private opening event for their new location. Capturing the celebration through aerial cinematography, we documented an evening filled with exceptional atmosphere and outstanding cuisine. The warm, welcoming ambiance combined with the delicious food created the perfect setting for this memorable launch event. This project was a collaborative effort with photographers Dragos Pasniciuc and Dan Gaspar.",
+    "portfolio.project1.description": "Big Belly's exclusive private opening event for their new location was a special opportunity. Capturing the celebration through aerial videography, the evening was documented with exceptional atmosphere and outstanding cuisine. The warm, welcoming ambiance combined with the delicious food created the perfect setting for this memorable launch event. This project was a collaborative effort with photographers Dragos Pasniciuc and Dan Gaspar.",
     "portfolio.project2.title": "Multiverse Party - Advertisement",
-    "portfolio.project2.description": "We filmed a dynamic advertisement video for the Multiverse party event, capturing the vibrant energy and electrifying atmosphere of this unforgettable rooftop party. Our footage highlighted the event's distinctive style and the memorable moments that defined the night.",
+    "portfolio.project2.description": "The dynamic advertisement video for the Multiverse party event captures the vibrant energy and electrifying atmosphere of this unforgettable rooftop party. The footage highlights the event's distinctive style and the memorable moments that defined the night.",
     "portfolio.project3.title": "Remote Tiny House Retreat - Promo Videos",
-    "portfolio.project3.description": "We created promotional materials for Remote Tiny House Retreat, capturing the unique charm and serene atmosphere of this beautiful accommodation cabin. Through aerial cinematography, we showcased the retreat's natural surroundings and cozy accommodations, highlighting the perfect escape for those seeking tranquility and connection with nature.",
+    "portfolio.project3.description": "Promotional materials for Remote Tiny House Retreat capture the unique charm and serene atmosphere of this beautiful accommodation cabin. Through aerial videography, the retreat's natural surroundings and cozy accommodations are showcased, highlighting the perfect escape for those seeking tranquility and connection with nature.",
     "portfolio.project4.title": "Outdoor Lounge - Aerial Filming",
-    "portfolio.project4.description": "This was among the first materials we filmed after purchasing our drone, making it particularly special to us. It's fascinating to look back and see how much we've evolved in both filming and editing since then. This aerial cinematography project for the outdoor lounge venue captures our early work and showcases the foundation of our creative journey.",
+    "portfolio.project4.description": "This was among the first materials we filmed after purchasing our drone, making it particularly special to us. It's fascinating to look back and see how much we've evolved in both filming and editing since then. This aerial videography project for the outdoor lounge venue captures our early work and showcases the foundation of our creative journey.",
     "portfolio.project5.title": "Casa Numaa - Fine Dining Restaurant",
-    "portfolio.project5.description": "We created advertising materials for Casa Numaa, an exceptional fine dining restaurant. Through aerial cinematography, we captured the elegant ambiance and sophisticated atmosphere that defines this culinary destination, showcasing the restaurant's unique character and inviting setting.",
+    "portfolio.project5.description": "Advertising materials for Casa Numaa, an exceptional fine dining restaurant, capture through aerial videography the elegant ambiance and sophisticated atmosphere that defines this culinary destination, showcasing the restaurant's unique character and inviting setting.",
     "portfolio.project6.title": "Utopic Party - Event Promotion",
-    "portfolio.project6.description": "We created promotional content for the Utopic party event, capturing the vibrant atmosphere and energy through aerial cinematography. Our footage was designed to showcase the event's unique character and attract attendees, highlighting the dynamic setting and unforgettable experience.",
+    "portfolio.project6.description": "Promotional content for the Utopic party event captures the vibrant atmosphere and energy through aerial videography. The footage was designed to showcase the event's unique character and attract attendees, highlighting the dynamic setting and unforgettable experience.",
     "portfolio.project7.title": "LA VILLA SUNHOUSE - Sardinia",
-    "portfolio.project7.description": "We captured the stunning beauty of LA VILLA SUNHOUSE, a luxurious property nestled in the breathtaking landscape of Sardinia. Through aerial cinematography and photography, we showcased the villa's exceptional architecture, pristine surroundings, and the Mediterranean elegance that makes this property truly unique.",
+    "portfolio.project7.description": "The stunning beauty of LA VILLA SUNHOUSE, a luxurious property nestled in the breathtaking landscape of Sardinia, is captured through aerial videography and photography. The villa's exceptional architecture, pristine surroundings, and the Mediterranean elegance make this property truly unique.",
     "portfolio.project8.title": "Rotaract - Charity Rubber Duck Race",
-    "portfolio.project8.description": "We documented the heartwarming Charity Rubber Duck Race organized by Rotaract, capturing the spirit of community and philanthropy through aerial cinematography. This unique fundraising event brought together participants of all ages for a fun and meaningful cause, showcasing the power of community engagement and charitable giving.",
-    
+    "portfolio.project8.description": "The heartwarming Charity Rubber Duck Race organized by Rotaract is documented through aerial videography, capturing the spirit of community and philanthropy. This unique fundraising event brought together participants of all ages for a fun and meaningful cause, showcasing the power of community engagement and charitable giving.",
+
     // Services page
     "services.title": "Services",
     "services.subtitle": "Professional aerial services tailored to bring your vision to life",
@@ -142,20 +142,20 @@ const translations: Record<Language, Record<string, string>> = {
     "services.filming": "Filming",
     "services.editing": "Editing",
     "services.aerialFilmingHour": "Aerial Filming per Hour",
-    "services.aerialFilmingHour.desc": "Professional aerial filming service per hour. We capture your project on video, and you receive all raw footage plus complimentary aerial photographs.",
+    "services.aerialFilmingHour.desc": "Professional aerial filming services per hour. We capture your project on video, and you receive all raw footage plus complimentary aerial photographs.",
     "services.aerialFilmingHour.feature1": "Hourly aerial filming",
-    "services.aerialFilmingHour.feature2": "4K/8K raw video files",
+    "services.aerialFilmingHour.feature2": "4K raw video files",
     "services.aerialFilmingHour.feature3": "Bonus aerial photographs",
     "services.aerialFilmingHour.feature4": "Quick turnaround delivery",
     "services.aerialFilmingDay": "Aerial Filming Full Day",
-    "services.aerialFilmingDay.desc": "Professional aerial filming service for a full day. We capture your project on video, and you receive all raw footage plus complimentary aerial photographs.",
+    "services.aerialFilmingDay.desc": "Professional aerial filming services for a full day. We capture your project on video, and you receive all raw footage plus complimentary aerial photographs.",
     "services.aerialFilmingDay.feature1": "Full day aerial filming",
-    "services.aerialFilmingDay.feature2": "4K/8K raw video files",
+    "services.aerialFilmingDay.feature2": "4K raw video files",
     "services.aerialFilmingDay.feature3": "Bonus aerial photographs",
     "services.aerialFilmingDay.feature4": "Quick turnaround delivery",
     "services.postProduction": "Professional Post-Production",
     "services.postProduction.desc": "Professional editing of your footage with color grading, transitions, and sound design. Price decreases for multiple videos.",
-    "services.postProduction.feature1": "4K/8K editing",
+    "services.postProduction.feature1": "4K editing",
     "services.postProduction.feature2": "Color grading & color correction",
     "services.postProduction.feature3": "Sound design & mixing",
     "services.postProduction.feature4": "Multiple export formats",
@@ -164,13 +164,13 @@ const translations: Record<Language, Record<string, string>> = {
     "services.postProduction.pricing1": "1 video:",
     "services.postProduction.pricing2": "2-3 videos:",
     "services.postProduction.pricing3": "4+ videos:",
-    "services.highlights": "Highlights",
+    "services.highlights": "Services",
     "services.noServices": "No services found in this category.",
     "services.price.hour": "/hour",
     "services.price.day": "/day",
     "services.price.video": "/video",
     "services.price.discountMultiple": "(discount for multiple)",
-    
+
     // Adventures page
     "adventures.title": "Adventures",
     "adventures.subtitle": "Our cinematic travel journal — unique journeys captured from above",
@@ -183,7 +183,7 @@ const translations: Record<Language, Record<string, string>> = {
     "adventures.highlights": "Highlights",
     "adventures.gallery": "Gallery",
     "adventures.noAdventures": "No adventures found in this region.",
-    
+
     // Contact page
     "contact.title": "Contact Us!",
     "contact.subtitle": "Let's get in touch! Whether you have a project in mind or just want to say hi.",
@@ -198,7 +198,7 @@ const translations: Record<Language, Record<string, string>> = {
     "contact.success": "Thank you for your message! 🚀",
     "contact.error": "Oops! Something went wrong. Please try again.",
     "contact.footer": "All rights reserved.",
-    
+
     // Shop page
     "shop.title": "Shop",
     "shop.subtitle": "Discover our premium collection of professional LUTs, Lightroom presets, sound effects, transitions, and creative assets",
@@ -209,7 +209,7 @@ const translations: Record<Language, Record<string, string>> = {
     "shop.outOfStock": "Out of Stock",
     "shop.addToCart": "Add to Cart",
     "shop.noProducts": "No products found in this category.",
-    
+
     // Cart
     "cart.title": "Shopping Cart",
     "cart.empty": "Your cart is empty",
@@ -217,7 +217,7 @@ const translations: Record<Language, Record<string, string>> = {
     "cart.checkout": "Checkout",
     "cart.clear": "Clear Cart",
     "cart.close": "Close cart",
-    
+
     // Checkout
     "checkout.title": "Checkout",
     "checkout.orderSummary": "Order Summary",
@@ -267,7 +267,7 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.about": "Despre",
     "nav.game": "Joc",
     "nav.contact": "Contact",
-    
+
     // Game page
     "game.title": "Jocuri Dronă",
     "game.subtitle": "Alege modul de joc și începe să joci!",
@@ -292,12 +292,12 @@ const translations: Record<Language, Record<string, string>> = {
     "game.playAgain": "Joacă Din Nou",
     "game.menu": "Meniu",
     "game.controls": "🖱️ Mișcă mouse/touch pentru mișcare • 🖱️ Click/Tap sau ⌨️ Space pentru a trage • ⚔️ Distruge toți inamicii!",
-    
+
     // Home page
     "home.tagline": "Filmări aeriene profesionale & mai mult",
     "home.cta": "Vezi portofoliul",
     "home.workedWith": "Mândri Că Am Colaborat Cu:",
-    
+
     // About page
     "about.title": "Despre Noi",
     "about.subtitle": "Servicii profesionale de filmări aeriene și cinematografie",
@@ -319,7 +319,7 @@ const translations: Record<Language, Record<string, string>> = {
     "about.creativeVision": "Viziune Creativă",
     "about.creativeVision.desc": "Perspective unice și povestiri creative care fac conținutul tău să iasă în evidență.",
     "about.experiencedTeam": "Echipă Experiențiată",
-    "about.experiencedTeam.desc": "Piloți și operatori de imagine calificați cu ani de experiență în videografie aeriană.",
+    "about.experiencedTeam.desc": "Piloți și operatori de imagine calificați cu ani de experiență.",
     "about.reliableService": "Serviciu De Încredere",
     "about.reliableService.desc": "Profesional, punctual și dedicat să livrăm rezultate excepționale la timp.",
     "about.readyToWork": "Gata Să Lucrăm Împreună?",
@@ -352,10 +352,10 @@ const translations: Record<Language, Record<string, string>> = {
     "about.reviews.showOriginal": "Afișează original (Română)",
     "about.reviews.showOriginalEnglish": "Afișează original (Engleză)",
     "about.reviews.showTranslated": "Afișează tradus",
-    
+
     // Portfolio page
     "portfolio.title": "Portofoliu",
-    "portfolio.subtitle": "Explorează colecția noastră de imagini aeriene profesionale și cinematografie",
+    "portfolio.subtitle": "Descoperă colecția noastră selectată de proiecte personale. De la prezentări imobiliare și acoperire de evenimente până la producții comerciale și povestiri creative, fiecare proiect reprezintă angajamentul nostru de a capta perspective unice din înălțime.",
     "portfolio.allProjects": "Toate Proiectele",
     "portfolio.aerial": "Aerian",
     "portfolio.realEstate": "Imobiliare",
@@ -363,22 +363,22 @@ const translations: Record<Language, Record<string, string>> = {
     "portfolio.commercial": "Comercial",
     "portfolio.noProjects": "Nu s-au găsit proiecte în această categorie.",
     "portfolio.project1.title": "Big Belly - Deschiderea Noii Locații de Restaurant",
-    "portfolio.project1.description": "Am fost onorați să fim invitați la evenimentul exclusiv privat de deschidere a Big Belly pentru noua lor locație. Captând celebrarea prin cinematografie aeriană, am documentat o seară plină de atmosferă excepțională și bucătărie remarcabilă. Ambientul cald și primitor combinat cu mâncarea delicioasă a creat cadrul perfect pentru acest eveniment memorabil de lansare. Acest proiect a fost o colaborare cu fotograful Dragos Pasniciuc și Dan Gaspar.",
+    "portfolio.project1.description": "Evenimentul exclusiv privat de deschidere a Big Belly pentru noua lor locație a fost o oportunitate deosebită. Captând celebrarea prin videografie aeriană, s-a documentat o seară plină de atmosferă excepțională și bucătărie remarcabilă. Ambientul cald și primitor combinat cu mâncarea delicioasă a creat cadrul perfect pentru acest eveniment memorabil de lansare. Acest proiect a fost o colaborare cu fotograful Dragos Pasniciuc și Dan Gaspar.",
     "portfolio.project2.title": "Multiverse Party - Reclama",
-    "portfolio.project2.description": "Am filmat un videoclip publicitar dinamic pentru evenimentul Multiverse Party, captând energia vibrantă și atmosfera electrizantă a acestei petreceri de pe acoperiș de neuitat. Materialele noastre au evidențiat stilul distinctiv al evenimentului și momentele memorabile care au definit noaptea.",
+    "portfolio.project2.description": "Videoclip publicitar dinamic pentru evenimentul Multiverse Party care capturează energia vibrantă și atmosfera electrizantă a acestei petreceri de pe acoperiș de neuitat. Materialele evidențiază stilul distinctiv al evenimentului și momentele memorabile care au definit noaptea.",
     "portfolio.project3.title": "Remote Tiny House Retreat - Videouri Promo",
-    "portfolio.project3.description": "Am creat materiale promoționale pentru Remote Tiny House Retreat, captând farmecul unic și atmosfera liniștită a acestei frumoase cabane de cazare. Prin cinematografie aeriană, am prezentat împrejurimile naturale ale retragerii și cazarea confortabilă, evidențiind scăparea perfectă pentru cei care caută liniște și conexiune cu natura.",
+    "portfolio.project3.description": "Materialele promoționale pentru Remote Tiny House Retreat capturează farmecul unic și atmosfera liniștită a acestei frumoase cabane de cazare. Prin videografie aeriană, sunt prezentate împrejurimile naturale ale retragerii și cazarea confortabilă, evidențiind scăparea perfectă pentru cei care caută liniște și conexiune cu natura.",
     "portfolio.project4.title": "Outdoor Lounge - Filmare Aeriană",
-    "portfolio.project4.description": "Acesta a fost printre primele materiale pe care le-am filmat după ce am cumpărat drona noastră, ceea ce îl face deosebit de special pentru noi. Este fascinant să privim înapoi și să vedem cât de mult am evoluat atât în filmare cât și în editare de atunci. Acest proiect de cinematografie aeriană pentru locația outdoor lounge captează munca noastră timpurie și prezintă fundația călătoriei noastre creative.",
+    "portfolio.project4.description": "Acesta a fost printre primele materiale pe care le-am filmat după ce am cumpărat drona noastră, ceea ce îl face deosebit de special pentru noi. Este fascinant să privim înapoi și să vedem cât de mult am evoluat atât în filmare cât și în editare de atunci. Acest proiect de videografie aeriană pentru locația outdoor lounge captează munca noastră timpurie și prezintă fundația călătoriei noastre creative.",
     "portfolio.project5.title": "Casa Numaa - Restaurant Fine Dining",
-    "portfolio.project5.description": "Am creat materiale publicitare pentru Casa Numaa, un restaurant fine dining excepțional. Prin cinematografie aeriană, am captat ambientul elegant și atmosfera sofisticată care definesc această destinație culinară, prezentând caracterul unic al restaurantului și cadrul primitor.",
+    "portfolio.project5.description": "Materialele publicitare pentru Casa Numaa, un restaurant fine dining excepțional, capturează prin videografie aeriană ambientul elegant și atmosfera sofisticată care definesc această destinație culinară, prezentând caracterul unic al restaurantului și cadrul primitor.",
     "portfolio.project6.title": "Utopic Party - Promovare Eveniment",
-    "portfolio.project6.description": "Am creat conținut promoțional pentru evenimentul Utopic Party, captând atmosfera vibrantă și energia prin cinematografie aeriană. Materialele noastre au fost concepute pentru a prezenta caracterul unic al evenimentului și a atrage participanți, evidențiind cadrul dinamic și experiența de neuitat.",
+    "portfolio.project6.description": "Conținutul promoțional pentru evenimentul Utopic Party capturează atmosfera vibrantă și energia prin videografie aeriană. Materialele au fost concepute pentru a prezenta caracterul unic al evenimentului și a atrage participanți, evidențiind cadrul dinamic și experiența de neuitat.",
     "portfolio.project7.title": "LA VILLA SUNHOUSE - Sardinia",
-    "portfolio.project7.description": "Am captat frumusețea uluitoare a LA VILLA SUNHOUSE, o proprietate luxoasă situată în peisajul uluitor al Sardiniei. Prin cinematografie și fotografie aeriană, am prezentat arhitectura excepțională a vilei, împrejurimile imaculate și eleganța mediteraneană care face această proprietate cu adevărat unică.",
+    "portfolio.project7.description": "Frumusețea uluitoare a LA VILLA SUNHOUSE, o proprietate luxoasă situată în peisajul uluitor al Sardiniei, este prezentată prin cinematografie și fotografie aeriană. Arhitectura excepțională a vilei, împrejurimile imaculate și eleganța mediteraneană fac această proprietate cu adevărat unică.",
     "portfolio.project8.title": "Rotaract - Cursa Caritabilă cu Rațe de Cauciuc",
-    "portfolio.project8.description": "Am documentat Cursa Caritabilă cu Rațe de Cauciuc organizată de Rotaract, captând spiritul comunității și filantropiei prin cinematografie aeriană. Acest eveniment unic de strângere de fonduri a adunat participanți de toate vârstele pentru o cauză distractivă și semnificativă, prezentând puterea implicării comunitare și a dăruirii caritabile.",
-    
+    "portfolio.project8.description": "Cursa Caritabilă cu Rațe de Cauciuc organizată de Rotaract este documentată prin videografie aeriană, captând spiritul comunității și filantropiei. Acest eveniment unic de strângere de fonduri a adunat participanți de toate vârstele pentru o cauză distractivă și semnificativă, prezentând puterea implicării comunitare și a dăruirii caritabile.",
+
     // Services page
     "services.title": "Servicii",
     "services.subtitle": "Servicii aeriene profesionale adaptate pentru a da viață viziunii tale",
@@ -386,20 +386,20 @@ const translations: Record<Language, Record<string, string>> = {
     "services.filming": "Filmare",
     "services.editing": "Editare",
     "services.aerialFilmingHour": "Filmare Aeriană pe Oră",
-    "services.aerialFilmingHour.desc": "Serviciu profesional de filmare aeriană pe oră. Captăm proiectul tău pe video și primești toate materialele brute plus fotografii aeriene gratuite.",
+    "services.aerialFilmingHour.desc": "Servicii profesionale de filmare aeriană pe oră. Captăm proiectul tău pe video și primești toate materialele brute plus fotografii aeriene gratuite.",
     "services.aerialFilmingHour.feature1": "Filmare aeriană pe oră",
-    "services.aerialFilmingHour.feature2": "Fișiere video brute 4K/8K",
+    "services.aerialFilmingHour.feature2": "Fișiere video brute 4K",
     "services.aerialFilmingHour.feature3": "Fotografii aeriene bonus",
     "services.aerialFilmingHour.feature4": "Livrare rapidă",
     "services.aerialFilmingDay": "Filmare Aeriană Zi Completă",
-    "services.aerialFilmingDay.desc": "Serviciu profesional de filmare aeriană pentru o zi completă. Captăm proiectul tău pe video și primești toate materialele brute plus fotografii aeriene gratuite.",
+    "services.aerialFilmingDay.desc": "Servicii profesionale de filmare aeriană pentru o zi completă. Captăm proiectul tău pe video și primești toate materialele brute plus fotografii aeriene gratuite.",
     "services.aerialFilmingDay.feature1": "Filmare aeriană zi completă",
-    "services.aerialFilmingDay.feature2": "Fișiere video brute 4K/8K",
+    "services.aerialFilmingDay.feature2": "Fișiere video brute 4K",
     "services.aerialFilmingDay.feature3": "Fotografii aeriene bonus",
     "services.aerialFilmingDay.feature4": "Livrare rapidă",
     "services.postProduction": "Post-Producție Profesională",
     "services.postProduction.desc": "Editare profesională a materialelor tale cu color grading, tranziții și design sonor. Prețul scade pentru mai multe videouri.",
-    "services.postProduction.feature1": "Editare 4K/8K",
+    "services.postProduction.feature1": "Editare 4K",
     "services.postProduction.feature2": "Color grading și corecție de culoare",
     "services.postProduction.feature3": "Design sonor și mixare",
     "services.postProduction.feature4": "Mai multe formate de export",
@@ -408,13 +408,13 @@ const translations: Record<Language, Record<string, string>> = {
     "services.postProduction.pricing1": "1 videoclip:",
     "services.postProduction.pricing2": "2-3 videoclipuri:",
     "services.postProduction.pricing3": "4+ videoclipuri:",
-    "services.highlights": "Caracteristici",
+    "services.highlights": "Servicii",
     "services.noServices": "Nu s-au găsit servicii în această categorie.",
     "services.price.hour": "/oră",
     "services.price.day": "/zi",
     "services.price.video": "/videoclip",
     "services.price.discountMultiple": "(reducere pentru mai multe)",
-    
+
     // Adventures page
     "adventures.title": "Aventuri",
     "adventures.subtitle": "Jurnalul nostru de călătorii cinematice — călătorii unice capturate din înălțime",
@@ -427,7 +427,7 @@ const translations: Record<Language, Record<string, string>> = {
     "adventures.highlights": "Puncte De Atracție",
     "adventures.gallery": "Galerie",
     "adventures.noAdventures": "Nu s-au găsit aventuri în această regiune.",
-    
+
     // Contact page
     "contact.title": "Contactează-ne!",
     "contact.subtitle": "Hai să ne conectăm! Fie că ai un proiect în minte sau vrei doar să spui salut.",
@@ -442,7 +442,7 @@ const translations: Record<Language, Record<string, string>> = {
     "contact.success": "Mulțumim pentru mesaj! 🚀",
     "contact.error": "Ups! Ceva a mers greșit. Te rugăm să încerci din nou.",
     "contact.footer": "Toate drepturile rezervate.",
-    
+
     // Shop page
     "shop.title": "Magazin",
     "shop.subtitle": "Descoperă colecția noastră premium de LUT-uri profesionale, preseturi Lightroom, efecte sonore, tranziții și asset-uri creative",
@@ -453,7 +453,7 @@ const translations: Record<Language, Record<string, string>> = {
     "shop.outOfStock": "Stoc Epuizat",
     "shop.addToCart": "Adaugă în Coș",
     "shop.noProducts": "Nu s-au găsit produse în această categorie.",
-    
+
     // Cart
     "cart.title": "Coș de Cumpărături",
     "cart.empty": "Coșul tău este gol",
@@ -461,7 +461,7 @@ const translations: Record<Language, Record<string, string>> = {
     "cart.checkout": "Finalizează comanda",
     "cart.clear": "Golește coșul",
     "cart.close": "Închide coșul",
-    
+
     // Checkout
     "checkout.title": "Finalizare Comandă",
     "checkout.orderSummary": "Rezumat comandă",

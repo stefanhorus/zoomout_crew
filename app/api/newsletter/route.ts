@@ -96,7 +96,7 @@ export async function POST(req: Request) {
                       </h2>
                       
                       <p style="color: #d0d0d0; line-height: 1.8; margin: 0 0 25px 0; font-size: 16px;">
-                        We're thrilled to have you join the <strong style="color: #ffffff;">Zoomout Crew</strong> community! Get ready to be inspired by stunning aerial cinematography and behind-the-scenes content.
+                        We're thrilled to have you join the <strong style="color: #ffffff;">Zoomout Crew</strong> community! Get ready to be inspired by stunning aerial videography and behind-the-scenes content.
                       </p>
                       
                       <div style="background-color: #252525; border-left: 4px solid #ffffff; padding: 20px; margin: 30px 0; border-radius: 8px;">

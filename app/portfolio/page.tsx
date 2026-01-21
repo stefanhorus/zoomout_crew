@@ -251,7 +251,7 @@ export default function Portfolio() {
               delaySpeed={999999}
             />
           </h1>
-          <p className="text-gray-300">
+          <p className="text-gray-300 text-base sm:text-lg md:text-xl">
             {t("portfolio.subtitle")}
           </p>
         </div>

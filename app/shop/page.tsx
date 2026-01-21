@@ -400,7 +400,7 @@ export default function Shop() {
               delaySpeed={999999}
             />
           </h1>
-          <p className="text-gray-300 text-xs sm:text-sm md:text-base lg:text-lg px-2 sm:px-4 max-w-2xl mx-auto">
+          <p className="text-gray-300 text-base sm:text-lg md:text-xl px-2 sm:px-4 max-w-2xl mx-auto">
             {t("shop.subtitle")}
           </p>
         </div>

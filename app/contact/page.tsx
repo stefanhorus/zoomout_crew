@@ -76,7 +76,7 @@ export default function Contact() {
             delaySpeed={999999}
           />
         </h1>
-        <p className="text-gray-300 text-sm sm:text-base">
+        <p className="text-gray-300 text-base sm:text-lg md:text-xl">
           {t("contact.subtitle")}
         </p>
       </div>
