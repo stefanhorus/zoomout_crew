@@ -209,6 +209,12 @@ const translations: Record<Language, Record<string, string>> = {
     "shop.outOfStock": "Out of Stock",
     "shop.addToCart": "Add to Cart",
     "shop.noProducts": "No products found in this category.",
+    "shop.luts": "LUTs",
+    "shop.lightroomPresets": "Lightroom Presets",
+    "shop.soundDesign": "Sound Design",
+    "shop.transitions": "Transitions",
+    "shop.wallpaper": "Wallpapers",
+    "shop.bundle": "Bundles",
 
     // Cart
     "cart.title": "Shopping Cart",
@@ -453,6 +459,12 @@ const translations: Record<Language, Record<string, string>> = {
     "shop.outOfStock": "Stoc Epuizat",
     "shop.addToCart": "Adaugă în Coș",
     "shop.noProducts": "Nu s-au găsit produse în această categorie.",
+    "shop.luts": "LUT-uri",
+    "shop.lightroomPresets": "Preseturi de Lightroom",
+    "shop.soundDesign": "Sound Design",
+    "shop.transitions": "Tranzitii",
+    "shop.wallpaper": "Wallpaper-uri",
+    "shop.bundle": "Pachete",
 
     // Cart
     "cart.title": "Coș de Cumpărături",
