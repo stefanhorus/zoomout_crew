@@ -8,7 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
 // Tipuri de produse pentru filtrare
-type ProductCategory = "all" | "luts" | "lightroom-presets" | "sound-design" | "transitions" | "wallpaper" | "bundle";
+type ProductCategory = "all" | "luts" | "lightroom-presets" | "sound-design" | "transitions" | "bundle" | "other";
 
 interface Product {
   id: number;
@@ -29,11 +29,11 @@ const products: Product[] = [
     id: 1,
     name: "Cinematic Video LUTs",
     category: "luts",
-    image: "/assets/shop/CINEMATICLUT.jpg",
+    image: "/assets/shop/CINEMATICLUT 14.01.10.jpg",
     price: 99.99,
     originalPrice: 124.98,
     discountPercentage: 20,
-    description: "The Cinematic LUT pack is is a carefully crafted collection of cinematic color presets designed to give your footage an instantly polished and emotional visual tone. Inspired by the rich aesthetics of analog film, these LUTs are ideal for filmmakers, content creators, and editors who want to add style, depth, and mood to their visuals with just a few clicks. Whether you're working on music videos, short films, branded content, or reels—these LUTs bring your footage to life perfectly if you follow the Golden Rule.\n\n📦 What's Included: 10 Professional Cinematic LUTs (.cube format) + Mist Powergrade for DaVinci Resolve",
+    description: "The Cinematic LUT pack is is a carefully crafted collection of cinematic color presets designed to give your footage an instantly polished and emotional visual tone. Inspired by the rich aesthetics of analog film, these LUTs are ideal for filmmakers, content creators, and editors who want to add style, depth, and mood to their visuals with just a few clicks. Whether you're working on music videos, short films, branded content, or reels—these LUTs bring your footage to life perfectly.\n\n📦 What's Included:\n\n• 10 Professional Cinematic LUTs (.cube format)\n• Mist Powergrade for DaVinci Resolve",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_CINEMATIC_LUT_FOLDER_ID",
   },
@@ -45,7 +45,7 @@ const products: Product[] = [
     price: 124.99,
     originalPrice: 159.98,
     discountPercentage: 22,
-    description: "The Movie Looks LUT pack is your ticket to the big screen. Inspired by the color palettes of iconic modern cinema, these presets are designed to give your footage that distinct \"Blockbuster\" atmosphere. From the gritty greens of sci-fi thrillers to the rich teal-and-orange of action movies, this collection allows you to tell a stronger visual story. Whether you are grading a narrative short, a music video, or a dramatic sequence, these LUTs provide the heavy-hitting, stylized look of a high-budget production if you follow the Golden Rule.\n\n📦 What's Included: 10 Professional Movie LUTs (.cube format) + Mist Powergrade for DaVinci Resolve",
+    description: "The Movie Looks Video Looks LUTs pack is your ticket to the big screen. Inspired by the color palettes of iconic modern cinema, these presets are designed to give your footage that distinct \"Blockbuster\" atmosphere. From the gritty greens of sci-fi thrillers to the rich teal-and-orange of action movies, this collection allows you to tell a stronger visual story. Whether you are grading a narrative short, a music video, or a dramatic sequence, these LUTs provide the heavy-hitting, stylized look of a high-budget production.\n\n📦 What's Included:\n\n• 20 Professional Movie LUTs (.cube format)\n• Mist Powergrade for DaVinci Resolve",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_MOVIE_LUT_FOLDER_ID",
   },
@@ -57,7 +57,7 @@ const products: Product[] = [
     price: 99.99,
     originalPrice: 129.98,
     discountPercentage: 23,
-    description: "The Film Looks LUT pack is a tribute to the golden age of analog cinema. Designed to break the \"digital sharpness\" of modern cameras, these presets infuse your footage with organic texture, rich skin tones, and the timeless character of celluloid. Inspired by classic Kodak and Fujifilm stocks, these LUTs are perfect for storytellers who want to evoke nostalgia. Whether you are creating a documentary, a music video, or a moody travel piece, this collection brings the soul of 35mm film to your digital timeline perfectly if you follow the Golden Rule.\n\n📦 What's Included: 10 Professional Film LUTs (.cube format) + Mist Powergrade for DaVinci Resolve",
+    description: "The Film Looks LUT pack is a tribute to the golden age of analog cinema. Designed to break the \"digital sharpness\" of modern cameras, these presets infuse your footage with organic texture, rich skin tones, and the timeless character of celluloid. Inspired by classic Kodak and Fujifilm stocks, these LUTs are perfect for storytellers who want to evoke nostalgia. Whether you are creating a documentary, a music video, or a moody travel piece, this collection brings the soul of 35mm film to your digital timeline perfectly.\n\n📦 What's Included:\n\n• 10 Professional Film LUTs (.cube format)\n• Mist Powergrade for DaVinci Resolve",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_FILM_LUT_FOLDER_ID",
   },
@@ -69,7 +69,7 @@ const products: Product[] = [
     price: 99.99,
     originalPrice: 134.98,
     discountPercentage: 26,
-    description: "The Vintage Film LUT pack is your time machine. Designed to replicate the charm and imperfections of old home movies, these presets bring the nostalgic aesthetic of Super 8 and 16mm film straight to your digital footage. Perfect for travel memories, music videos, or dreamlike sequences, this collection embraces faded shadows, warm highlights, and that distinct \"retro\" vibe that makes footage feel timeless and personal if you follow the Golden Rule.\n\n📦 What's Included: 14 Professional Vintage Film LUTs (.cube format) + Mist Powergrade for DaVinci Resolve",
+    description: "The Vintage Film LUT pack is your time machine. Designed to replicate the charm and imperfections of old home movies, these presets bring the nostalgic aesthetic of Super 8 and 16mm film straight to your digital footage. Perfect for travel memories, music videos, or dreamlike sequences, this collection embraces faded shadows, warm highlights, and that distinct \"retro\" vibe that makes footage feel timeless and personal.\n\n📦 What's Included:\n\n• 14 Professional Vintage Film LUTs (.cube format)\n• Mist Powergrade for DaVinci Resolve",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_VINTAGE_LUT_FOLDER_ID",
   },
@@ -81,7 +81,7 @@ const products: Product[] = [
     price: 99.99,
     originalPrice: 139.98,
     discountPercentage: 29,
-    description: "Specialized LUTs optimized for iPhone footage. Enhance your mobile videos with professional color grading designed specifically for iPhone cameras.\n\n📦 What's Included: 10 Professional iPhone LUTs (.cube format) + Mist Powergrade for DaVinci Resolve",
+    description: "The iPhone Looks LUT pack is designed to turn your smartphone footage into high-quality content that stops the scroll. Optimized specifically for mobile sensors, these presets tame the harsh \"digital sharpness\" of modern phones and deliver a cohesive, professional aesthetic. Whether you are shooting Reels, TikToks, daily vlogs, or travel memories on the go, this collection ensures your mobile clips look cinematic and professional, matching the quality of a dedicated camera.\n\n📦 What's Included:\n\n• 10 Professional iPhone LUTs (.cube format)\n• Mist Powergrade for DaVinci Resolve",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_IPHONE_LUT_FOLDER_ID",
   },
@@ -93,19 +93,19 @@ const products: Product[] = [
     price: 99.99,
     originalPrice: 149.98,
     discountPercentage: 33,
-    description: "Professional sound design library featuring cinematic sound effects, ambient textures, and audio elements perfect for video production and filmmaking.\n\n📦 What's Included: 134+ High-Quality Sound Effects (WAV format) organized in categories: Air, Ambience, Campaign, City, Film Burn, Flash, Forest, Glitches, Impacts, Reverse, Scratch, Swoosh, Woosh",
+    description: "Professional sound design library featuring cinematic sound effects, ambient textures, and audio elements perfect for video production and filmmaking.\n\n📦 What's Included:\n\n• Air Sound Effects\n• Ambience Sound Effects\n• Campaign Sound Effects\n• City Sound Effects\n• Film Burn Sound Effects\n• Flash Sound Effects\n• Forest Sound Effects\n• Glitches Sound Effects\n• Impacts Sound Effects\n• Reverse Sound Effects\n• Scratch Sound Effects\n• Swoosh Sound Effects\n• Woosh Sound Effects\n\nTotal: 134+ High-Quality Sound Effects (WAV format)",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_SOUND_DESIGN_FOLDER_ID",
   },
   {
     id: 7,
     name: "Majestic Wallpaper Pack",
-    category: "wallpaper",
+    category: "other",
     image: "/assets/shop/MAJESTIC.jpg",
     price: 49.99,
     originalPrice: 64.98,
     discountPercentage: 23,
-    description: "A stunning collection of majestic wallpapers featuring breathtaking aerial landscapes and cinematic scenes. Perfect for desktop, mobile, and tablet backgrounds.\n\n📦 What's Included: High-resolution wallpapers in multiple formats, optimized for desktop, mobile, and tablet displays",
+    description: "A stunning collection of majestic wallpapers featuring breathtaking aerial landscapes and cinematic scenes. Perfect for desktop, mobile, and tablet backgrounds.\n\n📦 What's Included:\n\n• High-resolution Desktop Wallpapers\n• High-resolution Mobile Wallpapers\n• High-resolution Tablet Wallpapers\n\nTotal: High-resolution wallpapers in multiple formats, optimized for desktop, mobile, and tablet displays",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_WALLPAPER_PACK_FOLDER_ID",
   },
@@ -113,11 +113,11 @@ const products: Product[] = [
     id: 8,
     name: "Lightroom Photo Presets",
     category: "lightroom-presets",
-    image: "/assets/shop/Lightroom.jpg",
+    image: "/assets/shop/LIGHTROOM.jpg",
     price: 99.99,
     originalPrice: 124.98,
     discountPercentage: 20,
-    description: "Transform your photography with our comprehensive Lightroom Presets collection. This bundle includes 5 carefully curated preset packs, each designed to give your photos a distinct and professional look. Whether you're shooting portraits, landscapes, street photography, or lifestyle content, these presets will elevate your images with just one click. Compatible with both Lightroom Classic (desktop) and Lightroom Mobile, giving you the flexibility to edit anywhere.\n\n📦 What's Included:\n• Black Looks Pack - 12 Professional Presets\n• Cinematic Looks Pack - 12 Professional Presets\n• Classic Looks Pack - 12 Professional Presets\n• iPhone Looks Pack - 12 Professional Presets\n• Retro Looks Pack - 12 Professional Presets\n• Total: 60 Professional Lightroom Presets\n• Formats: XMP (for Lightroom Classic Desktop) and DNG (for Lightroom Mobile)\n• Compatible with both desktop and mobile versions of Adobe Lightroom",
+    description: "The Lightroom Presets Bundle is a masterfully curated collection of professional photo presets designed to give your images an instantly polished and distinct visual identity. Inspired by the diverse aesthetics of modern photography and vintage cinema, this all-in-one toolkit is ideal for photographers, influencers, and content creators who need versatility without compromising on quality.\n\nWhether you're capturing moody urban shots, timeless portraits, nostalgic moments, or daily social media updates—this collection ensures you always have the perfect grade to bring your vision to life with just a few clicks.\n\n📦 What's Included:\n\n• 10 Black Looks Presets (Dark & Moody aesthetics)\n• 10 Cinematic Looks Presets (Film-inspired tones)\n• 10 Classic Looks Presets (Clean, timeless style)\n• 10 iPhone Looks Presets (Optimized for mobile photography)\n• 10 Retro Looks Presets (Vintage & Nostalgic vibes)\n• Mist Effect\n\nTotal: 50 Professional Presets (.XMP & .DNG format for Desktop & Mobile) + Mist Effect",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_LIGHTROOM_PRESETS_FOLDER_ID",
   },
@@ -129,19 +129,19 @@ const products: Product[] = [
     price: 79.99,
     originalPrice: 124.98,
     discountPercentage: 36,
-    description: "The Transitions & Burns pack by Dopamine is crafted to bring raw, analog-style energy to your edits. Inspired by real film burns, light leaks, and in-camera transitions, this pack adds warmth, texture, and movement to your footage—perfect for music videos, reels, fashion films, or any project that needs that organic, imperfect feel. Whether you're aiming for subtle vintage motion or explosive transitions, these overlays offer you endless creative possibilities.\n\n📦 What's Included:\n• 50 Video Film Burn Overlays\n• 64 Static Film Burn Overlays\n• Total: 114 Professional Film Burn & Transition Overlays",
+    description: "The Transitions & Burns pack by Dopamine is crafted to bring raw, analog-style energy to your edits. Inspired by real film burns, light leaks, and in-camera transitions, this pack adds warmth, texture, and movement to your footage—perfect for music videos, reels, fashion films, or any project that needs that organic, imperfect feel. Whether you're aiming for subtle vintage motion or explosive transitions, these overlays offer you endless creative possibilities.\n\n📦 What's Included:\n\n• 50 Video Film Burn Overlays\n• 64 Static Film Burn Overlays\n\nTotal: 114 Professional Film Burn & Transition Overlays",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_TRANSITIONS_BURNS_FOLDER_ID",
   },
   {
     id: 10,
-    name: "Film Artifacts Pack",
-    category: "transitions",
+    name: "Film Mattes and Artifacts Pack",
+    category: "other",
     image: "/assets/shop/Film mattes.jpg",
     price: 89.99,
     originalPrice: 129.98,
     discountPercentage: 31,
-    description: "The Film Artifacts Pack brings the authentic character of analog cinema to your digital footage. This collection features meticulously crafted film artifacts including scratches, dust particles, grain textures, light leaks, and vintage imperfections that add depth, nostalgia, and cinematic authenticity to your projects. Perfect for filmmakers and content creators who want to break away from the sterile digital look and infuse their work with the organic, imperfect beauty of classic film. Whether you're creating music videos, short films, documentaries, or social media content, these artifacts will transform your footage into something truly timeless.\n\n📦 What's Included:\n• 100+ Professional Film Artifact Overlays\n• Film Scratches & Dust Particles\n• Vintage Grain Textures\n• Light Leaks & Flares\n• Film Burn Effects\n• Compatible with all major editing software (Premiere Pro, Final Cut Pro, DaVinci Resolve, After Effects)",
+    description: "The Film Artifacts Pack brings the authentic character of analog cinema to your digital footage. This collection features meticulously crafted film artifacts including scratches, dust particles, grain textures, light leaks, and vintage imperfections that add depth, nostalgia, and cinematic authenticity to your projects. Perfect for filmmakers and content creators who want to break away from the sterile digital look and infuse their work with the organic, imperfect beauty of classic film. Whether you're creating music videos, short films, documentaries, or social media content, these artifacts will transform your footage into something truly timeless.\n\n📦 What's Included:\n\n• Film Scratches & Dust Particles\n• Vintage Grain Textures\n• Light Leaks & Flares\n• Film Burn Effects\n\nTotal: 100+ Professional Film Artifact Overlays\n\nCompatible with all major editing software (Premiere Pro, Final Cut Pro, DaVinci Resolve, After Effects)",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_FILM_ARTIFACTS_FOLDER_ID",
   },
@@ -153,9 +153,21 @@ const products: Product[] = [
     price: 399.99,
     originalPrice: 499.98,
     discountPercentage: 20,
-    description: "Unlock your full potential. The Signature Bundle is the definitive all-in-one toolkit for modern filmmakers, photographers, and content creators. We have combined our entire library into one powerful collection, giving you every asset you need to take your storytelling from \"average\" to \"cinematic mastery.\" Whether you are color grading a documentary, editing a high-energy Reel, or designing the soundscape for a short film, this bundle is your unfair advantage.\n\n📦 What's Included:\n• 64 Professional Video LUTs (Cinematic, Movie, Film, Vintage, iPhone)\n• 6 Mist Powergrades for DaVinci Resolve\n• 134+ High-Quality Sound Effects (WAV format)\n• Complete library of all our digital assets in one bundle",
+    description: "Unlock your full potential. The Signature Bundle is the definitive all-in-one toolkit for modern filmmakers, photographers, and content creators. We have combined our entire library into one powerful collection, giving you every asset you need to take your storytelling from \"average\" to \"cinematic mastery.\" Whether you are color grading a documentary, editing a high-energy Reel, or designing the soundscape for a short film, this bundle is your unfair advantage.\n\n📦 What's Included:\n\n• 64 Professional Video LUTs (Cinematic, Movie, Film, Vintage, iPhone)\n• 6 Mist Powergrades for DaVinci Resolve\n• 134+ High-Quality Sound Effects (WAV format)\n\nTotal: Complete library of all our digital assets in one bundle",
     inStock: true,
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_SIGNATURE_BUNDLE_FOLDER_ID",
+  },
+  {
+    id: 12,
+    name: "Full Lut Bundle",
+    category: "bundle",
+    image: "/assets/shop/IMG_8588 2.jpg",
+    price: 299.99,
+    originalPrice: 399.98,
+    discountPercentage: 25,
+    description: "The Full LUT Bundle is the ultimate collection of professional color grading presets. This comprehensive bundle includes all our LUT packs, giving you access to every cinematic look, film emulation, and color style in our library. Perfect for filmmakers, content creators, and editors who want the complete color grading toolkit.\n\n📦 What's Included:\n\n• Cinematic Video LUTs (10 LUTs)\n• Movie LUTs (20 LUTs)\n• Film LUTs (10 LUTs)\n• Vintage LUTs (14 LUTs)\n• iPhone Video LUTs (10 LUTs)\n• Mist Powergrade for DaVinci Resolve\n\nTotal: 64 Professional Video LUTs (.cube format) + Mist Powergrade",
+    inStock: true,
+    downloadUrl: "https://drive.google.com/drive/folders/YOUR_FULL_LUT_BUNDLE_FOLDER_ID",
   },
 ];
 
@@ -173,6 +185,22 @@ export default function Shop() {
   useEffect(() => {
     document.title = `${t("shop.title")} - Zoomout_crew`;
   }, [language, t]);
+
+  // Blochează scroll-ul pe pagină când modalul produsului este deschis
+  useEffect(() => {
+    if (selectedProduct) {
+      // Salvează starea curentă și blochează scroll-ul
+      document.body.style.overflow = "hidden";
+    } else {
+      // Restaurează scroll-ul
+      document.body.style.overflow = "";
+    }
+
+    // Cleanup: restaurează scroll-ul când componenta se demontează
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [selectedProduct]);
 
   // Verifică dacă popup-ul a fost deja afișat
   useEffect(() => {
@@ -193,10 +221,10 @@ export default function Shop() {
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Curăță și validează email-ul
     const cleanedEmail = newsletterEmail.trim().toLowerCase();
-    
+
     if (!cleanedEmail || !cleanedEmail.includes("@") || !cleanedEmail.includes(".")) {
       setNewsletterStatus("error");
       return;
@@ -208,7 +236,7 @@ export default function Shop() {
     try {
       const response = await fetch("/api/newsletter", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -251,8 +279,8 @@ export default function Shop() {
     { value: "lightroom-presets", label: "Lightroom Presets", labelKey: "shop.lightroomPresets" },
     { value: "sound-design", label: "Sound Design", labelKey: "shop.soundDesign" },
     { value: "transitions", label: "Transitions", labelKey: "shop.transitions" },
-    { value: "wallpaper", label: "Wallpapers", labelKey: "shop.wallpaper" },
     { value: "bundle", label: "Bundles", labelKey: "shop.bundle" },
+    { value: "other", label: "Other", labelKey: "shop.other" },
   ];
 
   const filteredProducts =
@@ -275,30 +303,30 @@ export default function Shop() {
     // Găsește iconița coșului din header (găsește butonul vizibil)
     const allCartButtons = document.querySelectorAll('button[aria-label="Open shopping cart"]') as NodeListOf<HTMLElement>;
     let cartIcon: HTMLElement | null = null;
-    
+
     // Găsește butonul care este vizibil în viewport
     for (const btn of Array.from(allCartButtons)) {
       const rect = btn.getBoundingClientRect();
-      const isVisible = rect.width > 0 && rect.height > 0 && 
-                       rect.top >= 0 && rect.left >= 0 &&
-                       rect.bottom <= window.innerHeight && 
-                       rect.right <= window.innerWidth;
-      
+      const isVisible = rect.width > 0 && rect.height > 0 &&
+        rect.top >= 0 && rect.left >= 0 &&
+        rect.bottom <= window.innerHeight &&
+        rect.right <= window.innerWidth;
+
       // Verifică și dacă elementul nu este ascuns prin CSS
       const style = window.getComputedStyle(btn);
       const isNotHidden = style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
-      
+
       if (isVisible && isNotHidden) {
         cartIcon = btn;
         break;
       }
     }
-    
+
     // Dacă nu găsește unul vizibil, folosește primul disponibil
     if (!cartIcon && allCartButtons.length > 0) {
       cartIcon = allCartButtons[0];
     }
-    
+
     if (!cartIcon) return;
 
     const cartRect = cartIcon.getBoundingClientRect();
@@ -307,7 +335,7 @@ export default function Shop() {
 
     // Creează o copie a card-ului de produs
     const flyingCard = productCard.cloneNode(true) as HTMLElement;
-    
+
     // Setează stilurile pentru animație
     flyingCard.style.cssText = `
       position: fixed;
@@ -364,7 +392,7 @@ export default function Shop() {
     if (event && event.currentTarget) {
       animateToCart(event.currentTarget);
     }
-    
+
     // Adaugă produsul în coș după un mic delay pentru a sincroniza cu animația
     setTimeout(() => {
       addToCart(product);
@@ -411,14 +439,13 @@ export default function Shop() {
             <button
               key={category.value}
               onClick={() => setSelectedCategory(category.value as ProductCategory)}
-              className={`px-4 py-2 sm:px-5 sm:py-2 md:px-6 md:py-2.5 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-sm md:text-base ${
-                selectedCategory === category.value
-                  ? "liquid-glass-button text-white scale-105"
-                  : "liquid-glass liquid-glass-hover text-white"
-              }`}
+              className={`px-4 py-2 sm:px-5 sm:py-2 md:px-6 md:py-2.5 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-sm md:text-base ${selectedCategory === category.value
+                ? "liquid-glass-button text-white scale-105"
+                : "liquid-glass liquid-glass-hover text-white"
+                }`}
               style={{ fontFamily: "var(--font-roboto)" }}
             >
-              {category.label}
+              {t(category.labelKey)}
             </button>
           ))}
         </div>
@@ -441,7 +468,7 @@ export default function Shop() {
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/10 group-hover:from-black/40 group-hover:via-black/20 group-hover:to-black/5 transition-all duration-300" />
-                
+
                 {/* Discount Badge */}
                 {product.discountPercentage && (
                   <div className="absolute top-2 right-2 sm:top-3 sm:right-3 liquid-glass-button bg-red-500/30 text-white px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold border-red-500/50 z-10">
@@ -490,11 +517,10 @@ export default function Shop() {
                       handleAddToCart(product, e);
                     }}
                     disabled={!product.inStock}
-                    className={`w-full sm:w-auto px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-[10px] sm:text-xs md:text-sm ${
-                      product.inStock
-                        ? "liquid-glass-button text-white hover:scale-105"
-                        : "bg-gray-700/50 text-gray-400 cursor-not-allowed opacity-50"
-                    }`}
+                    className={`w-full sm:w-auto px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-[10px] sm:text-xs md:text-sm ${product.inStock
+                      ? "liquid-glass-button text-white hover:scale-105"
+                      : "bg-gray-700/50 text-gray-400 cursor-not-allowed opacity-50"
+                      }`}
                     style={{ fontFamily: "var(--font-roboto)" }}
                   >
                     {t("shop.addToCart")}
@@ -666,11 +692,10 @@ export default function Shop() {
                     setSelectedProduct(null);
                   }}
                   disabled={!selectedProduct.inStock}
-                  className={`w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 md:py-3.5 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base md:text-lg ${
-                    selectedProduct.inStock
-                      ? "liquid-glass-button text-white hover:scale-105"
-                      : "bg-gray-700/50 text-gray-400 cursor-not-allowed opacity-50"
-                  }`}
+                  className={`w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 md:py-3.5 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base md:text-lg ${selectedProduct.inStock
+                    ? "liquid-glass-button text-white hover:scale-105"
+                    : "bg-gray-700/50 text-gray-400 cursor-not-allowed opacity-50"
+                    }`}
                   style={{ fontFamily: "var(--font-roboto)" }}
                 >
                   {t("shop.addToCart")}

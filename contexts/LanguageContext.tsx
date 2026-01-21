@@ -215,6 +215,7 @@ const translations: Record<Language, Record<string, string>> = {
     "shop.transitions": "Transitions",
     "shop.wallpaper": "Wallpapers",
     "shop.bundle": "Bundles",
+    "shop.other": "Other",
 
     // Cart
     "cart.title": "Shopping Cart",
@@ -465,6 +466,7 @@ const translations: Record<Language, Record<string, string>> = {
     "shop.transitions": "Tranzitii",
     "shop.wallpaper": "Wallpaper-uri",
     "shop.bundle": "Pachete",
+    "shop.other": "Altele",
 
     // Cart
     "cart.title": "Coș de Cumpărături",
