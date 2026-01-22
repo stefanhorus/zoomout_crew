@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import crypto from "crypto";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
 import { getDownloadUrl, isDigitalProduct } from "@/lib/digital-products";
+import { generateInvoicePDF } from "@/lib/invoice-generator";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
 
@@ -287,13 +288,47 @@ export async function POST(request: NextRequest) {
             const resend = new Resend(process.env.RESEND_API_KEY);
             console.log("📧 Sending email via Resend...");
             
-            const { data, error } = await resend.emails.send({
+            // Generează factura PDF
+            let invoiceAttachment = null;
+            try {
+              console.log("📄 Generating invoice PDF...");
+              const invoicePDF = await generateInvoicePDF({
+                orderId: orderId,
+                customerEmail: customerEmail,
+                items: formattedItems,
+                amountRON: amountRON,
+                amountCurrency: amountInCurrencyDecimal,
+                currency: currency,
+                date: new Date(),
+                language: language,
+                discountPercentage: metadata.discount_percentage ? parseFloat(metadata.discount_percentage) : undefined,
+                discountCode: metadata.discount_code,
+              });
+              
+              invoiceAttachment = {
+                filename: `Invoice_${orderId}.pdf`,
+                content: invoicePDF,
+              };
+              console.log("✅ Invoice PDF generated successfully");
+            } catch (pdfError: any) {
+              console.error("❌ Error generating invoice PDF:", pdfError);
+              // Continuăm fără PDF dacă generarea eșuează
+            }
+            
+            const emailPayload: any = {
               from: fromEmail,
               to: customerEmail,
               subject: emailContent.subject,
               html: emailContent.html,
               text: emailContent.text,
-            });
+            };
+
+            // Adaugă atașamentul PDF dacă a fost generat cu succes
+            if (invoiceAttachment) {
+              emailPayload.attachments = [invoiceAttachment];
+            }
+            
+            const { data, error } = await resend.emails.send(emailPayload);
 
             if (error) {
               console.error("❌ Error sending purchase confirmation email:", error);
@@ -301,6 +336,9 @@ export async function POST(request: NextRequest) {
             } else {
               console.log("✅ Purchase confirmation email sent successfully!");
               console.log("✅ Email sent to:", customerEmail);
+              if (invoiceAttachment) {
+                console.log("✅ Invoice PDF attached to email");
+              }
               console.log("✅ Resend response:", data);
             }
           } catch (emailError: any) {
