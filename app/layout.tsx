@@ -36,6 +36,14 @@ export const metadata: Metadata = {
     siteName: "Zoomout_crew",
     title: "Zoomout_crew - Professional Aerial Footage & Cinematography",
     description: "Professional aerial videography & more",
+    images: [
+      {
+        url: "https://zoomoutcrew.com/assets/logo.png",
+        width: 1024,
+        height: 1024,
+        alt: "Zoomout_crew - Professional Aerial Videography",
+      },
+    ],
   },
   robots: {
     index: true,

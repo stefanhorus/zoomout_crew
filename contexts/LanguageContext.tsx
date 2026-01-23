@@ -198,6 +198,18 @@ const translations: Record<Language, Record<string, string>> = {
     "contact.success": "Thank you for your message! 🚀",
     "contact.error": "Oops! Something went wrong. Please try again.",
     "contact.footer": "All rights reserved.",
+    "footer.description": "Professional aerial footage and videography services. Capturing your vision from above.",
+    "footer.navigation": "Navigation",
+    "footer.contact": "Contact",
+    "footer.getInTouch": "Get in Touch",
+    "footer.viewServices": "View Services",
+    "footer.about": "About",
+    "footer.contactLink": "Contact",
+    "footer.allRightsReserved": "All rights reserved.",
+    "notFound.title": "Page Not Found",
+    "notFound.description": "Oops! The page you're looking for doesn't exist. It might have been moved or deleted.",
+    "notFound.backHome": "Back to Home",
+    "notFound.viewPortfolio": "View Portfolio",
 
     // Shop page
     "shop.title": "Shop",
@@ -301,7 +313,7 @@ const translations: Record<Language, Record<string, string>> = {
     "game.controls": "🖱️ Mișcă mouse/touch pentru mișcare • 🖱️ Click/Tap sau ⌨️ Space pentru a trage • ⚔️ Distruge toți inamicii!",
 
     // Home page
-    "home.tagline": "Filmări aeriene profesionale & mai mult",
+    "home.tagline": "Filmări aeriene profesionale si nu numai",
     "home.cta": "Vezi portofoliul",
     "home.workedWith": "Mândri Că Am Colaborat Cu:",
 
@@ -331,7 +343,7 @@ const translations: Record<Language, Record<string, string>> = {
     "about.reliableService.desc": "Profesional, punctual și dedicat să livrăm rezultate excepționale la timp.",
     "about.readyToWork": "Gata Să Lucrăm Împreună?",
     "about.readyToWork.text": "Hai să dăm viață viziunii tale din înălțime.",
-    "about.getInTouch": "Ia Legătura",
+    "about.getInTouch": "Contactează-ne",
     "about.reviews.title": "Ce Spun Clienții Noștri",
     "about.reviews.review1.text": "Ca CEO al Utopic (echipa de planificare evenimente) și Visual Delights Marketing Agency, am lucrat mult cu Zoomout Crew. Se potrivesc stilului nostru jucăuș și nu se tem să meargă pe urmele ideilor noastre sălbatice (uneori chiar nebunești, să fiu sincer), motiv pentru care au fost alegerea perfectă pentru noi. Când ai nevoie de acele cadre nebunești, periculoase, îi chemi pe ei. Sunt pasionați de ceea ce fac și gata să testeze limitele capacităților lor. Prin urmare, îi recomand dacă te aliniezi și tu cu o viziune îndrăzneață și creativă.",
     "about.reviews.review1.name": "Naim Onuk",
@@ -449,6 +461,18 @@ const translations: Record<Language, Record<string, string>> = {
     "contact.success": "Mulțumim pentru mesaj! 🚀",
     "contact.error": "Ups! Ceva a mers greșit. Te rugăm să încerci din nou.",
     "contact.footer": "Toate drepturile rezervate.",
+    "footer.description": "Servicii profesionale de filmari aeriene si videografie. Capturand viziunea ta din inaltime.",
+    "footer.navigation": "Navigare",
+    "footer.contact": "Contact",
+    "footer.getInTouch": "Contacteaza-ne",
+    "footer.viewServices": "Vezi Servicii",
+    "footer.about": "Despre",
+    "footer.contactLink": "Contact",
+    "footer.allRightsReserved": "Toate drepturile rezervate.",
+    "notFound.title": "Pagina Nu a Fost Gasita",
+    "notFound.description": "Ups! Pagina pe care o cauti nu exista. Poate a fost mutata sau stearsa.",
+    "notFound.backHome": "Inapoi la Acasa",
+    "notFound.viewPortfolio": "Vezi Portofoliul",
 
     // Shop page
     "shop.title": "Magazin",

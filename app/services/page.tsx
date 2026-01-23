@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
+import ImageSkeleton from "@/components/ImageSkeleton";
 
 type ServiceCategory = "all" | "videography" | "production";
 
@@ -71,6 +72,7 @@ export default function Services() {
   const { t, language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory>("all");
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
 
   // Update page title when language changes
   useEffect(() => {
@@ -153,10 +155,18 @@ export default function Services() {
             >
               {/* Service Image */}
               <div className="aspect-video relative overflow-hidden">
-                <img
+                {!loadedImages.has(service.id) && (
+                  <ImageSkeleton className="absolute inset-0" aspectRatio="video" />
+                )}
+                <Image
                   src={service.image}
                   alt={service.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className={`object-cover transition-all duration-500 group-hover:scale-110 ${
+                    loadedImages.has(service.id) ? 'opacity-100' : 'opacity-0'
+                  }`}
+                  onLoad={() => setLoadedImages(prev => new Set(prev).add(service.id))}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20 group-hover:from-black/60 group-hover:via-black/30 group-hover:to-black/10 transition-all duration-300" />
                 

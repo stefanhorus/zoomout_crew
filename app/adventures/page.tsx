@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
-import LoadingSkeleton from "@/components/LoadingSkeleton";
+import ImageSkeleton from "@/components/ImageSkeleton";
 
 // Tipuri de aventuri pentru filtrare
 type AdventureCategory = "all" | "europe" | "asia" | "americas" | "africa" | "oceania";
@@ -396,7 +396,7 @@ export default function Adventures() {
             >
               <div className="aspect-video relative overflow-hidden bg-gray-900">
                 {!loadedImages.has(adv.id) && (
-                  <LoadingSkeleton className="absolute inset-0" />
+                  <ImageSkeleton className="absolute inset-0" aspectRatio="video" />
                 )}
                 <Image
                   src={adv.thumbnail}

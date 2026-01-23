@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
-import LoadingSkeleton from "@/components/LoadingSkeleton";
+import ImageSkeleton from "@/components/ImageSkeleton";
 
 // Tipuri de proiecte pentru filtrare
 type ProjectCategory = "all" | "real-estate" | "events" | "commercial";
@@ -297,7 +297,7 @@ export default function Portfolio() {
                   : 'bg-gray-900'
               }`}>
                 {!loadedImages.has(project.id) && (
-                  <LoadingSkeleton className="absolute inset-0" />
+                  <ImageSkeleton className="absolute inset-0" aspectRatio="video" />
                 )}
                 <Image
                   src={project.thumbnail}

@@ -1,18 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Footer() {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/portfolio", label: "Portfolio" },
-    { href: "/services", label: "Services" },
-    { href: "/adventures", label: "Adventures" },
-    { href: "/shop", label: "Shop" },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
+    { href: "/", labelKey: "nav.home" },
+    { href: "/portfolio", labelKey: "nav.portfolio" },
+    { href: "/services", labelKey: "nav.services" },
+    { href: "/adventures", labelKey: "nav.adventures" },
+    { href: "/shop", labelKey: "nav.shop" },
+    { href: "/about", labelKey: "nav.about" },
+    { href: "/contact", labelKey: "nav.contact" },
   ];
 
   const socialLinks = [
@@ -43,7 +45,7 @@ export default function Footer() {
               Zoomout_crew
             </h3>
             <p className="text-gray-300 text-sm mb-6 leading-relaxed">
-              Professional aerial footage and videography services. Capturing your vision from above.
+              {t("footer.description")}
             </p>
             {/* Social Media Links */}
             <div className="flex gap-4">
@@ -69,7 +71,7 @@ export default function Footer() {
           {/* Navigation Links - 2 coloane */}
           <div>
             <h4 className="text-lg font-semibold mb-4 text-white transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.2)]" style={{ fontFamily: "var(--font-playfair)" }}>
-              Navigation
+              {t("footer.navigation")}
             </h4>
             <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
               {navLinks.map((link) => (
@@ -78,7 +80,7 @@ export default function Footer() {
                     href={link.href}
                     className="text-gray-300 hover:text-white transition-all duration-300 text-sm relative group inline-block"
                   >
-                    <span className="relative z-10">{link.label}</span>
+                    <span className="relative z-10">{t(link.labelKey)}</span>
                     <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full shadow-[0_0_4px_rgba(255,255,255,0.5)]" />
                   </Link>
                 </li>
@@ -89,7 +91,7 @@ export default function Footer() {
           {/* Contact Info */}
           <div>
             <h4 className="text-lg font-semibold mb-4 text-white transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.2)]" style={{ fontFamily: "var(--font-playfair)" }}>
-              Contact
+              {t("footer.contact")}
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
@@ -103,13 +105,13 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/contact" className="text-gray-300 hover:text-white transition-all duration-300 relative group inline-block">
-                  <span className="relative z-10">Get in Touch</span>
+                  <span className="relative z-10">{t("footer.getInTouch")}</span>
                   <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full shadow-[0_0_4px_rgba(255,255,255,0.5)]" />
                 </Link>
               </li>
               <li>
                 <Link href="/services" className="text-gray-300 hover:text-white transition-all duration-300 relative group inline-block">
-                  <span className="relative z-10">View Services</span>
+                  <span className="relative z-10">{t("footer.viewServices")}</span>
                   <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full shadow-[0_0_4px_rgba(255,255,255,0.5)]" />
                 </Link>
               </li>
@@ -120,15 +122,15 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-300 text-sm">
-            © {currentYear} Zoomout_crew. All rights reserved.
+            © {currentYear} Zoomout_crew. {t("footer.allRightsReserved")}
           </p>
           <div className="flex gap-6 text-sm">
             <Link href="/about" className="text-gray-300 hover:text-white transition-all duration-300 relative group">
-              <span className="relative z-10">About</span>
+              <span className="relative z-10">{t("footer.about")}</span>
               <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full" />
             </Link>
             <Link href="/contact" className="text-gray-300 hover:text-white transition-all duration-300 relative group">
-              <span className="relative z-10">Contact</span>
+              <span className="relative z-10">{t("footer.contactLink")}</span>
               <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full" />
             </Link>
           </div>
