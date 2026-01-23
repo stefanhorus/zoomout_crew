@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     default: "Zoomout_crew - Professional Aerial Footage & Cinematography",
     template: "%s | Zoomout_crew",
   },
-  description: "Professional aerial footage and cinematography services. Capturing your vision from above. Specialized in drone videography, real estate, events, and commercial projects.",
+  description: "Professional aerial videography & more",
   keywords: ["aerial footage", "drone cinematography", "aerial videography", "drone services", "real estate videography", "event coverage", "commercial videography"],
   openGraph: {
     type: "website",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     url: "https://zoomoutcrew.com",
     siteName: "Zoomout_crew",
     title: "Zoomout_crew - Professional Aerial Footage & Cinematography",
-    description: "Professional aerial footage and cinematography services. Capturing your vision from above.",
+    description: "Professional aerial videography & more",
   },
   robots: {
     index: true,
