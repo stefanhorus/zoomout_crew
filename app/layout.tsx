@@ -9,6 +9,7 @@ import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { CookieProvider } from "@/contexts/CookieContext";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
+import StructuredData from "@/components/StructuredData";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -29,6 +30,13 @@ export const metadata: Metadata = {
   },
   description: "Professional aerial videography & more",
   keywords: ["aerial footage", "drone cinematography", "aerial videography", "drone services", "real estate videography", "event coverage", "commercial videography"],
+  alternates: {
+    canonical: "https://zoomoutcrew.com",
+    languages: {
+      "en": "https://zoomoutcrew.com",
+      "ro": "https://zoomoutcrew.com",
+    },
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -79,6 +87,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://iframe.mediadelivery.net" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://iframe.mediadelivery.net" />
         <link rel="preconnect" href="https://vz-*.b-cdn.net" crossOrigin="anonymous" />
+        {/* hreflang tags pentru SEO multilingv */}
+        <link rel="alternate" hrefLang="en" href="https://zoomoutcrew.com" />
+        <link rel="alternate" hrefLang="ro" href="https://zoomoutcrew.com" />
+        <link rel="alternate" hrefLang="x-default" href="https://zoomoutcrew.com" />
+        {/* Organization Structured Data */}
+        <StructuredData type="Organization" data={{}} />
       </head>
       <body
         className={`${roboto.variable} ${playfair.variable} bg-black text-white antialiased flex flex-col min-h-screen`}
