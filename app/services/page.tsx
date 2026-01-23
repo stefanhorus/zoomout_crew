@@ -211,20 +211,22 @@ export default function Services() {
       {/* Modal for Service Details */}
       {selectedService && (
         <div
-          className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/95 backdrop-blur-sm p-0 md:p-6 overflow-y-auto animate-fade-in"
+          className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/95 backdrop-blur-sm p-0 md:p-4 lg:p-6 overflow-y-auto animate-fade-in"
           onClick={() => setSelectedService(null)}
         >
           <div
-            className="max-w-4xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-hidden my-0 md:my-4 min-h-screen md:min-h-0"
+            className="max-w-4xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-hidden my-0 md:my-4 min-h-screen md:min-h-0 max-h-screen md:max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Image */}
-            <div className="relative aspect-video max-h-[40vh] md:max-h-none">
-              <img
-                src={selectedService.image}
-                alt={selectedService.title}
-                className="w-full h-full object-contain bg-black"
-              />
+            <div className="flex-shrink-0 bg-black overflow-hidden">
+              <div className="relative w-full bg-black overflow-hidden flex items-center justify-center h-[40vh] md:h-[45vh]">
+                <img
+                  src={selectedService.image}
+                  alt={selectedService.title}
+                  className="w-full h-full object-contain"
+                />
+              </div>
               
               {/* Close Button */}
               <button
@@ -238,7 +240,7 @@ export default function Services() {
             </div>
 
             {/* Modal Content */}
-            <div className="p-5 sm:p-6 md:p-8 overflow-y-auto">
+            <div className="p-5 sm:p-6 md:p-8 overflow-y-auto flex-1">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedService.title}
               </h2>
