@@ -70,10 +70,10 @@ export function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
       const t = translations[lang];
 
       // Color scheme
-      const primaryColor = [30, 30, 30]; // Dark gray/black
-      const accentColor = [100, 100, 100]; // Medium gray
-      const lightGray = [245, 245, 245]; // Light gray for backgrounds
-      const borderColor = [220, 220, 220]; // Light border
+      const primaryColor: [number, number, number] = [30, 30, 30]; // Dark gray/black
+      const accentColor: [number, number, number] = [100, 100, 100]; // Medium gray
+      const lightGray: [number, number, number] = [245, 245, 245]; // Light gray for backgrounds
+      const borderColor: [number, number, number] = [220, 220, 220]; // Light border
 
       // Header with colored background
       doc.setFillColor(...primaryColor);
