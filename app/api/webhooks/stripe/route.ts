@@ -70,12 +70,12 @@ export async function POST(request: NextRequest) {
         expand: ["line_items", "line_items.data.price.product"],
       });
 
+      const metadata = fullSession.metadata || {};
       const customerEmail = session.customer_details?.email;
       const customerName = metadata.customer_name || session.customer_details?.name || undefined;
       const amountTotal = session.amount_total || 0;
       const currency = (session.currency?.toUpperCase() || "RON");
       const lineItems = fullSession.line_items?.data || [];
-      const metadata = fullSession.metadata || {};
       const language = (metadata.language as "en" | "ro") || "en";
       const invoiceRequested =
         metadata.request_invoice === "true" ||
