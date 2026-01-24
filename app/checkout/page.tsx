@@ -7,6 +7,7 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { getDiscountPercentageForCode } from "@/lib/discount-codes";
 
 function CheckoutContent() {
   const { cart, getTotalPrice, clearCart } = useCart();
@@ -30,22 +31,12 @@ function CheckoutContent() {
   const handleApplyDiscount = () => {
     setDiscountError("");
     
-    // Coduri de discount simple (poți extinde cu o bază de date sau API)
-    const validCodes: { [key: string]: number } = {
-      "FREE": 100,
-      "MRMITZY": 90,
-      "WELCOME10": 10,
-      "SAVE20": 20,
-      "ZOOMOUT15": 15,
-      "FIRST25": 25,
-      "ALIS20": 20,
-    };
-
     const code = discountCode.trim().toUpperCase();
+    const percentage = getDiscountPercentageForCode(code);
     
-    if (validCodes[code]) {
+    if (percentage > 0) {
       setDiscountApplied(true);
-      setDiscountPercentage(validCodes[code]);
+      setDiscountPercentage(percentage);
       setDiscountError("");
     } else {
       setDiscountError(t("checkout.discountInvalid"));

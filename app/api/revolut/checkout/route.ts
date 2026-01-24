@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
+import { getDiscountPercentageForCode, normalizeDiscountCode } from "@/lib/discount-codes";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,7 +14,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { items, discountPercentage, customerEmail, language, currency = "RON" } = await request.json();
+    const { items, discountPercentage, discountCode, customerEmail, language, currency = "RON" } = await request.json();
+    // Determine discount (prefer code if provided)
+    const normalizedCode = typeof discountCode === "string" ? normalizeDiscountCode(discountCode) : "";
+    const percentageFromCode = normalizedCode ? getDiscountPercentageForCode(normalizedCode) : 0;
+    if (normalizedCode && percentageFromCode <= 0) {
+      return NextResponse.json(
+        { error: "Invalid discount code" },
+        { status: 400 }
+      );
+    }
+    const effectiveDiscountPercentage =
+      percentageFromCode > 0
+        ? percentageFromCode
+        : typeof discountPercentage === "number"
+          ? Math.max(0, Math.min(100, discountPercentage))
+          : 0;
+
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -41,8 +58,8 @@ export async function POST(request: NextRequest) {
     }, 0);
 
     // Aplică discount dacă există
-    if (discountPercentage && discountPercentage > 0) {
-      totalAmountRON = totalAmountRON * (1 - discountPercentage / 100);
+    if (effectiveDiscountPercentage > 0) {
+      totalAmountRON = totalAmountRON * (1 - effectiveDiscountPercentage / 100);
     }
 
     // Convertește în currency-ul selectat
@@ -54,8 +71,8 @@ export async function POST(request: NextRequest) {
       let unitPriceRON = item.product.price;
       
       // Aplică discount dacă există
-      if (discountPercentage && discountPercentage > 0) {
-        unitPriceRON = unitPriceRON * (1 - discountPercentage / 100);
+      if (effectiveDiscountPercentage > 0) {
+        unitPriceRON = unitPriceRON * (1 - effectiveDiscountPercentage / 100);
       }
 
       // Convertește în currency-ul selectat
@@ -90,7 +107,8 @@ export async function POST(request: NextRequest) {
         description: `Order from Zoomout Crew - ${items.length} item(s)`,
         items: orderItems,
         metadata: {
-          discount_percentage: discountPercentage || 0,
+          discount_percentage: effectiveDiscountPercentage || 0,
+          discount_code: normalizedCode || "",
           items_count: items.length,
           customer_email: customerEmail || "",
           language: language || "en",
@@ -119,8 +137,8 @@ export async function POST(request: NextRequest) {
       
       const formattedItems = items.map((item: { product: { name: string; price: number }; quantity: number }) => {
         let unitPriceRON = item.product.price;
-        if (discountPercentage && discountPercentage > 0) {
-          unitPriceRON = unitPriceRON * (1 - discountPercentage / 100);
+        if (effectiveDiscountPercentage > 0) {
+          unitPriceRON = unitPriceRON * (1 - effectiveDiscountPercentage / 100);
         }
         
         return {
@@ -142,10 +160,13 @@ export async function POST(request: NextRequest) {
           status: "pending",
           paymentIntentId: data.public_id,
           items: formattedItems,
-          discountPercentage: discountPercentage || undefined,
+          discountPercentage: effectiveDiscountPercentage || undefined,
+          discountCode: normalizedCode || undefined,
           metadata: {
             language: language || "en",
             original_currency: "RON",
+            discount_percentage: effectiveDiscountPercentage || 0,
+            discount_code: normalizedCode || "",
             payment_currency: selectedCurrency,
             exchange_rate: exchangeRate.toString(),
             total_amount_ron: totalAmountRON.toFixed(2),

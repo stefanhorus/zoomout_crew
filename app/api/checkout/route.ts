@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
+import { getDiscountPercentageForCode, normalizeDiscountCode } from "@/lib/discount-codes";
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
       apiVersion: "2025-12-15.clover",
     });
 
-    const { items, discountPercentage, customerEmail, language, currency = "RON" } = await request.json();
+    const { items, discountPercentage, discountCode, customerEmail, language, currency = "RON" } = await request.json();
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -26,6 +27,22 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Determine discount (prefer code if provided)
+    const normalizedCode = typeof discountCode === "string" ? normalizeDiscountCode(discountCode) : "";
+    const percentageFromCode = normalizedCode ? getDiscountPercentageForCode(normalizedCode) : 0;
+    if (normalizedCode && percentageFromCode <= 0) {
+      return NextResponse.json(
+        { error: "Invalid discount code" },
+        { status: 400 }
+      );
+    }
+    const effectiveDiscountPercentage =
+      percentageFromCode > 0
+        ? percentageFromCode
+        : typeof discountPercentage === "number"
+          ? Math.max(0, Math.min(100, discountPercentage))
+          : 0;
 
     // Rate-uri de schimb (trebuie să fie identice cu cele din CurrencyContext)
     const exchangeRates: Record<string, number> = {
@@ -49,8 +66,8 @@ export async function POST(request: NextRequest) {
     }, 0);
 
     // Aplică discount dacă există
-    if (discountPercentage && discountPercentage > 0) {
-      totalAmountRON = totalAmountRON * (1 - discountPercentage / 100);
+    if (effectiveDiscountPercentage > 0) {
+      totalAmountRON = totalAmountRON * (1 - effectiveDiscountPercentage / 100);
     }
 
     // Convertește în currency-ul selectat
@@ -62,8 +79,8 @@ export async function POST(request: NextRequest) {
       let unitPriceRON = item.product.price;
       
       // Aplică discount dacă există
-      if (discountPercentage && discountPercentage > 0) {
-        unitPriceRON = unitPriceRON * (1 - discountPercentage / 100);
+      if (effectiveDiscountPercentage > 0) {
+        unitPriceRON = unitPriceRON * (1 - effectiveDiscountPercentage / 100);
       }
 
       // Convertește în currency-ul selectat
@@ -94,6 +111,8 @@ export async function POST(request: NextRequest) {
       metadata: {
         customer_email: customerEmail || "",
         language: language || "en",
+        discount_percentage: effectiveDiscountPercentage ? effectiveDiscountPercentage.toString() : "0",
+        discount_code: normalizedCode || "",
         original_currency: "RON",
         payment_currency: selectedCurrency,
         exchange_rate: exchangeRate.toString(),
@@ -108,8 +127,8 @@ export async function POST(request: NextRequest) {
       
       const formattedItems = items.map((item: { product: { name: string; price: number }; quantity: number }) => {
         let unitPriceRON = item.product.price;
-        if (discountPercentage && discountPercentage > 0) {
-          unitPriceRON = unitPriceRON * (1 - discountPercentage / 100);
+        if (effectiveDiscountPercentage > 0) {
+          unitPriceRON = unitPriceRON * (1 - effectiveDiscountPercentage / 100);
         }
         
         return {
@@ -130,9 +149,12 @@ export async function POST(request: NextRequest) {
           currency: selectedCurrency,
           status: "pending",
           items: formattedItems,
-          discountPercentage: discountPercentage || undefined,
+          discountPercentage: effectiveDiscountPercentage || undefined,
+          discountCode: normalizedCode || undefined,
           metadata: {
             language: language || "en",
+            discount_percentage: effectiveDiscountPercentage ? effectiveDiscountPercentage.toString() : "0",
+            discount_code: normalizedCode || "",
             original_currency: "RON",
             payment_currency: selectedCurrency,
             exchange_rate: exchangeRate.toString(),

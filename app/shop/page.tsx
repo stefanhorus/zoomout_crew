@@ -25,7 +25,7 @@ interface Product {
 }
 
 // Produse digitale - LUTs, Wallpapers, Sound Design
-const products: Product[] = [
+const baseProducts: Product[] = [
   {
     id: 1,
     name: "Cinematic Video LUTs",
@@ -171,6 +171,13 @@ const products: Product[] = [
     downloadUrl: "https://drive.google.com/drive/folders/YOUR_FULL_LUT_BUNDLE_FOLDER_ID",
   },
 ];
+
+// Dublează toate prețurile (price + originalPrice) pentru toate produsele
+const products: Product[] = baseProducts.map((p) => ({
+  ...p,
+  price: p.price * 2,
+  originalPrice: typeof p.originalPrice === "number" ? p.originalPrice * 2 : undefined,
+}));
 
 export default function Shop() {
   const { t, language } = useLanguage();

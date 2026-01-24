@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
 import { getDownloadUrl, isDigitalProduct } from "@/lib/digital-products";
+import { getDiscountPercentageForCode, normalizeDiscountCode } from "@/lib/discount-codes";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
 
@@ -16,7 +17,23 @@ export async function POST(request: NextRequest) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const { items, customerEmail, discountPercentage, language, currency = "RON" } = await request.json();
+    const { items, customerEmail, discountPercentage, discountCode, language, currency = "RON" } = await request.json();
+    // Determine discount (prefer code if provided)
+    const normalizedCode = typeof discountCode === "string" ? normalizeDiscountCode(discountCode) : "";
+    const percentageFromCode = normalizedCode ? getDiscountPercentageForCode(normalizedCode) : 0;
+    if (normalizedCode && percentageFromCode <= 0) {
+      return NextResponse.json(
+        { error: "Invalid discount code" },
+        { status: 400 }
+      );
+    }
+    const effectiveDiscountPercentage =
+      percentageFromCode > 0
+        ? percentageFromCode
+        : typeof discountPercentage === "number"
+          ? Math.max(0, Math.min(100, discountPercentage))
+          : 0;
+
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -38,8 +55,8 @@ export async function POST(request: NextRequest) {
     }, 0);
 
     // Aplică discount dacă există
-    if (discountPercentage && discountPercentage > 0) {
-      totalAmount = totalAmount * (1 - discountPercentage / 100);
+    if (effectiveDiscountPercentage > 0) {
+      totalAmount = totalAmount * (1 - effectiveDiscountPercentage / 100);
     }
 
     // Verifică dacă totalul este 0
@@ -132,7 +149,8 @@ export async function POST(request: NextRequest) {
         currency: selectedCurrency,
         status: "completed",
         items: formattedItems,
-        discountPercentage: discountPercentage || undefined,
+        discountPercentage: effectiveDiscountPercentage || undefined,
+        discountCode: normalizedCode || undefined,
         metadata: {
           language: lang,
           originalCurrency: "RON",
