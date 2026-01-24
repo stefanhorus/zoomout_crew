@@ -34,7 +34,10 @@ export async function GET(request: NextRequest) {
 
     const invoicePDF = await generateInvoicePDF(testInvoiceData);
 
-    return new NextResponse(invoicePDF, {
+    // Convert Buffer to Uint8Array for NextResponse compatibility
+    const pdfArray = new Uint8Array(invoicePDF);
+
+    return new NextResponse(pdfArray, {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
