@@ -4,6 +4,7 @@ import Order from "@/lib/models/Order";
 import { Resend } from "resend";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
 import { getDownloadUrl, isDigitalProduct } from "@/lib/digital-products";
+import { generateRevolutReceiptPDF } from "@/lib/revolut-receipt-generator";
 
 // Verifică și actualizează status-ul comenzilor "pending" din Revolut
 export async function POST(request: NextRequest) {
@@ -93,6 +94,11 @@ export async function POST(request: NextRequest) {
             try {
               const amountTotal = revolutOrder.amount || 0;
               const currency = (revolutOrder.currency || "RON").toUpperCase();
+              const invoiceRequested =
+                metadata.request_invoice === true ||
+                metadata.request_invoice === "true" ||
+                metadata.request_invoice === 1 ||
+                metadata.request_invoice === "1";
 
               // Format products list and collect digital downloads
               const digitalDownloads: Array<{ productName: string; downloadUrl: string }> = [];
@@ -121,6 +127,8 @@ export async function POST(request: NextRequest) {
               const websiteUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://zoomoutcrew.com";
               const logoUrl = `${websiteUrl}/assets/logo.png`;
               const fromEmail = process.env.EMAIL_FROM || "Zoomout Crew <contact@zoomoutcrew.com>";
+              const orderNotificationEmail =
+                process.env.ORDER_NOTIFICATION_EMAIL || "stefanhorus@zoomoutcrew.com";
 
               const emailContent = generateOrderConfirmationEmail({
                 productsList,
@@ -130,16 +138,62 @@ export async function POST(request: NextRequest) {
                 logoUrl,
                 language,
                 digitalDownloads: digitalDownloads.length > 0 ? digitalDownloads : undefined,
+                invoiceRequested,
               });
 
               const resend = new Resend(process.env.RESEND_API_KEY);
-              const { error: emailError } = await resend.emails.send({
+              // Always attach a Revolut payment receipt PDF (based on Revolut order/payment data)
+              let revolutReceiptAttachment: { filename: string; content: string } | null = null;
+              try {
+                const firstPayment = Array.isArray(revolutOrder.payments) ? revolutOrder.payments[0] : undefined;
+                const paymentMethod = firstPayment?.payment_method || firstPayment?.paymentMethod || {};
+
+                const receiptPDF = await generateRevolutReceiptPDF({
+                  orderId: order.orderId,
+                  revolutPublicId: revolutOrder.public_id,
+                  customerEmail,
+                  // Use our stored items (RON) to avoid currency mismatch
+                  items: (order.items as any) || [],
+                  amountCurrencyMinor: amountTotal,
+                  currency,
+                  state: orderState,
+                  createdAt: revolutOrder.created_at,
+                  language,
+                  payment: {
+                    id: firstPayment?.id,
+                    state: firstPayment?.state,
+                    createdAt: firstPayment?.created_at,
+                    paymentMethodType: paymentMethod?.type,
+                    cardBrand: paymentMethod?.card_brand,
+                    cardLastFour: paymentMethod?.card_last_four,
+                    cardCountryCode: paymentMethod?.card_country_code,
+                    authorisationCode: firstPayment?.authorisation_code,
+                    arn: firstPayment?.arn,
+                  },
+                });
+
+                revolutReceiptAttachment = {
+                  filename: `Revolut_Receipt_${order.orderId}.pdf`,
+                  content: receiptPDF.toString("base64"),
+                };
+              } catch (receiptError: any) {
+                console.error(`❌ Error generating Revolut receipt PDF for order ${order.orderId}:`, receiptError);
+              }
+
+              const emailPayload: any = {
                 from: fromEmail,
                 to: customerEmail,
+                bcc: orderNotificationEmail,
                 subject: emailContent.subject,
                 html: emailContent.html,
                 text: emailContent.text,
-              });
+              };
+
+              if (revolutReceiptAttachment) {
+                emailPayload.attachments = [revolutReceiptAttachment];
+              }
+
+              const { error: emailError } = await resend.emails.send(emailPayload);
 
               if (emailError) {
                 console.error(`❌ Error sending email for order ${order.orderId}:`, emailError);

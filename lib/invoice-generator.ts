@@ -4,6 +4,7 @@ import { IOrderItem } from "./models/Order";
 export interface InvoiceData {
   orderId: string;
   customerEmail: string;
+  customerName?: string;
   items: IOrderItem[];
   amountRON: number;
   amountCurrency: number;
@@ -31,6 +32,7 @@ export function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
           invoice: "INVOICE",
           orderNumber: "Order Number",
           date: "Date",
+          customerName: "Customer Name",
           customerEmail: "Customer Email",
           item: "Item",
           quantity: "Qty",
@@ -50,6 +52,7 @@ export function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
           invoice: "FACTURA",
           orderNumber: "Numar Comanda",
           date: "Data",
+          customerName: "Nume Client",
           customerEmail: "Email Client",
           item: "Produs",
           quantity: "Cant.",
@@ -104,12 +107,32 @@ export function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
       doc.setTextColor(...primaryColor);
       
       // Order Info section with background - centered
+      // Calculate required height first
       let yPos = 65;
-      doc.setFillColor(...lightGray);
-      doc.roundedRect(15, yPos - 5, 180, 28, 3, 3, "F");
+      const startY = yPos - 5;
       
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
+      
+      // Calculate email text height
+      const emailText = doc.splitTextToSize(data.customerEmail, 150);
+      const emailHeight = emailText.length * 5;
+      
+      // Calculate customer name text height if provided
+      const customerNameHeight = data.customerName ? 12 : 0; // 6 (label) + 6 (value)
+      
+      // Calculate total height needed: labels + values + spacing
+      // Order Number: 6 (label) + 6 (value) = 12
+      // Date: 6 (label) + 6 (value) = 12
+      // Customer Name (if provided): 6 (label) + 6 (value) = 12
+      // Email: 6 (label) + emailHeight (value) + 2 (padding bottom) = 8 + emailHeight
+      const boxHeight = 12 + 12 + customerNameHeight + 8 + emailHeight + 2; // Total with reduced bottom padding
+      
+      // Draw the gray box with calculated height
+      doc.setFillColor(...lightGray);
+      doc.roundedRect(15, startY, 180, boxHeight, 3, 3, "F");
+      
+      // Now add content inside the box
       doc.setTextColor(...primaryColor);
       doc.text(`${t.orderNumber}:`, 105, yPos, { align: "center" });
       doc.setFont("helvetica", "bold");
@@ -130,13 +153,21 @@ export function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
         { align: "center" }
       );
       
+      // Add customer name if provided
+      if (data.customerName) {
+        yPos += 12;
+        doc.setFont("helvetica", "normal");
+        doc.text(`${t.customerName}:`, 105, yPos, { align: "center" });
+        doc.setFont("helvetica", "bold");
+        doc.text(data.customerName, 105, yPos + 6, { align: "center" });
+      }
+      
       yPos += 12;
       doc.setFont("helvetica", "normal");
       doc.text(`${t.customerEmail}:`, 105, yPos, { align: "center" });
       doc.setFont("helvetica", "bold");
-      const emailText = doc.splitTextToSize(data.customerEmail, 150);
       doc.text(emailText, 105, yPos + 6, { align: "center" });
-      yPos += emailText.length * 5 + 12;
+      yPos = startY + boxHeight + 5; // Position after the box
 
       // Table Header with colored background
       doc.setFillColor(...primaryColor);

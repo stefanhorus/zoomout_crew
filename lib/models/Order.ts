@@ -10,6 +10,7 @@ export interface IOrder extends Document {
   orderId: string; // ID din Stripe/Revolut sau free-{timestamp}
   provider: "stripe" | "revolut" | "free";
   customerEmail: string;
+  customerName?: string; // Numele complet al clientului (opțional, pentru facturi)
   amountRON: number; // Prețul exact în RON la momentul checkout-ului
   amountCurrency: number; // Prețul în currency-ul selectat
   currency: string; // RON, EUR, USD, GBP
@@ -39,6 +40,7 @@ const OrderSchema = new Schema<IOrder>(
     orderId: { type: String, required: true, unique: true, index: true },
     provider: { type: String, required: true, enum: ["stripe", "revolut", "free"] },
     customerEmail: { type: String, required: true, index: true },
+    customerName: { type: String },
     amountRON: { type: Number, required: true },
     amountCurrency: { type: Number, required: true },
     currency: { type: String, required: true, default: "RON" },

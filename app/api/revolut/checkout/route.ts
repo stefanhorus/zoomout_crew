@@ -14,7 +14,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { items, discountPercentage, discountCode, customerEmail, language, currency = "RON" } = await request.json();
+    const { items, discountPercentage, discountCode, customerEmail, customerName, language, currency = "RON", requestInvoice } = await request.json();
+    const invoiceRequested = !!requestInvoice;
     // Determine discount (prefer code if provided)
     const normalizedCode = typeof discountCode === "string" ? normalizeDiscountCode(discountCode) : "";
     const percentageFromCode = normalizedCode ? getDiscountPercentageForCode(normalizedCode) : 0;
@@ -111,7 +112,9 @@ export async function POST(request: NextRequest) {
           discount_code: normalizedCode || "",
           items_count: items.length,
           customer_email: customerEmail || "",
+          customer_name: customerName?.trim() || "",
           language: language || "en",
+          request_invoice: invoiceRequested,
           original_currency: "RON",
           payment_currency: selectedCurrency,
           exchange_rate: exchangeRate.toString(),
@@ -154,6 +157,7 @@ export async function POST(request: NextRequest) {
           orderId: data.id,
           provider: "revolut",
           customerEmail: customerEmail || "",
+          customerName: customerName?.trim() || undefined,
           amountRON: totalAmountRON,
           amountCurrency: totalAmount,
           currency: selectedCurrency,
@@ -167,6 +171,7 @@ export async function POST(request: NextRequest) {
             original_currency: "RON",
             discount_percentage: effectiveDiscountPercentage || 0,
             discount_code: normalizedCode || "",
+            request_invoice: invoiceRequested,
             payment_currency: selectedCurrency,
             exchange_rate: exchangeRate.toString(),
             total_amount_ron: totalAmountRON.toFixed(2),

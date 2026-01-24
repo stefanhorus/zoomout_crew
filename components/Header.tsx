@@ -179,34 +179,31 @@ export default function Header() {
                 )}
               </div>
             </div>
-            {/* Cart Icon - când există produse sau când cart-ul este deschis */}
-            {(getTotalItems() > 0 || isCartOpen) && (
-              <button
-                onClick={() => setIsCartOpen(true)}
-                className="relative text-white hover:opacity-90 transition-all duration-300 group"
-                aria-label="Open shopping cart"
-              >
-                <svg className="w-6 h-6 transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                {getTotalItems() > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg shadow-red-500/50 animate-pulse">
-                    {getTotalItems()}
-                  </span>
-                )}
-              </button>
-            )}
+            {/* Cart Icon - afișat întotdeauna pentru ca animația să funcționeze */}
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative text-white hover:opacity-90 transition-all duration-300 group"
+              aria-label="Open shopping cart"
+            >
+              <svg className="w-6 h-6 transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              {getTotalItems() > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg shadow-red-500/50 animate-pulse">
+                  {getTotalItems()}
+                </span>
+              )}
+            </button>
           </div>
 
           {/* Mobile: Cart + Hamburger */}
           <div className="flex md:hidden items-center gap-4">
-            {/* Cart Icon Mobile - când există produse sau când cart-ul este deschis */}
-            {(getTotalItems() > 0 || isCartOpen) && (
-              <button
-                onClick={() => setIsCartOpen(true)}
-                className="relative text-white hover:opacity-90 transition-all duration-300 group"
-                aria-label="Open shopping cart"
-              >
+            {/* Cart Icon Mobile - afișat întotdeauna pentru ca animația să funcționeze */}
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative text-white hover:opacity-90 transition-all duration-300 group"
+              aria-label="Open shopping cart"
+            >
                 <svg className="w-6 h-6 transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
@@ -216,7 +213,6 @@ export default function Header() {
                   </span>
                 )}
               </button>
-            )}
 
             {/* Hamburger Button */}
             <button

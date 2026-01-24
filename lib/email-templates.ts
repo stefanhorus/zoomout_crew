@@ -11,6 +11,7 @@ export interface EmailData {
   logoUrl: string;
   language?: "en" | "ro";
   digitalDownloads?: DigitalDownload[]; // Lista de produse digitale cu link-uri de download
+  invoiceRequested?: boolean;
 }
 
 export function generateOrderConfirmationEmail(data: EmailData) {
@@ -25,6 +26,8 @@ export function generateOrderConfirmationEmail(data: EmailData) {
       orderConfirmation: "Order Confirmation 🎉",
       thankYouMessage: "Thank you for your purchase! We're excited to share our digital products with you.",
       orderDetails: "Order Details:",
+      invoiceRequested: "Invoice requested",
+      invoiceRequestedMessage: "You requested an invoice for this order. If we need additional billing details, we’ll contact you by email.",
       total: "Total:",
       whatsNext: "What's Next?",
       nextMessage: "You will receive your digital products via email shortly. If you have any questions or need assistance, please don't hesitate to contact us.",
@@ -52,6 +55,8 @@ export function generateOrderConfirmationEmail(data: EmailData) {
       orderConfirmation: "Confirmare Comandă 🎉",
       thankYouMessage: "Mulțumim pentru comandă! Suntem încântați să îți împărtășim produsele noastre digitale.",
       orderDetails: "Detalii Comandă:",
+      invoiceRequested: "Factură solicitată",
+      invoiceRequestedMessage: "Ai solicitat factură pentru această comandă. Dacă avem nevoie de date de facturare suplimentare, te contactăm pe email.",
       total: "Total:",
       whatsNext: "Ce urmează?",
       nextMessage: "Vei primi produsele digitale prin email în scurt timp. Dacă ai întrebări sau ai nevoie de asistență, nu ezita să ne contactezi.",
@@ -113,6 +118,14 @@ export function generateOrderConfirmationEmail(data: EmailData) {
                     <div style="color: #d0d0d0; line-height: 2; margin: 0; font-size: 15px;">
                       ${data.productsList}
                     </div>
+                    ${data.invoiceRequested ? `
+                    <div style="margin-top: 18px; padding-top: 18px; border-top: 1px solid #3a3a3a;">
+                      <p style="color: #ffffff; font-weight: 600; margin: 0 0 8px 0; font-size: 16px;">${t.invoiceRequested}</p>
+                      <p style="color: #d0d0d0; line-height: 1.7; margin: 0; font-size: 14px;">
+                        ${t.invoiceRequestedMessage}
+                      </p>
+                    </div>
+                    ` : ""}
                     <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #3a3a3a;">
                       <p style="color: #ffffff; font-weight: 600; margin: 0; font-size: 18px;">
                         ${t.total} ${(data.amountTotal / 100).toFixed(2)} ${data.currency}
@@ -187,6 +200,11 @@ ${t.textOrderConfirmed}
 
 ${t.textOrderDetails}
 ${data.productsList.replace(/<br>/g, "\n").replace(/•/g, "•")}
+
+${data.invoiceRequested ? `
+${t.invoiceRequested}: Yes
+${t.invoiceRequestedMessage}
+` : ""}
 
 ${t.textTotal} ${(data.amountTotal / 100).toFixed(2)} ${data.currency}
 

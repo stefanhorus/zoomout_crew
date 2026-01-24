@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { Resend } from "resend";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
 import { getDownloadUrl, isDigitalProduct } from "@/lib/digital-products";
+import { generateInvoicePDF } from "@/lib/invoice-generator";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
 
@@ -70,11 +71,16 @@ export async function POST(request: NextRequest) {
       });
 
       const customerEmail = session.customer_details?.email;
+      const customerName = metadata.customer_name || session.customer_details?.name || undefined;
       const amountTotal = session.amount_total || 0;
       const currency = (session.currency?.toUpperCase() || "RON");
       const lineItems = fullSession.line_items?.data || [];
       const metadata = fullSession.metadata || {};
       const language = (metadata.language as "en" | "ro") || "en";
+      const invoiceRequested =
+        metadata.request_invoice === "true" ||
+        metadata.request_invoice === "1" ||
+        (metadata.request_invoice as any) === true;
 
       if (!customerEmail) {
         console.error("No customer email found in session");
@@ -144,6 +150,7 @@ export async function POST(request: NextRequest) {
           orderId: session.id,
           provider: "stripe",
           customerEmail,
+          customerName: customerName?.trim() || undefined,
           amountRON,
           amountCurrency: amountInCurrencyDecimal,
           currency,
@@ -192,6 +199,8 @@ export async function POST(request: NextRequest) {
       const websiteUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://zoomoutcrew.com";
       const logoUrl = `${websiteUrl}/assets/logo.png`;
       const fromEmail = process.env.EMAIL_FROM || "Zoomout Crew <contact@zoomoutcrew.com>";
+      const orderNotificationEmail =
+        process.env.ORDER_NOTIFICATION_EMAIL || "stefanhorus@zoomoutcrew.com";
 
       // Generate email content based on language
       const emailContent = generateOrderConfirmationEmail({
@@ -202,6 +211,7 @@ export async function POST(request: NextRequest) {
         logoUrl,
         language,
         digitalDownloads: digitalDownloads.length > 0 ? digitalDownloads : undefined,
+        invoiceRequested,
       });
 
       // Send confirmation email to customer
@@ -210,13 +220,47 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ received: true });
       }
 
-      const { data, error } = await resend.emails.send({
+      // Optional: attach invoice PDF only if requested
+      let invoiceAttachment: { filename: string; content: string } | null = null;
+      if (invoiceRequested) {
+        try {
+          const invoicePDF = await generateInvoicePDF({
+            orderId: session.id,
+            customerEmail: customerEmail,
+            customerName: customerName?.trim() || undefined,
+            items: formattedItems,
+            amountRON: amountRON,
+            amountCurrency: amountInCurrencyDecimal,
+            currency: currency,
+            date: new Date(),
+            language: language,
+            discountPercentage: metadata.discount_percentage ? parseFloat(metadata.discount_percentage) : undefined,
+            discountCode: metadata.discount_code,
+          });
+
+          invoiceAttachment = {
+            filename: `Invoice_${session.id}.pdf`,
+            content: invoicePDF.toString("base64"),
+          };
+        } catch (pdfError: any) {
+          console.error("❌ Error generating invoice PDF (Stripe):", pdfError);
+        }
+      }
+
+      const emailPayload: any = {
         from: fromEmail,
         to: customerEmail,
+        bcc: orderNotificationEmail,
         subject: emailContent.subject,
         html: emailContent.html,
         text: emailContent.text,
-      });
+      };
+
+      if (invoiceAttachment) {
+        emailPayload.attachments = [invoiceAttachment];
+      }
+
+      const { data, error } = await resend.emails.send(emailPayload);
 
       if (error) {
         console.error("❌ Error sending purchase confirmation email:", error);

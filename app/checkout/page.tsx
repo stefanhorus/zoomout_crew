@@ -19,37 +19,97 @@ function CheckoutContent() {
   const [discountError, setDiscountError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [appliedCodes, setAppliedCodes] = useState<string[]>([]);
+  const [secondDiscountCode, setSecondDiscountCode] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"stripe" | "revolut">("revolut");
   const [showStripeFallback, setShowStripeFallback] = useState(false);
   const [customerEmail, setCustomerEmail] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [requestInvoice, setRequestInvoice] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+  const [nameError, setNameError] = useState("");
 
   const subtotal = getTotalPrice();
-  const discountAmount = discountApplied ? subtotal * (discountPercentage / 100) : 0;
+  
+  // Calculează reducerile cumulativ
+  const calculateTotalDiscount = () => {
+    if (appliedCodes.length === 0) return 0;
+    
+    // Aplică reducerile secvențial (fiecare pe prețul rămas după reducerea anterioară)
+    let remainingPrice = subtotal;
+    let totalDiscount = 0;
+    
+    for (const code of appliedCodes) {
+      const codePercentage = getDiscountPercentageForCode(code);
+      if (codePercentage > 0) {
+        const codeDiscount = remainingPrice * (codePercentage / 100);
+        totalDiscount += codeDiscount;
+        remainingPrice -= codeDiscount;
+      }
+    }
+    
+    return totalDiscount;
+  };
+  
+  const discountAmount = calculateTotalDiscount();
   const total = subtotal - discountAmount;
 
-  const handleApplyDiscount = (codeOverride?: string) => {
+  const handleApplyDiscount = (codeOverride?: string, isSecondCode = false) => {
     setDiscountError("");
     
-    const code = (codeOverride ?? discountCode).trim().toUpperCase();
+    const code = (codeOverride ?? (isSecondCode ? secondDiscountCode : discountCode)).trim().toUpperCase();
+    
+    // Verifică dacă codul a fost deja aplicat
+    if (appliedCodes.includes(code)) {
+      setDiscountError("Acest cod a fost deja aplicat");
+      return;
+    }
+    
     const percentage = getDiscountPercentageForCode(code);
     
     if (percentage > 0) {
+      // Adaugă codul la lista de coduri aplicate
+      setAppliedCodes(prev => [...prev, code]);
       setDiscountApplied(true);
-      setDiscountPercentage(percentage);
-      setDiscountCode(code);
+      
+      // Actualizează procentajul total (suma procentajelor)
+      const newTotalPercentage = appliedCodes.reduce((sum, c) => sum + getDiscountPercentageForCode(c), 0) + percentage;
+      setDiscountPercentage(newTotalPercentage);
+      
+      // Resetează input-ul corespunzător
+      if (isSecondCode) {
+        setSecondDiscountCode("");
+      } else {
+        setDiscountCode("");
+      }
       setDiscountError("");
     } else {
       setDiscountError(t("checkout.discountInvalid"));
-      setDiscountApplied(false);
-      setDiscountPercentage(0);
     }
   };
 
-  const handleRemoveDiscount = () => {
-    setDiscountApplied(false);
-    setDiscountPercentage(0);
-    setDiscountCode("");
+  const handleRemoveDiscount = (codeToRemove?: string) => {
+    if (codeToRemove) {
+      // Elimină un cod specific
+      setAppliedCodes(prev => prev.filter(c => c !== codeToRemove));
+      if (appliedCodes.length === 1) {
+        // Dacă era ultimul cod, resetează totul
+        setDiscountApplied(false);
+        setDiscountPercentage(0);
+      } else {
+        // Recalculează procentajul total
+        const remainingCodes = appliedCodes.filter(c => c !== codeToRemove);
+        const newTotalPercentage = remainingCodes.reduce((sum, c) => sum + getDiscountPercentageForCode(c), 0);
+        setDiscountPercentage(newTotalPercentage);
+      }
+    } else {
+      // Elimină toate codurile
+      setDiscountApplied(false);
+      setDiscountPercentage(0);
+      setAppliedCodes([]);
+      setDiscountCode("");
+      setSecondDiscountCode("");
+    }
     setDiscountError("");
   };
 
@@ -68,6 +128,13 @@ function CheckoutContent() {
     }
     setEmailError("");
 
+    // Validează numele dacă se cere factură
+    if (requestInvoice && !customerName.trim()) {
+      setNameError(t("checkout.emailError.required"));
+      return;
+    }
+    setNameError("");
+
     // Verifică dacă comanda este gratuită (0 lei)
     if (total <= 0) {
       setIsProcessing(true);
@@ -81,14 +148,16 @@ function CheckoutContent() {
             body: JSON.stringify({
               items: cart,
               customerEmail: customerEmail.trim(),
+              customerName: requestInvoice ? customerName.trim() : undefined,
               discountPercentage: discountApplied ? discountPercentage : undefined,
-              discountCode: discountApplied ? discountCode : undefined,
+              discountCode: discountApplied ? appliedCodes.join(", ") : undefined,
+              requestInvoice,
               language: language,
               currency: currency,
             }),
           });
 
-        const data = await response.json();
+          const data = await response.json();
 
         if (response.ok && data.success) {
           // Șterge coșul după procesarea comenzii gratuite
@@ -119,9 +188,11 @@ function CheckoutContent() {
             },
             body: JSON.stringify({ 
               items: cart,
-              discountCode: discountApplied ? discountCode : undefined,
+              discountCode: discountApplied ? appliedCodes.join(", ") : undefined,
               discountPercentage: discountApplied ? discountPercentage : undefined,
               customerEmail: customerEmail.trim(),
+              customerName: requestInvoice ? customerName.trim() : undefined,
+              requestInvoice,
               language: language,
               currency: currency,
             }),
@@ -156,9 +227,10 @@ function CheckoutContent() {
         },
         body: JSON.stringify({ 
           items: cart,
-          discountCode: discountApplied ? discountCode : undefined,
+          discountCode: discountApplied ? appliedCodes.join(", ") : undefined,
           discountPercentage: discountApplied ? discountPercentage : undefined,
           customerEmail: customerEmail.trim(),
+          requestInvoice,
           language: language,
           currency: currency,
         }),
@@ -304,6 +376,60 @@ function CheckoutContent() {
                   {t("checkout.emailHelper")}
                 </p>
               </div>
+
+              <div className="mt-4 p-4 rounded-xl border border-white/10 bg-white/5">
+                <label className="flex items-start gap-3 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={requestInvoice}
+                    onChange={(e) => {
+                      setRequestInvoice(e.target.checked);
+                      if (!e.target.checked) {
+                        setCustomerName("");
+                        setNameError("");
+                      }
+                    }}
+                    className="mt-1 h-4 w-4 rounded border-white/30 bg-transparent text-white focus:ring-white/30"
+                  />
+                  <div>
+                    <p className="text-white font-semibold">
+                      {t("checkout.requestInvoice")}
+                    </p>
+                    <p className="text-gray-400 text-xs mt-1">
+                      {t("checkout.requestInvoiceHelper")}
+                    </p>
+                  </div>
+                </label>
+              </div>
+
+              {requestInvoice && (
+                <div className="mt-4">
+                  <label htmlFor="customerName" className="block text-gray-300 mb-2 text-sm font-semibold">
+                    {t("checkout.customerName")} <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    id="customerName"
+                    type="text"
+                    value={customerName}
+                    onChange={(e) => {
+                      setCustomerName(e.target.value);
+                      setNameError("");
+                    }}
+                    placeholder={t("checkout.customerNamePlaceholder")}
+                    required={requestInvoice}
+                    className={`w-full px-4 py-3 rounded-xl liquid-glass-input text-white placeholder-gray-400 focus:outline-none focus:ring-2 ${
+                      nameError ? "focus:ring-red-500 border-red-500" : "focus:ring-white/20"
+                    }`}
+                    style={{ fontFamily: "var(--font-roboto)" }}
+                  />
+                  {nameError && (
+                    <p className="text-red-400 text-sm mt-2">{nameError}</p>
+                  )}
+                  <p className="text-gray-400 text-xs mt-2">
+                    {t("checkout.customerNameHelper")}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Discount Code */}
@@ -311,7 +437,39 @@ function CheckoutContent() {
               <h2 className="text-xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
                 {t("checkout.discountCode")}
               </h2>
-              {!discountApplied ? (
+              
+              {/* Coduri aplicate */}
+              {appliedCodes.length > 0 && (
+                <div className="space-y-2 mb-4">
+                  {appliedCodes.map((code) => {
+                    const codePercentage = getDiscountPercentageForCode(code);
+                    return (
+                      <div key={code} className="flex items-center justify-between p-3 bg-green-500/20 rounded-xl border border-green-500/50">
+                        <div>
+                          <p className="text-green-400 font-semibold">
+                            {t("checkout.discountApplied")}: {code}
+                          </p>
+                          <p className="text-gray-300 text-sm">
+                            {t("checkout.discount")}: {codePercentage}%
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => handleRemoveDiscount(code)}
+                          className="text-red-400 hover:text-red-300 transition-colors"
+                          aria-label="Remove discount code"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Input pentru cod nou */}
+              {appliedCodes.length === 0 ? (
                 <>
                   <div className="flex gap-2">
                     <input
@@ -345,25 +503,26 @@ function CheckoutContent() {
                   </div>
                 </>
               ) : (
-                <div className="flex items-center justify-between p-4 bg-green-500/20 rounded-xl border border-green-500/50">
-                  <div>
-                    <p className="text-green-400 font-semibold">
-                      {t("checkout.discountApplied")}: {discountCode}
-                    </p>
-                    <p className="text-gray-300 text-sm">
-                      {t("checkout.discount")}: {discountPercentage}%
-                    </p>
-                  </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={secondDiscountCode}
+                    onChange={(e) => setSecondDiscountCode(e.target.value.toUpperCase())}
+                    placeholder={t("checkout.additionalDiscountCode")}
+                    className="flex-1 px-4 py-3 rounded-xl liquid-glass-input text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/20"
+                    style={{ fontFamily: "var(--font-roboto)" }}
+                  />
                   <button
-                    onClick={handleRemoveDiscount}
-                    className="text-red-400 hover:text-red-300 transition-colors"
+                    onClick={() => handleApplyDiscount(undefined, true)}
+                    disabled={!secondDiscountCode.trim()}
+                    className="liquid-glass-button text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ fontFamily: "var(--font-roboto)" }}
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    {t("checkout.applyDiscount")}
                   </button>
                 </div>
               )}
+              
               {discountError && (
                 <p className="text-red-400 text-sm mt-2">{discountError}</p>
               )}
@@ -410,9 +569,30 @@ function CheckoutContent() {
                   <span>{formatPrice(subtotal)}</span>
                 </div>
                 {discountApplied && (
-                  <div className="flex justify-between text-green-400">
-                    <span>{t("checkout.discount")} ({discountPercentage}%)</span>
-                    <span>-{formatPrice(discountAmount)}</span>
+                  <div className="space-y-1">
+                    {appliedCodes.map((code, index) => {
+                      const codePercentage = getDiscountPercentageForCode(code);
+                      // Calculează reducerea pentru acest cod specific
+                      // Fiecare cod se aplică pe prețul rămas după codurile anterioare
+                      let remainingPrice = subtotal;
+                      for (let i = 0; i < index; i++) {
+                        const prevCode = appliedCodes[i];
+                        const prevPercentage = getDiscountPercentageForCode(prevCode);
+                        remainingPrice -= remainingPrice * (prevPercentage / 100);
+                      }
+                      const codeDiscount = remainingPrice * (codePercentage / 100);
+                      
+                      return (
+                        <div key={code} className="flex justify-between text-green-400 text-sm">
+                          <span>{code} ({codePercentage}%)</span>
+                          <span>-{formatPrice(codeDiscount)}</span>
+                        </div>
+                      );
+                    })}
+                    <div className="flex justify-between text-green-400 font-semibold pt-1 border-t border-gray-700">
+                      <span>{t("checkout.discount")} Total</span>
+                      <span>-{formatPrice(discountAmount)}</span>
+                    </div>
                   </div>
                 )}
                 <div className="border-t border-gray-700 pt-3 flex justify-between text-white font-bold text-lg">

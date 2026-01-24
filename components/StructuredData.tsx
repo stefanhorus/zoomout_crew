@@ -7,6 +7,17 @@ interface StructuredDataProps {
 
 export default function StructuredData({ type, data }: StructuredDataProps) {
   const baseUrl = "https://zoomoutcrew.com";
+  const defaultLocationName = "Cluj-Napoca,Romania";
+  const defaultPostalAddress = {
+    "@type": "PostalAddress",
+    addressLocality: "Cluj-Napoca",
+    addressCountry: "RO",
+  };
+  const defaultPlace = {
+    "@type": "Place",
+    name: defaultLocationName,
+    address: defaultPostalAddress,
+  };
 
   const getStructuredData = () => {
     switch (type) {
@@ -26,7 +37,9 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
             contactType: "Customer Service",
             email: "contact@zoomoutcrew.com", // Actualizează cu email-ul real
           },
-          areaServed: "Worldwide",
+          address: defaultPostalAddress,
+          location: defaultPlace,
+          areaServed: defaultLocationName,
           ...data,
         };
 
@@ -35,11 +48,14 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
           "@context": "https://schema.org",
           "@type": "Service",
           serviceType: "Aerial Videography Services",
+          location: defaultPlace,
           provider: {
             "@type": "Organization",
             name: "Zoomout_crew",
+            address: defaultPostalAddress,
+            location: defaultPlace,
           },
-          areaServed: "Worldwide",
+          areaServed: defaultLocationName,
           ...data,
         };
 

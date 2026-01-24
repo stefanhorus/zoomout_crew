@@ -15,6 +15,7 @@ interface Service {
   title: string;
   category: ServiceCategory;
   icon: string;
+  location: string;
   basePriceEUR: number;
   oldPriceSuffix: string;
   newPriceSuffix: string;
@@ -30,6 +31,7 @@ const getServices = (t: (key: string) => string): Service[] => [
     title: t("services.aerialFilmingHour"),
     category: "videography",
     icon: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+    location: "Cluj-Napoca,Romania",
     basePriceEUR: 100,
     oldPriceSuffix: t("services.price.hour"),
     newPriceSuffix: t("services.price.hour"),
@@ -47,6 +49,7 @@ const getServices = (t: (key: string) => string): Service[] => [
     title: t("services.aerialFilmingDay"),
     category: "videography",
     icon: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+    location: "Cluj-Napoca,Romania",
     basePriceEUR: 350,
     oldPriceSuffix: t("services.price.day"),
     newPriceSuffix: t("services.price.day"),
@@ -64,6 +67,7 @@ const getServices = (t: (key: string) => string): Service[] => [
     title: t("services.postProduction"),
     category: "production",
     icon: "M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h10a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z",
+    location: "Cluj-Napoca,Romania",
     basePriceEUR: 80,
     oldPriceSuffix: t("services.price.video"),
     newPriceSuffix: t("services.price.video"),
@@ -197,6 +201,15 @@ export default function Services() {
                   >
                     {service.title}
                   </h3>
+                  <div
+                    className="flex items-center gap-2 text-xs text-white/70 mb-3"
+                    style={{ fontFamily: "var(--font-roboto)" }}
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z" />
+                    </svg>
+                    <span>{t("services.location")}</span>
+                  </div>
 
                   {/* Price - Stylized */}
                   <div className="mb-3">
@@ -247,9 +260,19 @@ export default function Services() {
           onClick={() => setSelectedService(null)}
         >
           <div
-            className="max-w-4xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-hidden my-0 md:my-4 min-h-screen md:min-h-0 max-h-screen md:max-h-[90vh] flex flex-col"
+            className="relative max-w-4xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-hidden my-0 md:my-4 min-h-screen md:min-h-0 max-h-screen md:max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Close Button - Top Right Corner of Modal (like Portfolio) */}
+            <button
+              onClick={() => setSelectedService(null)}
+              className="absolute top-3 right-3 md:top-4 md:right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-30"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
             {/* Modal Image */}
             <div className="flex-shrink-0 bg-black overflow-hidden">
               <div className="relative w-full bg-black overflow-hidden flex items-center justify-center h-[40vh] md:h-[45vh]">
@@ -259,16 +282,6 @@ export default function Services() {
                   className="w-full h-full object-contain"
                 />
               </div>
-              
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedService(null)}
-                className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
             </div>
 
             {/* Modal Content */}
@@ -276,6 +289,15 @@ export default function Services() {
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedService.title}
               </h2>
+              <div
+                className="flex items-center gap-2 text-sm text-white/75 mb-4"
+                style={{ fontFamily: "var(--font-roboto)" }}
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z" />
+                </svg>
+                <span>{t("services.location")}</span>
+              </div>
 
               {/* Price - Stylized */}
               <div className="mb-5 md:mb-6">

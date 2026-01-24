@@ -2,9 +2,65 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { generateInvoicePDF } from "@/lib/invoice-generator";
 
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const email = (searchParams.get("email") || "stefanhorus@zoomoutcrew.com").trim();
+
+    // Date de test pentru factură
+    const testInvoiceData = {
+      orderId: `TEST-${Date.now()}`,
+      customerEmail: email,
+      items: [
+        {
+          name: "Cinematic Video LUTs",
+          quantity: 1,
+          price: 99.99,
+        },
+        {
+          name: "Movie LUTs",
+          quantity: 1,
+          price: 124.99,
+        },
+      ],
+      amountRON: 224.98,
+      amountCurrency: 224.98,
+      currency: "RON",
+      date: new Date(),
+      language: "ro" as const,
+      discountPercentage: 10,
+      discountCode: "TEST10",
+    };
+
+    const invoicePDF = await generateInvoicePDF(testInvoiceData);
+
+    return new NextResponse(invoicePDF, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `inline; filename="Invoice_${testInvoiceData.orderId}.pdf"`,
+        "Cache-Control": "no-store",
+      },
+    });
+  } catch (error: any) {
+    console.error("❌ Test invoice (GET) error:", error);
+    return NextResponse.json(
+      { error: error.message || "Failed to generate test invoice PDF" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json();
+    // Handle empty/invalid JSON bodies gracefully
+    let email: string | undefined;
+    try {
+      const body = await request.json();
+      email = typeof body?.email === "string" ? body.email.trim() : undefined;
+    } catch {
+      email = undefined;
+    }
 
     if (!email) {
       return NextResponse.json(
@@ -57,10 +113,13 @@ export async function POST(request: NextRequest) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
     const fromEmail = process.env.EMAIL_FROM || "Zoomout Crew <contact@zoomoutcrew.com>";
+    const orderNotificationEmail =
+      process.env.ORDER_NOTIFICATION_EMAIL || "stefanhorus@zoomoutcrew.com";
 
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to: email,
+      bcc: orderNotificationEmail,
       subject: "🧪 Test Invoice - Zoomout Crew",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -78,7 +137,8 @@ export async function POST(request: NextRequest) {
       attachments: [
         {
           filename: `Invoice_${testInvoiceData.orderId}.pdf`,
-          content: invoicePDF,
+          // Use Base64 to avoid Buffer serialization/transport issues
+          content: invoicePDF.toString("base64"),
         },
       ],
     });

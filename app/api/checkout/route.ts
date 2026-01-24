@@ -19,7 +19,8 @@ export async function POST(request: NextRequest) {
       apiVersion: "2025-12-15.clover",
     });
 
-    const { items, discountPercentage, discountCode, customerEmail, language, currency = "RON" } = await request.json();
+    const { items, discountPercentage, discountCode, customerEmail, customerName, language, currency = "RON", requestInvoice } = await request.json();
+    const invoiceRequested = !!requestInvoice;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -110,9 +111,11 @@ export async function POST(request: NextRequest) {
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || request.headers.get("origin")}/checkout/cancel`,
       metadata: {
         customer_email: customerEmail || "",
+        customer_name: customerName?.trim() || "",
         language: language || "en",
         discount_percentage: effectiveDiscountPercentage ? effectiveDiscountPercentage.toString() : "0",
         discount_code: normalizedCode || "",
+        request_invoice: invoiceRequested ? "true" : "false",
         original_currency: "RON",
         payment_currency: selectedCurrency,
         exchange_rate: exchangeRate.toString(),
@@ -144,6 +147,7 @@ export async function POST(request: NextRequest) {
           orderId: session.id,
           provider: "stripe",
           customerEmail: customerEmail || "",
+          customerName: customerName?.trim() || undefined,
           amountRON: totalAmountRON,
           amountCurrency: totalAmount,
           currency: selectedCurrency,
@@ -155,6 +159,7 @@ export async function POST(request: NextRequest) {
             language: language || "en",
             discount_percentage: effectiveDiscountPercentage ? effectiveDiscountPercentage.toString() : "0",
             discount_code: normalizedCode || "",
+            request_invoice: invoiceRequested,
             original_currency: "RON",
             payment_currency: selectedCurrency,
             exchange_rate: exchangeRate.toString(),

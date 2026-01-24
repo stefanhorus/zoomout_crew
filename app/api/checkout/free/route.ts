@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
 import { getDownloadUrl, isDigitalProduct } from "@/lib/digital-products";
 import { getDiscountPercentageForCode, normalizeDiscountCode } from "@/lib/discount-codes";
+import { generateInvoicePDF } from "@/lib/invoice-generator";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
 
@@ -17,7 +18,8 @@ export async function POST(request: NextRequest) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const { items, customerEmail, discountPercentage, discountCode, language, currency = "RON" } = await request.json();
+    const { items, customerEmail, customerName, discountPercentage, discountCode, language, currency = "RON", requestInvoice } = await request.json();
+    const invoiceRequested = !!requestInvoice;
     // Determine discount (prefer code if provided)
     const normalizedCode = typeof discountCode === "string" ? normalizeDiscountCode(discountCode) : "";
     const percentageFromCode = normalizedCode ? getDiscountPercentageForCode(normalizedCode) : 0;
@@ -98,6 +100,8 @@ export async function POST(request: NextRequest) {
     const websiteUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://zoomoutcrew.com";
     const logoUrl = `${websiteUrl}/assets/logo.png`;
     const fromEmail = process.env.EMAIL_FROM || "Zoomout Crew <contact@zoomoutcrew.com>";
+    const orderNotificationEmail =
+      process.env.ORDER_NOTIFICATION_EMAIL || "stefanhorus@zoomoutcrew.com";
 
     // Generate email content based on language
     const emailContent = generateOrderConfirmationEmail({
@@ -108,16 +112,59 @@ export async function POST(request: NextRequest) {
       logoUrl,
       language: lang,
       digitalDownloads: digitalDownloads.length > 0 ? digitalDownloads : undefined,
+      invoiceRequested,
     });
 
-    // Send confirmation email to customer
-    const { data, error } = await resend.emails.send({
+    // Optional: attach invoice PDF only if requested
+    let invoiceAttachment: { filename: string; content: string } | null = null;
+    if (invoiceRequested) {
+      try {
+        const invoiceItems = items.map(
+          (item: { product: { name: string; price: number }; quantity: number }) => ({
+            name: item.product.name || "Product",
+            quantity: item.quantity || 1,
+            price: item.product.price, // RON
+          })
+        );
+
+        const invoicePDF = await generateInvoicePDF({
+          orderId: `FREE-${Date.now()}`,
+          customerEmail: customerEmail.trim(),
+          customerName: customerName?.trim() || undefined,
+          items: invoiceItems,
+          amountRON: 0,
+          amountCurrency: 0,
+          currency: selectedCurrency,
+          date: new Date(),
+          language: lang,
+          discountPercentage: effectiveDiscountPercentage || undefined,
+          discountCode: normalizedCode || undefined,
+        });
+
+        invoiceAttachment = {
+          filename: `Invoice_FREE-${Date.now()}.pdf`,
+          content: invoicePDF.toString("base64"),
+        };
+      } catch (pdfError: any) {
+        console.error("❌ Error generating invoice PDF for free order:", pdfError);
+      }
+    }
+
+    const emailPayload: any = {
       from: fromEmail,
       to: customerEmail,
+      bcc: orderNotificationEmail,
       subject: emailContent.subject,
       html: emailContent.html,
       text: emailContent.text,
-    });
+    };
+
+    if (invoiceAttachment) {
+      emailPayload.attachments = [invoiceAttachment];
+    }
+
+    // Send confirmation email to customer
+    const { data, error } = await resend.emails.send(emailPayload);
 
     if (error) {
       console.error("❌ Error sending free order confirmation email:", error);
@@ -144,6 +191,7 @@ export async function POST(request: NextRequest) {
         orderId,
         provider: "free",
         customerEmail,
+        customerName: customerName?.trim() || undefined,
         amountRON: 0,
         amountCurrency: 0,
         currency: selectedCurrency,
@@ -154,6 +202,7 @@ export async function POST(request: NextRequest) {
         metadata: {
           language: lang,
           originalCurrency: "RON",
+          request_invoice: invoiceRequested,
         },
       });
 

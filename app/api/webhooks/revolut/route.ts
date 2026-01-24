@@ -4,6 +4,7 @@ import crypto from "crypto";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
 import { getDownloadUrl, isDigitalProduct } from "@/lib/digital-products";
 import { generateInvoicePDF } from "@/lib/invoice-generator";
+import { generateRevolutReceiptPDF } from "@/lib/revolut-receipt-generator";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
 
@@ -131,11 +132,17 @@ export async function POST(request: NextRequest) {
         console.log("✅ Connected to MongoDB");
 
         const customerEmail = order.customer?.email || order.email || order.customer_email;
+        const customerName = metadata.customer_name || order.customer?.full_name || undefined;
         const amountTotal = order.amount || 0;
         const currency = (order.currency || "RON").toUpperCase();
         const orderItems = order.items || [];
         const metadata = order.metadata || {};
         const language = (metadata.language as "en" | "ro") || "en";
+        const invoiceRequested =
+          metadata.request_invoice === true ||
+          metadata.request_invoice === "true" ||
+          metadata.request_invoice === 1 ||
+          metadata.request_invoice === "1";
 
         console.log("📧 Email check:", {
           customerEmail,
@@ -214,6 +221,7 @@ export async function POST(request: NextRequest) {
             orderId: orderId,
             provider: "revolut",
             customerEmail,
+            customerName: customerName?.trim() || undefined,
             amountRON,
             amountCurrency: amountInCurrencyDecimal,
             currency,
@@ -262,6 +270,8 @@ export async function POST(request: NextRequest) {
         const websiteUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://zoomoutcrew.com";
         const logoUrl = `${websiteUrl}/assets/logo.png`;
         const fromEmail = process.env.EMAIL_FROM || "Zoomout Crew <contact@zoomoutcrew.com>";
+        const orderNotificationEmail =
+          process.env.ORDER_NOTIFICATION_EMAIL || "stefanhorus@zoomoutcrew.com";
 
         // Generate email content based on language
         const emailContent = generateOrderConfirmationEmail({
@@ -272,12 +282,14 @@ export async function POST(request: NextRequest) {
           logoUrl,
           language,
           digitalDownloads: digitalDownloads.length > 0 ? digitalDownloads : undefined,
+          invoiceRequested,
         });
 
         // Send confirmation email to customer (dacă este configurat)
         console.log("📧 Attempting to send email...");
         console.log("📧 Email details:", {
           to: customerEmail,
+          bcc: orderNotificationEmail,
           from: fromEmail,
           hasResendKey: !!process.env.RESEND_API_KEY,
           subject: emailContent.subject,
@@ -288,44 +300,91 @@ export async function POST(request: NextRequest) {
             const resend = new Resend(process.env.RESEND_API_KEY);
             console.log("📧 Sending email via Resend...");
             
-            // Generează factura PDF
-            let invoiceAttachment = null;
+            // Always attach a Revolut payment receipt PDF (based on Revolut order/payment data)
+            let revolutReceiptAttachment: { filename: string; content: string } | null = null;
             try {
-              console.log("📄 Generating invoice PDF...");
-              const invoicePDF = await generateInvoicePDF({
-                orderId: orderId,
-                customerEmail: customerEmail,
+              const firstPayment = Array.isArray(order.payments) ? order.payments[0] : undefined;
+              const paymentMethod = firstPayment?.payment_method || firstPayment?.paymentMethod || {};
+
+              const receiptPDF = await generateRevolutReceiptPDF({
+                orderId,
+                revolutPublicId: order.public_id,
+                customerEmail,
                 items: formattedItems,
-                amountRON: amountRON,
-                amountCurrency: amountInCurrencyDecimal,
-                currency: currency,
-                date: new Date(),
-                language: language,
-                discountPercentage: metadata.discount_percentage ? parseFloat(metadata.discount_percentage) : undefined,
-                discountCode: metadata.discount_code,
+                amountCurrencyMinor: amountTotal,
+                currency,
+                state: order.state || eventType,
+                createdAt: order.created_at,
+                language,
+                payment: {
+                  id: firstPayment?.id,
+                  state: firstPayment?.state,
+                  createdAt: firstPayment?.created_at,
+                  paymentMethodType: paymentMethod?.type,
+                  cardBrand: paymentMethod?.card_brand,
+                  cardLastFour: paymentMethod?.card_last_four,
+                  cardCountryCode: paymentMethod?.card_country_code,
+                  authorisationCode: firstPayment?.authorisation_code,
+                  arn: firstPayment?.arn,
+                },
               });
-              
-              invoiceAttachment = {
-                filename: `Invoice_${orderId}.pdf`,
-                content: invoicePDF,
+
+              revolutReceiptAttachment = {
+                filename: `Revolut_Receipt_${orderId}.pdf`,
+                content: receiptPDF.toString("base64"),
               };
-              console.log("✅ Invoice PDF generated successfully");
-            } catch (pdfError: any) {
-              console.error("❌ Error generating invoice PDF:", pdfError);
-              // Continuăm fără PDF dacă generarea eșuează
+            } catch (receiptError: any) {
+              console.error("❌ Error generating Revolut receipt PDF:", receiptError);
+              // Continue without receipt
+            }
+
+            // Generează factura PDF doar dacă a fost cerută explicit
+            let invoiceAttachment = null;
+            if (invoiceRequested) {
+              try {
+                console.log("📄 Generating invoice PDF...");
+                const invoicePDF = await generateInvoicePDF({
+                  orderId: orderId,
+                  customerEmail: customerEmail,
+                  customerName: customerName?.trim() || undefined,
+                  items: formattedItems,
+                  amountRON: amountRON,
+                  amountCurrency: amountInCurrencyDecimal,
+                  currency: currency,
+                  date: new Date(),
+                  language: language,
+                  discountPercentage: metadata.discount_percentage ? parseFloat(metadata.discount_percentage) : undefined,
+                  discountCode: metadata.discount_code,
+                });
+                
+                invoiceAttachment = {
+                  filename: `Invoice_${orderId}.pdf`,
+                  // Use Base64 to avoid Buffer serialization/transport issues
+                  content: invoicePDF.toString("base64"),
+                };
+                console.log("✅ Invoice PDF generated successfully");
+              } catch (pdfError: any) {
+                console.error("❌ Error generating invoice PDF:", pdfError);
+                // Continuăm fără PDF dacă generarea eșuează
+              }
+            } else {
+              console.log("🧾 Invoice not requested; skipping invoice generation");
             }
             
             const emailPayload: any = {
               from: fromEmail,
               to: customerEmail,
+              bcc: orderNotificationEmail,
               subject: emailContent.subject,
               html: emailContent.html,
               text: emailContent.text,
             };
 
-            // Adaugă atașamentul PDF dacă a fost generat cu succes
-            if (invoiceAttachment) {
-              emailPayload.attachments = [invoiceAttachment];
+            const attachments: Array<{ filename: string; content: string }> = [];
+            if (revolutReceiptAttachment) attachments.push(revolutReceiptAttachment);
+            if (invoiceAttachment) attachments.push(invoiceAttachment);
+            if (attachments.length > 0) {
+              emailPayload.attachments = attachments;
             }
             
             const { data, error } = await resend.emails.send(emailPayload);

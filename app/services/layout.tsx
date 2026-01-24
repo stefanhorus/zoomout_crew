@@ -39,6 +39,16 @@ const breadcrumbs = {
 const serviceStructuredData = {
   serviceType: "Aerial Videography Services",
   description: "Professional aerial filming and post-production services",
+  location: {
+    "@type": "Place",
+    name: "Cluj-Napoca,Romania",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Cluj-Napoca",
+      addressCountry: "RO",
+    },
+  },
+  areaServed: "Cluj-Napoca,Romania",
   offers: {
     "@type": "Offer",
     priceCurrency: "EUR",
