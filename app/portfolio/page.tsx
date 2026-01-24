@@ -227,7 +227,7 @@ export default function Portfolio() {
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
-          src="/assets/backgrounds/background2tiny.png"
+          src="/assets/backgrounds/background3.jpg"
           alt="Portfolio background"
           fill
           priority
@@ -235,8 +235,9 @@ export default function Portfolio() {
           sizes="100vw"
           className="object-cover"
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>

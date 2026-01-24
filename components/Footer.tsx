@@ -11,7 +11,6 @@ export default function Footer() {
     { href: "/", labelKey: "nav.home" },
     { href: "/portfolio", labelKey: "nav.portfolio" },
     { href: "/services", labelKey: "nav.services" },
-    { href: "/adventures", labelKey: "nav.adventures" },
     { href: "/shop", labelKey: "nav.shop" },
     { href: "/about", labelKey: "nav.about" },
     { href: "/contact", labelKey: "nav.contact" },
