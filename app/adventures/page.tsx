@@ -429,18 +429,6 @@ export default function Adventures() {
                   }`} />
                 )}
                 
-                {/* Play Icon Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <div className="bg-white/20 backdrop-blur-md rounded-full p-4 transform scale-75 group-hover:scale-100 transition-transform duration-300 shadow-2xl">
-                    <svg
-                      className="w-12 h-12 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </div>
-                </div>
               </div>
 
               <div className="p-5 relative flex-1 flex flex-col justify-between">

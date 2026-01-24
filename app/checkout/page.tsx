@@ -28,15 +28,16 @@ function CheckoutContent() {
   const discountAmount = discountApplied ? subtotal * (discountPercentage / 100) : 0;
   const total = subtotal - discountAmount;
 
-  const handleApplyDiscount = () => {
+  const handleApplyDiscount = (codeOverride?: string) => {
     setDiscountError("");
     
-    const code = discountCode.trim().toUpperCase();
+    const code = (codeOverride ?? discountCode).trim().toUpperCase();
     const percentage = getDiscountPercentageForCode(code);
     
     if (percentage > 0) {
       setDiscountApplied(true);
       setDiscountPercentage(percentage);
+      setDiscountCode(code);
       setDiscountError("");
     } else {
       setDiscountError(t("checkout.discountInvalid"));
@@ -81,6 +82,7 @@ function CheckoutContent() {
               items: cart,
               customerEmail: customerEmail.trim(),
               discountPercentage: discountApplied ? discountPercentage : undefined,
+              discountCode: discountApplied ? discountCode : undefined,
               language: language,
               currency: currency,
             }),
@@ -310,24 +312,38 @@ function CheckoutContent() {
                 {t("checkout.discountCode")}
               </h2>
               {!discountApplied ? (
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={discountCode}
-                    onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
-                    placeholder={t("checkout.discountCode")}
-                    className="flex-1 px-4 py-3 rounded-xl liquid-glass-input text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/20"
-                    style={{ fontFamily: "var(--font-roboto)" }}
-                  />
-                  <button
-                    onClick={handleApplyDiscount}
-                    disabled={!discountCode.trim()}
-                    className="liquid-glass-button text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                    style={{ fontFamily: "var(--font-roboto)" }}
-                  >
-                    {t("checkout.applyDiscount")}
-                  </button>
-                </div>
+                <>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={discountCode}
+                      onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
+                      placeholder={t("checkout.discountCode")}
+                      className="flex-1 px-4 py-3 rounded-xl liquid-glass-input text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/20"
+                      style={{ fontFamily: "var(--font-roboto)" }}
+                    />
+                    <button
+                      onClick={() => handleApplyDiscount()}
+                      disabled={!discountCode.trim()}
+                      className="liquid-glass-button text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                      style={{ fontFamily: "var(--font-roboto)" }}
+                    >
+                      {t("checkout.applyDiscount")}
+                    </button>
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className="text-gray-400 text-xs">{t("checkout.tryCode")}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleApplyDiscount("JOINTHECREW")}
+                      className="text-xs font-semibold text-green-200 bg-green-500/20 px-2.5 py-1 rounded-lg border border-green-500/30 cursor-pointer hover:bg-green-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400/60"
+                      style={{ fontFamily: "var(--font-roboto)" }}
+                    >
+                      JOINTHECREW (-50%)
+                    </button>
+                  </div>
+                </>
               ) : (
                 <div className="flex items-center justify-between p-4 bg-green-500/20 rounded-xl border border-green-500/50">
                   <div>

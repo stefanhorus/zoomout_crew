@@ -7,13 +7,18 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import ImageSkeleton from "@/components/ImageSkeleton";
 
 type ServiceCategory = "all" | "videography" | "production";
+const SERVICES_DISCOUNT_PERCENT = 40;
+const SERVICES_DISCOUNT_FACTOR = 1 - SERVICES_DISCOUNT_PERCENT / 100;
 
 interface Service {
   id: number;
   title: string;
   category: ServiceCategory;
   icon: string;
-  price: string;
+  basePriceEUR: number;
+  oldPriceSuffix: string;
+  newPriceSuffix: string;
+  priceNote?: string;
   description: string;
   features: string[];
   image: string;
@@ -25,7 +30,9 @@ const getServices = (t: (key: string) => string): Service[] => [
     title: t("services.aerialFilmingHour"),
     category: "videography",
     icon: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-    price: `140€${t("services.price.hour")}`,
+    basePriceEUR: 100,
+    oldPriceSuffix: t("services.price.hour"),
+    newPriceSuffix: t("services.price.hour"),
     description: t("services.aerialFilmingHour.desc"),
     features: [
       t("services.aerialFilmingHour.feature1"),
@@ -40,7 +47,9 @@ const getServices = (t: (key: string) => string): Service[] => [
     title: t("services.aerialFilmingDay"),
     category: "videography",
     icon: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-    price: `500€${t("services.price.day")}`,
+    basePriceEUR: 350,
+    oldPriceSuffix: t("services.price.day"),
+    newPriceSuffix: t("services.price.day"),
     description: t("services.aerialFilmingDay.desc"),
     features: [
       t("services.aerialFilmingDay.feature1"),
@@ -55,7 +64,10 @@ const getServices = (t: (key: string) => string): Service[] => [
     title: t("services.postProduction"),
     category: "production",
     icon: "M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h10a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z",
-    price: `100€${t("services.price.video")} ${t("services.price.discountMultiple")}`,
+    basePriceEUR: 80,
+    oldPriceSuffix: t("services.price.video"),
+    newPriceSuffix: t("services.price.video"),
+    priceNote: t("services.price.discountMultiple"),
     description: t("services.postProduction.desc"),
     features: [
       t("services.postProduction.feature1"),
@@ -73,6 +85,8 @@ export default function Services() {
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory>("all");
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+
+  const formatEuro = (value: number) => (Number.isInteger(value) ? `${value}` : value.toFixed(2));
 
   // Update page title when language changes
   useEffect(() => {
@@ -148,6 +162,9 @@ export default function Services() {
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {filteredServices.map((service) => (
+            (() => {
+              const discountedPriceEUR = service.basePriceEUR * SERVICES_DISCOUNT_FACTOR;
+              return (
             <div
               key={service.id}
               onClick={() => setSelectedService(service)}
@@ -169,19 +186,6 @@ export default function Services() {
                   onLoad={() => setLoadedImages(prev => new Set(prev).add(service.id))}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20 group-hover:from-black/60 group-hover:via-black/30 group-hover:to-black/10 transition-all duration-300" />
-                
-                {/* Play Icon Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <div className="bg-white/20 backdrop-blur-md rounded-full p-4 transform scale-75 group-hover:scale-100 transition-transform duration-300 shadow-2xl">
-                    <svg
-                      className="w-12 h-12 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8 5v14l11-7z" />
-                  </svg>
-                  </div>
-                </div>
               </div>
 
               {/* Service Info */}
@@ -197,9 +201,25 @@ export default function Services() {
                   {/* Price - Stylized */}
                   <div className="mb-3">
                     <div className="inline-block liquid-glass-button px-4 py-2 rounded-xl">
-                      <div className="text-2xl md:text-3xl font-bold text-white mb-0.5" style={{ fontFamily: "var(--font-playfair)" }}>
-                        {service.price}
+                      <div className="text-[11px] md:text-xs text-white/85 font-semibold mb-1" style={{ fontFamily: "var(--font-roboto)" }}>
+                        {t("services.limitedTimeOffer")}
                       </div>
+                      <div className="flex items-baseline gap-2">
+                        <div className="text-sm md:text-base text-white/60 line-through" style={{ fontFamily: "var(--font-playfair)" }}>
+                          {formatEuro(service.basePriceEUR)}€{service.oldPriceSuffix}
+                        </div>
+                        <div className="text-2xl md:text-3xl font-bold text-white" style={{ fontFamily: "var(--font-playfair)" }}>
+                          {formatEuro(discountedPriceEUR)}€{service.newPriceSuffix}
+                        </div>
+                        <span className="text-[10px] md:text-xs font-semibold text-green-200 bg-green-500/20 px-2 py-1 rounded-lg border border-green-500/30 whitespace-nowrap shrink-0">
+                          {t("services.offLabel")}
+                        </span>
+                      </div>
+                      {service.priceNote && (
+                        <div className="text-[10px] md:text-xs text-white/70 mt-1" style={{ fontFamily: "var(--font-roboto)" }}>
+                          {service.priceNote}
+                        </div>
+                      )}
                     </div>
                 </div>
 
@@ -207,6 +227,8 @@ export default function Services() {
                 </div>
               </div>
             </div>
+              );
+            })()
           ))}
         </div>
 
@@ -258,8 +280,26 @@ export default function Services() {
               {/* Price - Stylized */}
               <div className="mb-5 md:mb-6">
                 <div className="inline-block liquid-glass-button px-4 py-2 md:px-6 md:py-3 rounded-xl">
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: "var(--font-playfair)" }}>
-                  {selectedService.price}
+                  <div className="text-xs md:text-sm text-white/85 font-semibold mb-1" style={{ fontFamily: "var(--font-roboto)" }}>
+                    {t("services.limitedTimeOffer")}
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <div className="text-base md:text-lg text-white/60 line-through" style={{ fontFamily: "var(--font-playfair)" }}>
+                      {formatEuro(selectedService.basePriceEUR)}€{selectedService.oldPriceSuffix}
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: "var(--font-playfair)" }}>
+                        {formatEuro(selectedService.basePriceEUR * SERVICES_DISCOUNT_FACTOR)}€{selectedService.newPriceSuffix}
+                      </div>
+                      <span className="text-xs font-semibold text-green-200 bg-green-500/20 px-2 py-1 rounded-lg border border-green-500/30 whitespace-nowrap shrink-0">
+                        {t("services.offLabel")}
+                      </span>
+                    </div>
+                    {selectedService.priceNote && (
+                      <div className="text-xs text-white/70 mt-1" style={{ fontFamily: "var(--font-roboto)" }}>
+                        {selectedService.priceNote}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -275,9 +315,21 @@ export default function Services() {
                     {t("services.postProduction.pricing")}
                   </h4>
                   <ul className="space-y-2 text-sm sm:text-base text-gray-300">
-                    <li>• {t("services.postProduction.pricing1")} <span className="text-white font-semibold">100€</span></li>
-                    <li>• {t("services.postProduction.pricing2")} <span className="text-white font-semibold">90€/video</span></li>
-                    <li>• {t("services.postProduction.pricing3")} <span className="text-white font-semibold">80€/video</span></li>
+                    <li>
+                      • {t("services.postProduction.pricing1")}{" "}
+                      <span className="text-white/60 line-through mr-2">80€</span>
+                      <span className="text-white font-semibold">{formatEuro(80 * SERVICES_DISCOUNT_FACTOR)}€</span>
+                    </li>
+                    <li>
+                      • {t("services.postProduction.pricing2")}{" "}
+                      <span className="text-white/60 line-through mr-2">72€/video</span>
+                      <span className="text-white font-semibold">{formatEuro(72 * SERVICES_DISCOUNT_FACTOR)}€/video</span>
+                    </li>
+                    <li>
+                      • {t("services.postProduction.pricing3")}{" "}
+                      <span className="text-white/60 line-through mr-2">64€/video</span>
+                      <span className="text-white font-semibold">{formatEuro(64 * SERVICES_DISCOUNT_FACTOR)}€/video</span>
+                    </li>
                   </ul>
                 </div>
               )}

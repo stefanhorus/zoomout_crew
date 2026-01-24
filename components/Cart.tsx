@@ -4,7 +4,6 @@ import { useCart } from "@/contexts/CartContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import Image from "next/image";
-import { useState } from "react";
 
 export default function Cart({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
@@ -72,11 +71,13 @@ export default function Cart({ isOpen, onClose }: { isOpen: boolean; onClose: ()
                   className="flex gap-4 bg-gray-800 rounded-lg p-4"
                 >
                   {/* Product Image */}
-                  <div className="relative w-20 h-20 flex-shrink-0 rounded overflow-hidden">
-                    <img
+                  <div className="relative w-20 h-20 flex-shrink-0 rounded overflow-hidden bg-black/30">
+                    <Image
                       src={item.product.image}
                       alt={item.product.name}
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="80px"
+                      className="object-cover"
                     />
                   </div>
 

@@ -182,6 +182,7 @@ const products: Product[] = baseProducts.map((p) => ({
 export default function Shop() {
   const { t, language } = useLanguage();
   const { formatPrice } = useCurrency();
+  const [promoCopied, setPromoCopied] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory>("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
@@ -226,6 +227,16 @@ export default function Shop() {
   const handleNewsletterClose = () => {
     setShowNewsletterPopup(false);
     localStorage.setItem("newsletter_popup_seen", "true");
+  };
+
+  const handleCopyPromoCode = async () => {
+    try {
+      await navigator.clipboard.writeText("JOINTHECREW");
+      setPromoCopied(true);
+      window.setTimeout(() => setPromoCopied(false), 1400);
+    } catch {
+      // ignore
+    }
   };
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
@@ -422,9 +433,29 @@ export default function Shop() {
           className="object-cover"
         />
       </div>
+
+      {/* Promo sticker (Shop only) - positioned, doesn't affect layout */}
+      <div className="absolute right-4 top-24 mt-2 z-20 max-w-[calc(100vw-2rem)]">
+        <button
+          type="button"
+          onClick={handleCopyPromoCode}
+          className="max-w-full liquid-glass-button text-white px-3 py-2 rounded-xl border border-white/15 backdrop-blur-md shadow-xl hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+          aria-label="Promo code JOINTHECREW"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-xs md:text-sm font-semibold" style={{ fontFamily: "var(--font-roboto)" }}>
+              {promoCopied ? t("promo.copied") : t("promo.jointhecrew")}
+            </span>
+            <span className="text-xs font-bold px-2 py-1 rounded-lg bg-white/10 border border-white/15 whitespace-nowrap">
+              JOINTHECREW
+            </span>
+          </div>
+        </button>
+      </div>
+
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="text-center mb-6 sm:mb-8 md:mb-12 pt-4 sm:pt-6">
+        <div className="text-center mb-8 md:mb-12">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-2 sm:mb-3 md:mb-4 px-2" style={{ fontFamily: "var(--font-playfair)" }}>
             <Typewriter
               key={language}

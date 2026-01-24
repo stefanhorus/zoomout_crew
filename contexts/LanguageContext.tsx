@@ -170,6 +170,8 @@ const translations: Record<Language, Record<string, string>> = {
     "services.price.day": "/day",
     "services.price.video": "/video",
     "services.price.discountMultiple": "(discount for multiple)",
+    "services.limitedTimeOffer": "Limited time offer",
+    "services.offLabel": "40% OFF",
 
     // Adventures page
     "adventures.title": "Adventures",
@@ -248,6 +250,7 @@ const translations: Record<Language, Record<string, string>> = {
     "checkout.applyDiscount": "Apply",
     "checkout.removeDiscount": "Remove",
     "checkout.discountInvalid": "Invalid or expired discount code",
+    "checkout.tryCode": "Try:",
     "checkout.paymentMethod": "Payment Method",
     "checkout.revolutPay": "Revolut Pay",
     "checkout.stripeCard": "Card (Stripe)",
@@ -275,6 +278,10 @@ const translations: Record<Language, Record<string, string>> = {
     "checkout.emailError.required": "Please enter your email address",
     "checkout.emailError.invalid": "Please enter a valid email address",
     "checkout.error.freeOrder": "An error occurred processing the order. Please try again.",
+
+    // Promo
+    "promo.jointhecrew": "Use code JOINTHECREW for 50% off",
+    "promo.copied": "Copied!",
   },
   ro: {
     // Navigation
@@ -431,8 +438,10 @@ const translations: Record<Language, Record<string, string>> = {
     "services.noServices": "Nu s-au găsit servicii în această categorie.",
     "services.price.hour": "/oră",
     "services.price.day": "/zi",
-    "services.price.video": "/videoclip",
+    "services.price.video": "/video",
     "services.price.discountMultiple": "(reducere pentru mai multe)",
+    "services.limitedTimeOffer": "Ofertă pe timp limitat",
+    "services.offLabel": "Reducere 40%",
 
     // Adventures page
     "adventures.title": "Aventuri",
@@ -511,6 +520,7 @@ const translations: Record<Language, Record<string, string>> = {
     "checkout.applyDiscount": "Aplică",
     "checkout.removeDiscount": "Elimină",
     "checkout.discountInvalid": "Cod de discount invalid sau expirat",
+    "checkout.tryCode": "Încearcă:",
     "checkout.paymentMethod": "Metodă de plată",
     "checkout.revolutPay": "Revolut Pay",
     "checkout.stripeCard": "Card (Stripe)",
@@ -538,6 +548,10 @@ const translations: Record<Language, Record<string, string>> = {
     "checkout.emailError.required": "Te rugăm să introduci adresa de email",
     "checkout.emailError.invalid": "Te rugăm să introduci o adresă de email validă",
     "checkout.error.freeOrder": "A apărut o eroare la procesarea comenzii. Te rugăm să încerci din nou.",
+
+    // Promo
+    "promo.jointhecrew": "Folosește codul JOINTHECREW pentru -50%",
+    "promo.copied": "Copiat!",
   },
 };
 
