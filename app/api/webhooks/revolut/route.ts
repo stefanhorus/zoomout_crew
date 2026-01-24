@@ -131,12 +131,12 @@ export async function POST(request: NextRequest) {
         await connectDB();
         console.log("✅ Connected to MongoDB");
 
+        const metadata = order.metadata || {};
         const customerEmail = order.customer?.email || order.email || order.customer_email;
         const customerName = metadata.customer_name || order.customer?.full_name || undefined;
         const amountTotal = order.amount || 0;
         const currency = (order.currency || "RON").toUpperCase();
         const orderItems = order.items || [];
-        const metadata = order.metadata || {};
         const language = (metadata.language as "en" | "ro") || "en";
         const invoiceRequested =
           metadata.request_invoice === true ||
