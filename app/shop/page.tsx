@@ -181,7 +181,7 @@ const baseProducts: Product[] = [
     description: "The Full LUT Bundle is the ultimate collection of professional color grading presets. This comprehensive bundle includes all our LUT packs, giving you access to every cinematic look, film emulation, and color style in our library. Perfect for filmmakers, content creators, and editors who want the complete color grading toolkit.\n\n📦 What's Included:\n\n• Cinematic Video LUTs (10 LUTs)\n• Movie Looks LUTs (20 LUTs)\n• Film LUTs (10 LUTs)\n• Vintage Film LUTs (14 LUTs)\n• Iphone Looks LUTs (10 LUTs)\n• Mist Powergrade for DaVinci Resolve\n\nTotal: 64 Professional Video LUTs (.cube format) + Mist Powergrade",
     descriptionRo: "Full LUTs Bundle este colecția ultimă de preseturi profesionale de color grading. Acest bundle cuprinzător include toate pachetele noastre de LUT-uri, oferindu-ți acces la fiecare look cinematic, emulare de film și stil de culoare din biblioteca noastră. Perfect pentru regizori, creatori de conținut și editori care doresc toolkit-ul complet de color grading.\n\n📦 Ce este inclus:\n\n• Cinematic Video LUTs (10 LUT-uri)\n• Movie Looks LUTs (20 LUT-uri)\n• Film LUTs (10 LUT-uri)\n• Vintage Film LUTs (14 LUT-uri)\n• Iphone Looks LUTs (10 LUT-uri)\n• Mist Powergrade pentru DaVinci Resolve\n\nTotal: 64 LUT-uri Video profesionale (format .cube) + Mist Powergrade",
     inStock: true,
-    downloadUrl: "https://drive.google.com/drive/folders/YOUR_FULL_LUT_BUNDLE_FOLDER_ID",
+    downloadUrl: "https://drive.google.com/drive/folders/1Bf1lBXJ5WbajNTRck2qE6SXESa7hSwq6?usp=sharing",
   },
 ];
 

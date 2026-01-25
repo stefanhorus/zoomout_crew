@@ -76,7 +76,7 @@ export const digitalProducts: DigitalProduct[] = [
   {
     id: 12,
     name: "Full Lut Bundle",
-    downloadUrl: "https://drive.google.com/drive/folders/YOUR_FULL_LUT_BUNDLE_FOLDER_ID?usp=drive_link",
+    downloadUrl: "https://drive.google.com/drive/folders/1Bf1lBXJ5WbajNTRck2qE6SXESa7hSwq6?usp=sharing",
   },
 ];
 
