@@ -77,7 +77,7 @@ const baseProducts: Product[] = [
     description: "The Vintage Film LUT pack is your time machine. Designed to replicate the charm and imperfections of old home movies, these presets bring the nostalgic aesthetic of Super 8 and 16mm film straight to your digital footage. Perfect for travel memories, music videos, or dreamlike sequences, this collection embraces faded shadows, warm highlights, and that distinct \"retro\" vibe that makes footage feel timeless and personal.\n\n📦 What's Included:\n\n• 14 Professional Vintage Film LUTs (.cube format)\n• Mist Powergrade for DaVinci Resolve",
     descriptionRo: "Pachetul Vintage Film LUTs este mașina ta de timp. Conceput pentru a replica farmecul și imperfecțiunile filmelor de casă vechi, aceste preseturi aduc estetica nostalgică a filmului Super 8 și 16mm direct pe materialele tale digitale. Perfect pentru amintiri de călătorie, videoclipuri muzicale sau secvențe onirice, această colecție îmbrățișează umbrele estompate, highlight-urile calde și acel vibe distinct \"retro\" care face materialele să pară atemporale și personale.\n\n📦 Ce este inclus:\n\n• 14 LUT-uri Vintage Film profesionale (format .cube)\n• Mist Powergrade pentru DaVinci Resolve",
     inStock: true,
-    downloadUrl: "https://drive.google.com/drive/folders/YOUR_VINTAGE_LUT_FOLDER_ID",
+    downloadUrl: "https://drive.google.com/drive/folders/1a3prlQ-ajT_pFmsnJ9IeMWGJ23ERTvYE?usp=sharing",
   },
   {
     id: 5,
@@ -103,7 +103,7 @@ const baseProducts: Product[] = [
     description: "Professional sound design library featuring cinematic sound effects, ambient textures, and audio elements perfect for video production and filmmaking.\n\n📦 What's Included:\n\n• Air Sound Effects\n• Ambience Sound Effects\n• Campaign Sound Effects\n• City Sound Effects\n• Film Burn Sound Effects\n• Flash Sound Effects\n• Forest Sound Effects\n• Glitches Sound Effects\n• Impacts Sound Effects\n• Reverse Sound Effects\n• Scratch Sound Effects\n• Swoosh Sound Effects\n• Woosh Sound Effects\n\nTotal: 134+ High-Quality Sound Effects (WAV format)",
     descriptionRo: "Bibliotecă profesională de sound design cu efecte sonore cinematice, texturi ambientale și elemente audio perfecte pentru producție video și filmmaking.\n\n📦 Ce este inclus:\n\n• Efecte sonore Air\n• Efecte sonore Ambience\n• Efecte sonore Campaign\n• Efecte sonore City\n• Efecte sonore Film Burn\n• Efecte sonore Flash\n• Efecte sonore Forest\n• Efecte sonore Glitches\n• Efecte sonore Impacts\n• Efecte sonore Reverse\n• Efecte sonore Scratch\n• Efecte sonore Swoosh\n• Efecte sonore Woosh\n\nTotal: 134+ Efecte sonore de înaltă calitate (format WAV)",
     inStock: true,
-    downloadUrl: "https://drive.google.com/drive/folders/YOUR_SOUND_DESIGN_FOLDER_ID",
+    downloadUrl: "https://drive.google.com/drive/folders/1Xi393MvpvojRydJCkJa4zRfAQqYIWJA8?usp=sharing",
   },
   {
     id: 7,

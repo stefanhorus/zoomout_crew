@@ -46,7 +46,7 @@ export const digitalProducts: DigitalProduct[] = [
   {
     id: 6,
     name: "Sound Design Pack",
-    downloadUrl: "https://drive.google.com/drive/folders/YOUR_SOUND_DESIGN_FOLDER_ID?usp=drive_link",
+    downloadUrl: "https://drive.google.com/drive/folders/1Xi393MvpvojRydJCkJa4zRfAQqYIWJA8?usp=sharing",
   },
   {
     id: 7,
