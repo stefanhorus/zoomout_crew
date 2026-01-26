@@ -20,14 +20,14 @@ export default function Home() {
   }, [language]);
   
   const brands = [
-    { id: 1, name: "Big Belly", logo: "/assets/brands/bigbelly.png", width: 320, height: 160 },
-    { id: 2, name: "Casa Numaa", logo: "/assets/brands/casanumaa.png", width: 280, height: 140 },
-    { id: 3, name: "Rotaract", logo: "/assets/brands/rotaract.png", width: 200, height: 100 },
-    { id: 4, name: "Visual Delights", logo: "/assets/brands/visualdelights.png", width: 200, height: 100 },
-    { id: 5, name: "Utopic", logo: "/assets/brands/utopic.png", width: 200, height: 100 },
+    { id: 1, name: "Rotaract", logo: "/assets/brands/rotaract.png", width: 200, height: 100 },
+    { id: 2, name: "Big Belly", logo: "/assets/brands/bigbelly.png", width: 320, height: 160 },
+    { id: 3, name: "Casa Numaa", logo: "/assets/brands/casanumaa.png", width: 280, height: 140 },
+    { id: 4, name: "Panoramic 360", logo: "/assets/brands/panoramic360.jpg", width: 170, height: 85 },
+    { id: 5, name: "Multiverse", logo: "/assets/brands/multiverse.png", width: 170, height: 85 },
     { id: 6, name: "Aer Lounge", logo: "/assets/brands/aerlounge.png", width: 170, height: 85 },
-    { id: 7, name: "Multiverse", logo: "/assets/brands/multiverse.png", width: 170, height: 85 },
-    { id: 8, name: "Panoramic 360", logo: "/assets/brands/panoramic360.jpg", width: 170, height: 85 },
+    { id: 7, name: "Visual Delights", logo: "/assets/brands/visualdelights.png", width: 200, height: 100 },
+    { id: 8, name: "Rotaract", logo: "/assets/brands/rotaract.png", width: 200, height: 100 },
   ];
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);

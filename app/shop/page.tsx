@@ -162,8 +162,8 @@ const baseProducts: Product[] = [
     name: "Signature Bundle",
     category: "bundle",
     image: "/assets/shop/SIGNATURE.jpg",
-    price: 399.99,
-    originalPrice: 499.98,
+    price: 394.995,
+    originalPrice: 894.995,
     discountPercentage: 20,
     description: "Unlock your full potential. The Signature Bundle is the definitive all-in-one toolkit for modern filmmakers, photographers, and content creators. We have combined our entire library into one powerful collection, giving you every asset you need to take your storytelling from \"average\" to \"cinematic mastery.\" Whether you are color grading a documentary, editing a high-energy Reel, or designing the soundscape for a short film, this bundle is your unfair advantage.\n\n📦 What's Included:\n\n• 64 Professional Video LUTs (Cinematic, Movie, Film, Vintage, iPhone)\n• Mist Powergrade for DaVinci Resolve\n• 134 High-Quality Sound Effects (WAV format)\n• 50 Professional Lightroom Presets\n• 114 Film Burn & Transition Overlays\n• 165 Film Artifact Overlays\n\nTotal: Complete library of all our digital assets in one bundle",
     descriptionRo: "Deblochează-ți potențialul complet. Signature Bundle este toolkit-ul definitiv all-in-one pentru regizori, fotografi și creatori de conținut moderni. Am combinat întreaga noastră bibliotecă într-o colecție puternică, oferindu-ți fiecare asset de care ai nevoie pentru a-ți duce storytelling-ul de la \"mediu\" la \"măiestrie cinematică\". Fie că faci color grading pentru un documentar, editezi un Reel cu energie mare sau creezi soundscape-ul pentru un scurtmetraj, acest bundle este avantajul tău nedrept.\n\n📦 Ce este inclus:\n\n• 64 LUT-uri Video profesionale (Cinematic, Movie, Film, Vintage, iPhone)\n• Mist Powergrade pentru DaVinci Resolve\n• 134 Efecte sonore de înaltă calitate (format WAV)\n• 50 Preseturi Lightroom profesionale\n• 114 Overlay-uri Film Burn & Transition\n• 165 Overlay-uri Film Artifact\n\nTotal: Biblioteca completă a tuturor asset-urilor noastre digitale într-un singur bundle",
@@ -553,14 +553,14 @@ export default function Shop() {
                     -{product.discountPercentage}%
                   </div>
                 )}
-                {/* Stock Badge */}
-                {product.inStock ? (
-                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 liquid-glass-button bg-green-500/30 text-white px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold border-green-500/50">
-                    {t("shop.inStock")}
-                  </div>
-                ) : (
-                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 liquid-glass-button bg-red-500/30 text-white px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold border-red-500/50">
-                    {t("shop.outOfStock")}
+                {/* Save Badge for Bundles */}
+                {product.category === "bundle" && product.originalPrice && (
+                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 liquid-glass-button bg-yellow-500/30 text-white px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold border-yellow-500/50">
+                    {product.id === 11 
+                      ? `${t("shop.save")} ${formatPrice(1000)}` 
+                      : product.id === 12 
+                      ? `${t("shop.save")} ${formatPrice(450)}` 
+                      : `${t("shop.save")} ${formatPrice(product.originalPrice - product.price)}`}
                   </div>
                 )}
               </div>

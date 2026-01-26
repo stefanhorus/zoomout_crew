@@ -291,6 +291,9 @@ const translations: Record<Language, Record<string, string>> = {
     // Promo
     "promo.jointhecrew": "Use code JOINTHECREW for 50% off",
     "promo.copied": "Copied!",
+
+    // Save text
+    "shop.save": "SAVE",
   },
   ro: {
     // Navigation
@@ -570,6 +573,9 @@ const translations: Record<Language, Record<string, string>> = {
     // Promo
     "promo.jointhecrew": "Folosește codul JOINTHECREW pentru -50%",
     "promo.copied": "Copiat!",
+
+    // Save text
+    "shop.save": "salvează",
   },
 };
 

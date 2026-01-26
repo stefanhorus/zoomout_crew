@@ -36,68 +36,7 @@ export default function Portfolio() {
   const projects: Project[] = useMemo(() => [
     {
       id: 1,
-      title: t("portfolio.project1.title"),
-      category: ["events", "commercial"],
-      thumbnail: "/assets/brands/bigbelly.png",
-      muxVideos: [
-        {
-          playbackId: "DbdlbHpdu541nz100c9oOc700DsUnduPJ6EkEmNIFCzOo",
-          title: "",
-          assetId: "5802zN02zVKzhO3n7ZMBmNmHEbyOOBnjkv23szggUGE6Q",
-        },
-        {
-          playbackId: "p1LpNG3CjEe01QQhHDOPG3j5L8kywtmmLSKdJaU51Tjg",
-          title: "",
-          assetId: "CGUXZUf8ZQhCvZ24mvF6UstEj2RzCCXz9agK1I00Qxnc",
-        },
-      ],
-      description: t("portfolio.project1.description"),
-    },
-    {
-      id: 2,
-      title: t("portfolio.project2.title"),
-      category: "events",
-      thumbnail: "/assets/brands/multiverse.png",
-      muxVideos: [
-        {
-          playbackId: "Xi5sUxm00g8N5UJGPn7D9Mut4JsMfUFULA01Qn02woUOwo",
-          title: "",
-          assetId: "01Dl02H4Nql5FM5vD3bxu1awLfSXOqOvg7DKo1LHF00KYk",
-        },
-      ],
-      description: t("portfolio.project2.description"),
-    },
-    {
-      id: 3,
-      title: t("portfolio.project3.title"),
-      category: "real-estate",
-      thumbnail: "/assets/brands/cabanuta.png",
-      muxVideos: [
-        {
-          playbackId: "ILANTrld964hQ4OanXs6lq02kqN01q745BRJGgfqPy7Kk",
-          title: "",
-          assetId: "bhUSdN7wq8dC4E46Fd7oTbjdhiFpGWKYuJiI9NhS1TQ",
-        },
-      ],
-      description: t("portfolio.project3.description"),
-    },
-    {
-      id: 4,
-      title: t("portfolio.project4.title"),
-      category: "commercial",
-      thumbnail: "/assets/brands/aerlounge.png",
-      muxVideos: [
-        {
-          playbackId: "c5jDLrljSoSJid7Du9P9XQb37yzRRrIKqFHYzqpKG8c",
-          title: "",
-          assetId: "cTKE4Xu5idbGw3DAqK02UivmpqNNhkwsMZ52C5ghzLRY",
-        },
-      ],
-      description: t("portfolio.project4.description"),
-    },
-    {
-      id: 5,
-      title: t("portfolio.project5.title"),
+      title: t("portfolio.project5.title"), // numaa
       category: "commercial",
       thumbnail: "/assets/brands/casanumaa.png",
       muxVideos: [
@@ -115,8 +54,69 @@ export default function Portfolio() {
       description: t("portfolio.project5.description"),
     },
     {
+      id: 2,
+      title: t("portfolio.project1.title"), // big belly
+      category: ["events", "commercial"],
+      thumbnail: "/assets/brands/bigbelly.png",
+      muxVideos: [
+        {
+          playbackId: "DbdlbHpdu541nz100c9oOc700DsUnduPJ6EkEmNIFCzOo",
+          title: "",
+          assetId: "5802zN02zVKzhO3n7ZMBmNmHEbyOOBnjkv23szggUGE6Q",
+        },
+        {
+          playbackId: "p1LpNG3CjEe01QQhHDOPG3j5L8kywtmmLSKdJaU51Tjg",
+          title: "",
+          assetId: "CGUXZUf8ZQhCvZ24mvF6UstEj2RzCCXz9agK1I00Qxnc",
+        },
+      ],
+      description: t("portfolio.project1.description"),
+    },
+    {
+      id: 3,
+      title: t("portfolio.project9.title"), // panoramic360
+      category: "commercial",
+      thumbnail: "/assets/brands/panoramic360.jpg",
+      muxVideos: [
+        {
+          playbackId: "iQW9j3rKkGubagCrFEPgfWxQtpnzW5PFdTWw00SpAliA",
+          title: "",
+          assetId: "GArDNR7AR9CDiSdE02pL7QQxIXFt8YBv5wjRu9ZHl5U8",
+        },
+      ],
+      description: t("portfolio.project9.description"),
+    },
+    {
+      id: 4,
+      title: t("portfolio.project2.title"), // Multiverse
+      category: "events",
+      thumbnail: "/assets/brands/multiverse.png",
+      muxVideos: [
+        {
+          playbackId: "Xi5sUxm00g8N5UJGPn7D9Mut4JsMfUFULA01Qn02woUOwo",
+          title: "",
+          assetId: "01Dl02H4Nql5FM5vD3bxu1awLfSXOqOvg7DKo1LHF00KYk",
+        },
+      ],
+      description: t("portfolio.project2.description"),
+    },
+    {
+      id: 5,
+      title: t("portfolio.project3.title"), // casa
+      category: "real-estate",
+      thumbnail: "/assets/brands/cabanuta.png",
+      muxVideos: [
+        {
+          playbackId: "ILANTrld964hQ4OanXs6lq02kqN01q745BRJGgfqPy7Kk",
+          title: "",
+          assetId: "bhUSdN7wq8dC4E46Fd7oTbjdhiFpGWKYuJiI9NhS1TQ",
+        },
+      ],
+      description: t("portfolio.project3.description"),
+    },
+    {
       id: 6,
-      title: t("portfolio.project6.title"),
+      title: t("portfolio.project6.title"), // utopic
       category: "events",
       thumbnail: "/assets/brands/utopic.png",
       muxVideos: [
@@ -130,15 +130,7 @@ export default function Portfolio() {
     },
     {
       id: 7,
-      title: t("portfolio.project7.title"),
-      category: "real-estate",
-      thumbnail: "/assets/photos/sardinia1.jpeg",
-      images: ["/assets/photos/sardinia1.jpeg", "/assets/photos/sardinia2.jpeg"],
-      description: t("portfolio.project7.description"),
-    },
-    {
-      id: 8,
-      title: t("portfolio.project8.title"),
+      title: t("portfolio.project8.title"), // rotaract
       category: "events",
       thumbnail: "/assets/brands/rotaract.png",
       images: [
@@ -149,18 +141,26 @@ export default function Portfolio() {
       description: t("portfolio.project8.description"),
     },
     {
+      id: 8,
+      title: t("portfolio.project7.title"), // sunhouse
+      category: "real-estate",
+      thumbnail: "/assets/photos/sardinia1.jpeg",
+      images: ["/assets/photos/sardinia1.jpeg", "/assets/photos/sardinia2.jpeg"],
+      description: t("portfolio.project7.description"),
+    },
+    {
       id: 9,
-      title: t("portfolio.project9.title"),
+      title: t("portfolio.project4.title"), // aer lounge
       category: "commercial",
-      thumbnail: "/assets/brands/panoramic360.jpg",
+      thumbnail: "/assets/brands/aerlounge.png",
       muxVideos: [
         {
-          playbackId: "iQW9j3rKkGubagCrFEPgfWxQtpnzW5PFdTWw00SpAliA",
+          playbackId: "c5jDLrljSoSJid7Du9P9XQb37yzRRrIKqFHYzqpKG8c",
           title: "",
-          assetId: "GArDNR7AR9CDiSdE02pL7QQxIXFt8YBv5wjRu9ZHl5U8",
+          assetId: "cTKE4Xu5idbGw3DAqK02UivmpqNNhkwsMZ52C5ghzLRY",
         },
       ],
-      description: t("portfolio.project9.description"),
+      description: t("portfolio.project4.description"),
     },
   ], [t, language]);
 
