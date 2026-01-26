@@ -134,6 +134,8 @@ const translations: Record<Language, Record<string, string>> = {
     "portfolio.project7.description": "The stunning beauty of LA VILLA SUNHOUSE, a luxurious property nestled in the breathtaking landscape of Sardinia, is captured through aerial videography and photography. The villa's exceptional architecture, pristine surroundings, and the Mediterranean elegance make this property truly unique.",
     "portfolio.project8.title": "Rotaract - Charity Rubber Duck Race",
     "portfolio.project8.description": "The heartwarming Charity Rubber Duck Race organized by Rotaract is documented through aerial videography, capturing the spirit of community and philanthropy. This unique fundraising event brought together participants of all ages for a fun and meaningful cause, showcasing the power of community engagement and charitable giving.",
+    "portfolio.project9.title": "Panoramic 360 Transilvania - Restaurant Presentation",
+    "portfolio.project9.description": "Video presentation for Panoramic 360 Transilvania, a restaurant located at the top of Buscat ski slope, in collaboration with Visual Delights. The footage showcases the unique location and stunning panoramic views from this elevated apreski restaurant, capturing the restaurant's exceptional setting and the breathtaking landscape that surrounds it.",
 
     // Services page
     "services.title": "Services",
@@ -411,6 +413,8 @@ const translations: Record<Language, Record<string, string>> = {
     "portfolio.project7.description": "Frumusețea uluitoare a LA VILLA SUNHOUSE, o proprietate luxoasă situată în peisajul uluitor al Sardiniei, este prezentată prin videografie și fotografie aeriană. Arhitectura excepțională a vilei, împrejurimile imaculate și eleganța mediteraneană fac această proprietate cu adevărat unică.",
     "portfolio.project8.title": "Rotaract - Cursa Caritabilă cu Rațe de Cauciuc",
     "portfolio.project8.description": "Cursa Caritabilă cu Rațe de Cauciuc organizată de Rotaract este documentată prin videografie aeriană, captând spiritul comunității și filantropiei. Acest eveniment unic de strângere de fonduri a adunat participanți de toate vârstele pentru o cauză distractivă și semnificativă, prezentând puterea implicării comunitare și a dăruirii caritabile.",
+    "portfolio.project9.title": "Panoramic 360 Transilvania - Prezentare Restaurant",
+    "portfolio.project9.description": "Prezentare video pentru Panoramic 360 Transilvania, un restaurant situat în vârful pârtiei de schi Buscat, în colaborare cu Visual Delights. Materialele prezintă locația unică și vederile panoramice uluitoare de la acest restaurant apreski elevat, captând cadrul excepțional al restaurantului și peisajul uimitor care îl înconjoară.",
 
     // Services page
     "services.title": "Servicii",

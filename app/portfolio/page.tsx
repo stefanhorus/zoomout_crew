@@ -148,6 +148,20 @@ export default function Portfolio() {
       ],
       description: t("portfolio.project8.description"),
     },
+    {
+      id: 9,
+      title: t("portfolio.project9.title"),
+      category: "commercial",
+      thumbnail: "/assets/brands/panoramic360.jpg",
+      muxVideos: [
+        {
+          playbackId: "iQW9j3rKkGubagCrFEPgfWxQtpnzW5PFdTWw00SpAliA",
+          title: "",
+          assetId: "GArDNR7AR9CDiSdE02pL7QQxIXFt8YBv5wjRu9ZHl5U8",
+        },
+      ],
+      description: t("portfolio.project9.description"),
+    },
   ], [t, language]);
 
   const prevLanguageRef = useRef(language);
@@ -285,14 +299,15 @@ export default function Portfolio() {
             >
               {/* Thumbnail */}
               <div className={`aspect-video relative overflow-hidden ${
-                (project.thumbnail.includes('.png') && 
+                ((project.thumbnail.includes('.png') || project.thumbnail.includes('.jpg')) && 
                 (project.thumbnail.includes('multiverse') || 
                  project.thumbnail.includes('casanumaa') || 
                  project.thumbnail.includes('utopic') ||
                  project.thumbnail.includes('aerlounge') ||
                  project.thumbnail.includes('bigbelly') ||
                  project.thumbnail.includes('cabanuta') ||
-                 project.thumbnail.includes('rotaract'))) ||
+                 project.thumbnail.includes('rotaract') ||
+                 project.thumbnail.includes('panoramic360'))) ||
                 project.thumbnail.includes('sardinia')
                   ? 'bg-gradient-to-br from-black/30 via-black/20 to-black/30 backdrop-blur-sm' 
                   : 'bg-gray-900'
@@ -308,20 +323,25 @@ export default function Portfolio() {
                   className={`transition-all duration-500 group-hover:scale-110 ${
                     loadedImages.has(project.id) ? 'opacity-100' : 'opacity-0'
                   } ${
-                    (project.thumbnail.includes('.png') && 
+                    ((project.thumbnail.includes('.png') || project.thumbnail.includes('.jpg')) && 
                     (project.thumbnail.includes('multiverse') || 
                      project.thumbnail.includes('casanumaa') || 
                      project.thumbnail.includes('utopic') ||
                      project.thumbnail.includes('aerlounge') ||
                      project.thumbnail.includes('bigbelly') ||
                      project.thumbnail.includes('cabanuta') ||
-                     project.thumbnail.includes('rotaract'))) ||
+                     project.thumbnail.includes('rotaract') ||
+                     project.thumbnail.includes('panoramic360'))) ||
                     project.thumbnail.includes('sardinia')
                       ? `object-contain drop-shadow-2xl filter brightness-110 group-hover:brightness-125 ${
                           project.thumbnail.includes('bigbelly')
                             ? 'p-3'
-                            : project.thumbnail.includes('casanumaa')
-                            ? 'p-2'
+                            :                           project.thumbnail.includes('casanumaa')
+                            ? 'p-1'
+                            : project.thumbnail.includes('utopic')
+                            ? 'p-4'
+                            : project.thumbnail.includes('aerlounge')
+                            ? 'p-10'
                             : 'p-6'
                         }`
                       : 'object-cover'
@@ -329,14 +349,15 @@ export default function Portfolio() {
                   onLoad={() => setLoadedImages(prev => new Set(prev).add(project.id))}
                 />
                 <div className={`absolute inset-0 transition-all duration-300 ${
-                  (project.thumbnail.includes('.png') && 
+                  ((project.thumbnail.includes('.png') || project.thumbnail.includes('.jpg')) && 
                   (project.thumbnail.includes('multiverse') || 
                    project.thumbnail.includes('casanumaa') || 
                    project.thumbnail.includes('utopic') ||
                    project.thumbnail.includes('aerlounge') ||
                    project.thumbnail.includes('bigbelly') ||
                    project.thumbnail.includes('cabanuta') ||
-                   project.thumbnail.includes('rotaract'))) ||
+                   project.thumbnail.includes('rotaract') ||
+                   project.thumbnail.includes('panoramic360'))) ||
                   project.thumbnail.includes('sardinia')
                     ? 'bg-gradient-to-t from-black/20 via-transparent to-black/20 group-hover:from-black/10 group-hover:via-transparent group-hover:to-black/10'
                     : 'bg-gradient-to-t from-black/80 via-black/40 to-black/20 group-hover:from-black/60 group-hover:via-black/30 group-hover:to-black/10'
