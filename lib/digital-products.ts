@@ -56,12 +56,12 @@ export const digitalProducts: DigitalProduct[] = [
   {
     id: 8,
     name: "Lightroom Photo Presets",
-    downloadUrl: "https://drive.google.com/drive/folders/YOUR_LIGHTROOM_PRESETS_FOLDER_ID?usp=drive_link",
+    downloadUrl: "https://drive.google.com/drive/folders/1qRS_o8Z2JbR1VR7sEz4EAcnRv-IV-6n6?usp=sharing",
   },
   {
     id: 9,
     name: "Transitions & Burns Pack",
-    downloadUrl: "https://drive.google.com/drive/folders/YOUR_TRANSITIONS_BURNS_FOLDER_ID?usp=drive_link",
+    downloadUrl: "https://drive.google.com/drive/folders/1V3Cheu6wVcLx3_dtm2SB3xFyyV_5M8ha?usp=sharing",
   },
   {
     id: 10,
