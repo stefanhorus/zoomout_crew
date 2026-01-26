@@ -27,6 +27,7 @@ export default function Home() {
     { id: 5, name: "Utopic", logo: "/assets/brands/utopic.png", width: 200, height: 100 },
     { id: 6, name: "Aer Lounge", logo: "/assets/brands/aerlounge.png", width: 170, height: 85 },
     { id: 7, name: "Multiverse", logo: "/assets/brands/multiverse.png", width: 170, height: 85 },
+    { id: 8, name: "Panoramic 360", logo: "/assets/brands/panoramic360.png", width: 170, height: 85 },
   ];
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);

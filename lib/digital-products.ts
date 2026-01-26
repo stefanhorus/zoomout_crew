@@ -51,7 +51,7 @@ export const digitalProducts: DigitalProduct[] = [
   {
     id: 7,
     name: "Majestic Wallpaper Pack",
-    downloadUrl: "https://drive.google.com/drive/folders/YOUR_WALLPAPER_PACK_FOLDER_ID?usp=drive_link",
+    downloadUrl: "https://drive.google.com/drive/folders/1Rfhm2tdrw2_AEX9nn4FBGYOpHje5ns2Z?usp=sharing",
   },
   {
     id: 8,
@@ -66,7 +66,7 @@ export const digitalProducts: DigitalProduct[] = [
   {
     id: 10,
     name: "Film Mattes and Artifacts Pack",
-    downloadUrl: "https://drive.google.com/drive/folders/YOUR_FILM_ARTIFACTS_FOLDER_ID?usp=drive_link",
+    downloadUrl: "https://mega.nz/folder/KNtRAKaT#aOLGxvtiIWDozvC7mhCgHw",
   },
   {
     id: 11,
@@ -86,6 +86,25 @@ export function getDownloadUrl(productName: string): string | null {
     (p) => p.name.toLowerCase() === productName.toLowerCase()
   );
   return product?.downloadUrl || null;
+}
+
+// Funcție helper pentru a obține toate link-urile pentru Signature Bundle
+export function getSignatureBundleDownloads(): Array<{ productName: string; downloadUrl: string }> {
+  // Produsele incluse în Signature Bundle (fără pack-urile individuale de LUTs și wallpaper-uri)
+  const includedProductIds = [
+    12, // Full Lut Bundle
+    8,  // Lightroom Photo Presets
+    6,  // Sound Design Pack
+    9,  // Transitions & Burns Pack
+    10, // Film Mattes and Artifacts Pack
+  ];
+  
+  return digitalProducts
+    .filter((p) => includedProductIds.includes(p.id))
+    .map((p) => ({
+      productName: p.name,
+      downloadUrl: p.downloadUrl,
+    }));
 }
 
 // Funcție helper pentru a verifica dacă un produs este digital

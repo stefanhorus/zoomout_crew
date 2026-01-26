@@ -28,6 +28,19 @@ function CheckoutContent() {
   const [requestInvoice, setRequestInvoice] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [nameError, setNameError] = useState("");
+  
+  // Validare email
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email.trim());
+  };
+  
+  // Verifică dacă formularul este valid
+  const isFormValid = (): boolean => {
+    const emailValid = customerEmail.trim() && validateEmail(customerEmail);
+    const nameValid = !requestInvoice || (requestInvoice && customerName.trim());
+    return emailValid && nameValid;
+  };
 
   const subtotal = getTotalPrice();
   
@@ -130,7 +143,7 @@ function CheckoutContent() {
 
     // Validează numele dacă se cere factură
     if (requestInvoice && !customerName.trim()) {
-      setNameError(t("checkout.emailError.required"));
+      setNameError(t("checkout.nameError.required") || "Numele este obligatoriu pentru factură");
       return;
     }
     setNameError("");
@@ -359,8 +372,24 @@ function CheckoutContent() {
                   type="email"
                   value={customerEmail}
                   onChange={(e) => {
-                    setCustomerEmail(e.target.value);
-                    setEmailError("");
+                    const value = e.target.value;
+                    setCustomerEmail(value);
+                    // Validare în timp real
+                    if (value.trim() && !validateEmail(value)) {
+                      setEmailError(t("checkout.emailError.invalid"));
+                    } else {
+                      setEmailError("");
+                    }
+                  }}
+                  onBlur={(e) => {
+                    // Validare când utilizatorul părăsește câmpul
+                    if (!e.target.value.trim()) {
+                      setEmailError(t("checkout.emailError.required"));
+                    } else if (!validateEmail(e.target.value)) {
+                      setEmailError(t("checkout.emailError.invalid"));
+                    } else {
+                      setEmailError("");
+                    }
                   }}
                   placeholder="exemplu@email.com"
                   required
@@ -369,9 +398,6 @@ function CheckoutContent() {
                   }`}
                   style={{ fontFamily: "var(--font-roboto)" }}
                 />
-                {emailError && (
-                  <p className="text-red-400 text-sm mt-2">{emailError}</p>
-                )}
                 <p className="text-gray-400 text-xs mt-2">
                   {t("checkout.emailHelper")}
                 </p>
@@ -387,6 +413,11 @@ function CheckoutContent() {
                       if (!e.target.checked) {
                         setCustomerName("");
                         setNameError("");
+                      } else {
+                        // Validează numele imediat când se bifează factura
+                        if (!customerName.trim()) {
+                          setNameError(t("checkout.nameError.required") || "Numele este obligatoriu pentru factură");
+                        }
                       }
                     }}
                     className="mt-1 h-4 w-4 rounded border-white/30 bg-transparent text-white focus:ring-white/30"
@@ -412,8 +443,15 @@ function CheckoutContent() {
                     type="text"
                     value={customerName}
                     onChange={(e) => {
-                      setCustomerName(e.target.value);
-                      setNameError("");
+                      const value = e.target.value;
+                      setCustomerName(value);
+                      // Șterge eroarea când utilizatorul începe să scrie
+                      if (value.trim()) {
+                        setNameError("");
+                      } else if (requestInvoice) {
+                        // Dacă factura este bifată și numele este gol, arată eroarea
+                        setNameError(t("checkout.nameError.required") || "Numele este obligatoriu pentru factură");
+                      }
                     }}
                     placeholder={t("checkout.customerNamePlaceholder")}
                     required={requestInvoice}
@@ -422,9 +460,6 @@ function CheckoutContent() {
                     }`}
                     style={{ fontFamily: "var(--font-roboto)" }}
                   />
-                  {nameError && (
-                    <p className="text-red-400 text-sm mt-2">{nameError}</p>
-                  )}
                   <p className="text-gray-400 text-xs mt-2">
                     {t("checkout.customerNameHelper")}
                   </p>
@@ -603,17 +638,12 @@ function CheckoutContent() {
 
               <button
                 onClick={handleCheckout}
-                disabled={isProcessing || !customerEmail.trim()}
+                disabled={isProcessing || !isFormValid()}
                 className="w-full liquid-glass-button text-white py-4 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-center"
                 style={{ fontFamily: "var(--font-roboto)" }}
               >
                 {isProcessing ? t("checkout.processing") : t("checkout.continueToPayment")}
               </button>
-              {!customerEmail.trim() && (
-                <p className="text-yellow-400 text-xs mt-2 text-center">
-                  {t("checkout.emailRequired")}
-                </p>
-              )}
 
               <Link
                 href="/shop"

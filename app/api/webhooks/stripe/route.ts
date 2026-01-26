@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { Resend } from "resend";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
-import { getDownloadUrl, isDigitalProduct } from "@/lib/digital-products";
+import { getDownloadUrl, isDigitalProduct, getSignatureBundleDownloads } from "@/lib/digital-products";
 import { generateInvoicePDF } from "@/lib/invoice-generator";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
@@ -183,11 +183,19 @@ export async function POST(request: NextRequest) {
           
           // Verifică dacă produsul este digital și adaugă link-ul de download
           if (isDigitalProduct(productName)) {
-            const downloadUrl = getDownloadUrl(productName);
-            if (downloadUrl) {
-              // Adaugă pentru fiecare cantitate
+            // Pentru Signature Bundle, adaugă toate link-urile produselor incluse
+            if (productName.toLowerCase() === "signature bundle") {
+              const bundleDownloads = getSignatureBundleDownloads();
               for (let i = 0; i < quantity; i++) {
-                digitalDownloads.push({ productName, downloadUrl });
+                digitalDownloads.push(...bundleDownloads);
+              }
+            } else {
+              const downloadUrl = getDownloadUrl(productName);
+              if (downloadUrl) {
+                // Adaugă pentru fiecare cantitate
+                for (let i = 0; i < quantity; i++) {
+                  digitalDownloads.push({ productName, downloadUrl });
+                }
               }
             }
           }

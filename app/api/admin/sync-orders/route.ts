@@ -3,7 +3,7 @@ import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
 import { Resend } from "resend";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
-import { getDownloadUrl, isDigitalProduct } from "@/lib/digital-products";
+import { getDownloadUrl, isDigitalProduct, getSignatureBundleDownloads } from "@/lib/digital-products";
 import { generateRevolutReceiptPDF } from "@/lib/revolut-receipt-generator";
 
 // Verifică și actualizează status-ul comenzilor "pending" din Revolut
@@ -112,10 +112,18 @@ export async function POST(request: NextRequest) {
                     : "0.00";
 
                   if (isDigitalProduct(productName)) {
-                    const downloadUrl = getDownloadUrl(productName);
-                    if (downloadUrl) {
+                    // Pentru Signature Bundle, adaugă toate link-urile produselor incluse
+                    if (productName.toLowerCase() === "signature bundle") {
+                      const bundleDownloads = getSignatureBundleDownloads();
                       for (let i = 0; i < quantity; i++) {
-                        digitalDownloads.push({ productName, downloadUrl });
+                        digitalDownloads.push(...bundleDownloads);
+                      }
+                    } else {
+                      const downloadUrl = getDownloadUrl(productName);
+                      if (downloadUrl) {
+                        for (let i = 0; i < quantity; i++) {
+                          digitalDownloads.push({ productName, downloadUrl });
+                        }
                       }
                     }
                   }
