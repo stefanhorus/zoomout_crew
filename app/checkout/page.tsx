@@ -37,8 +37,8 @@ function CheckoutContent() {
   
   // Verifică dacă formularul este valid
   const isFormValid = (): boolean => {
-    const emailValid = customerEmail.trim() && validateEmail(customerEmail);
-    const nameValid = !requestInvoice || (requestInvoice && customerName.trim());
+    const emailValid = !!customerEmail.trim() && validateEmail(customerEmail);
+    const nameValid = !requestInvoice || (requestInvoice && !!customerName.trim());
     return emailValid && nameValid;
   };
 
