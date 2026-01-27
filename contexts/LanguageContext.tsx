@@ -289,7 +289,9 @@ const translations: Record<Language, Record<string, string>> = {
     "checkout.error.freeOrder": "An error occurred processing the order. Please try again.",
 
     // Promo
-    "promo.jointhecrew": "Use code JOINTHECREW for 50% off",
+    "promo.jointhecrew": "Use code \"JOINTHECREW\" for EXTRA 50% DISCOUNT",
+    "promo.extradiscount": "Use code ... for EXTRA 50% DISCOUNT",
+    "promo.copy": "COPY",
     "promo.copied": "Copied!",
 
     // Save text
@@ -340,8 +342,8 @@ const translations: Record<Language, Record<string, string>> = {
     "about.title": "Despre Noi",
     "about.subtitle": "Servicii profesionale de filmări aeriene și videografie",
     "about.mission": "Misiunea Noastră",
-    "about.mission.text1": "La Zoomout_crew, dăm viață viziunii tale cu filmări memorabile care îți spune povestea. Fie că sunt proiecte comerciale, filmări de evenimente, prezentări imobiliare sau aventuri cinematice, aducem videografie aeriană profesională la fiecare proiect.",
-    "about.mission.text2": "Pasiunea noastra pentru videografie ne determina sa livram calitate exceptionala si viziune creativa care ridica continutul tau deasupra restului.",
+    "about.mission.text1": "La Zoomout_crew, dăm viață viziunii tale cu filmări memorabile care îți spun povestea. Fie că sunt proiecte comerciale, filmări de evenimente, prezentări imobiliare sau aventuri cinematice, aducem videografie aeriană profesională la fiecare proiect.",
+    "about.mission.text2": "Pasiunea noastră pentru videografie ne determină să livrăm materiale de calitate excepțională care evidențiază unicitatea proiectului tău.",
     "about.whatWeDo": "Ce Facem",
     "about.aerialCinematography": "Videografie Aeriană",
     "about.aerialCinematography.desc": "Cadre aeriene uimitoare pentru filme, documentare și proiecte creative.",
@@ -571,7 +573,9 @@ const translations: Record<Language, Record<string, string>> = {
     "checkout.error.freeOrder": "A apărut o eroare la procesarea comenzii. Te rugăm să încerci din nou.",
 
     // Promo
-    "promo.jointhecrew": "Folosește codul JOINTHECREW pentru -50%",
+    "promo.jointhecrew": "Folosește codul \"JOINTHECREW\" pentru EXTRA 50% DISCOUNT",
+    "promo.extradiscount": "Folosește codul ... pentru EXTRA 50% DISCOUNT",
+    "promo.copy": "COPIAZĂ",
     "promo.copied": "Copiat!",
 
     // Save text

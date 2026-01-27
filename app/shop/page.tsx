@@ -460,7 +460,7 @@ export default function Shop() {
               {promoCopied ? t("promo.copied") : t("promo.jointhecrew")}
             </span>
             <span className="text-xs font-bold px-2 py-1 rounded-lg bg-white/10 border border-white/15 whitespace-nowrap">
-              JOINTHECREW
+              {t("promo.copy")}
             </span>
           </div>
         </button>
