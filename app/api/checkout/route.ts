@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
-import { getDiscountPercentageForCode, normalizeDiscountCode } from "@/lib/discount-codes";
+import { getDiscountPercentageForCode, normalizeDiscountCode, processMultipleDiscountCodes } from "@/lib/discount-codes";
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,21 +29,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Determine discount (prefer code if provided)
-    const normalizedCode = typeof discountCode === "string" ? normalizeDiscountCode(discountCode) : "";
-    const percentageFromCode = normalizedCode ? getDiscountPercentageForCode(normalizedCode) : 0;
-    if (normalizedCode && percentageFromCode <= 0) {
-      return NextResponse.json(
-        { error: "Invalid discount code" },
-        { status: 400 }
-      );
+    // Calculează subtotalul înainte de discount-uri
+    const subtotal = items.reduce((sum: number, item: { product: { price: number }; quantity: number }) => {
+      return sum + item.product.price * item.quantity;
+    }, 0);
+
+    // Procesează multiple coduri de discount (dacă există)
+    let effectiveDiscountPercentage = 0;
+    let normalizedCodes = "";
+    let discountCodesArray: string[] = [];
+
+    if (discountCode && typeof discountCode === "string") {
+      // Procesează multiple coduri
+      const discountResult = processMultipleDiscountCodes(discountCode, subtotal);
+      effectiveDiscountPercentage = discountResult.effectivePercentage;
+      discountCodesArray = discountResult.codes;
+      normalizedCodes = discountCodesArray.join(", ");
+      
+      // Verifică dacă toate codurile sunt valide
+      if (discountCodesArray.length === 0 && discountCode.trim().length > 0) {
+        return NextResponse.json(
+          { error: "Invalid discount code(s)" },
+          { status: 400 }
+        );
+      }
+    } else if (typeof discountPercentage === "number") {
+      // Folosește discountPercentage dacă nu există coduri
+      effectiveDiscountPercentage = Math.max(0, Math.min(100, discountPercentage));
     }
-    const effectiveDiscountPercentage =
-      percentageFromCode > 0
-        ? percentageFromCode
-        : typeof discountPercentage === "number"
-          ? Math.max(0, Math.min(100, discountPercentage))
-          : 0;
 
     // Rate-uri de schimb (trebuie să fie identice cu cele din CurrencyContext)
     const exchangeRates: Record<string, number> = {
@@ -61,15 +74,8 @@ export async function POST(request: NextRequest) {
     // Stripe folosește coduri de currency în lowercase
     const stripeCurrency = selectedCurrency.toLowerCase();
 
-    // Calculează totalul în RON (prețurile din items sunt în RON)
-    let totalAmountRON = items.reduce((sum: number, item: { product: { price: number }; quantity: number }) => {
-      return sum + item.product.price * item.quantity;
-    }, 0);
-
-    // Aplică discount dacă există
-    if (effectiveDiscountPercentage > 0) {
-      totalAmountRON = totalAmountRON * (1 - effectiveDiscountPercentage / 100);
-    }
+    // Calculează totalul în RON după discount-uri
+    const totalAmountRON = subtotal - (subtotal * (effectiveDiscountPercentage / 100));
 
     // Convertește în currency-ul selectat
     const totalAmount = totalAmountRON * exchangeRate;
@@ -114,7 +120,8 @@ export async function POST(request: NextRequest) {
         customer_name: customerName?.trim() || "",
         language: language || "en",
         discount_percentage: effectiveDiscountPercentage ? effectiveDiscountPercentage.toString() : "0",
-        discount_code: normalizedCode || "",
+        discount_code: normalizedCodes || "",
+        discount_codes: discountCodesArray.join(","), // Lista de coduri separate prin virgulă
         request_invoice: invoiceRequested ? "true" : "false",
         original_currency: "RON",
         payment_currency: selectedCurrency,
@@ -128,16 +135,18 @@ export async function POST(request: NextRequest) {
     try {
       await connectDB();
       
+      // Calculează prețurile cu discount aplicat secvențial
       const formattedItems = items.map((item: { product: { name: string; price: number }; quantity: number }) => {
-        let unitPriceRON = item.product.price;
-        if (effectiveDiscountPercentage > 0) {
-          unitPriceRON = unitPriceRON * (1 - effectiveDiscountPercentage / 100);
-        }
+        // Aplică discount-ul total calculat secvențial
+        const itemSubtotal = item.product.price * (item.quantity || 1);
+        const itemDiscount = itemSubtotal * (effectiveDiscountPercentage / 100);
+        const itemPriceAfterDiscount = itemSubtotal - itemDiscount;
+        const unitPriceAfterDiscount = itemPriceAfterDiscount / (item.quantity || 1);
         
         return {
           name: item.product.name,
           quantity: item.quantity || 1,
-          price: unitPriceRON,
+          price: unitPriceAfterDiscount,
         };
       });
 
@@ -154,11 +163,12 @@ export async function POST(request: NextRequest) {
           status: "pending",
           items: formattedItems,
           discountPercentage: effectiveDiscountPercentage || undefined,
-          discountCode: normalizedCode || undefined,
+          discountCode: normalizedCodes || undefined,
           metadata: {
             language: language || "en",
             discount_percentage: effectiveDiscountPercentage ? effectiveDiscountPercentage.toString() : "0",
-            discount_code: normalizedCode || "",
+            discount_code: normalizedCodes || "",
+            discount_codes: discountCodesArray.join(","),
             request_invoice: invoiceRequested,
             original_currency: "RON",
             payment_currency: selectedCurrency,

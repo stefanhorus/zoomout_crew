@@ -81,6 +81,24 @@ function CheckoutContent() {
     const percentage = getDiscountPercentageForCode(code);
     
     if (percentage > 0) {
+      // Verifică regulile de combinare a codurilor
+      const hasJoinTheCrew = appliedCodes.includes("JOINTHECREW") || code === "JOINTHECREW";
+      
+      // Dacă există deja un cod aplicat
+      if (appliedCodes.length > 0) {
+        // Permite doar dacă unul dintre coduri este JOINTHECREW
+        if (!hasJoinTheCrew && !appliedCodes.includes("JOINTHECREW")) {
+          setDiscountError("Poți folosi doar JOINTHECREW împreună cu un alt cod. Elimină codul existent sau folosește JOINTHECREW.");
+          return;
+        }
+        
+        // Nu permite mai mult de 2 coduri
+        if (appliedCodes.length >= 2) {
+          setDiscountError("Poți folosi maximum 2 coduri de discount simultan");
+          return;
+        }
+      }
+      
       // Adaugă codul la lista de coduri aplicate
       setAppliedCodes(prev => [...prev, code]);
       setDiscountApplied(true);
