@@ -64,12 +64,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.product.id === product.id);
+      // Nu permite adăugarea dacă produsul există deja în coș
       if (existingItem) {
-        return prevCart.map((item) =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+        return prevCart;
       }
       return [...prevCart, { product, quantity: 1 }];
     });
@@ -80,9 +77,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const updateQuantity = (productId: number, quantity: number) => {
+    // Nu permite cantități mai mari de 1
     if (quantity <= 0) {
       removeFromCart(productId);
       return;
+    }
+    if (quantity > 1) {
+      return; // Nu permite mai mult de 1
     }
     setCart((prevCart) =>
       prevCart.map((item) =>

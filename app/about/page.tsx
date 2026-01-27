@@ -109,24 +109,13 @@ export default function About() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div className="liquid-glass rounded-xl p-4 sm:p-5 md:p-6 liquid-glass-hover backdrop-blur-md relative group overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-pink-400 to-purple-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
                   <div className="relative z-10">
                     <h3 className="text-lg sm:text-xl font-semibold mb-2 md:mb-3 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
-                      {t("about.aerialCinematography")}
+                      {t("about.commercial")}
                     </h3>
                     <p className="text-gray-100 text-sm sm:text-base drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
-                      {t("about.aerialCinematography.desc")}
-                    </p>
-                  </div>
-                </div>
-                <div className="liquid-glass rounded-xl p-4 sm:p-5 md:p-6 liquid-glass-hover backdrop-blur-md relative group overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-pink-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
-                  <div className="relative z-10">
-                    <h3 className="text-lg sm:text-xl font-semibold mb-2 md:mb-3 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
-                      {t("about.realEstate")}
-                    </h3>
-                    <p className="text-gray-100 text-sm sm:text-base drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
-                      {t("about.realEstate.desc")}
+                      {t("about.commercial.desc")}
                     </p>
                   </div>
                 </div>
@@ -142,13 +131,24 @@ export default function About() {
                   </div>
                 </div>
                 <div className="liquid-glass rounded-xl p-4 sm:p-5 md:p-6 liquid-glass-hover backdrop-blur-md relative group overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-pink-400 to-purple-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-pink-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
                   <div className="relative z-10">
                     <h3 className="text-lg sm:text-xl font-semibold mb-2 md:mb-3 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
-                      {t("about.commercial")}
+                      {t("about.realEstate")}
                     </h3>
                     <p className="text-gray-100 text-sm sm:text-base drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
-                      {t("about.commercial.desc")}
+                      {t("about.realEstate.desc")}
+                    </p>
+                  </div>
+                </div>
+                <div className="liquid-glass rounded-xl p-4 sm:p-5 md:p-6 liquid-glass-hover backdrop-blur-md relative group overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
+                  <div className="relative z-10">
+                    <h3 className="text-lg sm:text-xl font-semibold mb-2 md:mb-3 text-white drop-shadow-md" style={{ fontFamily: "var(--font-playfair)" }}>
+                      {t("about.aerialCinematography")}
+                    </h3>
+                    <p className="text-gray-100 text-sm sm:text-base drop-shadow-sm" style={{ fontFamily: "var(--font-roboto)" }}>
+                      {t("about.aerialCinematography.desc")}
                     </p>
                   </div>
                 </div>

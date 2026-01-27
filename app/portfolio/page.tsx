@@ -186,9 +186,9 @@ export default function Portfolio() {
 
   const categories: { value: ProjectCategory; label: string; labelKey: string }[] = [
     { value: "all", label: "All Projects", labelKey: "portfolio.allProjects" },
-    { value: "real-estate", label: "Real Estate", labelKey: "portfolio.realEstate" },
-    { value: "events", label: "Events", labelKey: "portfolio.events" },
     { value: "commercial", label: "Commercial", labelKey: "portfolio.commercial" },
+    { value: "events", label: "Events", labelKey: "portfolio.events" },
+    { value: "real-estate", label: "Real Estate", labelKey: "portfolio.realEstate" },
   ];
 
   const filteredProjects =

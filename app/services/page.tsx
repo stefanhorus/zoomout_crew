@@ -201,15 +201,17 @@ export default function Services() {
                   >
                     {service.title}
                   </h3>
-                  <div
-                    className="flex items-center gap-2 text-xs text-white/70 mb-3"
-                    style={{ fontFamily: "var(--font-roboto)" }}
-                  >
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z" />
-                    </svg>
-                    <span>{t("services.location")}</span>
-                  </div>
+                  {service.id !== 3 && (
+                    <div
+                      className="flex items-center gap-2 text-xs text-white/70 mb-3"
+                      style={{ fontFamily: "var(--font-roboto)" }}
+                    >
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z" />
+                      </svg>
+                      <span>{t("services.location")}</span>
+                    </div>
+                  )}
 
                   {/* Price - Stylized */}
                   <div className="mb-3">
@@ -289,15 +291,17 @@ export default function Services() {
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedService.title}
               </h2>
-              <div
-                className="flex items-center gap-2 text-sm text-white/75 mb-4"
-                style={{ fontFamily: "var(--font-roboto)" }}
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z" />
-                </svg>
-                <span>{t("services.location")}</span>
-              </div>
+              {selectedService.id !== 3 && (
+                <div
+                  className="flex items-center gap-2 text-sm text-white/75 mb-4"
+                  style={{ fontFamily: "var(--font-roboto)" }}
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z" />
+                  </svg>
+                  <span>{t("services.location")}</span>
+                </div>
+              )}
 
               {/* Price - Stylized */}
               <div className="mb-5 md:mb-6">
