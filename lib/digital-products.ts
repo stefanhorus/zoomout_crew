@@ -82,9 +82,53 @@ export const digitalProducts: DigitalProduct[] = [
 
 // Funcție helper pentru a găsi link-ul de download pentru un produs digital
 export function getDownloadUrl(productName: string): string | null {
-  const product = digitalProducts.find(
-    (p) => p.name.toLowerCase() === productName.toLowerCase()
+  const normalizedName = productName.toLowerCase().trim();
+  
+  // First try exact match (case-insensitive)
+  let product = digitalProducts.find(
+    (p) => p.name.toLowerCase() === normalizedName
   );
+  
+  // If no exact match, try partial matching for common variations
+  if (!product) {
+    // Handle "Wallpaper Pack" matching "Majestic Wallpaper Pack" (specific case)
+    if (normalizedName.includes("wallpaper") && normalizedName.includes("pack")) {
+      product = digitalProducts.find(
+        (p) => p.name.toLowerCase().includes("wallpaper") && p.name.toLowerCase().includes("pack")
+      );
+    }
+    // Handle "Sound Design" matching "Sound Design Pack"
+    else if (normalizedName.includes("sound design")) {
+      product = digitalProducts.find(
+        (p) => p.name.toLowerCase().includes("sound design")
+      );
+    }
+    // Handle "Lightroom" matching "Lightroom Photo Presets"
+    else if (normalizedName.includes("lightroom")) {
+      product = digitalProducts.find(
+        (p) => p.name.toLowerCase().includes("lightroom")
+      );
+    }
+    // Handle "Transitions" or "Burns" matching "Transitions & Burns Pack"
+    else if (normalizedName.includes("transition") || normalizedName.includes("burn")) {
+      product = digitalProducts.find(
+        (p) => p.name.toLowerCase().includes("transition") || p.name.toLowerCase().includes("burn")
+      );
+    }
+    // Handle "Film Mattes" or "Artifacts" matching "Film Mattes and Artifacts Pack"
+    else if (normalizedName.includes("film matte") || normalizedName.includes("artifact")) {
+      product = digitalProducts.find(
+        (p) => p.name.toLowerCase().includes("matte") || p.name.toLowerCase().includes("artifact")
+      );
+    }
+    // Handle "Full LUT" or "Full Lut" matching "Full Lut Bundle"
+    else if (normalizedName.includes("full") && normalizedName.includes("lut")) {
+      product = digitalProducts.find(
+        (p) => p.name.toLowerCase().includes("full") && p.name.toLowerCase().includes("lut")
+      );
+    }
+  }
+  
   return product?.downloadUrl || null;
 }
 
@@ -109,7 +153,84 @@ export function getSignatureBundleDownloads(): Array<{ productName: string; down
 
 // Funcție helper pentru a verifica dacă un produs este digital
 export function isDigitalProduct(productName: string): boolean {
-  return digitalProducts.some(
-    (p) => p.name.toLowerCase() === productName.toLowerCase()
+  const normalizedName = productName.toLowerCase().trim();
+  
+  // First try exact match (case-insensitive)
+  const exactMatch = digitalProducts.some(
+    (p) => p.name.toLowerCase() === normalizedName
   );
+  
+  if (exactMatch) return true;
+  
+  // If no exact match, try partial matching for common variations
+  // Handle "Wallpaper Pack" matching "Majestic Wallpaper Pack" (specific case)
+  if (normalizedName.includes("wallpaper") && normalizedName.includes("pack")) {
+    return digitalProducts.some(
+      (p) => p.name.toLowerCase().includes("wallpaper") && p.name.toLowerCase().includes("pack")
+    );
+  }
+  
+  // Handle "Sound Design" matching "Sound Design Pack"
+  if (normalizedName.includes("sound design")) {
+    return digitalProducts.some(
+      (p) => p.name.toLowerCase().includes("sound design")
+    );
+  }
+  
+  // Handle "Lightroom" matching "Lightroom Photo Presets"
+  if (normalizedName.includes("lightroom")) {
+    return digitalProducts.some(
+      (p) => p.name.toLowerCase().includes("lightroom")
+    );
+  }
+  
+  // Handle "Transitions" or "Burns" matching "Transitions & Burns Pack"
+  if (normalizedName.includes("transition") || normalizedName.includes("burn")) {
+    return digitalProducts.some(
+      (p) => p.name.toLowerCase().includes("transition") || p.name.toLowerCase().includes("burn")
+    );
+  }
+  
+  // Handle "Film Mattes" or "Artifacts" matching "Film Mattes and Artifacts Pack"
+  if (normalizedName.includes("film matte") || normalizedName.includes("artifact")) {
+    return digitalProducts.some(
+      (p) => p.name.toLowerCase().includes("matte") || p.name.toLowerCase().includes("artifact")
+    );
+  }
+  
+  // Handle "Full LUT" or "Full Lut" matching "Full Lut Bundle"
+  if (normalizedName.includes("full") && normalizedName.includes("lut")) {
+    return digitalProducts.some(
+      (p) => p.name.toLowerCase().includes("full") && p.name.toLowerCase().includes("lut")
+    );
+  }
+  
+  // Handle LUT variations (but be more specific to avoid false matches)
+  if (normalizedName.includes("cinematic") && normalizedName.includes("lut")) {
+    return digitalProducts.some(
+      (p) => p.name.toLowerCase().includes("cinematic") && p.name.toLowerCase().includes("lut")
+    );
+  }
+  if (normalizedName.includes("movie") && normalizedName.includes("lut")) {
+    return digitalProducts.some(
+      (p) => p.name.toLowerCase().includes("movie") && p.name.toLowerCase().includes("lut")
+    );
+  }
+  if (normalizedName.includes("film") && normalizedName.includes("lut") && !normalizedName.includes("matte")) {
+    return digitalProducts.some(
+      (p) => p.name.toLowerCase().includes("film") && p.name.toLowerCase().includes("lut") && !p.name.toLowerCase().includes("matte")
+    );
+  }
+  if (normalizedName.includes("vintage") && normalizedName.includes("lut")) {
+    return digitalProducts.some(
+      (p) => p.name.toLowerCase().includes("vintage") && p.name.toLowerCase().includes("lut")
+    );
+  }
+  if (normalizedName.includes("iphone") && normalizedName.includes("lut")) {
+    return digitalProducts.some(
+      (p) => p.name.toLowerCase().includes("iphone") && p.name.toLowerCase().includes("lut")
+    );
+  }
+  
+  return false;
 }

@@ -252,6 +252,12 @@ export async function POST(request: NextRequest) {
               ? (item.unit_price / 100).toFixed(2)
               : "0.00";
             
+            // Log product name for debugging
+            console.log("🔍 Checking product for download:", {
+              productName,
+              isDigital: isDigitalProduct(productName),
+            });
+            
             // Verifică dacă produsul este digital și adaugă link-ul de download
             if (isDigitalProduct(productName)) {
               // Pentru Signature Bundle, adaugă toate link-urile produselor incluse
@@ -260,6 +266,7 @@ export async function POST(request: NextRequest) {
                 for (let i = 0; i < quantity; i++) {
                   digitalDownloads.push(...bundleDownloads);
                 }
+                console.log("✅ Added Signature Bundle downloads:", bundleDownloads.length);
               } else {
                 const downloadUrl = getDownloadUrl(productName);
                 if (downloadUrl) {
@@ -267,13 +274,23 @@ export async function POST(request: NextRequest) {
                   for (let i = 0; i < quantity; i++) {
                     digitalDownloads.push({ productName, downloadUrl });
                   }
+                  console.log("✅ Added download link for:", productName, downloadUrl);
+                } else {
+                  console.warn("⚠️ No download URL found for product:", productName);
                 }
               }
+            } else {
+              console.warn("⚠️ Product not recognized as digital:", productName);
             }
             
             return `• ${productName} (x${quantity}) - ${price} ${currency}`;
           })
           .join("<br>");
+        
+        console.log("📦 Digital downloads collected:", {
+          count: digitalDownloads.length,
+          downloads: digitalDownloads.map(d => ({ name: d.productName, hasUrl: !!d.downloadUrl })),
+        });
 
         const websiteUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://zoomoutcrew.com";
         const logoUrl = `${websiteUrl}/assets/logo.png`;
@@ -281,10 +298,30 @@ export async function POST(request: NextRequest) {
         const orderNotificationEmail =
           process.env.ORDER_NOTIFICATION_EMAIL || "stefanhorus@zoomoutcrew.com";
 
+        // Calculate the amount to display in email (in smallest currency unit)
+        // Use amountTotal if valid, otherwise calculate from amountRON or amountInCurrencyDecimal
+        let emailAmountTotal = amountTotal;
+        if (!emailAmountTotal || emailAmountTotal === 0) {
+          // If amountTotal is 0 or missing, calculate from amountRON or amountInCurrencyDecimal
+          if (currency === "RON" && amountRON > 0) {
+            emailAmountTotal = Math.round(amountRON * 100);
+          } else if (amountInCurrencyDecimal > 0) {
+            emailAmountTotal = Math.round(amountInCurrencyDecimal * 100);
+          }
+        }
+        
+        console.log("💰 Email amount calculation:", {
+          originalAmountTotal: amountTotal,
+          calculatedEmailAmount: emailAmountTotal,
+          amountRON,
+          amountInCurrencyDecimal,
+          currency,
+        });
+
         // Generate email content based on language
         const emailContent = generateOrderConfirmationEmail({
           productsList,
-          amountTotal,
+          amountTotal: emailAmountTotal,
           currency,
           websiteUrl,
           logoUrl,

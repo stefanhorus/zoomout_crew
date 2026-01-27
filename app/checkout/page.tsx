@@ -153,24 +153,24 @@ function CheckoutContent() {
       setIsProcessing(true);
       try {
         // Procesează comanda gratuită direct, fără gateway de plată
-          const response = await fetch("/api/checkout/free", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              items: cart,
-              customerEmail: customerEmail.trim(),
-              customerName: requestInvoice ? customerName.trim() : undefined,
-              discountPercentage: discountApplied ? discountPercentage : undefined,
-              discountCode: discountApplied ? appliedCodes.join(", ") : undefined,
-              requestInvoice,
-              language: language,
-              currency: currency,
-            }),
-          });
+        const response = await fetch("/api/checkout/free", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            items: cart,
+            customerEmail: customerEmail.trim(),
+            customerName: requestInvoice ? customerName.trim() : undefined,
+            discountPercentage: discountApplied ? discountPercentage : undefined,
+            discountCode: discountApplied ? appliedCodes.join(", ") : undefined,
+            requestInvoice,
+            language: language,
+            currency: currency,
+          }),
+        });
 
-          const data = await response.json();
+        const data = await response.json();
 
         if (response.ok && data.success) {
           // Șterge coșul după procesarea comenzii gratuite
@@ -243,6 +243,7 @@ function CheckoutContent() {
           discountCode: discountApplied ? appliedCodes.join(", ") : undefined,
           discountPercentage: discountApplied ? discountPercentage : undefined,
           customerEmail: customerEmail.trim(),
+          customerName: requestInvoice ? customerName.trim() : undefined,
           requestInvoice,
           language: language,
           currency: currency,

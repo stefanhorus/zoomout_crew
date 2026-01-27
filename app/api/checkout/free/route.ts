@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       totalAmount = totalAmount * (1 - effectiveDiscountPercentage / 100);
     }
 
-    // Verifică dacă totalul este 0
+    // Verifică dacă totalul este 0 (doar comenzile gratuite sunt permise)
     if (totalAmount > 0) {
       return NextResponse.json(
         { error: "This endpoint is only for free orders" },
@@ -76,20 +76,25 @@ export async function POST(request: NextRequest) {
     // Format products list and collect digital downloads
     const digitalDownloads: Array<{ productName: string; downloadUrl: string }> = [];
     
+    console.log("📦 Procesare produse pentru email...");
     const productsList = items
       .map((item: { product: { name: string; price: number }; quantity: number }) => {
         const productName = item.product.name || (lang === "ro" ? "Produs" : "Product");
         const quantity = item.quantity || 1;
         const freeText = lang === "ro" ? "Gratuit" : "Free";
         
+        console.log(`🔍 Verificare produs: "${productName}"`);
+        
         // Verifică dacă produsul este digital și adaugă link-ul de download
         if (isDigitalProduct(productName)) {
+          console.log(`✅ Produs digital detectat: ${productName}`);
           // Pentru Signature Bundle, adaugă toate link-urile produselor incluse
           if (productName.toLowerCase() === "signature bundle") {
             const bundleDownloads = getSignatureBundleDownloads();
             for (let i = 0; i < quantity; i++) {
               digitalDownloads.push(...bundleDownloads);
             }
+            console.log(`✅ Adăugat ${bundleDownloads.length} link-uri pentru Signature Bundle`);
           } else {
             const downloadUrl = getDownloadUrl(productName);
             if (downloadUrl) {
@@ -97,13 +102,22 @@ export async function POST(request: NextRequest) {
               for (let i = 0; i < quantity; i++) {
                 digitalDownloads.push({ productName, downloadUrl });
               }
+              console.log(`✅ Link download găsit pentru: ${productName}`);
+            } else {
+              console.warn(`⚠️  Link download negăsit pentru: ${productName}`);
             }
           }
+        } else {
+          console.warn(`⚠️  Produsul nu este recunoscut ca digital: ${productName}`);
         }
         
-        return `• ${productName} (x${quantity}) - ${freeText}`;
+        // Afișează prețul original, dar marchează ca fiind gratuit
+        const priceText = lang === "ro" ? "Gratuit" : "Free";
+        return `• ${productName} (x${quantity}) - ${priceText}`;
       })
       .join("<br>");
+    
+    console.log(`📦 Total produse digitale cu link-uri: ${digitalDownloads.length}`);
 
     const websiteUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://zoomoutcrew.com";
     const logoUrl = `${websiteUrl}/assets/logo.png`;
@@ -112,9 +126,14 @@ export async function POST(request: NextRequest) {
       process.env.ORDER_NOTIFICATION_EMAIL || "stefanhorus@zoomoutcrew.com";
 
     // Generate email content based on language
+    // Folosim amountTotal: 0 pentru că toate comenzile sunt gratuite
+    console.log("📧 Generare conținut email...");
+    console.log(`   Produse digitale: ${digitalDownloads.length}`);
+    console.log(`   Link-uri download: ${digitalDownloads.map(d => d.productName).join(", ")}`);
+    
     const emailContent = generateOrderConfirmationEmail({
       productsList,
-      amountTotal: 0,
+      amountTotal: 0, // Toate comenzile sunt gratuite
       currency: selectedCurrency,
       websiteUrl,
       logoUrl,
@@ -122,6 +141,8 @@ export async function POST(request: NextRequest) {
       digitalDownloads: digitalDownloads.length > 0 ? digitalDownloads : undefined,
       invoiceRequested,
     });
+    
+    console.log("✅ Email generat cu succes");
 
     // Optional: attach invoice PDF only if requested
     let invoiceAttachment: { filename: string; content: string } | null = null;
@@ -172,17 +193,22 @@ export async function POST(request: NextRequest) {
     }
 
     // Send confirmation email to customer
+    console.log("📤 Trimitere email la:", customerEmail);
     const { data, error } = await resend.emails.send(emailPayload);
 
     if (error) {
       console.error("❌ Error sending free order confirmation email:", error);
+      console.error("❌ Error details:", JSON.stringify(error, null, 2));
       return NextResponse.json(
         { error: "Failed to send confirmation email" },
         { status: 500 }
       );
     }
 
-    console.log("✅ Free order confirmation email sent to:", customerEmail);
+    console.log("✅ Email de confirmare trimis cu succes!");
+    console.log(`   Email ID: ${data?.id}`);
+    console.log(`   Destinatar: ${customerEmail}`);
+    console.log(`   Link-uri download incluse: ${digitalDownloads.length > 0 ? "✅ Da" : "❌ Nu"}`);
 
     // Salvează comanda în MongoDB
     try {
