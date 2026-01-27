@@ -136,8 +136,47 @@ export async function POST(request: NextRequest) {
         const customerName = metadata.customer_name || order.customer?.full_name || undefined;
         const amountTotal = order.amount || 0;
         const currency = (order.currency || "RON").toUpperCase();
-        const orderItems = order.items || [];
+        let orderItems = order.items || [];
         const language = (metadata.language as "en" | "ro") || "en";
+        
+        // Log detaliat pentru debugging
+        console.log("📋 Order details from Revolut:", {
+          orderId: orderId,
+          hasItems: orderItems.length > 0,
+          itemsCount: orderItems.length,
+          items: orderItems.map((item: any) => ({
+            name: item.name,
+            quantity: item.quantity,
+            unit_price: item.unit_price,
+          })),
+          amount: amountTotal,
+          currency,
+          customerEmail,
+          orderKeys: Object.keys(order),
+        });
+        
+        // Fallback: Dacă items sunt goale, încearcă să le obținem din MongoDB (comanda salvată anterior)
+        if (orderItems.length === 0) {
+          console.warn("⚠️ Order items are empty! Trying to get from MongoDB...");
+          try {
+            await connectDB();
+            const savedOrder = await Order.findOne({ orderId: orderId });
+            if (savedOrder && savedOrder.items && savedOrder.items.length > 0) {
+              console.log("✅ Found items in saved order:", savedOrder.items);
+              // Convert items din MongoDB format la formatul așteptat
+              orderItems = savedOrder.items.map((item: any) => ({
+                name: item.name,
+                quantity: item.quantity || 1,
+                unit_price: item.price ? Math.round(item.price * 100) : 0, // Convert la cenți
+              }));
+              console.log("✅ Using items from saved order:", orderItems);
+            } else {
+              console.warn("⚠️ No saved order found or saved order has no items");
+            }
+          } catch (dbError: any) {
+            console.error("❌ Error fetching order from MongoDB:", dbError);
+          }
+        }
         const invoiceRequested =
           metadata.request_invoice === true ||
           metadata.request_invoice === "true" ||
@@ -242,50 +281,78 @@ export async function POST(request: NextRequest) {
         console.log("📋 Saved order:", savedOrder);
 
         // Format products list and collect digital downloads
+        // Folosește items din savedOrder dacă orderItems sunt goale
+        const itemsToProcess = orderItems.length > 0 
+          ? orderItems 
+          : (savedOrder?.items || []).map((item: any) => ({
+              name: item.name,
+              quantity: item.quantity || 1,
+              unit_price: item.price ? Math.round(item.price * 100) : 0,
+            }));
+        
         const digitalDownloads: Array<{ productName: string; downloadUrl: string }> = [];
         
-        const productsList = orderItems
-          .map((item: any) => {
-            const productName = item.name || (language === "ro" ? "Produs" : "Product");
-            const quantity = item.quantity || 1;
-            const price = item.unit_price
-              ? (item.unit_price / 100).toFixed(2)
-              : "0.00";
-            
-            // Log product name for debugging
-            console.log("🔍 Checking product for download:", {
-              productName,
-              isDigital: isDigitalProduct(productName),
-            });
-            
-            // Verifică dacă produsul este digital și adaugă link-ul de download
-            if (isDigitalProduct(productName)) {
-              // Pentru Signature Bundle, adaugă toate link-urile produselor incluse
-              if (productName.toLowerCase() === "signature bundle") {
-                const bundleDownloads = getSignatureBundleDownloads();
-                for (let i = 0; i < quantity; i++) {
-                  digitalDownloads.push(...bundleDownloads);
-                }
-                console.log("✅ Added Signature Bundle downloads:", bundleDownloads.length);
-              } else {
-                const downloadUrl = getDownloadUrl(productName);
-                if (downloadUrl) {
-                  // Adaugă pentru fiecare cantitate
+        // Verifică dacă există items în comandă
+        if (itemsToProcess.length === 0) {
+          console.warn("⚠️ WARNING: No items found in order or saved order!");
+          console.log("🔍 Full order object (first 2000 chars):", JSON.stringify(order, null, 2).substring(0, 2000));
+        }
+        
+        let productsList = "";
+        
+        if (itemsToProcess.length > 0) {
+          productsList = itemsToProcess
+            .map((item: any) => {
+              const productName = item.name || (language === "ro" ? "Produs" : "Product");
+              const quantity = item.quantity || 1;
+              const price = item.unit_price
+                ? (item.unit_price / 100).toFixed(2)
+                : "0.00";
+              
+              // Log product name for debugging
+              console.log("🔍 Checking product for download:", {
+                productName,
+                rawName: item.name,
+                isDigital: isDigitalProduct(productName),
+                quantity,
+              });
+              
+              // Verifică dacă produsul este digital și adaugă link-ul de download
+              if (isDigitalProduct(productName)) {
+                // Pentru Signature Bundle, adaugă toate link-urile produselor incluse
+                if (productName.toLowerCase() === "signature bundle") {
+                  const bundleDownloads = getSignatureBundleDownloads();
                   for (let i = 0; i < quantity; i++) {
-                    digitalDownloads.push({ productName, downloadUrl });
+                    digitalDownloads.push(...bundleDownloads);
                   }
-                  console.log("✅ Added download link for:", productName, downloadUrl);
+                  console.log("✅ Added Signature Bundle downloads:", bundleDownloads.length);
                 } else {
-                  console.warn("⚠️ No download URL found for product:", productName);
+                  const downloadUrl = getDownloadUrl(productName);
+                  if (downloadUrl) {
+                    // Adaugă pentru fiecare cantitate
+                    for (let i = 0; i < quantity; i++) {
+                      digitalDownloads.push({ productName, downloadUrl });
+                    }
+                    console.log("✅ Added download link for:", productName, downloadUrl);
+                  } else {
+                    console.warn("⚠️ No download URL found for product:", productName);
+                  }
                 }
+              } else {
+                console.warn("⚠️ Product not recognized as digital:", productName);
               }
-            } else {
-              console.warn("⚠️ Product not recognized as digital:", productName);
-            }
-            
-            return `• ${productName} (x${quantity}) - ${price} ${currency}`;
-          })
-          .join("<br>");
+              
+              return `• ${productName} (x${quantity}) - ${price} ${currency}`;
+            })
+            .join("<br>");
+        } else {
+          // Dacă nu există items, folosește un mesaj generic
+          productsList = language === "ro" 
+            ? "• Produs digital - Gratuit" 
+            : "• Digital product - Free";
+          
+          console.warn("⚠️ No items in order, cannot determine specific products for download links");
+        }
         
         console.log("📦 Digital downloads collected:", {
           count: digitalDownloads.length,
