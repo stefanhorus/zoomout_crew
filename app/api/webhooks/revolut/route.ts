@@ -103,6 +103,24 @@ export async function POST(request: NextRequest) {
       const orderId = body.order_id;
       console.log("📦 Order ID:", orderId);
 
+      // Verificare idempotency: Verifică MAI ÎNTÂI dacă email-ul a fost deja trimis
+      try {
+        await connectDB();
+        const existingOrder = await Order.findOne({ orderId: orderId });
+        if (existingOrder && existingOrder.metadata?.emailSent === true) {
+          const emailSentAt = existingOrder.metadata?.emailSentAt;
+          console.log("⚠️ Email already sent for this order. Skipping duplicate email send.", {
+            orderId,
+            emailSentAt,
+            eventType,
+          });
+          return NextResponse.json({ received: true, message: "Email already sent", skipped: true });
+        }
+      } catch (earlyCheckError) {
+        console.error("❌ Error checking existing order (early check):", earlyCheckError);
+        // Continuăm procesarea dacă verificarea eșuează
+      }
+
       // Trebuie să obținem detaliile order-ului din Revolut API
       if (!process.env.REVOLUT_SECRET_KEY) {
         console.error("REVOLUT_SECRET_KEY is not set");
@@ -130,6 +148,13 @@ export async function POST(request: NextRequest) {
         console.log("🔌 Connecting to MongoDB...");
         await connectDB();
         console.log("✅ Connected to MongoDB");
+
+        // Verificare dublă: Verifică din nou dacă email-ul a fost trimis (pentru race conditions)
+        const doubleCheckOrder = await Order.findOne({ orderId: orderId });
+        if (doubleCheckOrder && doubleCheckOrder.metadata?.emailSent === true) {
+          console.log("⚠️ Email already sent for this order (double check). Skipping duplicate email send.");
+          return NextResponse.json({ received: true, message: "Email already sent (double check)", skipped: true });
+        }
 
         const metadata = order.metadata || {};
         const customerEmail = order.customer?.email || order.email || order.customer_email;
@@ -177,11 +202,16 @@ export async function POST(request: NextRequest) {
             console.error("❌ Error fetching order from MongoDB:", dbError);
           }
         }
-        const invoiceRequested =
-          metadata.request_invoice === true ||
-          metadata.request_invoice === "true" ||
-          metadata.request_invoice === 1 ||
-          metadata.request_invoice === "1";
+        // Verifică corect dacă factura a fost cerută (doar dacă este explicit true sau "true")
+        const invoiceRequested = 
+          metadata.request_invoice === true || 
+          metadata.request_invoice === "true";
+        
+        console.log("🧾 Invoice request check:", {
+          request_invoice: metadata.request_invoice,
+          invoiceRequested,
+          type: typeof metadata.request_invoice,
+        });
 
         console.log("📧 Email check:", {
           customerEmail,
@@ -452,9 +482,9 @@ export async function POST(request: NextRequest) {
 
             // Generează factura PDF doar dacă a fost cerută explicit
             let invoiceAttachment = null;
-            if (invoiceRequested) {
+            if (invoiceRequested === true) {
               try {
-                console.log("📄 Generating invoice PDF...");
+                console.log("📄 Generating invoice PDF (requested by customer)...");
                 const invoicePDF = await generateInvoicePDF({
                   orderId: orderId,
                   customerEmail: customerEmail,
@@ -480,7 +510,7 @@ export async function POST(request: NextRequest) {
                 // Continuăm fără PDF dacă generarea eșuează
               }
             } else {
-              console.log("🧾 Invoice not requested; skipping invoice generation");
+              console.log("🧾 Invoice not requested by customer; skipping invoice generation");
             }
             
             const emailPayload: any = {
@@ -510,7 +540,30 @@ export async function POST(request: NextRequest) {
               if (invoiceAttachment) {
                 console.log("✅ Invoice PDF attached to email");
               }
+              if (revolutReceiptAttachment) {
+                console.log("✅ Revolut receipt PDF attached to email");
+              }
               console.log("✅ Resend response:", data);
+              
+              // Marchează IMEDIAT că email-ul a fost trimis în metadata (înainte de orice alt proces)
+              // Folosim $set pentru a actualiza doar metadata fără a suprascrie alte câmpuri
+              try {
+                await Order.findOneAndUpdate(
+                  { orderId: orderId },
+                  { 
+                    $set: {
+                      "metadata.emailSent": true,
+                      "metadata.emailSentAt": new Date(),
+                      "metadata.emailSentEventType": eventType,
+                    }
+                  },
+                  { upsert: false } // Nu crea document nou, doar actualizează
+                );
+                console.log("✅ Email sent flag saved to database");
+              } catch (updateError) {
+                console.error("❌ Error updating email sent flag:", updateError);
+                // Nu aruncăm eroare, email-ul a fost deja trimis
+              }
             }
           } catch (emailError: any) {
             console.error("❌ Exception sending email:", emailError);

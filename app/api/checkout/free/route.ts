@@ -210,7 +210,7 @@ export async function POST(request: NextRequest) {
     console.log(`   Destinatar: ${customerEmail}`);
     console.log(`   Link-uri download incluse: ${digitalDownloads.length > 0 ? "✅ Da" : "❌ Nu"}`);
 
-    // Salvează comanda în MongoDB
+    // Salvează comanda în MongoDB (cu flag-ul emailSent setat)
     try {
       await connectDB();
       
@@ -237,6 +237,8 @@ export async function POST(request: NextRequest) {
           language: lang,
           originalCurrency: "RON",
           request_invoice: invoiceRequested,
+          emailSent: true,
+          emailSentAt: new Date(),
         },
       });
 

@@ -65,6 +65,17 @@ export async function POST(request: NextRequest) {
       await connectDB();
       console.log("✅ Connected to MongoDB");
 
+      // Verificare idempotency: Verifică dacă email-ul a fost deja trimis pentru această comandă
+      const existingOrder = await Order.findOne({ orderId: session.id });
+      if (existingOrder && existingOrder.metadata?.emailSent === true) {
+        const emailSentAt = existingOrder.metadata?.emailSentAt;
+        console.log("⚠️ Email already sent for this order. Skipping duplicate email send.", {
+          orderId: session.id,
+          emailSentAt,
+        });
+        return NextResponse.json({ received: true, message: "Email already sent", skipped: true });
+      }
+
       // Retrieve full session details including line items
       const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
         expand: ["line_items", "line_items.data.price.product"],
@@ -274,6 +285,23 @@ export async function POST(request: NextRequest) {
         console.error("❌ Error sending purchase confirmation email:", error);
       } else {
         console.log("✅ Purchase confirmation email sent to:", customerEmail);
+        
+        // Marchează IMEDIAT că email-ul a fost trimis în metadata
+        try {
+          await Order.findOneAndUpdate(
+            { orderId: session.id },
+            { 
+              $set: {
+                "metadata.emailSent": true,
+                "metadata.emailSentAt": new Date(),
+              }
+            },
+            { upsert: false }
+          );
+          console.log("✅ Email sent flag saved to database");
+        } catch (updateError) {
+          console.error("❌ Error updating email sent flag:", updateError);
+        }
       }
     } catch (error: any) {
       console.error("❌ Error processing checkout.session.completed:", error);
