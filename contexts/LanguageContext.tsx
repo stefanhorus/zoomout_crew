@@ -487,7 +487,7 @@ const translations: Record<Language, Record<string, string>> = {
     "contact.success": "Mulțumim pentru mesaj! 🚀",
     "contact.error": "Ups! Ceva a mers greșit. Te rugăm să încerci din nou.",
     "contact.footer": "Toate drepturile rezervate.",
-    "footer.description": "Servicii profesionale de filmari aeriene si videografie. Capturand viziunea ta din inaltime.",
+    "footer.description": "Servicii profesionale de filmari aeriene si videografie. Capturând viziunea ta deasupra.",
     "footer.navigation": "Navigare",
     "footer.contact": "Contact",
     "footer.getInTouch": "Contacteaza-ne",
