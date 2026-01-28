@@ -2,9 +2,19 @@ import { Metadata } from "next";
 import StructuredData from "@/components/StructuredData";
 
 export const metadata: Metadata = {
-  title: "Shop - Professional LUTs, Presets & Creative Assets",
-  description: "Discover our premium collection of professional LUTs, Lightroom presets, sound effects, transitions, and creative assets for filmmakers and content creators.",
-  keywords: ["LUTs", "cinematic LUTs", "Lightroom presets", "video transitions", "sound design", "filmmaking assets", "color grading"],
+  title: "LUTs Video & Editing Assets | Shop - Professional Color Grading Tools",
+  description: "Cumpără LUTs video profesionale, preseturi Lightroom, efecte sonore, tranziții și asset-uri de editare video. 64+ LUTs cinematice, 50 preseturi Lightroom, 134 efecte sonore. Perfect pentru editori video și creatori de conținut.",
+  keywords: [
+    // Romanian keywords
+    "LUTs video", "LUTs cinematice", "preseturi lightroom", "efecte sonore video", 
+    "tranziții video", "asset-uri editare video", "color grading", "LUTs film",
+    "editing assets", "LUTs profesionale", "preseturi video", "efecte video",
+    // English keywords
+    "LUTs", "cinematic LUTs", "video LUTs", "Lightroom presets", "video transitions", 
+    "sound design", "filmmaking assets", "color grading LUTs", "film LUTs",
+    "editing assets", "video editing tools", "creative assets", "professional LUTs",
+    "video production assets", "color grading presets", "video effects"
+  ],
   alternates: {
     canonical: "https://zoomoutcrew.com/shop",
     languages: {
@@ -13,8 +23,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Shop - Professional LUTs, Presets & Creative Assets | Zoomout_crew",
-    description: "Discover our premium collection of professional LUTs, Lightroom presets, sound effects, transitions, and creative assets.",
+    title: "LUTs Video & Editing Assets | Shop - Professional Color Grading Tools | Zoomout_crew",
+    description: "Cumpără LUTs video profesionale, preseturi Lightroom, efecte sonore, tranziții și asset-uri de editare video. 64+ LUTs cinematice, 50 preseturi Lightroom, 134 efecte sonore.",
     url: "https://zoomoutcrew.com/shop",
   },
 };

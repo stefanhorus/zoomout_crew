@@ -2,9 +2,18 @@ import { Metadata } from "next";
 import StructuredData from "@/components/StructuredData";
 
 export const metadata: Metadata = {
-  title: "Services - Aerial Filming & Post-Production",
-  description: "Professional aerial services tailored to bring your vision to life. Aerial filming per hour or full day, professional post-production with color grading and sound design.",
-  keywords: ["aerial filming services", "drone videography", "aerial cinematography", "post-production", "color grading", "video editing", "aerial photography"],
+  title: "Filmări cu Dronă Cluj | Servicii Filmări Aeriene & Post-Producție",
+  description: "Servicii profesionale de filmări cu dronă în Cluj-Napoca. Filmări aeriene pe oră sau zi completă, post-producție profesională cu color grading și sound design. Filmări evenimente, imobiliare, comerciale și cinematice.",
+  keywords: [
+    // Romanian keywords
+    "filmări cu dronă cluj", "filmări cu dronă cluj napoca", "servicii filmări dronă cluj", 
+    "videografie aeriană cluj", "filmări aeriene cluj", "dronă cluj", "filmări evenimente dronă cluj",
+    "filmări imobiliare dronă", "filmări comerciale dronă", "post-producție video cluj",
+    // English keywords
+    "aerial filming services cluj", "drone videography cluj", "drone services cluj napoca",
+    "aerial cinematography romania", "post-production", "color grading", "video editing cluj",
+    "aerial photography cluj", "drone filming cluj", "aerial videography services"
+  ],
   alternates: {
     canonical: "https://zoomoutcrew.com/services",
     languages: {
@@ -13,8 +22,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Services - Aerial Filming & Post-Production | Zoomout_crew",
-    description: "Professional aerial services tailored to bring your vision to life.",
+    title: "Filmări cu Dronă Cluj | Servicii Filmări Aeriene & Post-Producție | Zoomout_crew",
+    description: "Servicii profesionale de filmări cu dronă în Cluj-Napoca. Filmări aeriene pe oră sau zi completă, post-producție profesională cu color grading și sound design.",
     url: "https://zoomoutcrew.com/services",
   },
 };
@@ -37,18 +46,25 @@ const breadcrumbs = {
 };
 
 const serviceStructuredData = {
-  serviceType: "Aerial Videography Services",
-  description: "Professional aerial filming and post-production services",
+  serviceType: "Filmări cu Dronă Cluj | Aerial Videography Services",
+  description: "Servicii profesionale de filmări cu dronă în Cluj-Napoca. Filmări aeriene, post-producție video, color grading și sound design.",
+  name: "Filmări cu Dronă Cluj - Zoomout_crew",
   location: {
     "@type": "Place",
-    name: "Cluj-Napoca,Romania",
+    name: "Cluj-Napoca, Romania",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Cluj-Napoca",
+      addressRegion: "Cluj",
       addressCountry: "RO",
+      postalCode: "400000",
     },
   },
-  areaServed: "Cluj-Napoca,Romania",
+  areaServed: {
+    "@type": "City",
+    name: "Cluj-Napoca",
+    addressCountry: "RO",
+  },
   offers: {
     "@type": "Offer",
     priceCurrency: "EUR",
