@@ -109,8 +109,18 @@ export async function POST(req: Request) {
                         </ul>
                       </div>
                       
+                      <!-- Discount Code Section -->
+                      <div style="background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%); border: 2px solid #ffffff; padding: 30px; margin: 35px 0; border-radius: 12px; text-align: center; box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);">
+                        <p style="color: #0a0a0a; font-weight: 600; margin: 0 0 10px 0; font-size: 18px;">🎁 Welcome Gift!</p>
+                        <p style="color: #333; margin: 0 0 20px 0; font-size: 16px;">Use this code for 10% off your first purchase:</p>
+                        <div style="background-color: #0a0a0a; color: #ffffff; padding: 15px 30px; border-radius: 8px; display: inline-block; margin: 10px 0;">
+                          <p style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 3px; font-family: 'Courier New', monospace;">WELCOME10</p>
+                        </div>
+                        <p style="color: #666; margin: 15px 0 0 0; font-size: 14px;">Valid on your first order. Enter the code at checkout.</p>
+                      </div>
+                      
                       <div style="text-align: center; margin: 35px 0;">
-                        <a href="${websiteUrl}" style="display: inline-block; background-color: #ffffff; color: #0a0a0a; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; letter-spacing: 0.5px; transition: all 0.3s ease;">Visit Our Website</a>
+                        <a href="${websiteUrl}/shop" style="display: inline-block; background-color: #ffffff; color: #0a0a0a; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; letter-spacing: 0.5px; transition: all 0.3s ease;">Shop Now</a>
                       </div>
                       
                       <p style="color: #d0d0d0; line-height: 1.8; margin: 30px 0 0 0; font-size: 16px;">
@@ -160,7 +170,11 @@ You'll now receive updates about:
 - Tips and tricks for drone cinematography
 - Behind-the-scenes from our adventures
 
-Visit our website: https://zoomoutcrew.com
+🎁 WELCOME GIFT!
+Use this code for 10% off your first purchase: WELCOME10
+Valid on your first order. Enter the code at checkout.
+
+Shop now: https://zoomoutcrew.com/shop
 
 We're excited to share our journey with you!
 
