@@ -1,8 +1,10 @@
 export const DISCOUNT_CODES: Record<string, number> = {
-  FREE: 100,
+  "350039": 100,
   MRMITZY: 90,
   JOINTHECREW: 50,
   FIRST25: 25,
+  VISUALDELIGHTS25: 25,
+  NAIM25: 25,
   SAVE20: 20,
   ALIS20: 20,
   ZOOMOUT15: 15,
