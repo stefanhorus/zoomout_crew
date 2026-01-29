@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/game', '/admin', '/checkout', '/api'],
+        disallow: ['/admin', '/checkout', '/api'],
       },
     ],
     sitemap: 'https://zoomoutcrew.com/sitemap.xml',

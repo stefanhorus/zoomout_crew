@@ -6,7 +6,6 @@ import Image from "next/image";
 import Video from 'next-video';
 import videoLoop from '/videos/bg.mp4';
 import { useLanguage } from "@/contexts/LanguageContext";
-import Link from "next/link";
 
 export default function Home() {
   const { t, language } = useLanguage();
@@ -443,24 +442,6 @@ export default function Home() {
         {/* Dark overlay pentru a întuneca video-ul */}
         <div className="absolute inset-0 w-full h-full bg-black/40 z-0" />
       </div>
-
-      {/* Hidden Game Button - Left Middle - Invisible but still clickable */}
-      <Link
-        href="/game"
-        className="fixed left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-14 md:h-14 rounded-full opacity-0 hover:opacity-100 transition-all duration-300 flex items-center justify-center group"
-        style={{ transform: 'translateY(-50%)' }}
-        aria-label="Game"
-      >
-        <svg 
-          className="w-6 h-6 md:w-7 md:h-7 text-white/50 group-hover:text-white transition-colors" 
-          fill="none" 
-          stroke="currentColor" 
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      </Link>
 
       {/* Conținutul de deasupra video-ului */}
       <div 
