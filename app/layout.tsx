@@ -6,7 +6,6 @@ import ConditionalAnalytics from "@/components/ConditionalAnalytics";
 import { CartProvider } from "@/contexts/CartContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
-import { CookieProvider } from "@/contexts/CookieContext";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import StructuredData from "@/components/StructuredData";
@@ -109,7 +108,6 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} ${playfair.variable} bg-black text-white antialiased flex flex-col min-h-screen`}
       >
-        <CookieProvider>
         <LanguageProvider>
           <CurrencyProvider>
             <CartProvider>
@@ -121,9 +119,8 @@ export default function RootLayout({
             </CartProvider>
           </CurrencyProvider>
         </LanguageProvider>
-          <ConditionalAnalytics />
+        <ConditionalAnalytics />
         <SpeedInsights />
-        </CookieProvider>
       </body>
     </html>
   );
