@@ -26,7 +26,6 @@ export default function Home() {
     { id: 5, name: "Multiverse", logo: "/assets/brands/multiverse.png", width: 170, height: 85 },
     { id: 6, name: "Aer Lounge", logo: "/assets/brands/aerlounge.png", width: 170, height: 85 },
     { id: 7, name: "Visual Delights", logo: "/assets/brands/visualdelights.png", width: 200, height: 100 },
-    { id: 8, name: "Rotaract", logo: "/assets/brands/rotaract.png", width: 200, height: 100 },
   ];
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);

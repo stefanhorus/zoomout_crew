@@ -1,4 +1,5 @@
 {
+    "css.lint.unknownAtRules": "ignore",
     "zencoder.mcpServers": {
         "playwright": {
             "command": "npx",
