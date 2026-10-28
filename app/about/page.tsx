@@ -12,11 +12,6 @@ export default function About() {
   const [showOriginalReview5, setShowOriginalReview5] = useState(false);
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
 
-  // Update page title when language changes
-  useEffect(() => {
-    document.title = `${t("about.title")} - Zoomout_crew`;
-  }, [language, t]);
-
   // Reset review 1 to translated when language changes to Romanian
   useEffect(() => {
     if (language === "ro") {

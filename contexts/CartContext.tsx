@@ -10,7 +10,6 @@ interface Product {
   price: number;
   description: string;
   inStock: boolean;
-  downloadUrl?: string; // Link de download pentru produsele digitale
 }
 
 interface CartItem {

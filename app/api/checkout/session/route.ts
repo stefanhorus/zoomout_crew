@@ -24,9 +24,24 @@ export async function GET(request: NextRequest) {
       apiVersion: "2025-12-15.clover",
     });
 
+    if (!/^cs_[A-Za-z0-9_]+$/.test(sessionId)) {
+      return NextResponse.json(
+        { error: "Invalid session ID" },
+        { status: 400 }
+      );
+    }
+
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    return NextResponse.json({ session });
+    // Returnăm doar ce afișează pagina de succes, nu toată sesiunea Stripe (metadata, adrese etc.)
+    return NextResponse.json({
+      session: {
+        amount_total: session.amount_total,
+        currency: session.currency,
+        payment_status: session.payment_status,
+        customer_details: { email: session.customer_details?.email ?? null },
+      },
+    });
   } catch (error: any) {
     console.error("Stripe session retrieval error:", error);
     return NextResponse.json(

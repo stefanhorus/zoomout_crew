@@ -7,7 +7,6 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getDiscountPercentageForCode } from "@/lib/discount-codes";
 
 function CheckoutContent() {
   const { cart, getTotalPrice, clearCart } = useCart();
@@ -18,8 +17,10 @@ function CheckoutContent() {
   const [discountApplied, setDiscountApplied] = useState(false);
   const [discountError, setDiscountError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [discountPercentage, setDiscountPercentage] = useState(0);
   const [appliedCodes, setAppliedCodes] = useState<string[]>([]);
+  // Procentele codurilor aplicate, primite de la server (lista de coduri nu este în browser)
+  const [codePercentages, setCodePercentages] = useState<Record<string, number>>({});
+  const [isApplyingCode, setIsApplyingCode] = useState(false);
   const [secondDiscountCode, setSecondDiscountCode] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"stripe" | "revolut">("revolut");
   const [showStripeFallback, setShowStripeFallback] = useState(false);
@@ -43,6 +44,8 @@ function CheckoutContent() {
   };
 
   const subtotal = getTotalPrice();
+
+  const getCodePercentage = (code: string) => codePercentages[code] ?? 0;
   
   // Calculează reducerile cumulativ
   const calculateTotalDiscount = () => {
@@ -53,7 +56,7 @@ function CheckoutContent() {
     let totalDiscount = 0;
     
     for (const code of appliedCodes) {
-      const codePercentage = getDiscountPercentageForCode(code);
+      const codePercentage = getCodePercentage(code);
       if (codePercentage > 0) {
         const codeDiscount = remainingPrice * (codePercentage / 100);
         totalDiscount += codeDiscount;
@@ -67,45 +70,57 @@ function CheckoutContent() {
   const discountAmount = calculateTotalDiscount();
   const total = subtotal - discountAmount;
 
-  const handleApplyDiscount = (codeOverride?: string, isSecondCode = false) => {
+  const getDiscountErrorMessage = (error?: string) => {
+    switch (error) {
+      case "duplicate":
+        return "Acest cod a fost deja aplicat";
+      case "max":
+        return "Poți folosi maximum 2 coduri de discount simultan";
+      case "combination":
+        return "Poți folosi doar JOINTHECREW împreună cu un alt cod. Elimină codul existent sau folosește JOINTHECREW.";
+      default:
+        return t("checkout.discountInvalid");
+    }
+  };
+
+  const handleApplyDiscount = async (codeOverride?: string, isSecondCode = false) => {
     setDiscountError("");
     
     const code = (codeOverride ?? (isSecondCode ? secondDiscountCode : discountCode)).trim().toUpperCase();
+    if (!code) return;
     
     // Verifică dacă codul a fost deja aplicat
     if (appliedCodes.includes(code)) {
-      setDiscountError("Acest cod a fost deja aplicat");
+      setDiscountError(getDiscountErrorMessage("duplicate"));
       return;
     }
-    
-    const percentage = getDiscountPercentageForCode(code);
-    
-    if (percentage > 0) {
-      // Verifică regulile de combinare a codurilor
-      const hasJoinTheCrew = appliedCodes.includes("JOINTHECREW") || code === "JOINTHECREW";
-      
-      // Dacă există deja un cod aplicat
-      if (appliedCodes.length > 0) {
-        // Permite doar dacă unul dintre coduri este JOINTHECREW
-        if (!hasJoinTheCrew && !appliedCodes.includes("JOINTHECREW")) {
-          setDiscountError("Poți folosi doar JOINTHECREW împreună cu un alt cod. Elimină codul existent sau folosește JOINTHECREW.");
-          return;
-        }
-        
-        // Nu permite mai mult de 2 coduri
-        if (appliedCodes.length >= 2) {
-          setDiscountError("Poți folosi maximum 2 coduri de discount simultan");
-          return;
-        }
+
+    // Serverul validează codul și regulile de combinare (doar JOINTHECREW + un alt cod, maxim 2)
+    setIsApplyingCode(true);
+    try {
+      const response = await fetch("/api/discount/validate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ codes: [...appliedCodes, code] }),
+      });
+      const data = await response.json();
+
+      if (!response.ok || !data.ok) {
+        setDiscountError(getDiscountErrorMessage(data.error));
+        return;
       }
-      
-      // Adaugă codul la lista de coduri aplicate
-      setAppliedCodes(prev => [...prev, code]);
+
+      const validCodes = data.codes as Array<{ code: string; percentage: number }>;
+      const percentages: Record<string, number> = {};
+      for (const validCode of validCodes) {
+        percentages[validCode.code] = validCode.percentage;
+      }
+      setCodePercentages(percentages);
+      // Păstrează ordinea codurilor (reducerile se aplică secvențial)
+      setAppliedCodes(validCodes.map((validCode) => validCode.code));
       setDiscountApplied(true);
-      
-      // Actualizează procentajul total (suma procentajelor)
-      const newTotalPercentage = appliedCodes.reduce((sum, c) => sum + getDiscountPercentageForCode(c), 0) + percentage;
-      setDiscountPercentage(newTotalPercentage);
       
       // Resetează input-ul corespunzător
       if (isSecondCode) {
@@ -113,30 +128,25 @@ function CheckoutContent() {
       } else {
         setDiscountCode("");
       }
-      setDiscountError("");
-    } else {
+    } catch (error) {
+      console.error("Discount validation error:", error);
       setDiscountError(t("checkout.discountInvalid"));
+    } finally {
+      setIsApplyingCode(false);
     }
   };
 
   const handleRemoveDiscount = (codeToRemove?: string) => {
     if (codeToRemove) {
       // Elimină un cod specific
-      setAppliedCodes(prev => prev.filter(c => c !== codeToRemove));
-      if (appliedCodes.length === 1) {
-        // Dacă era ultimul cod, resetează totul
+      const remainingCodes = appliedCodes.filter(c => c !== codeToRemove);
+      setAppliedCodes(remainingCodes);
+      if (remainingCodes.length === 0) {
         setDiscountApplied(false);
-        setDiscountPercentage(0);
-      } else {
-        // Recalculează procentajul total
-        const remainingCodes = appliedCodes.filter(c => c !== codeToRemove);
-        const newTotalPercentage = remainingCodes.reduce((sum, c) => sum + getDiscountPercentageForCode(c), 0);
-        setDiscountPercentage(newTotalPercentage);
       }
     } else {
       // Elimină toate codurile
       setDiscountApplied(false);
-      setDiscountPercentage(0);
       setAppliedCodes([]);
       setDiscountCode("");
       setSecondDiscountCode("");
@@ -166,6 +176,9 @@ function CheckoutContent() {
     }
     setNameError("");
 
+    // Serverul primește doar ID-urile produselor și recalculează singur prețurile
+    const cartItemIds = cart.map((item) => ({ id: item.product.id }));
+
     // Verifică dacă comanda este gratuită (0 lei)
     if (total <= 0) {
       setIsProcessing(true);
@@ -177,10 +190,9 @@ function CheckoutContent() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            items: cart,
+            items: cartItemIds,
             customerEmail: customerEmail.trim(),
             customerName: requestInvoice ? customerName.trim() : undefined,
-            discountPercentage: discountApplied ? discountPercentage : undefined,
             discountCode: discountApplied ? appliedCodes.join(", ") : undefined,
             requestInvoice,
             language: language,
@@ -218,9 +230,8 @@ function CheckoutContent() {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ 
-              items: cart,
+              items: cartItemIds,
               discountCode: discountApplied ? appliedCodes.join(", ") : undefined,
-              discountPercentage: discountApplied ? discountPercentage : undefined,
               customerEmail: customerEmail.trim(),
               customerName: requestInvoice ? customerName.trim() : undefined,
               requestInvoice,
@@ -257,9 +268,8 @@ function CheckoutContent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ 
-          items: cart,
+          items: cartItemIds,
           discountCode: discountApplied ? appliedCodes.join(", ") : undefined,
-          discountPercentage: discountApplied ? discountPercentage : undefined,
           customerEmail: customerEmail.trim(),
           customerName: requestInvoice ? customerName.trim() : undefined,
           requestInvoice,
@@ -496,7 +506,7 @@ function CheckoutContent() {
               {appliedCodes.length > 0 && (
                 <div className="space-y-2 mb-4">
                   {appliedCodes.map((code) => {
-                    const codePercentage = getDiscountPercentageForCode(code);
+                    const codePercentage = getCodePercentage(code);
                     return (
                       <div key={code} className="flex items-center justify-between p-3 bg-green-500/20 rounded-xl border border-green-500/50">
                         <div>
@@ -536,7 +546,7 @@ function CheckoutContent() {
                     />
                     <button
                       onClick={() => handleApplyDiscount()}
-                      disabled={!discountCode.trim()}
+                      disabled={!discountCode.trim() || isApplyingCode}
                       className="liquid-glass-button text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{ fontFamily: "var(--font-roboto)" }}
                     >
@@ -549,6 +559,7 @@ function CheckoutContent() {
                     <button
                       type="button"
                       onClick={() => handleApplyDiscount("JOINTHECREW")}
+                      disabled={isApplyingCode}
                       className="text-xs font-semibold text-green-200 bg-green-500/20 px-2.5 py-1 rounded-lg border border-green-500/30 cursor-pointer hover:bg-green-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400/60"
                       style={{ fontFamily: "var(--font-roboto)" }}
                     >
@@ -568,7 +579,7 @@ function CheckoutContent() {
                   />
                   <button
                     onClick={() => handleApplyDiscount(undefined, true)}
-                    disabled={!secondDiscountCode.trim()}
+                    disabled={!secondDiscountCode.trim() || isApplyingCode}
                     className="liquid-glass-button text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{ fontFamily: "var(--font-roboto)" }}
                   >
@@ -625,13 +636,13 @@ function CheckoutContent() {
                 {discountApplied && (
                   <div className="space-y-1">
                     {appliedCodes.map((code, index) => {
-                      const codePercentage = getDiscountPercentageForCode(code);
+                      const codePercentage = getCodePercentage(code);
                       // Calculează reducerea pentru acest cod specific
                       // Fiecare cod se aplică pe prețul rămas după codurile anterioare
                       let remainingPrice = subtotal;
                       for (let i = 0; i < index; i++) {
                         const prevCode = appliedCodes[i];
-                        const prevPercentage = getDiscountPercentageForCode(prevCode);
+                        const prevPercentage = getCodePercentage(prevCode);
                         remainingPrice -= remainingPrice * (prevPercentage / 100);
                       }
                       const codeDiscount = remainingPrice * (codePercentage / 100);

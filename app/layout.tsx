@@ -24,20 +24,21 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   title: {
-    default: "Zoomout_crew - Filmări cu Dronă Cluj | Aerial Videography & Editing Assets",
+    default: "Zoomout_crew - Producție Video & Filmări cu Dronă Cluj",
     template: "%s | Zoomout_crew",
   },
-  description: "Servicii profesionale de filmări cu dronă în Cluj-Napoca. LUTs, Lightroom presets, sound effects și asset-uri de editare video. Aerial videography, drone cinematography și creative assets pentru filmări profesionale.",
+  description: "Producție video în Cluj-Napoca: reclame, conținut pentru social media, aftermovie-uri, videoclipuri muzicale, filmări cu drona și post-producție. Plus LUTs, preseturi Lightroom și asset-uri de editare video.",
   keywords: [
     // Romanian keywords
-    "filmări cu dronă", "filmări cu dronă cluj", "filmări cu dronă cluj napoca", "servicii filmări dronă", 
-    "videografie aeriană cluj", "filmări aeriene", "dronă cluj", "filmări evenimente dronă",
+    "producție video cluj", "videograf cluj", "filmări video cluj", "reclame video cluj",
+    "filmări evenimente cluj", "aftermovie cluj", "videoclipuri muzicale", "conținut social media",
+    "filmări cu dronă", "filmări cu dronă cluj", "filmări cu dronă cluj napoca", "videografie aeriană cluj",
     "LUTs video", "preseturi lightroom", "efecte sonore", "asset-uri editare video", "color grading",
     // English keywords
-    "aerial footage", "drone cinematography", "aerial videography", "drone services cluj", 
-    "drone videography romania", "real estate videography", "event coverage", "commercial videography",
-    "video LUTs", "lightroom presets", "sound effects", "editing assets", "color grading LUTs",
-    "cinematic LUTs", "film LUTs", "video editing tools", "creative assets", "video production assets"
+    "video production cluj", "videographer cluj", "commercial video production", "event videography",
+    "aftermovies", "music videos", "social media video content", "drone videography romania",
+    "aerial videography", "drone services cluj", "post-production", "video editing",
+    "video LUTs", "lightroom presets", "sound effects", "editing assets", "cinematic LUTs"
   ],
   alternates: {
     canonical: "https://zoomoutcrew.com",
@@ -51,14 +52,14 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://zoomoutcrew.com",
     siteName: "Zoomout_crew",
-    title: "Zoomout_crew - Filmări cu Dronă Cluj | Aerial Videography & Editing Assets",
-    description: "Servicii profesionale de filmări cu dronă în Cluj-Napoca. LUTs, Lightroom presets, sound effects și asset-uri de editare video. Aerial videography, drone cinematography și creative assets pentru filmări profesionale.",
+    title: "Zoomout_crew - Producție Video & Filmări cu Dronă Cluj",
+    description: "Producție video în Cluj-Napoca: reclame, conținut pentru social media, aftermovie-uri, videoclipuri muzicale, filmări cu drona și post-producție. Plus LUTs, preseturi Lightroom și asset-uri de editare video.",
     images: [
       {
         url: "https://zoomoutcrew.com/assets/logo.png",
         width: 1024,
         height: 1024,
-        alt: "Zoomout_crew - Professional Aerial Videography",
+        alt: "Zoomout_crew - Video Production & Drone Filming",
       },
     ],
   },

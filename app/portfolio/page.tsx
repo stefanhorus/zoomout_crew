@@ -24,6 +24,24 @@ interface Project {
   description: string;
 }
 
+// Thumbnail-uri care sunt logo-uri: se afișează întregi (object-contain), nu decupate
+const LOGO_THUMBNAILS = [
+  "multiverse",
+  "casanumaa",
+  "utopic",
+  "aerlounge",
+  "bigbelly",
+  "cabanuta",
+  "rotaract",
+  "panoramic360",
+  "wildwest",
+  "lepas",
+  "bacademia",
+];
+
+const isLogoThumbnail = (thumbnail: string) =>
+  thumbnail.includes("sardinia") || LOGO_THUMBNAILS.some((name) => thumbnail.includes(name));
+
 export default function Portfolio() {
   const { t, language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<ProjectCategory>("all");
@@ -34,6 +52,27 @@ export default function Portfolio() {
 
   // Portfolio Projects with translations - memoized to only recreate when language changes
   const projects: Project[] = useMemo(() => [
+    {
+      id: 10,
+      title: t("portfolio.project10.title"), // wild west tour
+      category: "events",
+      thumbnail: "/assets/brands/wildwest.webp",
+      description: t("portfolio.project10.description"),
+    },
+    {
+      id: 11,
+      title: t("portfolio.project11.title"), // lepas
+      category: ["events", "commercial"],
+      thumbnail: "/assets/brands/lepas.png",
+      description: t("portfolio.project11.description"),
+    },
+    {
+      id: 12,
+      title: t("portfolio.project12.title"), // bacademia
+      category: "commercial",
+      thumbnail: "/assets/brands/bacademia.png",
+      description: t("portfolio.project12.description"),
+    },
     {
       id: 1,
       title: t("portfolio.project5.title"), // numaa
@@ -179,11 +218,6 @@ export default function Portfolio() {
     prevLanguageRef.current = language;
   }, [language, projects, selectedProject]);
 
-  // Update page title when language changes
-  useEffect(() => {
-    document.title = `${t("portfolio.title")} - Zoomout_crew`;
-  }, [language, t]);
-
   const categories: { value: ProjectCategory; label: string; labelKey: string }[] = [
     { value: "all", label: "All Projects", labelKey: "portfolio.allProjects" },
     { value: "commercial", label: "Commercial", labelKey: "portfolio.commercial" },
@@ -299,16 +333,7 @@ export default function Portfolio() {
             >
               {/* Thumbnail */}
               <div className={`aspect-video relative overflow-hidden ${
-                ((project.thumbnail.includes('.png') || project.thumbnail.includes('.jpg')) && 
-                (project.thumbnail.includes('multiverse') || 
-                 project.thumbnail.includes('casanumaa') || 
-                 project.thumbnail.includes('utopic') ||
-                 project.thumbnail.includes('aerlounge') ||
-                 project.thumbnail.includes('bigbelly') ||
-                 project.thumbnail.includes('cabanuta') ||
-                 project.thumbnail.includes('rotaract') ||
-                 project.thumbnail.includes('panoramic360'))) ||
-                project.thumbnail.includes('sardinia')
+                isLogoThumbnail(project.thumbnail)
                   ? 'bg-gradient-to-br from-black/30 via-black/20 to-black/30 backdrop-blur-sm' 
                   : 'bg-gray-900'
               }`}>
@@ -323,16 +348,7 @@ export default function Portfolio() {
                   className={`transition-all duration-500 group-hover:scale-110 ${
                     loadedImages.has(project.id) ? 'opacity-100' : 'opacity-0'
                   } ${
-                    ((project.thumbnail.includes('.png') || project.thumbnail.includes('.jpg')) && 
-                    (project.thumbnail.includes('multiverse') || 
-                     project.thumbnail.includes('casanumaa') || 
-                     project.thumbnail.includes('utopic') ||
-                     project.thumbnail.includes('aerlounge') ||
-                     project.thumbnail.includes('bigbelly') ||
-                     project.thumbnail.includes('cabanuta') ||
-                     project.thumbnail.includes('rotaract') ||
-                     project.thumbnail.includes('panoramic360'))) ||
-                    project.thumbnail.includes('sardinia')
+                    isLogoThumbnail(project.thumbnail)
                       ? `object-contain drop-shadow-2xl filter brightness-110 group-hover:brightness-125 ${
                           project.thumbnail.includes('bigbelly')
                             ? 'p-3'
@@ -349,16 +365,7 @@ export default function Portfolio() {
                   onLoad={() => setLoadedImages(prev => new Set(prev).add(project.id))}
                 />
                 <div className={`absolute inset-0 transition-all duration-300 ${
-                  ((project.thumbnail.includes('.png') || project.thumbnail.includes('.jpg')) && 
-                  (project.thumbnail.includes('multiverse') || 
-                   project.thumbnail.includes('casanumaa') || 
-                   project.thumbnail.includes('utopic') ||
-                   project.thumbnail.includes('aerlounge') ||
-                   project.thumbnail.includes('bigbelly') ||
-                   project.thumbnail.includes('cabanuta') ||
-                   project.thumbnail.includes('rotaract') ||
-                   project.thumbnail.includes('panoramic360'))) ||
-                  project.thumbnail.includes('sardinia')
+                  isLogoThumbnail(project.thumbnail)
                     ? 'bg-gradient-to-t from-black/20 via-transparent to-black/20 group-hover:from-black/10 group-hover:via-transparent group-hover:to-black/10'
                     : 'bg-gradient-to-t from-black/80 via-black/40 to-black/20 group-hover:from-black/60 group-hover:via-black/30 group-hover:to-black/10'
                 }`} />
@@ -585,7 +592,7 @@ export default function Portfolio() {
                   alt={selectedProject.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 80vw"
-                  className="object-cover"
+                  className={isLogoThumbnail(selectedProject.thumbnail) ? "object-contain p-10 md:p-16" : "object-cover"}
                 />
               )}
             </div>

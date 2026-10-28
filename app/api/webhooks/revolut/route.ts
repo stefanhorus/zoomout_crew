@@ -1,36 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import crypto from "crypto";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
 import { getDownloadUrl, isDigitalProduct, getSignatureBundleDownloads } from "@/lib/digital-products";
 import { generateInvoicePDF } from "@/lib/invoice-generator";
 import { generateRevolutReceiptPDF } from "@/lib/revolut-receipt-generator";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
-
-// Verifică semnătura webhook-ului Revolut
-function verifyRevolutSignature(
-  payload: string,
-  signature: string,
-  timestamp: string,
-  secret: string
-): boolean {
-  try {
-    const signedPayload = `${timestamp}.${payload}`;
-    const expectedSignature = crypto
-      .createHmac("sha256", secret)
-      .update(signedPayload)
-      .digest("hex");
-    
-    return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expectedSignature)
-    );
-  } catch (error) {
-    console.error("Error verifying signature:", error);
-    return false;
-  }
-}
+import { PAID_ORDER_STATES, verifyRevolutSignature } from "@/lib/revolut-webhook";
 
 export async function POST(request: NextRequest) {
   try {
@@ -51,11 +27,13 @@ export async function POST(request: NextRequest) {
       hasWebhookSecret: !!process.env.REVOLUT_WEBHOOK_SECRET,
     });
 
-    // Verifică semnătura dacă avem signing secret
-    // TEMPORAR: Permitem webhook-urile fără verificare strictă pentru a funcționa
-    // TODO: Configurați corect REVOLUT_WEBHOOK_SECRET în Vercel și în Revolut Business
-    let signatureValid = true;
-    
+    // Verifică semnătura dacă avem signing secret.
+    // Chiar dacă semnătura lipsește sau e invalidă, un webhook fals NU poate livra produse:
+    // mai jos citim comanda direct din API-ul Revolut și trimitem emailul doar dacă starea ei este plătită.
+    // TODO: după ce în log-urile Vercel apare "✅ Webhook signature verified" la o comandă reală,
+    // webhook-urile cu semnătură invalidă pot fi respinse cu 401.
+    let signatureValid = false;
+
     if (process.env.REVOLUT_WEBHOOK_SECRET && signature && timestamp) {
       console.log("🔐 Verifying webhook signature...");
       const isValid = verifyRevolutSignature(
@@ -75,9 +53,8 @@ export async function POST(request: NextRequest) {
           hasSecret: !!process.env.REVOLUT_WEBHOOK_SECRET,
         });
         
-        // TEMPORAR: Continuăm procesarea chiar dacă semnătura nu este validă
-        // Pentru a funcționa până când secret-ul este configurat corect
-        console.warn("⚠️ WARNING: Continuing with unverified webhook - configure REVOLUT_WEBHOOK_SECRET correctly!");
+        // Continuăm, dar livrăm doar dacă API-ul Revolut confirmă că order-ul este plătit
+        console.warn("⚠️ WARNING: Unverified webhook - order state will be checked against the Revolut API");
         signatureValid = false;
       } else {
         console.log("✅ Webhook signature verified");
@@ -102,6 +79,12 @@ export async function POST(request: NextRequest) {
       console.log("🔔 Revolut webhook received:", eventType);
       const orderId = body.order_id;
       console.log("📦 Order ID:", orderId);
+
+      // ID-ul ajunge în URL-ul către API-ul Revolut, deci acceptăm doar formatul de ID (UUID)
+      if (typeof orderId !== "string" || !/^[A-Za-z0-9-]{1,64}$/.test(orderId)) {
+        console.error("❌ Invalid order_id in Revolut webhook:", orderId);
+        return NextResponse.json({ error: "Invalid order_id" }, { status: 400 });
+      }
 
       // Verificare idempotency: Verifică MAI ÎNTÂI dacă email-ul a fost deja trimis
       try {
@@ -142,6 +125,19 @@ export async function POST(request: NextRequest) {
       }
 
       const order = await orderResponse.json();
+
+      // Sursa de adevăr este API-ul Revolut, nu body-ul webhook-ului (care poate fi falsificat):
+      // trimitem produsele doar dacă order-ul este efectiv plătit.
+      const orderState = String(order.state || "").toUpperCase();
+      if (!PAID_ORDER_STATES.includes(orderState)) {
+        console.warn("⚠️ Revolut order is not paid, skipping fulfillment", {
+          orderId,
+          orderState,
+          eventType,
+          signatureValid,
+        });
+        return NextResponse.json({ received: true, skipped: true });
+      }
 
       try {
         // Conectează la MongoDB

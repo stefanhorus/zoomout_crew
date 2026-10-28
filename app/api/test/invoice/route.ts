@@ -2,7 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { generateInvoicePDF } from "@/lib/invoice-generator";
 
+// Endpoint de test pentru designul facturii - disponibil DOAR local (npm run dev).
+// În producție răspunde 404, ca să nu poată fi folosit pentru a trimite emailuri de pe domeniul nostru.
+function notAvailable() {
+  return process.env.NODE_ENV !== "development";
+}
+
 export async function GET(request: NextRequest) {
+  if (notAvailable()) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const email = (searchParams.get("email") || "stefanhorus@zoomoutcrew.com").trim();
@@ -55,6 +65,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  if (notAvailable()) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
   try {
     // Handle empty/invalid JSON bodies gracefully
     let email: string | undefined;

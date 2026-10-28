@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isAdminRequest } from "@/lib/admin-users";
 
 // Acest endpoint creează webhook-ul în Revolut prin API
 // Poți apela acest endpoint o singură dată pentru a configura webhook-ul
+// Necesită credențiale admin (x-admin-username / x-admin-password), pentru că întoarce signing secret-ul.
 export async function GET(request: NextRequest) {
+  if (!(await isAdminRequest(request))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   // Returnează instrucțiuni pentru configurare
   return NextResponse.json({
     message: "Use POST method to create webhook",
@@ -26,6 +32,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!(await isAdminRequest(request))) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     if (!process.env.REVOLUT_SECRET_KEY) {
       return NextResponse.json(
         { error: "REVOLUT_SECRET_KEY is not set" },

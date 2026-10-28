@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import StructuredData from "@/components/StructuredData";
 
 export const metadata: Metadata = {
-  title: "Portfolio - Professional Aerial Projects",
-  description: "Discover our curated collection of professional aerial videography projects. From real estate showcases and event coverage to commercial productions and creative storytelling, each project represents our commitment to capturing unique perspectives from above.",
-  keywords: ["aerial portfolio", "drone videography projects", "aerial cinematography", "real estate videography", "event coverage", "commercial videography", "aerial footage"],
+  title: "Portfolio - Video Production Projects",
+  description: "A selection of our projects: commercials, social media content, event aftermovies, music videos and aerial footage. Every project tells a story, from the first idea to the final cut.",
+  keywords: ["video production portfolio", "commercial videography", "event aftermovies", "music videos", "social media content", "drone videography projects", "aerial footage", "real estate videography"],
   alternates: {
     canonical: "https://zoomoutcrew.com/portfolio",
     languages: {
@@ -13,8 +13,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Portfolio - Professional Aerial Projects | Zoomout_crew",
-    description: "Discover our curated collection of professional aerial videography projects. From real estate showcases and event coverage to commercial productions and creative storytelling.",
+    title: "Portfolio - Video Production Projects | Zoomout_crew",
+    description: "A selection of our projects: commercials, social media content, event aftermovies, music videos and aerial footage. Every project tells a story, from the first idea to the final cut.",
     url: "https://zoomoutcrew.com/portfolio",
   },
 };

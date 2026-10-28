@@ -1,113 +1,47 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
+import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ImageSkeleton from "@/components/ImageSkeleton";
-
-type ServiceCategory = "all" | "videography" | "production";
-const SERVICES_DISCOUNT_PERCENT = 40;
-const SERVICES_DISCOUNT_FACTOR = 1 - SERVICES_DISCOUNT_PERCENT / 100;
 
 interface Service {
   id: number;
   title: string;
-  category: ServiceCategory;
-  icon: string;
-  location: string;
-  basePriceEUR: number;
-  oldPriceSuffix: string;
-  newPriceSuffix: string;
-  priceNote?: string;
+  showLocation: boolean; // Serviciile de filmare afișează locația; post-producția se poate face de oriunde
   description: string;
   features: string[];
   image: string;
 }
 
-const getServices = (t: (key: string) => string): Service[] => [
-  {
-    id: 1,
-    title: t("services.aerialFilmingHour"),
-    category: "videography",
-    icon: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-    location: "Cluj-Napoca,Romania",
-    basePriceEUR: 100,
-    oldPriceSuffix: t("services.price.hour"),
-    newPriceSuffix: t("services.price.hour"),
-    description: t("services.aerialFilmingHour.desc"),
-    features: [
-      t("services.aerialFilmingHour.feature1"),
-      t("services.aerialFilmingHour.feature2"),
-      t("services.aerialFilmingHour.feature3"),
-      t("services.aerialFilmingHour.feature4")
-    ],
-    image: "/assets/services/hour.jpg",
-  },
-  {
-    id: 2,
-    title: t("services.aerialFilmingDay"),
-    category: "videography",
-    icon: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-    location: "Cluj-Napoca,Romania",
-    basePriceEUR: 350,
-    oldPriceSuffix: t("services.price.day"),
-    newPriceSuffix: t("services.price.day"),
-    description: t("services.aerialFilmingDay.desc"),
-    features: [
-      t("services.aerialFilmingDay.feature1"),
-      t("services.aerialFilmingDay.feature2"),
-      t("services.aerialFilmingDay.feature3"),
-      t("services.aerialFilmingDay.feature4")
-    ],
-    image: "/assets/services/fullday.png",
-  },
-  {
-    id: 3,
-    title: t("services.postProduction"),
-    category: "production",
-    icon: "M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h10a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z",
-    location: "Cluj-Napoca,Romania",
-    basePriceEUR: 80,
-    oldPriceSuffix: t("services.price.video"),
-    newPriceSuffix: t("services.price.video"),
-    priceNote: t("services.price.discountMultiple"),
-    description: t("services.postProduction.desc"),
-    features: [
-      t("services.postProduction.feature1"),
-      t("services.postProduction.feature2"),
-      t("services.postProduction.feature3"),
-      t("services.postProduction.feature4"),
-      t("services.postProduction.feature5")
-    ],
-    image: "/assets/services/postproduction.jpg",
-  },
+// Cheia de traducere a fiecărui serviciu: services.<key>, services.<key>.desc, services.<key>.feature1-4
+const SERVICE_DEFINITIONS: Array<{ id: number; key: string; showLocation: boolean; image: string }> = [
+  { id: 1, key: "commercials", showLocation: true, image: "/assets/services/hour.jpg" },
+  { id: 2, key: "socialMedia", showLocation: true, image: "/assets/adventures/ams1tiny.png" },
+  { id: 3, key: "events", showLocation: true, image: "/assets/photos/ratuste1.png" },
+  { id: 4, key: "musicVideos", showLocation: true, image: "/assets/backgrounds/2.jpg" },
+  { id: 5, key: "drone", showLocation: true, image: "/assets/services/fullday.png" },
+  { id: 6, key: "postProduction", showLocation: false, image: "/assets/services/postproduction.jpg" },
 ];
+
+const getServices = (t: (key: string) => string): Service[] =>
+  SERVICE_DEFINITIONS.map(({ id, key, showLocation, image }) => ({
+    id,
+    title: t(`services.${key}`),
+    showLocation,
+    description: t(`services.${key}.desc`),
+    features: [1, 2, 3, 4].map((n) => t(`services.${key}.feature${n}`)),
+    image,
+  }));
 
 export default function Services() {
   const { t, language } = useLanguage();
-  const [selectedCategory, setSelectedCategory] = useState<ServiceCategory>("all");
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
 
-  const formatEuro = (value: number) => (Number.isInteger(value) ? `${value}` : value.toFixed(2));
-
-  // Update page title when language changes
-  useEffect(() => {
-    document.title = `${t("services.title")} - Zoomout_crew`;
-  }, [language, t]);
-
-  const categories: { value: ServiceCategory; label: string; labelKey: string }[] = [
-    { value: "all", label: "All Services", labelKey: "services.allServices" },
-    { value: "videography", label: "Filming", labelKey: "services.filming" },
-    { value: "production", label: "Editing", labelKey: "services.editing" },
-  ];
-
   const services = getServices(t);
-  const filteredServices =
-    selectedCategory === "all"
-      ? services
-      : services.filter((service) => service.category === selectedCategory);
 
   return (
     <main className="min-h-screen text-white pt-24 pb-16 relative">
@@ -145,30 +79,9 @@ export default function Services() {
           </p>
         </div>
 
-        {/* Filter Buttons */}
-        <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 md:mb-12 px-2">
-          {categories.map((category) => (
-            <button
-              key={category.value}
-              onClick={() => setSelectedCategory(category.value)}
-              className={`px-4 py-1.5 md:px-6 md:py-2 rounded-xl font-semibold transition-all duration-300 text-sm md:text-base ${
-                selectedCategory === category.value
-                  ? "liquid-glass-button text-white scale-105"
-                  : "liquid-glass liquid-glass-hover text-white"
-              }`}
-              style={{ fontFamily: "var(--font-roboto)" }}
-            >
-              {t(category.labelKey)}
-            </button>
-          ))}
-        </div>
-
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {filteredServices.map((service) => (
-            (() => {
-              const discountedPriceEUR = service.basePriceEUR * SERVICES_DISCOUNT_FACTOR;
-              return (
+          {services.map((service) => (
             <div
               key={service.id}
               onClick={() => setSelectedService(service)}
@@ -201,7 +114,7 @@ export default function Services() {
                   >
                     {service.title}
                   </h3>
-                  {service.id !== 3 && (
+                  {service.showLocation && (
                     <div
                       className="flex items-center gap-2 text-xs text-white/70 mb-3"
                       style={{ fontFamily: "var(--font-roboto)" }}
@@ -213,46 +126,12 @@ export default function Services() {
                     </div>
                   )}
 
-                  {/* Price - Stylized */}
-                  <div className="mb-3">
-                    <div className="inline-block liquid-glass-button px-4 py-2 rounded-xl">
-                      <div className="text-[11px] md:text-xs text-white/85 font-semibold mb-1" style={{ fontFamily: "var(--font-roboto)" }}>
-                        {t("services.limitedTimeOffer")}
-                      </div>
-                      <div className="flex items-baseline gap-2">
-                        <div className="text-sm md:text-base text-white/60 line-through" style={{ fontFamily: "var(--font-playfair)" }}>
-                          {formatEuro(service.basePriceEUR)}€{service.oldPriceSuffix}
-                        </div>
-                        <div className="text-2xl md:text-3xl font-bold text-white" style={{ fontFamily: "var(--font-playfair)" }}>
-                          {formatEuro(discountedPriceEUR)}€{service.newPriceSuffix}
-                        </div>
-                        <span className="text-[10px] md:text-xs font-semibold text-green-200 bg-green-500/20 px-2 py-1 rounded-lg border border-green-500/30 whitespace-nowrap shrink-0">
-                          {t("services.offLabel")}
-                        </span>
-                      </div>
-                      {service.priceNote && (
-                        <div className="text-[10px] md:text-xs text-white/70 mt-1" style={{ fontFamily: "var(--font-roboto)" }}>
-                          {service.priceNote}
-                        </div>
-                      )}
-                    </div>
-                </div>
-
                   <p className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">{service.description}</p>
                 </div>
               </div>
             </div>
-              );
-            })()
           ))}
         </div>
-
-        {/* Empty State */}
-        {filteredServices.length === 0 && (
-          <div className="text-center py-16">
-            <p className="text-xl text-gray-400">{t("services.noServices")}</p>
-          </div>
-        )}
       </div>
 
       {/* Modal for Service Details */}
@@ -291,7 +170,7 @@ export default function Services() {
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
                 {selectedService.title}
               </h2>
-              {selectedService.id !== 3 && (
+              {selectedService.showLocation && (
                 <div
                   className="flex items-center gap-2 text-sm text-white/75 mb-4"
                   style={{ fontFamily: "var(--font-roboto)" }}
@@ -303,62 +182,9 @@ export default function Services() {
                 </div>
               )}
 
-              {/* Price - Stylized */}
-              <div className="mb-5 md:mb-6">
-                <div className="inline-block liquid-glass-button px-4 py-2 md:px-6 md:py-3 rounded-xl">
-                  <div className="text-xs md:text-sm text-white/85 font-semibold mb-1" style={{ fontFamily: "var(--font-roboto)" }}>
-                    {t("services.limitedTimeOffer")}
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <div className="text-base md:text-lg text-white/60 line-through" style={{ fontFamily: "var(--font-playfair)" }}>
-                      {formatEuro(selectedService.basePriceEUR)}€{selectedService.oldPriceSuffix}
-                    </div>
-                    <div className="flex items-baseline gap-2">
-                      <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: "var(--font-playfair)" }}>
-                        {formatEuro(selectedService.basePriceEUR * SERVICES_DISCOUNT_FACTOR)}€{selectedService.newPriceSuffix}
-                      </div>
-                      <span className="text-xs font-semibold text-green-200 bg-green-500/20 px-2 py-1 rounded-lg border border-green-500/30 whitespace-nowrap shrink-0">
-                        {t("services.offLabel")}
-                      </span>
-                    </div>
-                    {selectedService.priceNote && (
-                      <div className="text-xs text-white/70 mt-1" style={{ fontFamily: "var(--font-roboto)" }}>
-                        {selectedService.priceNote}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
               <p className="text-gray-300 text-base sm:text-lg mb-5 md:mb-6 leading-relaxed">
                 {selectedService.description}
               </p>
-
-              {/* Pricing Info for Post-Production */}
-              {selectedService.id === 3 && (
-                <div className="mb-5 md:mb-6 p-4 rounded-xl liquid-glass border border-white/10">
-                  <h4 className="text-base sm:text-lg font-semibold mb-2 md:mb-3" style={{ fontFamily: "var(--font-playfair)" }}>
-                    {t("services.postProduction.pricing")}
-                  </h4>
-                  <ul className="space-y-2 text-sm sm:text-base text-gray-300">
-                    <li>
-                      • {t("services.postProduction.pricing1")}{" "}
-                      <span className="text-white/60 line-through mr-2">80€</span>
-                      <span className="text-white font-semibold">{formatEuro(80 * SERVICES_DISCOUNT_FACTOR)}€</span>
-                    </li>
-                    <li>
-                      • {t("services.postProduction.pricing2")}{" "}
-                      <span className="text-white/60 line-through mr-2">72€/video</span>
-                      <span className="text-white font-semibold">{formatEuro(72 * SERVICES_DISCOUNT_FACTOR)}€/video</span>
-                    </li>
-                    <li>
-                      • {t("services.postProduction.pricing3")}{" "}
-                      <span className="text-white/60 line-through mr-2">64€/video</span>
-                      <span className="text-white font-semibold">{formatEuro(64 * SERVICES_DISCOUNT_FACTOR)}€/video</span>
-                    </li>
-                  </ul>
-                </div>
-              )}
 
               {/* Features */}
               <div className="mb-6 md:mb-8 pb-4 md:pb-0">
@@ -373,6 +199,15 @@ export default function Services() {
                   ))}
               </div>
               </div>
+
+              {/* Cerere ofertă - prețurile se discută individual, prin pagina de contact */}
+              <Link
+                href="/contact"
+                className="inline-block liquid-glass-button text-white px-6 py-3 md:px-8 md:py-4 rounded-xl font-semibold text-sm md:text-base transition-all hover:scale-105 mb-4 md:mb-0"
+                style={{ fontFamily: "var(--font-roboto)" }}
+              >
+                {t("services.getQuote")}
+              </Link>
             </div>
           </div>
         </div>

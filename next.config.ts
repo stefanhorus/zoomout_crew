@@ -8,7 +8,10 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60,
-    unoptimized: false,
+    // Local (npm run dev) servim imaginile direct: pe SSD-ul exFAT macOS creează fișiere "._*" în
+    // .next/dev/cache/images, iar Next le citește în locul imaginii (imagini stricate în browser).
+    // În producție (Vercel) optimizarea rămâne activă.
+    unoptimized: process.env.NODE_ENV === "development",
   },
 
   // Optimizări pentru build

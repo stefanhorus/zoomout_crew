@@ -59,6 +59,15 @@ export async function POST(request: NextRequest) {
     console.log("📦 Session ID:", session.id);
     console.log("📧 Customer Email:", session.customer_details?.email);
 
+    // Livrăm produsele doar dacă plata este confirmată
+    if (session.payment_status !== "paid" && session.payment_status !== "no_payment_required") {
+      console.warn("⚠️ Stripe session not paid, skipping fulfillment", {
+        sessionId: session.id,
+        paymentStatus: session.payment_status,
+      });
+      return NextResponse.json({ received: true, skipped: true });
+    }
+
     try {
       // Conectează la MongoDB
       console.log("🔌 Connecting to MongoDB...");

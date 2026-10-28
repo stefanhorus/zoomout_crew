@@ -15,11 +15,6 @@ export default function Contact() {
     setCurrentYear(new Date().getFullYear());
   }, []);
 
-  // Update page title when language changes
-  useEffect(() => {
-    document.title = `${t("contact.title")} - Zoomout_crew`;
-  }, [language, t]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };

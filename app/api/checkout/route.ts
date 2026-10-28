@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
-import { getDiscountPercentageForCode, normalizeDiscountCode, processMultipleDiscountCodes } from "@/lib/discount-codes";
+import { priceCart } from "@/lib/pricing";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,91 +19,53 @@ export async function POST(request: NextRequest) {
       apiVersion: "2025-12-15.clover",
     });
 
-    const { items, discountPercentage, discountCode, customerEmail, customerName, language, currency = "RON", requestInvoice } = await request.json();
+    // Prețurile și reducerile se calculează pe server din catalog; ignorăm orice preț trimis de browser
+    const { items, discountCode, customerEmail, customerName, language, currency, requestInvoice } = await request.json();
     const invoiceRequested = !!requestInvoice;
 
-    if (!items || !Array.isArray(items) || items.length === 0) {
+    const pricing = priceCart(items, discountCode, currency);
+    if (!pricing.ok) {
+      return NextResponse.json({ error: pricing.message }, { status: 400 });
+    }
+
+    const {
+      lines,
+      discountCodes: discountCodesArray,
+      discountPercentage: effectiveDiscountPercentage,
+      totalRON: totalAmountRON,
+      totalInCurrency: totalAmount,
+      currency: selectedCurrency,
+      exchangeRate,
+      isFree,
+    } = pricing.cart;
+    const normalizedCodes = discountCodesArray.join(", ");
+
+    if (isFree) {
       return NextResponse.json(
-        { error: "Cart items are required" },
+        { error: "Free orders must use /api/checkout/free" },
         { status: 400 }
       );
     }
 
-    // Calculează subtotalul înainte de discount-uri
-    const subtotal = items.reduce((sum: number, item: { product: { price: number }; quantity: number }) => {
-      return sum + item.product.price * item.quantity;
-    }, 0);
-
-    // Procesează multiple coduri de discount (dacă există)
-    let effectiveDiscountPercentage = 0;
-    let normalizedCodes = "";
-    let discountCodesArray: string[] = [];
-
-    if (discountCode && typeof discountCode === "string") {
-      // Procesează multiple coduri
-      const discountResult = processMultipleDiscountCodes(discountCode, subtotal);
-      effectiveDiscountPercentage = discountResult.effectivePercentage;
-      discountCodesArray = discountResult.codes;
-      normalizedCodes = discountCodesArray.join(", ");
-      
-      // Verifică dacă toate codurile sunt valide
-      if (discountCodesArray.length === 0 && discountCode.trim().length > 0) {
-        return NextResponse.json(
-          { error: "Invalid discount code(s)" },
-          { status: 400 }
-        );
-      }
-    } else if (typeof discountPercentage === "number") {
-      // Folosește discountPercentage dacă nu există coduri
-      effectiveDiscountPercentage = Math.max(0, Math.min(100, discountPercentage));
-    }
-
-    // Rate-uri de schimb (trebuie să fie identice cu cele din CurrencyContext)
-    const exchangeRates: Record<string, number> = {
-      RON: 1,
-      EUR: 0.2,
-      USD: 0.22,
-      GBP: 0.18,
-    };
-
-    // Validează currency-ul și folosește RON dacă nu este suportat
-    const validCurrencies = ["RON", "EUR", "USD", "GBP"];
-    const selectedCurrency = validCurrencies.includes(currency) ? currency : "RON";
-    const exchangeRate = exchangeRates[selectedCurrency] || 1;
-    
     // Stripe folosește coduri de currency în lowercase
     const stripeCurrency = selectedCurrency.toLowerCase();
 
-    // Calculează totalul în RON după discount-uri
-    const totalAmountRON = subtotal - (subtotal * (effectiveDiscountPercentage / 100));
-
-    // Convertește în currency-ul selectat
-    const totalAmount = totalAmountRON * exchangeRate;
-
     // Construiește line items pentru Stripe
-    const lineItems = items.map((item: { product: { name: string; price: number; description?: string }; quantity: number }) => {
-      // Prețul este în RON, trebuie convertit
-      let unitPriceRON = item.product.price;
-      
-      // Aplică discount dacă există
-      if (effectiveDiscountPercentage > 0) {
-        unitPriceRON = unitPriceRON * (1 - effectiveDiscountPercentage / 100);
-      }
-
-      // Convertește în currency-ul selectat
-      const unitPrice = unitPriceRON * exchangeRate;
+    const lineItems = lines.map((line) => {
+      // Prețul este în RON, trebuie convertit în currency-ul selectat
+      const unitPrice = line.discountedUnitPriceRON * exchangeRate;
       const unitAmount = Math.round(unitPrice * 100);
 
       return {
         price_data: {
           currency: stripeCurrency,
           product_data: {
-            name: item.product.name,
-            description: item.product.description || "",
+            name: line.name,
+            description: line.description,
           },
           unit_amount: unitAmount,
         },
-        quantity: item.quantity,
+        quantity: line.quantity,
       };
     });
 
@@ -135,20 +97,12 @@ export async function POST(request: NextRequest) {
     try {
       await connectDB();
       
-      // Calculează prețurile cu discount aplicat secvențial
-      const formattedItems = items.map((item: { product: { name: string; price: number }; quantity: number }) => {
-        // Aplică discount-ul total calculat secvențial
-        const itemSubtotal = item.product.price * (item.quantity || 1);
-        const itemDiscount = itemSubtotal * (effectiveDiscountPercentage / 100);
-        const itemPriceAfterDiscount = itemSubtotal - itemDiscount;
-        const unitPriceAfterDiscount = itemPriceAfterDiscount / (item.quantity || 1);
-        
-        return {
-          name: item.product.name,
-          quantity: item.quantity || 1,
-          price: unitPriceAfterDiscount,
-        };
-      });
+      // Prețurile cu discount aplicat secvențial (calculate în priceCart)
+      const formattedItems = lines.map((line) => ({
+        name: line.name,
+        quantity: line.quantity,
+        price: line.discountedUnitPriceRON,
+      }));
 
       await Order.findOneAndUpdate(
         { orderId: session.id },

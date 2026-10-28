@@ -1,11 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function RevolutWebhookSetup() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string>("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Folosește credențialele salvate de pagina /admin/orders, dacă există
+  useEffect(() => {
+    setUsername(sessionStorage.getItem("admin_username") || "");
+    setPassword(sessionStorage.getItem("admin_password") || "");
+  }, []);
 
   const handleSetup = async () => {
     setLoading(true);
@@ -15,9 +23,17 @@ export default function RevolutWebhookSetup() {
     try {
       const response = await fetch("/api/revolut/webhook-setup", {
         method: "POST",
+        headers: {
+          "x-admin-username": username,
+          "x-admin-password": password,
+        },
       });
 
       const data = await response.json();
+
+      if (response.status === 401) {
+        throw new Error("Username sau parolă incorectă");
+      }
 
       if (!response.ok) {
         throw new Error(data.error || "Failed to create webhook");
@@ -42,9 +58,28 @@ export default function RevolutWebhookSetup() {
             Acest tool creează automat webhook-ul în Revolut pentru a primi notificări despre plăți.
           </p>
 
+          <div className="space-y-3 mb-4">
+            <input
+              type="email"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username admin"
+              autoComplete="username"
+              className="w-full px-4 py-2 rounded-lg bg-gray-900 border border-gray-700 text-white placeholder-gray-500"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Parolă"
+              autoComplete="current-password"
+              className="w-full px-4 py-2 rounded-lg bg-gray-900 border border-gray-700 text-white placeholder-gray-500"
+            />
+          </div>
+
           <button
             onClick={handleSetup}
-            disabled={loading}
+            disabled={loading || !username || !password}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Se configurează..." : "Creează Webhook"}

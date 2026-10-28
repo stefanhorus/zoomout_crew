@@ -170,11 +170,6 @@ export default function Adventures() {
     return date.toLocaleDateString(locale, { year: "numeric", month: "long" });
   };
 
-  // Update page title when language changes
-  useEffect(() => {
-    document.title = `${t("adventures.title")} - Zoomout_crew`;
-  }, [language, t]);
-
   // Reset image index when adventure changes
   useEffect(() => {
     if (selectedAdventure) {

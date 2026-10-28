@@ -28,7 +28,7 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
           name: "Zoomout_crew",
           url: baseUrl,
           logo: `${baseUrl}/assets/logo.png`,
-          description: "Servicii profesionale de filmări cu dronă în Cluj-Napoca. LUTs video, preseturi Lightroom, efecte sonore și asset-uri de editare video.",
+          description: "Producție video în Cluj-Napoca: reclame, conținut pentru social media, aftermovie-uri, videoclipuri muzicale și filmări cu drona. LUTs video, preseturi Lightroom, efecte sonore și asset-uri de editare video.",
           sameAs: [
             "https://instagram.com/zoomout_crew",
             "https://www.linkedin.com/company/zoomout-crew",
@@ -50,7 +50,7 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
         return {
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
-          name: "Zoomout_crew - Filmări cu Dronă Cluj",
+          name: "Zoomout_crew - Producție Video & Filmări cu Dronă Cluj",
           image: `${baseUrl}/assets/logo.png`,
           url: baseUrl,
           telephone: "+40-XXX-XXX-XXX", // Actualizează cu numărul real dacă ai
@@ -82,9 +82,9 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
         return {
           "@context": "https://schema.org",
           "@type": "Service",
-          serviceType: "Filmări cu Dronă Cluj | Aerial Videography Services",
-          name: "Filmări cu Dronă Cluj-Napoca",
-          description: "Servicii profesionale de filmări cu dronă în Cluj-Napoca. Filmări aeriene, post-producție video, color grading și sound design.",
+          serviceType: "Producție Video Cluj | Video Production Services",
+          name: "Producție Video & Filmări cu Dronă Cluj-Napoca",
+          description: "Producție video în Cluj-Napoca: reclame, conținut social media, aftermovie-uri, videoclipuri muzicale, filmări cu drona și post-producție.",
           location: defaultPlace,
           provider: {
             "@type": "LocalBusiness",

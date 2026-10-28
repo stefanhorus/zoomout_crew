@@ -13,11 +13,6 @@ export default function Home() {
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [videoError, setVideoError] = useState(false);
 
-  // Update page title when language changes
-  useEffect(() => {
-    document.title = "Zoomout_crew - Professional aerial footage and more";
-  }, [language]);
-  
   const brands = [
     { id: 1, name: "Rotaract", logo: "/assets/brands/rotaract.png", width: 200, height: 100 },
     { id: 2, name: "Big Belly", logo: "/assets/brands/bigbelly.png", width: 320, height: 160 },
@@ -26,6 +21,14 @@ export default function Home() {
     { id: 5, name: "Multiverse", logo: "/assets/brands/multiverse.png", width: 170, height: 85 },
     { id: 6, name: "Aer Lounge", logo: "/assets/brands/aerlounge.png", width: 170, height: 85 },
     { id: 7, name: "Visual Delights", logo: "/assets/brands/visualdelights.png", width: 200, height: 100 },
+    { id: 8, name: "Bacademia", logo: "/assets/brands/bacademia.png", width: 170, height: 85 },
+    { id: 9, name: "Wild West", logo: "/assets/brands/wildwest.webp", width: 170, height: 85 },
+    { id: 10, name: "Lepas", logo: "/assets/brands/lepas.png", width: 170, height: 85 },
+    { id: 11, name: "Coconut Express Records", logo: "/assets/brands/coconutexpress.png", width: 170, height: 85 },
+    { id: 12, name: "Ministry of Sound", logo: "/assets/brands/ministryofsound.png", width: 170, height: 85 },
+    { id: 13, name: "Barbaro", logo: "/assets/brands/barbaro.png", width: 170, height: 85 },
+    { id: 14, name: "Risque", logo: "/assets/brands/risque.png", width: 170, height: 85 },
+    { id: 15, name: "One Society", logo: "/assets/brands/onesociety.png", width: 200, height: 63 },
   ];
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);

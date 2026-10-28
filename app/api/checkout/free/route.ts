@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { generateOrderConfirmationEmail } from "@/lib/email-templates";
 import { getDownloadUrl, isDigitalProduct, getSignatureBundleDownloads } from "@/lib/digital-products";
-import { getDiscountPercentageForCode, normalizeDiscountCode } from "@/lib/discount-codes";
 import { generateInvoicePDF } from "@/lib/invoice-generator";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
+import { priceCart } from "@/lib/pricing";
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,71 +20,44 @@ export async function POST(request: NextRequest) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const { items, customerEmail, customerName, discountPercentage, discountCode, language, currency = "RON", requestInvoice } = await request.json();
+    // Totalul se calculează pe server din catalog + coduri; ignorăm prețurile și procentele trimise de browser
+    const { items, customerEmail, customerName, discountCode, language, currency, requestInvoice } = await request.json();
     const invoiceRequested = !!requestInvoice;
-    // Determine discount (prefer code if provided)
-    const normalizedCode = typeof discountCode === "string" ? normalizeDiscountCode(discountCode) : "";
-    const percentageFromCode = normalizedCode ? getDiscountPercentageForCode(normalizedCode) : 0;
-    if (normalizedCode && percentageFromCode <= 0) {
-      return NextResponse.json(
-        { error: "Invalid discount code" },
-        { status: 400 }
-      );
-    }
-    const effectiveDiscountPercentage =
-      percentageFromCode > 0
-        ? percentageFromCode
-        : typeof discountPercentage === "number"
-          ? Math.max(0, Math.min(100, discountPercentage))
-          : 0;
 
-
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return NextResponse.json(
-        { error: "Cart items are required" },
-        { status: 400 }
-      );
-    }
-
-    if (!customerEmail) {
+    if (typeof customerEmail !== "string" || !EMAIL_REGEX.test(customerEmail.trim())) {
       return NextResponse.json(
         { error: "Customer email is required" },
         { status: 400 }
       );
     }
 
-    // Calculează totalul
-    let totalAmount = items.reduce((sum: number, item: { product: { price: number }; quantity: number }) => {
-      return sum + item.product.price * item.quantity;
-    }, 0);
-
-    // Aplică discount dacă există
-    if (effectiveDiscountPercentage > 0) {
-      totalAmount = totalAmount * (1 - effectiveDiscountPercentage / 100);
+    const pricing = priceCart(items, discountCode, currency);
+    if (!pricing.ok) {
+      return NextResponse.json({ error: pricing.message }, { status: 400 });
     }
 
-    // Verifică dacă totalul este 0 (doar comenzile gratuite sunt permise)
-    if (totalAmount > 0) {
+    const { lines, discountCodes, discountPercentage: effectiveDiscountPercentage, currency: selectedCurrency, isFree } = pricing.cart;
+    const normalizedCode = discountCodes.join(", ");
+
+    // Doar comenzile cu total 0 (după coduri valide) sunt permise aici
+    if (!isFree) {
       return NextResponse.json(
         { error: "This endpoint is only for free orders" },
         { status: 400 }
       );
     }
 
-    // Pentru free orders, currency-ul nu contează (totalul este 0), dar îl acceptăm pentru consistență
-    const selectedCurrency = currency || "RON";
     const lang = (language as "en" | "ro") || "en";
 
     // Format products list and collect digital downloads
     const digitalDownloads: Array<{ productName: string; downloadUrl: string }> = [];
-    
+
     console.log("📦 Procesare produse pentru email...");
-    const productsList = items
-      .map((item: { product: { name: string; price: number }; quantity: number }) => {
-        const productName = item.product.name || (lang === "ro" ? "Produs" : "Product");
-        const quantity = item.quantity || 1;
-        const freeText = lang === "ro" ? "Gratuit" : "Free";
-        
+    const productsList = lines
+      .map((line) => {
+        const productName = line.name;
+        const quantity = line.quantity;
+
         console.log(`🔍 Verificare produs: "${productName}"`);
         
         // Verifică dacă produsul este digital și adaugă link-ul de download
@@ -148,13 +123,11 @@ export async function POST(request: NextRequest) {
     let invoiceAttachment: { filename: string; content: string } | null = null;
     if (invoiceRequested) {
       try {
-        const invoiceItems = items.map(
-          (item: { product: { name: string; price: number }; quantity: number }) => ({
-            name: item.product.name || "Product",
-            quantity: item.quantity || 1,
-            price: item.product.price, // RON
-          })
-        );
+        const invoiceItems = lines.map((line) => ({
+          name: line.name,
+          quantity: line.quantity,
+          price: line.unitPriceRON, // RON
+        }));
 
         const invoicePDF = await generateInvoicePDF({
           orderId: `FREE-${Date.now()}`,
@@ -215,10 +188,10 @@ export async function POST(request: NextRequest) {
       await connectDB();
       
       const orderId = `free-${Date.now()}`;
-      const formattedItems = items.map((item: { product: { name: string; price: number }; quantity: number }) => ({
-        name: item.product.name || "Product",
-        quantity: item.quantity || 1,
-        price: item.product.price, // Prețul în RON
+      const formattedItems = lines.map((line) => ({
+        name: line.name,
+        quantity: line.quantity,
+        price: line.unitPriceRON, // Prețul în RON
       }));
 
       await Order.create({
