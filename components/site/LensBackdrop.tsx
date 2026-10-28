@@ -5,8 +5,12 @@ import { useEffect, useId, useRef } from "react";
 
 // Fundalul paginilor cu mult text: obiectivul din logo, redus la linii - inele tot mai rare spre margine (zoom out),
 // inelul de zoom cu distanțele focale (se rotește când derulezi) și ochiul roșu din logo, în centru.
+// Coordonatele sunt rotunjite: sin/cos și puterile pot diferi în ultima zecimală între server și browser, iar React
+// ar semnala nepotrivire la hidratare
+const round = (value: number) => Math.round(value * 1000) / 1000;
+
 const C = 500;
-const RINGS = Array.from({ length: 14 }, (_, i) => 30 * 1.27 ** i);
+const RINGS = Array.from({ length: 14 }, (_, i) => round(30 * 1.27 ** i));
 const ZOOM_RING = RINGS.find((r) => r > 380) ?? 400;
 const FOCAL = ["18", "24", "35", "50", "70", "105", "135", "200"];
 const EYE_W = 236;
@@ -14,7 +18,7 @@ const EYE_H = 198;
 
 const polar = (r: number, deg: number) => {
   const rad = (deg * Math.PI) / 180;
-  return { x: C + r * Math.cos(rad), y: C + r * Math.sin(rad) };
+  return { x: round(C + r * Math.cos(rad)), y: round(C + r * Math.sin(rad)) };
 };
 
 const TICKS = Array.from({ length: 120 }, (_, i) => {
@@ -47,7 +51,8 @@ const gazeLoop = () => {
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export function LensBackdrop() {
+// `className` alege locul: implicit fix, în dreapta paginilor cu mult text (.lens-backdrop); pe prima pagină stă în Intro
+export function LensBackdrop({ className = "lens-backdrop" }: { className?: string }) {
   const pupilId = useId();
   const reduceMotion = useReducedMotion();
   const { scrollY } = useScroll();
@@ -119,7 +124,7 @@ export function LensBackdrop() {
   }, [animate, eye, gazeX, gazeY, reduceMotion]);
 
   return (
-    <div ref={lens} className="lens-backdrop" aria-hidden>
+    <div ref={lens} className={className} aria-hidden>
       <svg viewBox="0 0 1000 1000" fill="none" className="absolute inset-0 h-full w-full overflow-visible">
         <defs>
           <radialGradient id={pupilId}>

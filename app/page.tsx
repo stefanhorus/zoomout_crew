@@ -19,11 +19,11 @@ export default function Home() {
       <SelectedWork />
       <ServicesIndex />
       <TextMarquee />
-      <Process />
+      <Process backdrop />
       <ParallaxBand />
-      <Testimonials />
+      <Testimonials backdrop />
       <ShopTeaser />
-      <CallToAction />
+      <CallToAction backdrop />
     </>
   );
 }

@@ -2,14 +2,17 @@
 
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ZoomRingsMotif } from "../home/LensMotifs";
 import { Magnetic } from "../motion/Magnetic";
 import { SplitReveal } from "../motion/SplitReveal";
 
-export function CallToAction() {
+// `backdrop`: pe prima pagină, din strălucirea roșie răsar inelele obiectivului
+export function CallToAction({ backdrop = false }: { backdrop?: boolean }) {
   const { t } = useLanguage();
   return (
     <section className="relative overflow-hidden py-32 md:py-44">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_65%_at_50%_100%,rgba(255,74,43,0.17),transparent_70%)]" />
+      {backdrop && <ZoomRingsMotif className="motif-cta" />}
       <div className="container-site relative text-center">
         <p className="kicker flex items-center justify-center gap-2">
           <span className="rec-dot h-1.5 w-1.5" /> {t("cta.kicker")}

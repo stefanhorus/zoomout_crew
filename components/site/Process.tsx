@@ -3,12 +3,14 @@
 import { motion, useScroll } from "motion/react";
 import { useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { FocusRingMotif } from "../home/LensMotifs";
 import { Reveal } from "../motion/Reveal";
 import { SplitReveal } from "../motion/SplitReveal";
 
 const STEPS = [1, 2, 3, 4];
 
-export function Process() {
+// `backdrop`: pe prima pagină, sub text apare inelul de focalizare care se rotește odată cu pașii
+export function Process({ backdrop = false }: { backdrop?: boolean }) {
   const { t } = useLanguage();
   const listRef = useRef<HTMLOListElement>(null);
   const { scrollYProgress } = useScroll({ target: listRef, offset: ["start 0.75", "end 0.6"] });
@@ -24,6 +26,7 @@ export function Process() {
           <Reveal delay={0.2}>
             <p className="lead mt-6 max-w-md">{t("process.text")}</p>
           </Reveal>
+          {backdrop && <FocusRingMotif progress={scrollYProgress} />}
         </div>
 
         <div className="relative lg:col-span-7">

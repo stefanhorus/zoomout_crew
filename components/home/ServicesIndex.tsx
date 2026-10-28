@@ -8,6 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useFinePointer } from "@/lib/hooks";
 import { SERVICES } from "@/lib/services";
 import { SplitReveal } from "../motion/SplitReveal";
+import { ApertureMotif } from "./LensMotifs";
 
 // Lista de servicii; pe desktop, la hover, o imagine urmărește cursorul
 export function ServicesIndex() {
@@ -43,38 +44,41 @@ export function ServicesIndex() {
   }, [finePointer, x, y]);
 
   return (
-    <section className="container-site py-28 md:py-40">
-      <div className="mb-14 grid gap-8 md:mb-20 lg:grid-cols-12">
-        <p className="kicker lg:col-span-3 lg:pt-3">{t("servicesIndex.kicker")}</p>
-        <h2 className="display-md max-w-[16ch] lg:col-span-9">
-          <SplitReveal text={t("servicesIndex.title")} />
-        </h2>
-      </div>
+    <section className="relative overflow-hidden">
+      <ApertureMotif className="motif-aperture" />
+      <div className="container-site py-28 md:py-40">
+        <div className="mb-14 grid gap-8 md:mb-20 lg:grid-cols-12">
+          <p className="kicker lg:col-span-3 lg:pt-3">{t("servicesIndex.kicker")}</p>
+          <h2 className="display-md max-w-[16ch] lg:col-span-9">
+            <SplitReveal text={t("servicesIndex.title")} />
+          </h2>
+        </div>
 
-      <ul ref={listRef} onPointerLeave={() => setActive(null)} className="border-b border-line">
-        {SERVICES.map((service, index) => (
-          <li key={service.key}>
-            <Link
-              href={`/services#${service.key}`}
-              onPointerEnter={() => setActive(index)}
-              className="group grid grid-cols-12 items-center gap-4 border-t border-line py-7 md:py-9"
-            >
-              <span className="kicker col-span-2 tabular-nums transition-colors group-hover:text-rec md:col-span-1">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <span className="display-sm col-span-9 transition-transform duration-700 ease-[var(--ease-expo)] group-hover:translate-x-3 md:col-span-6">
-                {t(`services.${service.key}`)}
-              </span>
-              <span className="hidden text-sm text-mute md:col-span-4 md:block">
-                {t(`services.${service.key}.feature1`)} · {t(`services.${service.key}.feature2`)}
-              </span>
-              <span className="col-span-1 justify-self-end text-2xl transition-transform duration-500 ease-[var(--ease-expo)] group-hover:-rotate-45">
-                →
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+        <ul ref={listRef} onPointerLeave={() => setActive(null)} className="border-b border-line">
+          {SERVICES.map((service, index) => (
+            <li key={service.key}>
+              <Link
+                href={`/services#${service.key}`}
+                onPointerEnter={() => setActive(index)}
+                className="group grid grid-cols-12 items-center gap-4 border-t border-line py-7 md:py-9"
+              >
+                <span className="kicker col-span-2 tabular-nums transition-colors group-hover:text-rec md:col-span-1">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="display-sm col-span-9 transition-transform duration-700 ease-[var(--ease-expo)] group-hover:translate-x-3 md:col-span-6">
+                  {t(`services.${service.key}`)}
+                </span>
+                <span className="hidden text-sm text-mute md:col-span-4 md:block">
+                  {t(`services.${service.key}.feature1`)} · {t(`services.${service.key}.feature2`)}
+                </span>
+                <span className="col-span-1 justify-self-end text-2xl transition-transform duration-500 ease-[var(--ease-expo)] group-hover:-rotate-45">
+                  →
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {finePointer && (
         <motion.div className="pointer-events-none fixed left-0 top-0 z-30" style={{ x, y }} aria-hidden>

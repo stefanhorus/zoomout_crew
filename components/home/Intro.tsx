@@ -4,12 +4,14 @@ import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Reveal } from "../motion/Reveal";
 import { ScrollWords } from "../motion/ScrollWords";
+import { LensBackdrop } from "../site/LensBackdrop";
 
 export function Intro() {
   const { t } = useLanguage();
   return (
-    <section className="container-site py-28 md:py-44">
-      <div className="grid gap-10 lg:grid-cols-12">
+    <section className="relative overflow-hidden">
+      <LensBackdrop className="lens-intro" />
+      <div className="container-site grid gap-10 py-28 md:py-44 lg:grid-cols-12">
         <p className="kicker flex h-fit items-center gap-2 lg:col-span-3 lg:pt-4">
           <span className="rec-dot h-1.5 w-1.5" /> {t("intro.kicker")}
         </p>

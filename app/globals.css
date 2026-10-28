@@ -257,6 +257,59 @@
   }
 }
 
+/* Motivele din zonele negre ale primei pagini (obiectivul din Intro și components/home/LensMotifs.tsx): stau sub
+   conținut (z-index -1) și sunt tăiate de marginile secțiunii lor. */
+.lens-intro,
+.motif-aperture,
+.motif-cta {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  aspect-ratio: 1;
+}
+
+/* Obiectivul cu ochiul: pe telefon sus în dreapta, ca pe paginile cu text; pe ecrane mari centrul e pe marginea din
+   stânga, iar ochiul se uită din coloana goală de lângă text */
+.lens-intro {
+  width: 150vmin;
+  left: calc(88% - 75vmin);
+  top: calc(3rem - 75vmin);
+}
+
+/* Diafragma iese din marginea din dreapta, lângă titlul listei de servicii */
+.motif-aperture {
+  width: 108vw;
+  right: -50vw;
+  top: -1rem;
+}
+
+/* Inelele răsar din mijlocul marginii de jos a îndemnului */
+.motif-cta {
+  width: 190vw;
+  left: calc(50% - 95vw);
+  bottom: -95vw;
+}
+
+@media (min-width: 768px) {
+  .lens-intro {
+    width: 130vmin;
+    left: -65vmin;
+    top: calc(50% - 65vmin);
+  }
+
+  .motif-aperture {
+    width: 70vmin;
+    right: -24vmin;
+    top: 1rem;
+  }
+
+  .motif-cta {
+    width: 150vmin;
+    left: calc(50% - 75vmin);
+    bottom: -75vmin;
+  }
+}
+
 /* Preloader-ul se afișează o singură dată pe sesiune (în afara straturilor, ca să bată utilitarele Tailwind) */
 .intro-seen .preloader {
   display: none !important;

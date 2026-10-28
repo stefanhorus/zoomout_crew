@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ViewfinderMotif } from "../home/LensMotifs";
 import { EASE } from "../motion/ease";
 import { withBasePath } from "@/lib/base-path";
 
@@ -14,7 +15,8 @@ const REVIEWS = [
   { key: "about.reviews.review5", avatar: withBasePath("/assets/brands/rotaract.png"), originalLang: "en", logo: true },
 ] as const;
 
-export function Testimonials() {
+// `backdrop`: pe prima pagină recenziile sunt încadrate de vizorul camerei
+export function Testimonials({ backdrop = false }: { backdrop?: boolean }) {
   const { t, language } = useLanguage();
   const [index, setIndex] = useState(0);
   const [showOriginal, setShowOriginal] = useState(false);
@@ -28,7 +30,8 @@ export function Testimonials() {
   };
 
   return (
-    <section className="border-t border-line">
+    <section className="relative border-t border-line">
+      {backdrop && <ViewfinderMotif />}
       <div className="container-site grid gap-12 py-28 md:py-40 lg:grid-cols-12">
         <div className="flex flex-col justify-between gap-10 lg:col-span-4">
           <div>
