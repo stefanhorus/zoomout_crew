@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
 
 // Fundalul paginilor cu mult text: obiectivul din logo, redus la linii - inele tot mai rare spre margine (zoom out),
 // inelul de zoom cu distanțele focale (se rotește când derulezi) și ochiul roșu din logo, în centru.
@@ -29,12 +29,32 @@ const LABELS = [...FOCAL, "MM"].map((text, i) => {
   return { text, angle, ...polar(ZOOM_RING + 42, angle) };
 });
 
+// Privirea: salt rapid ca la un ochi real, apoi stă pe loc
+const GLANCE = { duration: 0.28, ease: [0.3, 0.9, 0.3, 1] } as const;
+
+// O direcție nouă pentru iris - mai des spre pagină (stânga), uneori înapoi în centru; rămâne în conturul ochiului
+const nextGaze = () =>
+  Math.random() < 0.3 ? { x: 0, y: 0 } : { x: -85 + Math.random() * 125, y: -22 + Math.random() * 44 };
+
 export function LensBackdrop() {
   const pupilId = useId();
   const reduceMotion = useReducedMotion();
   const { scrollY } = useScroll();
   // Inelul de zoom se învârte cu pagina: un sfert de tură la fiecare ~3000px derulați
   const rotate = useTransform(scrollY, (y) => (reduceMotion ? 0 : y * 0.03));
+  const [gaze, setGaze] = useState({ x: 0, y: 0 });
+
+  // Ochiul se uită în altă parte din când în când (la 2-5 secunde)
+  useEffect(() => {
+    if (reduceMotion) return;
+    let timer: ReturnType<typeof setTimeout>;
+    const glance = () => {
+      if (!document.hidden) setGaze(nextGaze());
+      timer = setTimeout(glance, 1800 + Math.random() * 3400);
+    };
+    timer = setTimeout(glance, 1200);
+    return () => clearTimeout(timer);
+  }, [reduceMotion]);
 
   return (
     <div className="lens-backdrop" aria-hidden>
@@ -63,9 +83,11 @@ export function LensBackdrop() {
           strokeWidth={1.4}
           vectorEffect="non-scaling-stroke"
         />
-        <circle cx={C} cy={C} r={RINGS[3]} className="stroke-rec" strokeOpacity={0.32} strokeWidth={1.4} vectorEffect="non-scaling-stroke" />
-        <circle cx={C} cy={C} r={70} fill={`url(#${pupilId})`} />
-        <circle cx={C} cy={C} r={RINGS[0]} className="fill-rec" fillOpacity={0.6} />
+        <motion.g animate={gaze} transition={GLANCE}>
+          <circle cx={C} cy={C} r={RINGS[3]} className="stroke-rec" strokeOpacity={0.32} strokeWidth={1.4} vectorEffect="non-scaling-stroke" />
+          <circle cx={C} cy={C} r={70} fill={`url(#${pupilId})`} />
+          <circle cx={C} cy={C} r={RINGS[0]} className="fill-rec" fillOpacity={0.6} />
+        </motion.g>
       </svg>
 
       <motion.svg viewBox="0 0 1000 1000" className="absolute inset-0 h-full w-full overflow-visible will-change-transform" style={{ rotate }}>
