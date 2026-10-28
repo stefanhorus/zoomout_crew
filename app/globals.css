@@ -238,14 +238,14 @@
 }
 
 /* Obiectivul din fundalul paginilor cu mult text (LensBackdrop): centrul e pe marginea din dreapta, deci se vede
-   doar jumătatea care încadrează textul. Pe telefon ochiul stă în colțul din dreapta sus. */
+   doar jumătatea care încadrează textul. Pe telefon ochiul stă sus în dreapta, puțin spre interior ca pupila să se vadă. */
 .lens-backdrop {
   position: fixed;
   z-index: -1;
   pointer-events: none;
   aspect-ratio: 1;
   width: 175vmin;
-  left: calc(100vw - 87.5vmin);
+  left: calc(88vw - 87.5vmin);
   top: calc(17vh - 87.5vmin);
 }
 

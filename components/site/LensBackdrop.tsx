@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useEffect, useId, useState } from "react";
+import { motion, useAnimate, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { useEffect, useId } from "react";
 
 // Fundalul paginilor cu mult text: obiectivul din logo, redus la linii - inele tot mai rare spre margine (zoom out),
 // inelul de zoom cu distanțele focale (se rotește când derulezi) și ochiul roșu din logo, în centru.
@@ -29,12 +29,19 @@ const LABELS = [...FOCAL, "MM"].map((text, i) => {
   return { text, angle, ...polar(ZOOM_RING + 42, angle) };
 });
 
-// Privirea: salt rapid ca la un ochi real, apoi stă pe loc
-const GLANCE = { duration: 0.28, ease: [0.3, 0.9, 0.3, 1] } as const;
+// Privirea: salt rapid într-o parte, câteva clipe acolo, apoi revine lin în centru
+const GLANCE = { duration: 0.24, ease: [0.3, 0.9, 0.3, 1] } as const;
+const BACK = { duration: 0.42, ease: [0.45, 0, 0.2, 1] } as const;
+// Clipitul: conturul ochiului se închide și se deschide repede
+const BLINK = { duration: 0.26, ease: "easeInOut" } as const;
 
-// O direcție nouă pentru iris - mai des spre pagină (stânga), uneori înapoi în centru; rămâne în conturul ochiului
-const nextGaze = () =>
-  Math.random() < 0.3 ? { x: 0, y: 0 } : { x: -85 + Math.random() * 125, y: -22 + Math.random() * 44 };
+// Unde se uită: doar puțin într-o parte (mai des spre pagină, la stânga)
+const nextGaze = () => {
+  const side = Math.random() < 0.65 ? -1 : 1;
+  return { x: side * (20 + Math.random() * 24), y: -12 + Math.random() * 24 };
+};
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export function LensBackdrop() {
   const pupilId = useId();
@@ -42,19 +49,36 @@ export function LensBackdrop() {
   const { scrollY } = useScroll();
   // Inelul de zoom se învârte cu pagina: un sfert de tură la fiecare ~3000px derulați
   const rotate = useTransform(scrollY, (y) => (reduceMotion ? 0 : y * 0.03));
-  const [gaze, setGaze] = useState({ x: 0, y: 0 });
+  const [eye, animate] = useAnimate<SVGGElement>();
 
-  // Ochiul se uită în altă parte din când în când (la 2-5 secunde)
+  // Ochiul se uită din când în când într-o parte și revine în centru; clipește rar (la 9-20 de secunde)
   useEffect(() => {
     if (reduceMotion) return;
-    let timer: ReturnType<typeof setTimeout>;
-    const glance = () => {
-      if (!document.hidden) setGaze(nextGaze());
-      timer = setTimeout(glance, 1800 + Math.random() * 3400);
+    let active = true;
+    const visible = () => active && !document.hidden;
+    const look = async () => {
+      await wait(1500);
+      while (active) {
+        if (visible()) {
+          await animate(".lens-iris", nextGaze(), GLANCE);
+          await wait(600 + Math.random() * 900);
+          if (active) await animate(".lens-iris", { x: 0, y: 0 }, BACK);
+        }
+        await wait(2500 + Math.random() * 3500);
+      }
     };
-    timer = setTimeout(glance, 1200);
-    return () => clearTimeout(timer);
-  }, [reduceMotion]);
+    const blink = async () => {
+      while (active) {
+        await wait(9000 + Math.random() * 11000);
+        if (visible()) await animate(eye.current, { scaleY: [1, 0.08, 1] }, BLINK);
+      }
+    };
+    void look();
+    void blink();
+    return () => {
+      active = false;
+    };
+  }, [animate, eye, reduceMotion]);
 
   return (
     <div className="lens-backdrop" aria-hidden>
@@ -76,18 +100,21 @@ export function LensBackdrop() {
             vectorEffect="non-scaling-stroke"
           />
         ))}
-        <path
-          d={`M${C - EYE_W} ${C} Q${C} ${C - EYE_H} ${C + EYE_W} ${C} Q${C} ${C + EYE_H} ${C - EYE_W} ${C} Z`}
-          className="stroke-rec"
-          strokeOpacity={0.38}
-          strokeWidth={1.4}
-          vectorEffect="non-scaling-stroke"
-        />
-        <motion.g animate={gaze} transition={GLANCE}>
-          <circle cx={C} cy={C} r={RINGS[3]} className="stroke-rec" strokeOpacity={0.32} strokeWidth={1.4} vectorEffect="non-scaling-stroke" />
-          <circle cx={C} cy={C} r={70} fill={`url(#${pupilId})`} />
-          <circle cx={C} cy={C} r={RINGS[0]} className="fill-rec" fillOpacity={0.6} />
-        </motion.g>
+        {/* Ochiul din logo: conturul clipește (se strânge pe verticală), irisul cu pupila se uită în jur */}
+        <g ref={eye} style={{ transformBox: "fill-box", transformOrigin: "center" }}>
+          <path
+            d={`M${C - EYE_W} ${C} Q${C} ${C - EYE_H} ${C + EYE_W} ${C} Q${C} ${C + EYE_H} ${C - EYE_W} ${C} Z`}
+            className="stroke-rec"
+            strokeOpacity={0.38}
+            strokeWidth={1.4}
+            vectorEffect="non-scaling-stroke"
+          />
+          <g className="lens-iris">
+            <circle cx={C} cy={C} r={RINGS[3]} className="stroke-rec" strokeOpacity={0.32} strokeWidth={1.4} vectorEffect="non-scaling-stroke" />
+            <circle cx={C} cy={C} r={70} fill={`url(#${pupilId})`} />
+            <circle cx={C} cy={C} r={RINGS[0]} className="fill-rec" fillOpacity={0.6} />
+          </g>
+        </g>
       </svg>
 
       <motion.svg viewBox="0 0 1000 1000" className="absolute inset-0 h-full w-full overflow-visible will-change-transform" style={{ rotate }}>
