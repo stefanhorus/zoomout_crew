@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useAnimate, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useEffect, useId } from "react";
+import { motion, useAnimate, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import { useEffect, useId, useRef } from "react";
 
 // Fundalul paginilor cu mult text: obiectivul din logo, redus la linii - inele tot mai rare spre margine (zoom out),
 // inelul de zoom cu distanțele focale (se rotește când derulezi) și ochiul roșu din logo, în centru.
@@ -29,13 +29,15 @@ const LABELS = [...FOCAL, "MM"].map((text, i) => {
   return { text, angle, ...polar(ZOOM_RING + 42, angle) };
 });
 
-// Privirea: salt rapid într-o parte, câteva clipe acolo, apoi revine lin în centru
-const GLANCE = { duration: 0.24, ease: [0.3, 0.9, 0.3, 1] } as const;
-const BACK = { duration: 0.42, ease: [0.45, 0, 0.2, 1] } as const;
+// Cât de departe se poate uita irisul, ca să rămână în conturul ochiului
+const GAZE_X = 44;
+const GAZE_Y = 15;
+// Mișcarea irisului: rapidă și fără să treacă de țintă
+const GAZE_SPRING = { stiffness: 220, damping: 24, mass: 0.6 };
 // Clipitul: conturul ochiului se închide și se deschide repede
 const BLINK = { duration: 0.26, ease: "easeInOut" } as const;
 
-// Unde se uită: doar puțin într-o parte (mai des spre pagină, la stânga)
+// O privire scurtă într-o parte (mai des spre pagină, la stânga)
 const nextGaze = () => {
   const side = Math.random() < 0.65 ? -1 : 1;
   return { x: side * (20 + Math.random() * 24), y: -12 + Math.random() * 24 };
@@ -49,20 +51,50 @@ export function LensBackdrop() {
   const { scrollY } = useScroll();
   // Inelul de zoom se învârte cu pagina: un sfert de tură la fiecare ~3000px derulați
   const rotate = useTransform(scrollY, (y) => (reduceMotion ? 0 : y * 0.03));
+  const lens = useRef<HTMLDivElement>(null);
   const [eye, animate] = useAnimate<SVGGElement>();
+  const gazeX = useSpring(0, GAZE_SPRING);
+  const gazeY = useSpring(0, GAZE_SPRING);
 
-  // Ochiul se uită din când în când într-o parte și revine în centru; clipește rar (la 9-20 de secunde)
+  // Pe desktop ochiul urmărește cursorul. Altfel (pe telefon, sau după 5 secunde fără mișcarea mouse-ului) se uită
+  // din când în când într-o parte și revine în centru. Clipește rar (la 9-20 de secunde).
   useEffect(() => {
     if (reduceMotion) return;
     let active = true;
+    let lastPointerMove = 0;
+    const lookAt = (x: number, y: number) => {
+      gazeX.set(x);
+      gazeY.set(y);
+    };
     const visible = () => active && !document.hidden;
-    const look = async () => {
+    const idle = () => Date.now() - lastPointerMove > 5000;
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse" || !lens.current) return;
+      lastPointerMove = Date.now();
+      const box = lens.current.getBoundingClientRect();
+      const dx = event.clientX - (box.left + box.width / 2);
+      const dy = event.clientY - (box.top + box.height / 2);
+      // Privirea ajunge la maximum când cursorul e la peste 500px de ochi
+      const reach = Math.min(1, Math.hypot(dx, dy) / 500);
+      const angle = Math.atan2(dy, dx);
+      lookAt(Math.cos(angle) * GAZE_X * reach, Math.sin(angle) * GAZE_Y * reach);
+    };
+    const onPointerLeave = () => {
+      lastPointerMove = 0;
+      lookAt(0, 0);
+    };
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    document.documentElement.addEventListener("pointerleave", onPointerLeave);
+
+    const glance = async () => {
       await wait(1500);
       while (active) {
-        if (visible()) {
-          await animate(".lens-iris", nextGaze(), GLANCE);
-          await wait(600 + Math.random() * 900);
-          if (active) await animate(".lens-iris", { x: 0, y: 0 }, BACK);
+        if (visible() && idle()) {
+          const target = nextGaze();
+          lookAt(target.x, target.y);
+          await wait(800 + Math.random() * 900);
+          if (active && idle()) lookAt(0, 0);
         }
         await wait(2500 + Math.random() * 3500);
       }
@@ -73,15 +105,17 @@ export function LensBackdrop() {
         if (visible()) await animate(eye.current, { scaleY: [1, 0.08, 1] }, BLINK);
       }
     };
-    void look();
+    void glance();
     void blink();
     return () => {
       active = false;
+      window.removeEventListener("pointermove", onPointerMove);
+      document.documentElement.removeEventListener("pointerleave", onPointerLeave);
     };
-  }, [animate, eye, reduceMotion]);
+  }, [animate, eye, gazeX, gazeY, reduceMotion]);
 
   return (
-    <div className="lens-backdrop" aria-hidden>
+    <div ref={lens} className="lens-backdrop" aria-hidden>
       <svg viewBox="0 0 1000 1000" fill="none" className="absolute inset-0 h-full w-full overflow-visible">
         <defs>
           <radialGradient id={pupilId}>
@@ -109,11 +143,11 @@ export function LensBackdrop() {
             strokeWidth={1.4}
             vectorEffect="non-scaling-stroke"
           />
-          <g className="lens-iris">
+          <motion.g className="lens-iris" style={{ x: gazeX, y: gazeY }}>
             <circle cx={C} cy={C} r={RINGS[3]} className="stroke-rec" strokeOpacity={0.32} strokeWidth={1.4} vectorEffect="non-scaling-stroke" />
             <circle cx={C} cy={C} r={70} fill={`url(#${pupilId})`} />
             <circle cx={C} cy={C} r={RINGS[0]} className="fill-rec" fillOpacity={0.6} />
-          </g>
+          </motion.g>
         </g>
       </svg>
 
