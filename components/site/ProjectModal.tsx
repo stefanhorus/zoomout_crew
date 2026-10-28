@@ -73,10 +73,12 @@ function ModalContent({ project, onClose }: { project: Project; onClose: () => v
               </div>
             ) : (
               <div className="relative flex aspect-[4/5] w-full max-w-md items-center justify-center rounded-2xl border border-line bg-ink-2">
-                {project.logo && (
+                {project.logo ? (
                   <div className="relative h-1/3 w-2/3">
                     <Image src={project.logo} alt={name} fill sizes="320px" className="object-contain" />
                   </div>
+                ) : (
+                  <span className="serif-i px-8 text-center text-6xl leading-none text-paper/85 md:text-7xl">{subtitle || name}</span>
                 )}
               </div>
             )}

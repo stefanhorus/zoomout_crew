@@ -61,10 +61,19 @@ export function ProjectCard({
         />
       ) : (
         <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_50%_40%,rgba(242,238,230,0.08),transparent_65%)]">
-          {project.logo && (
+          {project.logo ? (
             <div className="relative h-[34%] w-[62%] transition-transform duration-[1.4s] ease-[var(--ease-expo)] group-hover:scale-[1.06]">
               <Image src={project.logo} alt="" fill sizes="240px" className="object-contain" />
             </div>
+          ) : (
+            // Fără video, poze sau logo: titlul (ex. piesa) ca afiș
+            <span
+              className={`serif-i px-5 text-center leading-none text-paper/85 transition-transform duration-[1.4s] ease-[var(--ease-expo)] group-hover:scale-[1.06] ${
+                compact ? "text-2xl md:text-3xl" : "text-5xl md:text-6xl"
+              }`}
+            >
+              {subtitle || name}
+            </span>
           )}
         </div>
       )}

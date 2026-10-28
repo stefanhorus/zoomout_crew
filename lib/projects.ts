@@ -86,6 +86,11 @@ export const PROJECTS: Project[] = [
     videos: [{ youtubeId: "XD3L5bj4om0", landscape: true }],
   },
   {
+    id: 19,
+    key: "portfolio.project19", // gio$anu - priză (linkul de YouTube vine mai târziu)
+    categories: ["music-videos"],
+  },
+  {
     id: 1,
     key: "portfolio.project5", // casa numaa
     categories: ["commercial"],
