@@ -8,12 +8,19 @@ Scrie două variante, alese în pagină după orientarea ecranului (coperta .jpg
   NAME.mp4, NAME.jpg                       orizontal 16:9 (desktop)
   NAME-portrait.mp4, NAME-portrait.jpg     vertical 9:16 (telefon), decupat din mijloc
 
-Folosire: python3 -I scripts/make-mosaic-tile.py SRC START END NAME [--loop SECUNDE] [--out FOLDER]
-  --loop  durata buclei; implicit de 3 ori bucata (viteza medie 2/3 din cea reală, maximul ~1x)
-  --out   implicit public/assets/v2/tiles
-Montajul din hero (2560x1440) are pe unele cadre o linie subțire pe toată înălțimea, pe la 1/3 și 2/3 din lățime;
-la sursele orizontale scriptul o găsește și o acoperă cu pixelii vecini.
+Folosire: python3 -I scripts/make-mosaic-tile.py SRC START END NAME [--loop SECUNDE] [--fix-line] [--out FOLDER]
+  --loop      durata buclei; implicit de 3 ori bucata (viteza medie 2/3 din cea reală, maximul ~1x)
+  --fix-line  pentru montajul din hero (public/assets/videos/Drone-Hero-2-2k-clean.mp4): pe unele cadre are o linie
+              subțire pe toată înălțimea, pe la 1/3 și 2/3 din lățime, pe care scriptul o găsește și o acoperă
+  --out       implicit public/assets/v2/tiles
 După ce înlocuiești fișierele, crește TILES_VERSION din ZoomHero.tsx.
+
+Buclele de acum (HERO = public/assets/videos/Drone-Hero-2-2k-clean.mp4; clipurile Mux descărcate din proiecte):
+  HERO 8.87 10.57 nyc --fix-line                  HERO 4.30 6.00 sardinia --fix-line
+  HERO 6.133 7.64 hollywood --fix-line            Mux BaZoib... 3.63 4.62 casanumaa --loop 4
+  Mux Xi5sUx... 6.45 7.40 rooftop --loop 4        Mux iQW9j3... 6.00 6.99 panoramic --loop 4
+  Mux c5jDLr... 9.6 12.6 outdoor --loop 7         PromoLifeIsPink.mp4 20.62 22.62 lifeispink
+Scoasă din mozaic (apare și în video-ul din centru): HERO 1.367 3.44 oxford --fix-line
 """
 import os
 import subprocess
@@ -32,6 +39,9 @@ def option(flag, default):
 
 out_dir = option("--out", os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "public", "assets", "v2", "tiles"))
 loop_seconds = option("--loop", None)
+fix_line = "--fix-line" in sys.argv
+if fix_line:
+    sys.argv.remove("--fix-line")
 src, start, end, name = sys.argv[1:5]
 
 probe = dict(
@@ -60,7 +70,7 @@ SIZE = W * H * 3
 
 # -ss după -i: decodează de la început și taie exact la cadru
 decoder = subprocess.Popen(
-    ["ffmpeg", "-v", "error", "-i", src, "-ss", start, "-to", end,
+    ["ffmpeg", "-v", "error", "-i", src, "-ss", start, "-to", end, "-an",
      "-vf", f"scale={W}:{H}:flags=lanczos:in_color_matrix=bt709", "-pix_fmt", "rgb24", "-f", "rawvideo", "-"],
     stdout=subprocess.PIPE,
 )
@@ -134,7 +144,7 @@ def repair(frame, path):
 
 
 repaired = 0
-for frame in frames if landscape else []:
+for frame in frames if fix_line else []:
     for x0, x1 in BANDS:
         # Uneori sunt două linii apropiate: după reparare mai căutăm o dată în aceeași bandă
         for _ in range(3):

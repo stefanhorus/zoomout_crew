@@ -28,7 +28,7 @@ const TILES_DIR = withBasePath("/assets/v2/tiles");
 const PORTRAIT = "(orientation: portrait)";
 
 // Mozaicul din jurul video-ului: proiecte de client + filmări aeriene proprii. Poziția 4 (centrul) e video-ul.
-const TILES = ["nyc", "casanumaa", "sardinia", "rooftop", null, "panoramic", "hollywood", "outdoor", "oxford"];
+const TILES = ["nyc", "casanumaa", "sardinia", "rooftop", null, "panoramic", "hollywood", "outdoor", "lifeispink"];
 
 // Vizitatorul a cerut economie de date (Chrome pe Android, „Data Saver”): rămân doar copertele
 const savesData = () => (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
