@@ -74,6 +74,18 @@ export const PROJECTS: Project[] = [
     videos: [{ youtubeId: "pA2Szfcner0", landscape: true }],
   },
   {
+    id: 17,
+    key: "portfolio.project17", // rone damasc - adevăr
+    categories: ["music-videos"],
+    videos: [{ youtubeId: "w64x8lvIiP8", landscape: true }],
+  },
+  {
+    id: 18,
+    key: "portfolio.project18", // nico ramírez - transylvania sunset
+    categories: ["music-videos", "events"],
+    videos: [{ youtubeId: "XD3L5bj4om0", landscape: true }],
+  },
+  {
     id: 1,
     key: "portfolio.project5", // casa numaa
     categories: ["commercial"],

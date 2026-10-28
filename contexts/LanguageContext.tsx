@@ -126,6 +126,10 @@ const baseTranslations: Record<Language, Record<string, string>> = {
     "portfolio.project15.description": "Official music video for “Haide, Hai!” by Mara feat. Lurre, the first single from Coconut Express Records. A Visual Delights production where we worked as camera operators.",
     "portfolio.project16.title": "CJ's - Efort",
     "portfolio.project16.description": "Music video for “Efort” by CJ's, made together with Visual Delights.",
+    "portfolio.project17.title": "RONE DAMASC - ADEVĂR",
+    "portfolio.project17.description": "Official music video for “ADEVĂR” by RONE DAMASC, made together with Visual Delights.",
+    "portfolio.project18.title": "Nico Ramírez - Transylvania Sunset",
+    "portfolio.project18.description": "A one-hour live DJ set by Nico Ramírez, filmed at sunset on the tallest residential building in Romania, in Cluj-Napoca. The concept, the set design and the camera work are all ours.",
 
     // Services page
     "services.title": "Services",
@@ -403,6 +407,10 @@ const baseTranslations: Record<Language, Record<string, string>> = {
     "portfolio.project15.description": "Videoclipul oficial pentru „Haide, Hai!”, de Mara feat. Lurre, primul single lansat de Coconut Express Records. O producție Visual Delights, la care am lucrat ca operatori de cameră.",
     "portfolio.project16.title": "CJ's - Efort",
     "portfolio.project16.description": "Videoclipul pentru „Efort”, piesa CJ's, realizat împreună cu Visual Delights.",
+    "portfolio.project17.title": "RONE DAMASC - ADEVĂR",
+    "portfolio.project17.description": "Videoclipul oficial pentru „ADEVĂR”, piesa lui RONE DAMASC, realizat împreună cu Visual Delights.",
+    "portfolio.project18.title": "Nico Ramírez - Transylvania Sunset",
+    "portfolio.project18.description": "Un live DJ set de o oră cu Nico Ramírez, filmat la apus pe cea mai înaltă clădire rezidențială din România, în Cluj-Napoca. Conceptul, setup-ul și filmarea ne aparțin.",
 
     // Services page
     "services.title": "Servicii",
