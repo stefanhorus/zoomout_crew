@@ -6,3 +6,4 @@ public/Drone-Hero-2-2k-clean.mp4 filter=lfs diff=lfs merge=lfs -text
 # Video-urile hero sunt servite direct de site, deci rămân în git normal (nu LFS):
 # fără Git LFS activat pe Vercel s-ar publica doar pointerii LFS, iar video-ul nu ar mai porni.
 public/assets/v2/video/*.mp4 -filter binary
+public/assets/v2/tiles/*.mp4 -filter binary

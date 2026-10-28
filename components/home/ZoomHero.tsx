@@ -1,11 +1,19 @@
 "use client";
 
-import { cubicBezier, mix, motion, useMotionValue, useScroll, useTransform } from "motion/react";
-import Image from "next/image";
-import { useEffect, useRef } from "react";
+import {
+  cubicBezier,
+  mix,
+  motion,
+  useInView,
+  useMotionValue,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+} from "motion/react";
+import { getImageProps } from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { usePrefersReducedMotion } from "@/lib/hooks";
-import { muxThumb } from "@/lib/projects";
+import { useMediaQuery, usePrefersReducedMotion } from "@/lib/hooks";
 import { EASE } from "../motion/ease";
 import { useIntroDone } from "../motion/Preloader";
 import { Rich } from "../motion/rich";
@@ -13,22 +21,65 @@ import { SplitReveal } from "../motion/SplitReveal";
 import { HeroVideo } from "./HeroVideo";
 import { withBasePath } from "@/lib/base-path";
 
-const square = (id: string, time: number) => muxThumb(id, { time, width: 900, height: 900, smartcrop: true });
+// Buclele din mozaic sunt generate cu scripts/make-mosaic-tile.py, fiecare în variantă orizontală (desktop) și
+// verticală (telefon). La înlocuirea lor, crește TILES_VERSION ca vizitatorii să nu primească varianta veche din cache.
+const TILES_VERSION = "1";
+const TILES_DIR = withBasePath("/assets/v2/tiles");
+const PORTRAIT = "(orientation: portrait)";
 
 // Mozaicul din jurul video-ului: proiecte de client + filmări aeriene proprii. Poziția 4 (centrul) e video-ul.
-const TILES: Array<{ src: string; remote?: boolean } | null> = [
-  { src: withBasePath("/assets/backgrounds/background6tiny.png") },
-  { src: square("BaZoibIrmiaFjm1oPbGIWlhQAZrZHCV9NcIMW4HQN014", 1), remote: true },
-  { src: withBasePath("/assets/backgrounds/background4tiny.png") },
-  { src: square("Xi5sUxm00g8N5UJGPn7D9Mut4JsMfUFULA01Qn02woUOwo", 9), remote: true },
-  null,
-  { src: square("iQW9j3rKkGubagCrFEPgfWxQtpnzW5PFdTWw00SpAliA", 3), remote: true },
-  { src: withBasePath("/assets/backgrounds/backgroundtiny.png") },
-  { src: square("c5jDLrljSoSJid7Du9P9XQb37yzRRrIKqFHYzqpKG8c", 12), remote: true },
-  { src: withBasePath("/assets/adventures/edinburgh/edinburgh7.png") },
-];
+const TILES = ["nyc", "casanumaa", "sardinia", "rooftop", null, "panoramic", "hollywood", "outdoor", "oxford"];
+
+// Vizitatorul a cerut economie de date (Chrome pe Android, „Data Saver”): rămân doar copertele
+const savesData = () => (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
 
 const zoomEase = cubicBezier(0.42, 0, 0.3, 1);
+
+// O celulă din mozaic: coperta (primul cadru al buclei) și deasupra bucla, care se încarcă abia când e nevoie de ea
+// și rulează doar cât timp se vede
+function MosaicTile({ name, play, portrait }: { name: string; play: boolean; portrait: boolean }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const common = { alt: "", fill: true, sizes: "34vw" } as const;
+  const { props: poster } = getImageProps({ ...common, src: `${TILES_DIR}/${name}.jpg` });
+  const { props: portraitPoster } = getImageProps({ ...common, src: `${TILES_DIR}/${name}-portrait.jpg` });
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (!play || savesData()) {
+      video.pause();
+      return;
+    }
+    const src = new URL(`${TILES_DIR}/${name}${portrait ? "-portrait" : ""}.mp4?v=${TILES_VERSION}`, window.location.href).href;
+    if (video.src !== src) {
+      // Și la rotirea telefonului: coperta potrivită rămâne la vedere până pornește noul fișier
+      video.removeAttribute("data-ready");
+      video.src = src;
+    }
+    video.play().catch(() => {});
+  }, [name, play, portrait]);
+
+  return (
+    <div className="relative overflow-hidden rounded-[16px] bg-ink-2">
+      <picture>
+        <source media={PORTRAIT} srcSet={portraitPoster.srcSet || portraitPoster.src} sizes="34vw" />
+        {/* eslint-disable-next-line jsx-a11y/alt-text -- alt-ul vine din poster (decorativ, gol) */}
+        <img {...poster} className="object-cover" />
+      </picture>
+      <video
+        ref={videoRef}
+        className="hero-video"
+        muted
+        loop
+        playsInline
+        preload="none"
+        aria-hidden
+        onPlaying={(event) => event.currentTarget.setAttribute("data-ready", "")}
+      />
+      <div className="absolute inset-0 bg-ink/20" />
+    </div>
+  );
+}
 
 export function ZoomHero() {
   const { t } = useLanguage();
@@ -50,6 +101,14 @@ export function ZoomHero() {
   const captionOpacity = useTransform(scrollYProgress, [0.66, 0.8], [0, 1]);
   const captionScale = useTransform(scrollYProgress, [0.66, 0.92], [0.9, 1]);
 
+  // Buclele din mozaic pornesc odată cu derularea (până la zoom out celulele sunt în afara ecranului) și se opresc
+  // când secțiunea iese din ecran. Cu mișcare redusă mozaicul nu se vede deloc.
+  const portrait = useMediaQuery(PORTRAIT);
+  const sectionInView = useInView(sectionRef);
+  const [scrolledIn, setScrolledIn] = useState(false);
+  useMotionValueEvent(scrollYProgress, "change", (progress) => setScrolledIn(progress > 0.01));
+  const playTiles = sectionInView && scrolledIn && !reducedMotion;
+
   useEffect(() => {
     const cell = centerRef.current;
     if (!cell) return;
@@ -70,7 +129,7 @@ export function ZoomHero() {
           style={{ scale: reducedMotion ? startScale : scale }}
           className="absolute inset-0 grid grid-cols-3 grid-rows-3 gap-[1vw] p-[3.5vw] will-change-transform"
         >
-          {TILES.map((tile, index) =>
+          {TILES.map((tile) =>
             tile === null ? (
               <motion.div
                 key="video"
@@ -81,10 +140,7 @@ export function ZoomHero() {
                 <HeroVideo />
               </motion.div>
             ) : (
-              <div key={index} className="relative overflow-hidden rounded-[16px] bg-ink-2">
-                <Image src={tile.src} alt="" fill sizes="34vw" unoptimized={tile.remote} className="object-cover" />
-                <div className="absolute inset-0 bg-ink/20" />
-              </div>
+              <MosaicTile key={tile} name={tile} play={playTiles} portrait={portrait} />
             )
           )}
         </motion.div>
