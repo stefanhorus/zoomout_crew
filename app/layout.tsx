@@ -1,5 +1,6 @@
 import "./globals.css";
-import { Playfair_Display, Roboto } from "next/font/google";
+import "lenis/dist/lenis.css";
+import { Inter, Inter_Tight, Instrument_Serif } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ConditionalAnalytics from "@/components/ConditionalAnalytics";
@@ -9,17 +10,30 @@ import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import StructuredData from "@/components/StructuredData";
+import SmoothScroll from "@/components/motion/SmoothScroll";
+import { MotionProvider } from "@/components/motion/MotionProvider";
+import { CursorLabel } from "@/components/motion/CursorLabel";
+import { Preloader, introSeenScript } from "@/components/motion/Preloader";
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-playfair",
+// latin-ext pentru diacriticele românești (ă, î, ș, ț)
+const display = Inter_Tight({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-display-face",
+  display: "swap",
 });
 
-const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-roboto",
+const body = Inter({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-body-face",
+  display: "swap",
+});
+
+const serif = Instrument_Serif({
+  subsets: ["latin", "latin-ext"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-serif-face",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -91,12 +105,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Prioritate maximă pentru video - preconnect pentru Bunny.net Stream */}
-        <link rel="preconnect" href="https://iframe.mediadelivery.net" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://iframe.mediadelivery.net" />
-        <link rel="preconnect" href="https://vz-*.b-cdn.net" crossOrigin="anonymous" />
+        {/* Intro-ul se arată o singură dată pe sesiune - clasa se pune înainte de prima randare */}
+        <script dangerouslySetInnerHTML={{ __html: introSeenScript }} />
+        {/* Prioritate pentru video: Bunny.net Stream (hero) și Mux (proiecte) */}
+        <link rel="preconnect" href="https://vz-b2ef903c-299.b-cdn.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://image.mux.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://stream.mux.com" />
         {/* hreflang tags pentru SEO multilingv */}
         <link rel="alternate" hrefLang="en" href="https://zoomoutcrew.com" />
         <link rel="alternate" hrefLang="ro" href="https://zoomoutcrew.com" />
@@ -106,20 +122,23 @@ export default function RootLayout({
         {/* LocalBusiness Structured Data for SEO */}
         <StructuredData type="LocalBusiness" data={{}} />
       </head>
-      <body
-        className={`${roboto.variable} ${playfair.variable} bg-black text-white antialiased flex flex-col min-h-screen`}
-      >
+      <body className={`${display.variable} ${body.variable} ${serif.variable} flex min-h-screen flex-col bg-ink text-paper antialiased`}>
         <LanguageProvider>
           <CurrencyProvider>
             <CartProvider>
-              <Header />
-              <main className="flex-1">
-                {children}
-              </main>
-              <Footer />
+              <MotionProvider>
+                <SmoothScroll>
+                  <Preloader />
+                  <Header />
+                  <main className="flex-1">{children}</main>
+                  <Footer />
+                  <CursorLabel />
+                </SmoothScroll>
+              </MotionProvider>
             </CartProvider>
           </CurrencyProvider>
         </LanguageProvider>
+        <div className="grain" aria-hidden />
         <ConditionalAnalytics />
         <SpeedInsights />
       </body>

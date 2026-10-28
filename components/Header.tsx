@@ -1,383 +1,261 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, type Variants } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { CURRENCIES } from "@/lib/currency";
+import { EASE } from "./motion/ease";
+import { useScrollLock } from "./motion/SmoothScroll";
 import Cart from "./Cart";
 
-export default function Header() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentYear, setCurrentYear] = useState<number | null>(null);
-  const [headerHeight, setHeaderHeight] = useState(64);
-  const headerRef = useRef<HTMLElement>(null);
-  const { getTotalItems } = useCart();
-  const { language, setLanguage, t } = useLanguage();
+const NAV_LINKS = [
+  { href: "/portfolio", labelKey: "nav.portfolio" },
+  { href: "/services", labelKey: "nav.services" },
+  { href: "/about", labelKey: "nav.about" },
+  { href: "/shop", labelKey: "nav.shop" },
+  { href: "/contact", labelKey: "nav.contact" },
+];
+
+const SOCIALS = [
+  { name: "Instagram", href: "https://instagram.com/zoomout_crew" },
+  { name: "YouTube", href: "https://youtube.com/@zoomout_crew" },
+  { name: "LinkedIn", href: "https://www.linkedin.com/company/zoomout-crew" },
+];
+
+// Text care "se rostogolește" la hover
+function RollText({ children }: { children: string }) {
+  return (
+    <span className="relative block overflow-hidden">
+      <span className="block transition-transform duration-500 ease-[var(--ease-expo)] group-hover:-translate-y-full">{children}</span>
+      <span aria-hidden className="absolute inset-0 block translate-y-full transition-transform duration-500 ease-[var(--ease-expo)] group-hover:translate-y-0">
+        {children}
+      </span>
+    </span>
+  );
+}
+
+function LanguageToggle({ className = "" }: { className?: string }) {
+  const { language, setLanguage } = useLanguage();
+  return (
+    <div className={`flex items-center rounded-full border border-line p-1 text-[11px] font-semibold tracking-[0.14em] ${className}`}>
+      {(["en", "ro"] as const).map((lang) => (
+        <button
+          key={lang}
+          type="button"
+          onClick={() => setLanguage(lang)}
+          aria-pressed={language === lang}
+          className={`rounded-full px-2.5 py-1.5 uppercase transition-colors duration-300 ${
+            language === lang ? "bg-paper text-ink" : "text-mute hover:text-paper"
+          }`}
+        >
+          {lang}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function CurrencyToggle({ className = "" }: { className?: string }) {
   const { currency, setCurrency } = useCurrency();
-  const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
+  return (
+    <label className={`relative flex items-center rounded-full border border-line text-[11px] font-semibold tracking-[0.14em] ${className}`}>
+      <span className="sr-only">Currency</span>
+      <select
+        value={currency}
+        onChange={(event) => setCurrency(event.target.value as (typeof CURRENCIES)[number])}
+        className="appearance-none bg-transparent py-2 pl-3 pr-7 uppercase text-paper outline-none"
+      >
+        {CURRENCIES.map((code) => (
+          <option key={code} value={code} className="bg-ink text-paper">
+            {code}
+          </option>
+        ))}
+      </select>
+      <svg className="pointer-events-none absolute right-2.5 h-3 w-3 text-mute" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth={1.5}>
+        <path d="M2.5 4.5 6 8l3.5-3.5" />
+      </svg>
+    </label>
+  );
+}
 
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear());
-  }, []);
+const menuList: Variants = {
+  closed: {},
+  open: { transition: { staggerChildren: 0.06, delayChildren: 0.25 } },
+};
+const menuItem: Variants = {
+  closed: { y: "110%" },
+  open: { y: "0%", transition: { duration: 0.9, ease: EASE } },
+};
 
-  // Calculează înălțimea header-ului
-  useEffect(() => {
-    const updateHeaderHeight = () => {
-      if (headerRef.current) {
-        setHeaderHeight(headerRef.current.offsetHeight);
-      }
-    };
-    updateHeaderHeight();
-    window.addEventListener("resize", updateHeaderHeight);
-    return () => window.removeEventListener("resize", updateHeaderHeight);
-  }, []);
+export default function Header() {
+  const pathname = usePathname();
+  const { t } = useLanguage();
+  const { getTotalItems } = useCart();
+  const { scrollY } = useScroll();
+  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [lastPathname, setLastPathname] = useState(pathname);
 
-  // Închide meniul când se face resize la desktop
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsMobileMenuOpen(false);
-      }
-    };
+  // Meniul se închide singur când se schimbă pagina
+  if (lastPathname !== pathname) {
+    setLastPathname(pathname);
+    setMenuOpen(false);
+  }
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  useScrollLock(menuOpen);
 
-  // Previne scroll când meniul mobil este deschis
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isMobileMenuOpen]);
+  useMotionValueEvent(scrollY, "change", (current) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    setScrolled(current > 40);
+    setHidden(current > previous && current > 320);
+  });
 
-  // Închide currency dropdown când se face click în afara lui
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (isCurrencyOpen && !(event.target as Element).closest('.currency-selector')) {
-        setIsCurrencyOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isCurrencyOpen]);
+  const itemCount = getTotalItems();
+  const showCurrency = pathname.startsWith("/shop") || pathname.startsWith("/checkout");
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
-  const navLinks = [
-    { href: "/", labelKey: "nav.home", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
-    { href: "/portfolio", labelKey: "nav.portfolio", icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" },
-    { href: "/services", labelKey: "nav.services", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
-    { href: "/shop", labelKey: "nav.shop", icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" },
-    { href: "/about", labelKey: "nav.about", icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { href: "/contact", labelKey: "nav.contact", icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
-  ];
-
-  const handleLinkClick = () => {
-    setIsMobileMenuOpen(false);
-  };
+  const cartButton = (
+    <button
+      type="button"
+      onClick={() => setCartOpen(true)}
+      className="relative flex h-10 w-10 items-center justify-center rounded-full border border-line transition-colors duration-300 hover:border-paper"
+      aria-label="Open shopping cart"
+    >
+      <svg className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 7h12l-1 13H7L6 7Z M9 7a3 3 0 0 1 6 0" />
+      </svg>
+      {itemCount > 0 && (
+        <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-rec px-1 text-[10px] font-bold text-ink">
+          {itemCount}
+        </span>
+      )}
+    </button>
+  );
 
   return (
     <>
-      <header ref={headerRef} className={`fixed top-0 left-0 w-full z-50 liquid-glass-header ${isMobileMenuOpen ? 'header-menu-open' : ''}`}>
-        <nav className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
-          {/* Logo */}
-          <a 
-            href="/" 
-            className="flex items-center gap-2 md:gap-3 hover:opacity-90 transition-all duration-300 cursor-pointer z-50 group"
-            onClick={handleLinkClick}
-          >
-            <div className="relative h-7 w-7 md:h-8 md:w-8">
-            <Image 
-              src="/assets/logo.png" 
-              alt="Logo" 
-              width={32}
-              height={32}
-              className="object-contain transition-all duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.4)]" 
-            />
-              <div className="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-300" />
-            </div>
-            <span className="font-semibold text-white text-base md:text-lg transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] group-hover:text-white/95">
-              Zoomout_crew
-            </span>
-          </a>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            <ul className="flex gap-6 text-white">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <a 
-                    href={link.href} 
-                    className="hover:opacity-90 transition-all duration-300 text-sm md:text-base relative group font-medium"
-                  >
-                    <span className="relative z-10">{t(link.labelKey)}</span>
-                    <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
-                    <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-white/50 blur-sm transition-all duration-300 group-hover:w-full" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-            
-            {/* Language & Currency Selectors */}
-            <div className="flex items-center gap-2 ml-2">
-              <button
-                onClick={() => setLanguage(language === "en" ? "ro" : "en")}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg liquid-glass text-white text-sm font-medium hover:opacity-90 transition-all duration-300 group"
-                aria-label="Change language"
-              >
-                <span className="text-xs font-bold">{language === "en" ? "EN" : "RO"}</span>
-                <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-                </svg>
-              </button>
-              
-              {/* Currency Selector */}
-              <div className="relative currency-selector">
-                <button
-                  onClick={() => setIsCurrencyOpen(!isCurrencyOpen)}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg liquid-glass text-white text-sm font-medium hover:opacity-90 transition-all duration-300 group"
-                  aria-label="Change currency"
-                >
-                  <span className="text-xs font-bold">{currency}</span>
-                  <svg className={`w-3.5 h-3.5 transition-transform ${isCurrencyOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                
-                {/* Currency Dropdown */}
-                {isCurrencyOpen && (
-                  <>
-                    <div 
-                      className="fixed inset-0 z-10" 
-                      onClick={() => setIsCurrencyOpen(false)}
-                    />
-                    <div className="absolute right-0 top-full mt-2 w-32 rounded-lg liquid-glass border border-white/20 overflow-hidden z-20 shadow-xl">
-                      {(["RON", "EUR", "USD", "GBP"] as const).map((curr) => (
-                        <button
-                          key={curr}
-                          onClick={() => {
-                            setCurrency(curr);
-                            setIsCurrencyOpen(false);
-                          }}
-                          className={`w-full px-3 py-2 text-left text-sm transition-colors ${
-                            currency === curr
-                              ? "bg-white/20 text-white font-semibold"
-                              : "text-gray-300 hover:bg-white/10 hover:text-white"
-                          }`}
-                        >
-                          {curr}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-            {/* Cart Icon - afișat întotdeauna pentru ca animația să funcționeze */}
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="relative text-white hover:opacity-90 transition-all duration-300 group"
-              aria-label="Open shopping cart"
-            >
-              <svg className="w-6 h-6 transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              {getTotalItems() > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg shadow-red-500/50 animate-pulse">
-                  {getTotalItems()}
-                </span>
-              )}
-            </button>
-          </div>
-
-          {/* Mobile: Cart + Hamburger */}
-          <div className="flex md:hidden items-center gap-4">
-            {/* Cart Icon Mobile - afișat întotdeauna pentru ca animația să funcționeze */}
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="relative text-white hover:opacity-90 transition-all duration-300 group"
-              aria-label="Open shopping cart"
-            >
-                <svg className="w-6 h-6 transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                {getTotalItems() > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg shadow-red-500/50 animate-pulse">
-                    {getTotalItems()}
-                  </span>
-                )}
-              </button>
-
-            {/* Hamburger Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-white hover:opacity-90 transition-all duration-300 relative z-[100] group"
-              aria-label="Toggle mobile menu"
-              aria-expanded={isMobileMenuOpen}
-            >
-              <div className="w-6 h-6 flex flex-col justify-center items-center gap-1.5">
-                <span
-                  className={`block h-0.5 w-6 bg-white transition-all duration-300 shadow-[0_0_4px_rgba(255,255,255,0.3)] ${
-                    isMobileMenuOpen ? "rotate-45 translate-y-2" : "group-hover:shadow-[0_0_8px_rgba(255,255,255,0.5)]"
-                  }`}
-                />
-                <span
-                  className={`block h-0.5 w-6 bg-white transition-all duration-300 shadow-[0_0_4px_rgba(255,255,255,0.3)] ${
-                    isMobileMenuOpen ? "opacity-0" : "opacity-100 group-hover:shadow-[0_0_8px_rgba(255,255,255,0.5)]"
-                  }`}
-                />
-                <span
-                  className={`block h-0.5 w-6 bg-white transition-all duration-300 shadow-[0_0_4px_rgba(255,255,255,0.3)] ${
-                    isMobileMenuOpen ? "-rotate-45 -translate-y-2" : "group-hover:shadow-[0_0_8px_rgba(255,255,255,0.5)]"
-                  }`}
-                />
-              </div>
-            </button>
-          </div>
-        </nav>
-      </header>
-
-      {/* Mobile Menu Overlay */}
-      <div
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[40] transition-all duration-300 ease-out md:hidden ${
-          isMobileMenuOpen 
-            ? "opacity-100 visible" 
-            : "opacity-0 invisible"
+      <motion.header
+        initial={false}
+        animate={{ y: hidden && !menuOpen ? "-110%" : "0%" }}
+        transition={{ duration: 0.55, ease: EASE }}
+        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-500 ${
+          scrolled && !menuOpen ? "border-b border-line bg-ink/70 backdrop-blur-xl" : "border-b border-transparent"
         }`}
-        onClick={() => setIsMobileMenuOpen(false)}
-      />
-
-      {/* Mobile Menu - Se deschide sub header */}
-      <div
-        className={`fixed left-0 right-0 z-[45] md:hidden transform transition-all duration-300 ease-out ${
-          isMobileMenuOpen 
-            ? "translate-y-0 opacity-100" 
-            : "-translate-y-full opacity-0"
-        }`}
-        style={{ top: `${headerHeight}px` }}
       >
-        {/* Menu Container */}
-        <div className={`mobile-menu-glass ${isMobileMenuOpen ? 'menu-open' : ''}`}>
-          {/* Navigation Links */}
-          <nav className="px-3 py-4">
-            <ul className="space-y-1">
-              {navLinks.map((link, index) => (
-                <li 
-                  key={link.href}
-                  className={`transform transition-all duration-300 ease-out ${
-                    isMobileMenuOpen 
-                      ? "translate-y-0 opacity-100" 
-                      : "-translate-y-4 opacity-0"
-                  }`}
-                  style={{ transitionDelay: `${index * 40}ms` }}
-                >
-                  <a
-                    href={link.href}
-                    onClick={handleLinkClick}
-                    className="flex items-center gap-3 text-white text-base py-3 px-4 rounded-lg hover:bg-white/10 active:bg-white/15 transition-all duration-200 font-medium group relative overflow-hidden"
-                    style={{ fontFamily: "var(--font-playfair)" }}
-                  >
-                    {/* Background gradient on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    
-                    {/* Icon */}
-                    <div className="relative z-10 flex items-center justify-center w-9 h-9 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors flex-shrink-0">
-                      <svg 
-                        className="w-5 h-5 text-gray-300 group-hover:text-white transition-colors" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={link.icon} />
-                      </svg>
-                    </div>
-                    
-                    {/* Label */}
-                    <span className="relative z-10 flex-1 truncate">{t(link.labelKey)}</span>
-                    
-                    {/* Arrow */}
-                    <svg 
-                      className="relative z-10 w-4 h-4 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all flex-shrink-0" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </a>
-                </li>
-              ))}
-            </ul>
+        <div className="container-site flex h-16 items-center justify-between gap-6 md:h-20">
+          <Link href="/" className="group flex items-center gap-3" aria-label="Zoomout_crew - Home">
+            <Image
+              src="/assets/logo.png"
+              alt=""
+              width={36}
+              height={36}
+              priority
+              className="rounded-full transition-transform duration-700 ease-[var(--ease-expo)] group-hover:rotate-[20deg]"
+            />
+            <span className="font-display text-[17px] font-semibold tracking-tight">Zoomout_crew</span>
+          </Link>
+
+          <nav className="hidden items-center gap-9 lg:flex" aria-label="Main">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`group flex items-center gap-2 text-[15px] font-medium transition-colors ${
+                  isActive(link.href) ? "text-paper" : "text-paper/75 hover:text-paper"
+                }`}
+              >
+                {isActive(link.href) && <span className="rec-dot h-1.5 w-1.5" />}
+                <RollText>{t(link.labelKey)}</RollText>
+              </Link>
+            ))}
           </nav>
 
-          {/* Language & Currency Selectors Mobile */}
-          <div className="px-3 py-3 border-t border-white/10 space-y-2">
+          <div className="flex items-center gap-2 md:gap-3">
+            <LanguageToggle className="hidden md:flex" />
+            {showCurrency && <CurrencyToggle className="hidden md:flex" />}
+            {cartButton}
+            <Link href="/contact" className="btn-primary btn-sm hidden md:inline-flex">
+              {t("common.quote")}
+            </Link>
             <button
-              onClick={() => {
-                setLanguage(language === "en" ? "ro" : "en");
-                setIsMobileMenuOpen(false);
-              }}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg liquid-glass text-white text-sm font-medium hover:opacity-90 transition-all duration-300"
+              type="button"
+              onClick={() => setMenuOpen((open) => !open)}
+              className="relative flex h-10 w-10 items-center justify-center rounded-full border border-line lg:hidden"
+              aria-label={t("common.menu")}
+              aria-expanded={menuOpen}
             >
-              <span className="text-sm font-bold">{language === "en" ? "EN" : "RO"}</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-              </svg>
-              <span className="text-xs opacity-75">{language === "en" ? "Switch to Romanian" : "Schimbă la Engleză"}</span>
+              <span className={`absolute h-px w-4 bg-paper transition-transform duration-500 ease-[var(--ease-expo)] ${menuOpen ? "rotate-45" : "-translate-y-[3px]"}`} />
+              <span className={`absolute h-px w-4 bg-paper transition-transform duration-500 ease-[var(--ease-expo)] ${menuOpen ? "-rotate-45" : "translate-y-[3px]"}`} />
             </button>
-            
-            {/* Currency Selector Mobile */}
-            <div className="relative currency-selector">
-              <button
-                onClick={() => setIsCurrencyOpen(!isCurrencyOpen)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg liquid-glass text-white text-sm font-medium hover:opacity-90 transition-all duration-300"
-              >
-                <span className="text-sm font-bold">{currency}</span>
-                <svg className={`w-4 h-4 transition-transform ${isCurrencyOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {/* Currency Dropdown Mobile */}
-              {isCurrencyOpen && (
-                <div className="mt-2 w-full rounded-lg liquid-glass border border-white/20 overflow-hidden">
-                  {(["RON", "EUR", "USD", "GBP"] as const).map((curr) => (
-                    <button
-                      key={curr}
-                      onClick={() => {
-                        setCurrency(curr);
-                        setIsCurrencyOpen(false);
-                      }}
-                      className={`w-full px-4 py-2.5 text-left text-sm transition-colors ${
-                        currency === curr
-                          ? "bg-white/20 text-white font-semibold"
-                          : "text-gray-300 hover:bg-white/10 hover:text-white"
-                      }`}
-                    >
-                      {curr}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="px-3 py-3 border-t border-white/10">
-            <p className="text-gray-300 text-xs text-center">
-              © {currentYear || "2024"} Zoomout_crew
-            </p>
           </div>
         </div>
-      </div>
+      </motion.header>
 
-      <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      {/* Meniu mobil pe tot ecranul */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            key="mobile-menu"
+            className="fixed inset-0 z-40 flex flex-col bg-ink lg:hidden"
+            initial={{ clipPath: "inset(0 0 100% 0)" }}
+            animate={{ clipPath: "inset(0 0 0% 0)" }}
+            exit={{ clipPath: "inset(0 0 100% 0)" }}
+            transition={{ duration: 0.8, ease: EASE }}
+            data-lenis-prevent
+          >
+            <div className="container-site flex flex-1 flex-col justify-between overflow-y-auto pb-10 pt-28">
+              <motion.ul variants={menuList} initial="closed" animate="open" className="space-y-1">
+                {[{ href: "/", labelKey: "nav.home" }, ...NAV_LINKS].map((link) => (
+                  <li key={link.href} className="overflow-hidden">
+                    <motion.div variants={menuItem}>
+                      <Link
+                        href={link.href}
+                        onClick={() => setMenuOpen(false)}
+                        className={`flex items-baseline gap-3 py-1 font-display text-[13vw] font-semibold leading-[1] tracking-[-0.045em] sm:text-7xl ${
+                          isActive(link.href) && link.href !== "/" ? "text-rec" : ""
+                        }`}
+                      >
+                        {t(link.labelKey)}
+                      </Link>
+                    </motion.div>
+                  </li>
+                ))}
+              </motion.ul>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: EASE, delay: 0.55 }}
+                className="mt-12 space-y-6 border-t border-line pt-6"
+              >
+                <div className="flex items-center gap-3">
+                  <LanguageToggle />
+                  <CurrencyToggle />
+                </div>
+                <a href="mailto:contact@zoomoutcrew.com" className="block text-lg text-paper-dim">
+                  contact@zoomoutcrew.com
+                </a>
+                <div className="flex gap-5 text-sm text-mute">
+                  {SOCIALS.map((social) => (
+                    <a key={social.name} href={social.href} target="_blank" rel="noopener noreferrer" className="hover:text-paper">
+                      {social.name}
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <Cart isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   );
 }

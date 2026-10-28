@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { siteCopy } from "./siteCopy";
 
 type Language = "en" | "ro";
 
@@ -12,7 +13,7 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-const translations: Record<Language, Record<string, string>> = {
+const baseTranslations: Record<Language, Record<string, string>> = {
   en: {
     // Navigation
     "nav.home": "Home",
@@ -551,6 +552,12 @@ const translations: Record<Language, Record<string, string>> = {
   },
 };
 
+// Textele noului design (contexts/siteCopy.ts) se adaugă peste cele existente
+const translations: Record<Language, Record<string, string>> = {
+  en: { ...baseTranslations.en, ...siteCopy.en },
+  ro: { ...baseTranslations.ro, ...siteCopy.ro },
+};
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>("en");
 
@@ -561,6 +568,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       setLanguageState(savedLanguage);
     }
   }, []);
+
+  // Atributul lang al paginii urmează limba aleasă (accesibilitate, SEO)
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
 
   // Save language to localStorage when it changes
   const setLanguage = (lang: Language) => {

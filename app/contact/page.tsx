@@ -1,40 +1,45 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Typewriter } from "react-simple-typewriter";
-import Image from "next/image";
+import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
+import { EASE } from "@/components/motion/ease";
+import { Magnetic } from "@/components/motion/Magnetic";
+import { Reveal } from "@/components/motion/Reveal";
+import { SplitReveal } from "@/components/motion/SplitReveal";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { SERVICES } from "@/lib/services";
+
+const OTHER = "other";
 
 export default function Contact() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [projectType, setProjectType] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
-  const [currentYear, setCurrentYear] = useState<number | null>(null);
 
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear());
-  }, []);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData((previous) => ({ ...previous, [event.target.name]: event.target.value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const typeLabel = (key: string) => (key === OTHER ? t("contact2.other") : t(`services.${key}`));
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setStatus("sending");
+    // Tipul de proiect ales se trimite la începutul mesajului (API-ul primește doar name, email, message)
+    const message = projectType ? `${t("contact2.typePrefix")}: ${typeLabel(projectType)}\n\n${formData.message}` : formData.message;
 
     try {
-      const res = await fetch("/api/contact", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, message }),
       });
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
+      const data = await response.json();
+      if (response.ok && data.success) {
         setStatus("success");
         setFormData({ name: "", email: "", message: "" });
+        setProjectType(null);
       } else {
         setStatus("error");
       }
@@ -43,104 +48,146 @@ export default function Contact() {
     }
   };
 
+  const field =
+    "w-full border-b border-line bg-transparent py-4 text-lg text-paper placeholder:text-mute/70 transition-colors duration-300 focus:border-paper focus:outline-none md:text-xl";
+
   return (
-    <section
-      className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-4 py-16 relative"
-    >
-      <div className="fixed inset-0 w-full h-full">
-        <Image
-          src="/assets/backgrounds/backgroundtiny.png"
-          alt="Contact background"
-          fill
-          priority
-          quality={75}
-          sizes="100vw"
-          className="object-cover brightness-75"
-        />
+    <section className="container-site pb-28 pt-36 md:pb-40 md:pt-48">
+      <div className="grid gap-16 lg:grid-cols-12">
+        <div className="lg:col-span-5">
+          <p className="kicker flex items-center gap-2">
+            <span className="rec-dot h-1.5 w-1.5" /> {t("contact2.kicker")}
+          </p>
+          <h1 className="display-xl mt-7">
+            <SplitReveal text={t("contact2.title")} mode="mount" delay={0.1} />
+          </h1>
+          <Reveal delay={0.3}>
+            <p className="lead mt-8 max-w-md">{t("contact.subtitle")}</p>
+          </Reveal>
+
+          <Reveal delay={0.4}>
+            <dl className="mt-14 space-y-8">
+              <div>
+                <dt className="kicker mb-2">{t("contact2.emailLabel")}</dt>
+                <dd>
+                  <a href="mailto:contact@zoomoutcrew.com" className="link-line font-display text-2xl font-medium tracking-tight md:text-3xl">
+                    contact@zoomoutcrew.com
+                  </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="kicker mb-2">Instagram</dt>
+                <dd>
+                  <a
+                    href="https://instagram.com/zoomout_crew"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link-line font-display text-2xl font-medium tracking-tight md:text-3xl"
+                  >
+                    @zoomout_crew
+                  </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="kicker mb-2">{t("contact2.locationLabel")}</dt>
+                <dd className="text-paper-dim">{t("services.location")}</dd>
+              </div>
+            </dl>
+          </Reveal>
+        </div>
+
+        <Reveal delay={0.2} className="lg:col-span-6 lg:col-start-7">
+          <form onSubmit={handleSubmit} className="rounded-3xl border border-line bg-ink-2 p-6 md:p-10">
+            <fieldset>
+              <legend className="kicker mb-5">{t("contact2.projectType")}</legend>
+              <div className="flex flex-wrap gap-2">
+                {[...SERVICES.map((service) => service.key), OTHER].map((key) => {
+                  const active = projectType === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setProjectType(active ? null : key)}
+                      aria-pressed={active}
+                      className={`rounded-full border px-4 py-2.5 text-sm transition-colors duration-300 ${
+                        active ? "border-paper bg-paper text-ink" : "border-line text-paper-dim hover:border-paper hover:text-paper"
+                      }`}
+                    >
+                      {typeLabel(key)}
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
+
+            <div className="mt-10 grid gap-6 md:grid-cols-2">
+              <label className="block">
+                <span className="kicker">{t("contact.name")}</span>
+                <input
+                  name="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder={t("contact.namePlaceholder")}
+                  autoComplete="name"
+                  required
+                  className={field}
+                />
+              </label>
+              <label className="block">
+                <span className="kicker">{t("contact.email")}</span>
+                <input
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder={t("contact.emailPlaceholder")}
+                  autoComplete="email"
+                  required
+                  className={field}
+                />
+              </label>
+            </div>
+
+            <label className="mt-6 block">
+              <span className="kicker">{t("contact.message")}</span>
+              <textarea
+                name="message"
+                rows={5}
+                value={formData.message}
+                onChange={handleChange}
+                placeholder={t("contact.messagePlaceholder")}
+                required
+                className={`${field} resize-none`}
+                data-lenis-prevent
+              />
+            </label>
+
+            <div className="mt-10 flex flex-wrap items-center gap-6">
+              <Magnetic>
+                <button type="submit" disabled={status === "sending"} className="btn-primary px-8 py-5 disabled:opacity-50">
+                  {status === "sending" ? t("contact.sending") : t("contact.send")} →
+                </button>
+              </Magnetic>
+              <AnimatePresence mode="wait">
+                {(status === "success" || status === "error") && (
+                  <motion.p
+                    key={status}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5, ease: EASE }}
+                    className={status === "success" ? "text-paper" : "text-rec"}
+                    role="status"
+                  >
+                    {status === "success" ? t("contact.success") : t("contact.error")}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </div>
+          </form>
+        </Reveal>
       </div>
-      <div className="relative z-10 max-w-2xl w-full text-center mb-8 md:mb-12 px-4">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
-          <Typewriter
-            key={language}
-            words={[t("contact.title")]}
-            loop={false}
-            cursor
-            cursorStyle="|"
-            typeSpeed={90}
-            deleteSpeed={0}
-            delaySpeed={999999}
-          />
-        </h1>
-        <p className="text-gray-300 text-base sm:text-lg md:text-xl">
-          {t("contact.subtitle")}
-        </p>
-      </div>
-
-      <form
-        onSubmit={handleSubmit}
-        className="relative z-10 w-full max-w-lg liquid-glass-strong p-5 sm:p-6 md:p-8 rounded-2xl liquid-glass-hover backdrop-blur-md mx-4"
-      >
-        <div className="mb-6">
-          <label htmlFor="name" className="block text-left text-gray-300 mb-2">{t("contact.name")}</label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full px-4 py-2 rounded-xl liquid-glass-input text-white placeholder-gray-400"
-            placeholder={t("contact.namePlaceholder")}
-            required
-          />
-        </div>
-
-        <div className="mb-6">
-          <label htmlFor="email" className="block text-left text-gray-300 mb-2">{t("contact.email")}</label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-4 py-2 rounded-xl liquid-glass-input text-white placeholder-gray-400"
-            placeholder={t("contact.emailPlaceholder")}
-            required
-          />
-        </div>
-
-        <div className="mb-6">
-          <label htmlFor="message" className="block text-left text-gray-300 mb-2">{t("contact.message")}</label>
-          <textarea
-            id="message"
-            name="message"
-            rows={4}
-            value={formData.message}
-            onChange={handleChange}
-            className="w-full px-4 py-2 rounded-md bg-white/20 text-white border border-white/30 focus:outline-none focus:border-white resize-none"
-            placeholder={t("contact.messagePlaceholder")}
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={status === "sending"}
-          className="w-full liquid-glass-button text-white py-3 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {status === "sending" ? t("contact.sending") : t("contact.send")}
-        </button>
-
-        {status === "success" && (
-          <p className="block text-green-400 font-semibold text-center mt-4 animate-fade-in">{t("contact.success")}</p>
-        )}
-        {status === "error" && (
-          <p className="block text-red-400 font-semibold text-center mt-4 animate-fade-in">{t("contact.error")}</p>
-        )}
-      </form>
-
-      <footer className="relative z-10 mt-12 text-gray-400 text-sm">
-        © {currentYear || "2024"} Zoomout_crew — {t("contact.footer")}
-      </footer>
     </section>
   );
 }

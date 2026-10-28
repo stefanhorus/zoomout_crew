@@ -1,141 +1,130 @@
 "use client";
 
+import { useLenis } from "lenis/react";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { SERVICES } from "@/lib/services";
+import { EASE } from "./motion/ease";
+import { Rich } from "./motion/rich";
+
+const MENU = [
+  { href: "/", labelKey: "nav.home" },
+  { href: "/portfolio", labelKey: "nav.portfolio" },
+  { href: "/services", labelKey: "nav.services" },
+  { href: "/about", labelKey: "nav.about" },
+  { href: "/shop", labelKey: "nav.shop" },
+  { href: "/contact", labelKey: "nav.contact" },
+];
+
+const SOCIALS = [
+  { name: "Instagram", href: "https://instagram.com/zoomout_crew" },
+  { name: "YouTube", href: "https://youtube.com/@zoomout_crew" },
+  { name: "LinkedIn", href: "https://www.linkedin.com/company/zoomout-crew" },
+];
 
 export default function Footer() {
   const { t } = useLanguage();
-  const currentYear = new Date().getFullYear();
+  const lenis = useLenis();
+  const year = new Date().getFullYear();
 
-  const navLinks = [
-    { href: "/", labelKey: "nav.home" },
-    { href: "/portfolio", labelKey: "nav.portfolio" },
-    { href: "/services", labelKey: "nav.services" },
-    { href: "/shop", labelKey: "nav.shop" },
-    { href: "/about", labelKey: "nav.about" },
-    { href: "/contact", labelKey: "nav.contact" },
-  ];
-
-  const socialLinks = [
-    {
-      name: "Instagram",
-      href: "https://instagram.com/zoomout_crew",
-      icon: "M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z",
-    },
-    {
-      name: "LinkedIn",
-      href: "https://www.linkedin.com/company/zoomout-crew",
-      icon: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z",
-    },
-    {
-      name: "YouTube",
-      href: "https://youtube.com/@zoomout_crew",
-      icon: "M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z",
-    },
-  ];
+  const backToTop = () => {
+    if (lenis) lenis.scrollTo(0, { duration: 1.6 });
+    else window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
-    <footer className="relative z-10 border-t border-white/20 bg-black/80 backdrop-blur-sm mt-auto footer-glass">
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          {/* Brand Section */}
-          <div>
-            <h3 className="text-2xl font-bold mb-4 text-white transition-all duration-300 hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" style={{ fontFamily: "var(--font-playfair)" }}>
-              Zoomout_crew
-            </h3>
-            <p className="text-gray-300 text-sm mb-6 leading-relaxed">
-              {t("footer.description")}
-            </p>
-            {/* Social Media Links */}
-            <div className="flex gap-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition-all duration-300 group relative"
-                  aria-label={social.name}
-                >
-                  <div className="relative p-2 rounded-lg bg-white/5 border border-white/10 group-hover:bg-white/10 group-hover:border-white/20 transition-all duration-300 group-hover:shadow-[0_0_12px_rgba(255,255,255,0.2)]">
-                    <svg className="w-5 h-5 transition-all duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d={social.icon} />
-                    </svg>
-                  </div>
-                </a>
-              ))}
+    <footer className="relative overflow-hidden border-t border-line bg-ink">
+      <div className="container-site pb-10 pt-20 md:pt-28">
+        <div className="grid gap-14 lg:grid-cols-12">
+          <div className="lg:col-span-6">
+            <p className="kicker">{t("cta.kicker")}</p>
+            <h2 className="display-lg mt-5">
+              <Rich text={t("footer.title")} />
+            </h2>
+            <a
+              href="mailto:contact@zoomoutcrew.com"
+              className="link-line mt-8 inline-block font-display text-2xl font-medium tracking-tight text-paper-dim transition-colors hover:text-paper md:text-4xl"
+            >
+              contact@zoomoutcrew.com
+            </a>
+          </div>
+
+          <nav className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:col-span-6 lg:pt-3" aria-label="Footer">
+            <div>
+              <p className="kicker mb-5">{t("footer.menu")}</p>
+              <ul className="space-y-2.5">
+                {MENU.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="link-line text-paper-dim transition-colors hover:text-paper">
+                      {t(link.labelKey)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-
-          {/* Navigation Links - 2 coloane */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4 text-white transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.2)]" style={{ fontFamily: "var(--font-playfair)" }}>
-              {t("footer.navigation")}
-            </h4>
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-gray-300 hover:text-white transition-all duration-300 text-sm relative group inline-block"
-                  >
-                    <span className="relative z-10">{t(link.labelKey)}</span>
-                    <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full shadow-[0_0_4px_rgba(255,255,255,0.5)]" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4 text-white transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.2)]" style={{ fontFamily: "var(--font-playfair)" }}>
-              {t("footer.contact")}
-            </h4>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <a
-                  href="mailto:contact@zoomoutcrew.com"
-                  className="text-gray-300 hover:text-white transition-all duration-300 relative group inline-block"
-                >
-                  <span className="relative z-10">contact@zoomoutcrew.com</span>
-                  <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full shadow-[0_0_4px_rgba(255,255,255,0.5)]" />
-                </a>
-              </li>
-              <li>
-                <Link href="/contact" className="text-gray-300 hover:text-white transition-all duration-300 relative group inline-block">
-                  <span className="relative z-10">{t("footer.getInTouch")}</span>
-                  <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full shadow-[0_0_4px_rgba(255,255,255,0.5)]" />
-                </Link>
-              </li>
-              <li>
-                <Link href="/services" className="text-gray-300 hover:text-white transition-all duration-300 relative group inline-block">
-                  <span className="relative z-10">{t("footer.viewServices")}</span>
-                  <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full shadow-[0_0_4px_rgba(255,255,255,0.5)]" />
-                </Link>
-              </li>
-            </ul>
-          </div>
+            <div>
+              <p className="kicker mb-5">{t("footer.services")}</p>
+              <ul className="space-y-2.5">
+                {SERVICES.map((service) => (
+                  <li key={service.key}>
+                    <Link href={`/services#${service.key}`} className="link-line text-paper-dim transition-colors hover:text-paper">
+                      {t(`marquee.${service.key}`)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="kicker mb-5">{t("footer.follow")}</p>
+              <ul className="space-y-2.5">
+                {SOCIALS.map((social) => (
+                  <li key={social.name}>
+                    <a href={social.href} target="_blank" rel="noopener noreferrer" className="link-line text-paper-dim transition-colors hover:text-paper">
+                      {social.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </nav>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-300 text-sm">
-            © {currentYear} Zoomout_crew. {t("footer.allRightsReserved")}
+        <div className="mt-20 flex flex-col gap-4 border-t border-line pt-6 text-sm text-mute md:flex-row md:items-center md:justify-between">
+          <p>
+            © {year} Zoomout_crew. {t("footer.allRightsReserved")}
           </p>
-          <div className="flex gap-6 text-sm">
-            <Link href="/about" className="text-gray-300 hover:text-white transition-all duration-300 relative group">
-              <span className="relative z-10">{t("footer.about")}</span>
-              <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full" />
-            </Link>
-            <Link href="/contact" className="text-gray-300 hover:text-white transition-all duration-300 relative group">
-              <span className="relative z-10">{t("footer.contactLink")}</span>
-              <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full" />
-            </Link>
-          </div>
+          <p className="flex items-center gap-2">
+            <span className="rec-dot h-1.5 w-1.5" /> {t("footer.based")}
+          </p>
+          <button type="button" onClick={backToTop} className="link-line self-start text-paper-dim hover:text-paper md:self-auto">
+            {t("common.backToTop")} ↑
+          </button>
         </div>
       </div>
+
+      {/* Numele pe toată lățimea, care urcă la scroll */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none select-none px-[1.5vw]"
+        initial={{ y: "35%" }}
+        whileInView={{ y: "0%" }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.4, ease: EASE }}
+      >
+        <svg viewBox="0 0 1000 150" className="block w-full" preserveAspectRatio="xMidYMax meet">
+          <text
+            x="0"
+            y="128"
+            textLength="1000"
+            lengthAdjust="spacingAndGlyphs"
+            className="fill-paper/[0.07]"
+            style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 168, letterSpacing: "-0.05em" }}
+          >
+            Zoomout_crew
+          </text>
+        </svg>
+      </motion.div>
     </footer>
   );
 }
-

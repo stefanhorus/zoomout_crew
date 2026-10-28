@@ -1,139 +1,111 @@
 "use client";
 
-import { useCart } from "@/contexts/CartContext";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { useCurrency } from "@/contexts/CurrencyContext";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useCart } from "@/contexts/CartContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { EASE } from "./motion/ease";
+import { useScrollLock } from "./motion/SmoothScroll";
 
 export default function Cart({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { cart, removeFromCart, getTotalPrice, clearCart } = useCart();
   const { t } = useLanguage();
   const { formatPrice } = useCurrency();
+  const router = useRouter();
+
+  useScrollLock(isOpen);
 
   const handleCheckout = () => {
     if (cart.length === 0) return;
-    // Redirecționează către pagina de checkout
-    window.location.href = "/checkout";
+    onClose();
+    router.push("/checkout");
   };
 
-  if (!isOpen) return null;
-
   return (
-    <>
-      {/* Overlay */}
-      <div
-        className="fixed inset-0 bg-black/50 z-50"
-        onClick={onClose}
-      />
-
-      {/* Cart Sidebar */}
-      <div className="fixed right-0 top-0 h-full w-full sm:w-96 bg-gray-900 z-50 shadow-2xl flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-700">
-          <h2 className="text-xl md:text-2xl font-bold" style={{ fontFamily: "var(--font-playfair)" }}>
-            {t("cart.title")}
-          </h2>
-          <button
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            key="cart-overlay"
+            className="fixed inset-0 z-[60] bg-ink/70 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
-            aria-label={t("cart.close")}
+          />
+          <motion.aside
+            key="cart-panel"
+            className="fixed right-0 top-0 z-[61] flex h-full w-full flex-col border-l border-line bg-ink-2 sm:w-[420px]"
+            initial={{ x: "100%" }}
+            animate={{ x: "0%" }}
+            exit={{ x: "100%" }}
+            transition={{ duration: 0.7, ease: EASE }}
+            aria-label={t("cart.title")}
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Cart Items */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-6">
-          {cart.length === 0 ? (
-            <div className="text-center py-12">
-              <svg
-                className="w-24 h-24 mx-auto text-gray-600 mb-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+            <div className="flex items-center justify-between border-b border-line px-6 py-5">
+              <h2 className="text-2xl font-semibold">{t("cart.title")}</h2>
+              <button
+                onClick={onClose}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-line transition-colors hover:border-paper"
+                aria-label={t("cart.close")}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
-              <p className="text-gray-400 text-lg">{t("cart.empty")}</p>
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
-          ) : (
-            <div className="space-y-4">
-              {cart.map((item) => (
-                <div
-                  key={item.product.id}
-                  className="flex gap-4 bg-gray-800 rounded-lg p-4"
-                >
-                  {/* Product Image */}
-                  <div className="relative w-20 h-20 flex-shrink-0 rounded overflow-hidden bg-black/30">
-                    <Image
-                      src={item.product.image}
-                      alt={item.product.name}
-                      fill
-                      sizes="80px"
-                      className="object-cover"
-                    />
-                  </div>
 
-                  {/* Product Info */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-white mb-1 truncate" style={{ fontFamily: "var(--font-playfair)" }}>
-                      {item.product.name}
-                    </h3>
-                    <p className="text-gray-400 text-sm mb-2">
-                      {formatPrice(item.product.price)}
-                    </p>
-
-                  </div>
-
-                  {/* Remove Button */}
-                  <button
-                    onClick={() => removeFromCart(item.product.id)}
-                    className="text-red-400 hover:text-red-300 transition-colors self-start"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
+            <div className="flex-1 overflow-y-auto px-6 py-6" data-lenis-prevent>
+              {cart.length === 0 ? (
+                <div className="flex h-full flex-col items-center justify-center text-center">
+                  <p className="text-lg text-mute">{t("cart.empty")}</p>
                 </div>
-              ))}
+              ) : (
+                <ul className="space-y-4">
+                  {cart.map((item) => (
+                    <li key={item.product.id} className="flex gap-4 rounded-2xl border border-line p-3">
+                      <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-ink-3">
+                        <Image src={item.product.image} alt={item.product.name} fill sizes="80px" className="object-cover" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="truncate text-base font-semibold">{item.product.name}</h3>
+                        <p className="mt-1 text-sm text-paper-dim">{formatPrice(item.product.price)}</p>
+                      </div>
+                      <button
+                        onClick={() => removeFromCart(item.product.id)}
+                        className="self-start p-1 text-mute transition-colors hover:text-rec"
+                        aria-label={`Remove ${item.product.name}`}
+                      >
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* Footer with Total and Checkout */}
-        {cart.length > 0 && (
-          <div className="border-t border-gray-700 p-4 md:p-6 space-y-4">
-            <div className="flex justify-between items-center text-lg">
-              <span className="text-gray-400">{t("cart.total")}</span>
-              <span className="text-2xl font-bold text-white">
-                {formatPrice(getTotalPrice())}
-              </span>
-            </div>
-            <button
-              onClick={handleCheckout}
-              className="w-full bg-white text-black py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
-              style={{ fontFamily: "var(--font-roboto)" }}
-            >
-              {t("cart.checkout")}
-            </button>
-            <button
-              onClick={clearCart}
-              className="w-full bg-gray-700 text-white py-2 rounded-lg font-semibold hover:bg-gray-600 transition-colors text-sm"
-              style={{ fontFamily: "var(--font-roboto)" }}
-            >
-              {t("cart.clear")}
-            </button>
-          </div>
-        )}
-      </div>
-    </>
+            {cart.length > 0 && (
+              <div className="space-y-3 border-t border-line px-6 py-6">
+                <div className="flex items-baseline justify-between">
+                  <span className="text-mute">{t("cart.total")}</span>
+                  <span className="font-display text-3xl font-semibold">{formatPrice(getTotalPrice())}</span>
+                </div>
+                <button onClick={handleCheckout} className="btn-primary w-full">
+                  {t("cart.checkout")}
+                </button>
+                <button onClick={clearCart} className="btn-ghost btn-sm w-full">
+                  {t("cart.clear")}
+                </button>
+              </div>
+            )}
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
   );
 }
-

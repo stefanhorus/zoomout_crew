@@ -1,618 +1,86 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
-import { Typewriter } from "react-simple-typewriter";
-import Image from "next/image";
+import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
+import { EASE } from "@/components/motion/ease";
+import { Reveal } from "@/components/motion/Reveal";
+import { CallToAction } from "@/components/site/CallToAction";
+import { PageHeader } from "@/components/site/PageHeader";
+import { ProjectCard } from "@/components/site/ProjectCard";
+import { ProjectModal } from "@/components/site/ProjectModal";
 import { useLanguage } from "@/contexts/LanguageContext";
-import ImageSkeleton from "@/components/ImageSkeleton";
+import { PROJECTS, type Project, type ProjectCategory } from "@/lib/projects";
 
-// Tipuri de proiecte pentru filtrare
-type ProjectCategory = "all" | "real-estate" | "events" | "commercial";
+type Filter = "all" | ProjectCategory;
 
-interface Project {
-  id: number;
-  title: string;
-  category: ProjectCategory | ProjectCategory[];
-  thumbnail: string;
-  videoUrl?: string;
-  muxVideos?: Array<{
-    playbackId: string;
-    title: string;
-    assetId?: string;
-  }>;
-  images?: string[];
-  description: string;
-}
-
-// Thumbnail-uri care sunt logo-uri: se afișează întregi (object-contain), nu decupate
-const LOGO_THUMBNAILS = [
-  "multiverse",
-  "casanumaa",
-  "utopic",
-  "aerlounge",
-  "bigbelly",
-  "cabanuta",
-  "rotaract",
-  "panoramic360",
-  "wildwest",
-  "lepas",
-  "bacademia",
+const FILTERS: Array<{ value: Filter; labelKey: string }> = [
+  { value: "all", labelKey: "portfolio.allProjects" },
+  { value: "commercial", labelKey: "portfolio.commercial" },
+  { value: "events", labelKey: "portfolio.events" },
+  { value: "real-estate", labelKey: "portfolio.realEstate" },
 ];
 
-const isLogoThumbnail = (thumbnail: string) =>
-  thumbnail.includes("sardinia") || LOGO_THUMBNAILS.some((name) => thumbnail.includes(name));
-
 export default function Portfolio() {
-  const { t, language } = useLanguage();
-  const [selectedCategory, setSelectedCategory] = useState<ProjectCategory>("all");
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
-  const [selectedVideoIndex, setSelectedVideoIndex] = useState<number>(0);
-  const [videoLoaded, setVideoLoaded] = useState(false);
+  const { t } = useLanguage();
+  const [filter, setFilter] = useState<Filter>("all");
+  const [selected, setSelected] = useState<Project | null>(null);
 
-  // Portfolio Projects with translations - memoized to only recreate when language changes
-  const projects: Project[] = useMemo(() => [
-    {
-      id: 10,
-      title: t("portfolio.project10.title"), // wild west tour
-      category: "events",
-      thumbnail: "/assets/brands/wildwest.webp",
-      description: t("portfolio.project10.description"),
-    },
-    {
-      id: 11,
-      title: t("portfolio.project11.title"), // lepas
-      category: ["events", "commercial"],
-      thumbnail: "/assets/brands/lepas.png",
-      description: t("portfolio.project11.description"),
-    },
-    {
-      id: 12,
-      title: t("portfolio.project12.title"), // bacademia
-      category: "commercial",
-      thumbnail: "/assets/brands/bacademia.png",
-      description: t("portfolio.project12.description"),
-    },
-    {
-      id: 1,
-      title: t("portfolio.project5.title"), // numaa
-      category: "commercial",
-      thumbnail: "/assets/brands/casanumaa.png",
-      muxVideos: [
-        {
-          playbackId: "BaZoibIrmiaFjm1oPbGIWlhQAZrZHCV9NcIMW4HQN014",
-          title: "",
-          assetId: "UWLY1HppsMNTiG01pLNf02EcG00J01n33vjrJnkHryDkKoM",
-        },
-        {
-          playbackId: "mUlM3T9v62Udt6bf02520200cihk49QMbiSc7zYCQDvldk",
-          title: "",
-          assetId: "pwcjT01l3vry006Qgy00sjGW01crDlMbDU0101YKrSNRMuGlE",
-        },
-      ],
-      description: t("portfolio.project5.description"),
-    },
-    {
-      id: 2,
-      title: t("portfolio.project1.title"), // big belly
-      category: ["events", "commercial"],
-      thumbnail: "/assets/brands/bigbelly.png",
-      muxVideos: [
-        {
-          playbackId: "DbdlbHpdu541nz100c9oOc700DsUnduPJ6EkEmNIFCzOo",
-          title: "",
-          assetId: "5802zN02zVKzhO3n7ZMBmNmHEbyOOBnjkv23szggUGE6Q",
-        },
-        {
-          playbackId: "p1LpNG3CjEe01QQhHDOPG3j5L8kywtmmLSKdJaU51Tjg",
-          title: "",
-          assetId: "CGUXZUf8ZQhCvZ24mvF6UstEj2RzCCXz9agK1I00Qxnc",
-        },
-      ],
-      description: t("portfolio.project1.description"),
-    },
-    {
-      id: 3,
-      title: t("portfolio.project9.title"), // panoramic360
-      category: "commercial",
-      thumbnail: "/assets/brands/panoramic360.jpg",
-      muxVideos: [
-        {
-          playbackId: "iQW9j3rKkGubagCrFEPgfWxQtpnzW5PFdTWw00SpAliA",
-          title: "",
-          assetId: "GArDNR7AR9CDiSdE02pL7QQxIXFt8YBv5wjRu9ZHl5U8",
-        },
-      ],
-      description: t("portfolio.project9.description"),
-    },
-    {
-      id: 4,
-      title: t("portfolio.project2.title"), // Multiverse
-      category: "events",
-      thumbnail: "/assets/brands/multiverse.png",
-      muxVideos: [
-        {
-          playbackId: "Xi5sUxm00g8N5UJGPn7D9Mut4JsMfUFULA01Qn02woUOwo",
-          title: "",
-          assetId: "01Dl02H4Nql5FM5vD3bxu1awLfSXOqOvg7DKo1LHF00KYk",
-        },
-      ],
-      description: t("portfolio.project2.description"),
-    },
-    {
-      id: 5,
-      title: t("portfolio.project3.title"), // casa
-      category: "real-estate",
-      thumbnail: "/assets/brands/cabanuta.png",
-      muxVideos: [
-        {
-          playbackId: "ILANTrld964hQ4OanXs6lq02kqN01q745BRJGgfqPy7Kk",
-          title: "",
-          assetId: "bhUSdN7wq8dC4E46Fd7oTbjdhiFpGWKYuJiI9NhS1TQ",
-        },
-      ],
-      description: t("portfolio.project3.description"),
-    },
-    {
-      id: 6,
-      title: t("portfolio.project6.title"), // utopic
-      category: "events",
-      thumbnail: "/assets/brands/utopic.png",
-      muxVideos: [
-        {
-          playbackId: "CY6gQczar8Ompqq02jXDHskFOwuuB1W8yng5ZOtXTq800",
-          title: "",
-          assetId: "tSi00hlAkFljNSy00QDvqPyhdCBPuoJi2fSZNe3n02iD3g",
-        },
-      ],
-      description: t("portfolio.project6.description"),
-    },
-    {
-      id: 7,
-      title: t("portfolio.project8.title"), // rotaract
-      category: "events",
-      thumbnail: "/assets/brands/rotaract.png",
-      images: [
-        "/assets/photos/ratuste1.png",
-        "/assets/photos/ratuste2.png",
-        "/assets/photos/ratuste3.png",
-      ],
-      description: t("portfolio.project8.description"),
-    },
-    {
-      id: 8,
-      title: t("portfolio.project7.title"), // sunhouse
-      category: "real-estate",
-      thumbnail: "/assets/photos/sardinia1.jpeg",
-      images: ["/assets/photos/sardinia1.jpeg", "/assets/photos/sardinia2.jpeg"],
-      description: t("portfolio.project7.description"),
-    },
-    {
-      id: 9,
-      title: t("portfolio.project4.title"), // aer lounge
-      category: "commercial",
-      thumbnail: "/assets/brands/aerlounge.png",
-      muxVideos: [
-        {
-          playbackId: "c5jDLrljSoSJid7Du9P9XQb37yzRRrIKqFHYzqpKG8c",
-          title: "",
-          assetId: "cTKE4Xu5idbGw3DAqK02UivmpqNNhkwsMZ52C5ghzLRY",
-        },
-      ],
-      description: t("portfolio.project4.description"),
-    },
-  ], [t, language]);
-
-  const prevLanguageRef = useRef(language);
-  
-  // Reset selected project when language changes to update translations
-  useEffect(() => {
-    if (prevLanguageRef.current !== language && selectedProject) {
-      const updatedProject = projects.find(p => p.id === selectedProject.id);
-      if (updatedProject) {
-        setSelectedProject(updatedProject);
-        setSelectedVideoIndex(0);
-        setVideoLoaded(false);
-      }
-    }
-    prevLanguageRef.current = language;
-  }, [language, projects, selectedProject]);
-
-  const categories: { value: ProjectCategory; label: string; labelKey: string }[] = [
-    { value: "all", label: "All Projects", labelKey: "portfolio.allProjects" },
-    { value: "commercial", label: "Commercial", labelKey: "portfolio.commercial" },
-    { value: "events", label: "Events", labelKey: "portfolio.events" },
-    { value: "real-estate", label: "Real Estate", labelKey: "portfolio.realEstate" },
-  ];
-
-  const filteredProjects =
-    selectedCategory === "all"
-      ? projects
-      : projects.filter((project) => 
-          Array.isArray(project.category) 
-            ? project.category.includes(selectedCategory)
-            : project.category === selectedCategory
-        );
-
-  // Keyboard navigation pentru video-uri și imagini
-  useEffect(() => {
-    if (!selectedProject) return;
-    
-    const hasMultipleMedia = 
-      (selectedProject.muxVideos && selectedProject.muxVideos.length > 1) ||
-      (selectedProject.images && selectedProject.images.length > 1);
-    
-    if (!hasMultipleMedia) return;
-
-    const handleKeyPress = (e: KeyboardEvent) => {
-      const mediaLength = selectedProject.muxVideos?.length || selectedProject.images?.length || 0;
-      
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        setSelectedVideoIndex((prev) => 
-          prev === 0 ? mediaLength - 1 : prev - 1
-        );
-        if (selectedProject.muxVideos) {
-          setVideoLoaded(false);
-        }
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        setSelectedVideoIndex((prev) => 
-          prev === mediaLength - 1 ? 0 : prev + 1
-        );
-        if (selectedProject.muxVideos) {
-          setVideoLoaded(false);
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [selectedProject, selectedVideoIndex]);
+  const countFor = (value: Filter) => (value === "all" ? PROJECTS.length : PROJECTS.filter((p) => p.categories.includes(value)).length);
+  const visible = filter === "all" ? PROJECTS : PROJECTS.filter((project) => project.categories.includes(filter));
 
   return (
-    <main className="min-h-screen text-white pt-24 pb-16 relative">
-      {/* Background Image */}
-      <div className="fixed inset-0 w-full h-full z-0">
-        <Image
-          src="/assets/backgrounds/background3.jpg"
-          alt="Portfolio background"
-          fill
-          priority
-          quality={75}
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
-      </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
-            <Typewriter
-              key={language}
-              words={[t("portfolio.title")]}
-              loop={false}
-              cursor
-              cursorStyle="|"
-              typeSpeed={90}
-              deleteSpeed={0}
-              delaySpeed={999999}
-            />
-          </h1>
-          <p className="text-gray-300 text-base sm:text-lg md:text-xl">
-            {t("portfolio.subtitle")}
-          </p>
-        </div>
-
-        {/* Filter Buttons */}
-        <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 md:mb-12 px-2">
-          {categories.map((category) => (
-            <button
-              key={category.value}
-              onClick={() => setSelectedCategory(category.value)}
-              className={`px-4 py-1.5 md:px-6 md:py-2 rounded-xl font-semibold transition-all duration-300 text-sm md:text-base ${
-                selectedCategory === category.value
-                  ? "liquid-glass-button text-white scale-105"
-                  : "liquid-glass liquid-glass-hover text-white"
-              }`}
-              style={{ fontFamily: "var(--font-roboto)" }}
-            >
-              {t(category.labelKey)}
-            </button>
-          ))}
-        </div>
-
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {filteredProjects.map((project) => (
-            <div
-              key={project.id}
-              className="group relative overflow-hidden rounded-2xl cursor-pointer liquid-glass liquid-glass-hover backdrop-blur-md"
-              onClick={() => setSelectedProject(project)}
-            >
-              {/* Thumbnail */}
-              <div className={`aspect-video relative overflow-hidden ${
-                isLogoThumbnail(project.thumbnail)
-                  ? 'bg-gradient-to-br from-black/30 via-black/20 to-black/30 backdrop-blur-sm' 
-                  : 'bg-gray-900'
-              }`}>
-                {!loadedImages.has(project.id) && (
-                  <ImageSkeleton className="absolute inset-0" aspectRatio="video" />
-                )}
-                <Image
-                  src={project.thumbnail}
-                  alt={project.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className={`transition-all duration-500 group-hover:scale-110 ${
-                    loadedImages.has(project.id) ? 'opacity-100' : 'opacity-0'
-                  } ${
-                    isLogoThumbnail(project.thumbnail)
-                      ? `object-contain drop-shadow-2xl filter brightness-110 group-hover:brightness-125 ${
-                          project.thumbnail.includes('bigbelly')
-                            ? 'p-3'
-                            :                           project.thumbnail.includes('casanumaa')
-                            ? 'p-1'
-                            : project.thumbnail.includes('utopic')
-                            ? 'p-4'
-                            : project.thumbnail.includes('aerlounge')
-                            ? 'p-10'
-                            : 'p-6'
-                        }`
-                      : 'object-cover'
+    <>
+      <PageHeader kicker={t("portfolio.title")} title={t("portfolio2.title")} intro={t("portfolio.subtitle")}>
+        <Reveal delay={0.5} className="mt-12">
+          <div className="flex flex-wrap gap-2" role="group" aria-label={t("portfolio.title")}>
+            {FILTERS.map((item) => {
+              const active = filter === item.value;
+              return (
+                <button
+                  key={item.value}
+                  type="button"
+                  onClick={() => setFilter(item.value)}
+                  aria-pressed={active}
+                  className={`rounded-full border px-5 py-2.5 text-sm font-medium transition-colors duration-300 ${
+                    active ? "border-paper bg-paper text-ink" : "border-line text-paper hover:border-paper"
                   }`}
-                  onLoad={() => setLoadedImages(prev => new Set(prev).add(project.id))}
-                />
-                <div className={`absolute inset-0 transition-all duration-300 ${
-                  isLogoThumbnail(project.thumbnail)
-                    ? 'bg-gradient-to-t from-black/20 via-transparent to-black/20 group-hover:from-black/10 group-hover:via-transparent group-hover:to-black/10'
-                    : 'bg-gradient-to-t from-black/80 via-black/40 to-black/20 group-hover:from-black/60 group-hover:via-black/30 group-hover:to-black/10'
-                }`} />
-                
-              </div>
-
-              {/* Project Info */}
-              <div className="p-5 relative">
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-white transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
-                  {project.title}
-                </h3>
-                <p className="text-gray-200 text-sm group-hover:text-gray-100 transition-colors line-clamp-3">
-                  {project.description.split('. ').slice(0, 2).join('. ') + (project.description.split('. ').length > 2 ? '...' : '')}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredProjects.length === 0 && (
-          <div className="text-center py-16">
-            <p className="text-xl text-gray-400">{t("portfolio.noProjects")}</p>
+                >
+                  {t(item.labelKey)}
+                  <span className={`ml-2 tabular-nums ${active ? "text-ink/50" : "text-mute"}`}>{countFor(item.value)}</span>
+                </button>
+              );
+            })}
           </div>
-        )}
-      </div>
+        </Reveal>
+      </PageHeader>
 
-      {/* Modal pentru proiect selectat */}
-      {selectedProject && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 md:p-6 overflow-y-auto animate-fade-in"
-          onClick={() => {
-            setSelectedProject(null);
-            setSelectedVideoIndex(0);
-            setVideoLoaded(false);
-          }}
-        >
-          <div
-            className="max-w-6xl w-full liquid-glass-strong rounded-2xl overflow-hidden my-auto flex flex-col md:flex-row relative max-h-[90vh] md:max-h-[90vh]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button - Top Right Corner of Modal */}
-            <button
-              onClick={() => {
-                setSelectedProject(null);
-                setSelectedVideoIndex(0);
-                setVideoLoaded(false);
-              }}
-              className="absolute top-3 right-3 md:top-4 md:right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-30"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+      <section className="container-site pb-28 md:pb-40">
+        <motion.div layout className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 xl:grid-cols-4">
+          <AnimatePresence mode="popLayout">
+            {visible.map((project, index) => (
+              <motion.div
+                key={project.id}
+                layout
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.94 }}
+                transition={{ duration: 0.8, ease: EASE, delay: Math.min(index, 8) * 0.04 }}
+              >
+                <ProjectCard
+                  project={project}
+                  index={index + 1}
+                  onOpen={setSelected}
+                  className="aspect-[9/16] w-full"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      </section>
 
-            {/* Video Section - Left Side */}
-            <div className={`relative flex-shrink-0 min-w-0 ${
-              selectedProject.muxVideos && selectedProject.muxVideos.length > 0
-                ? 'h-[45vh] md:aspect-auto md:h-[85vh] md:max-h-[85vh] md:flex-1' // Reduced height on mobile, full height on desktop
-                : selectedProject.images && selectedProject.images.length > 0
-                ? 'h-[60vh] md:aspect-auto md:h-[85vh] md:max-h-[85vh] md:flex-1' // Taller height for image projects on mobile
-                : 'aspect-video md:aspect-auto md:h-[85vh] md:max-h-[85vh] md:flex-1'
-            }`}>
-              {selectedProject.muxVideos && selectedProject.muxVideos.length > 0 ? (
-                <>
-                  {/* Video Navigation Arrows - doar dacă sunt mai multe video-uri */}
-                  {selectedProject.muxVideos.length > 1 && (
-                    <>
-                      {/* Left Arrow */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedVideoIndex((prev) => 
-                            prev === 0 ? selectedProject.muxVideos!.length - 1 : prev - 1
-                          );
-                          setVideoLoaded(false);
-                        }}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all hover:scale-110"
-                        aria-label="Previous video"
-                      >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                      </button>
-                      
-                      {/* Right Arrow */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedVideoIndex((prev) => 
-                            prev === selectedProject.muxVideos!.length - 1 ? 0 : prev + 1
-                          );
-                          setVideoLoaded(false);
-                        }}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all hover:scale-110"
-                        aria-label="Next video"
-                      >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                      
-                      {/* Video Indicator - bottom center */}
-                      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-10 flex items-center justify-center gap-2 pointer-events-none">
-                        {selectedProject.muxVideos.map((video, index) => (
-                          <div
-                            key={index}
-                            className={`h-2 rounded-full transition-all ${
-                              selectedVideoIndex === index
-                                ? 'w-8 bg-white'
-                                : 'w-2 bg-white/50'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </>
-                  )}
-                  
-                  {/* Mux Video Player */}
-                  <iframe
-                    src={`https://player.mux.com/${selectedProject.muxVideos[selectedVideoIndex].playbackId}?autoplay=true&loop=false&controls=true&muted=false`}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      border: 'none',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                    }}
-                    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-                    allowFullScreen={true}
-                    className={`transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
-                    onLoad={() => {
-                      setVideoLoaded(true);
-                      setTimeout(() => {
-                        const iframe = document.querySelector(`iframe[src*="${selectedProject.muxVideos![selectedVideoIndex].playbackId}"]`) as HTMLIFrameElement;
-                        if (iframe && iframe.contentWindow) {
-                          try {
-                            iframe.contentWindow.postMessage({ command: 'play' }, '*');
-                          } catch (e) {
-                            console.log('Mux player autoplay');
-                          }
-                        }
-                      }, 500);
-                    }}
-                    onError={() => {
-                      console.error('Mux video error');
-                      setVideoLoaded(true);
-                    }}
-                  />
-                </>
-              ) : selectedProject.videoUrl ? (
-                <video
-                  src={selectedProject.videoUrl}
-                  controls
-                  autoPlay
-                  className="w-full h-full object-cover"
-                />
-              ) : selectedProject.images && selectedProject.images.length > 0 ? (
-                <>
-                  {/* Image Navigation Arrows - doar dacă sunt mai multe imagini */}
-                  {selectedProject.images.length > 1 && (
-                    <>
-                      {/* Left Arrow */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedVideoIndex((prev) => 
-                            prev === 0 ? selectedProject.images!.length - 1 : prev - 1
-                          );
-                        }}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all hover:scale-110"
-                        aria-label="Previous image"
-                      >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                      </button>
-                      
-                      {/* Right Arrow */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedVideoIndex((prev) => 
-                            prev === selectedProject.images!.length - 1 ? 0 : prev + 1
-                          );
-                        }}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all hover:scale-110"
-                        aria-label="Next image"
-                      >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                      
-                      {/* Image Indicator - bottom center */}
-                      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-10 flex items-center justify-center gap-2 pointer-events-none">
-                        {selectedProject.images.map((img, index) => (
-                          <div
-                            key={index}
-                            className={`h-2 rounded-full transition-all ${
-                              selectedVideoIndex === index
-                                ? 'w-8 bg-white'
-                                : 'w-2 bg-white/50'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </>
-                  )}
-                  
-                  {/* Image Display */}
-                  <Image
-                    src={selectedProject.images[selectedVideoIndex]}
-                    alt={selectedProject.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 80vw"
-                    className="object-cover"
-                  />
-                </>
-              ) : (
-                <Image
-                  src={selectedProject.thumbnail}
-                  alt={selectedProject.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 80vw"
-                  className={isLogoThumbnail(selectedProject.thumbnail) ? "object-contain p-10 md:p-16" : "object-cover"}
-                />
-              )}
-            </div>
-            
-            {/* Description Section - Right Side */}
-            <div className="flex-1 p-6 md:p-8 lg:p-10 flex flex-col justify-start md:justify-center bg-black/20 md:bg-transparent overflow-y-auto min-h-0">
-              <h2 className="text-2xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-4 leading-tight" style={{ fontFamily: "var(--font-playfair)" }}>
-                {selectedProject.title}
-                {selectedProject.muxVideos && selectedProject.muxVideos.length > 1 && selectedProject.muxVideos[selectedVideoIndex].title && (
-                  <span className="text-base md:text-base lg:text-lg text-gray-400 ml-2 block md:inline mt-2 md:mt-0">
-                    - {selectedProject.muxVideos[selectedVideoIndex].title}
-                  </span>
-                )}
-              </h2>
-              <p className="text-gray-200 text-base md:text-base lg:text-lg leading-relaxed">{selectedProject.description}</p>
-            </div>
-          </div>
-        </div>
-      )}
-    </main>
+      <CallToAction />
+      <ProjectModal project={selected} onClose={() => setSelected(null)} />
+    </>
   );
 }
-

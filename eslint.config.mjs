@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Fișiere AppleDouble create de macOS pe discuri exFAT
+    "**/._*",
   ]),
 ]);
 

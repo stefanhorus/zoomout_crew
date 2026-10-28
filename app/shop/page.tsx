@@ -1,53 +1,58 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Typewriter } from "react-simple-typewriter";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { EASE } from "@/components/motion/ease";
+import { Reveal } from "@/components/motion/Reveal";
+import { useScrollLock } from "@/components/motion/SmoothScroll";
+import { PageHeader } from "@/components/site/PageHeader";
 import { useCart } from "@/contexts/CartContext";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
-import ImageSkeleton from "@/components/ImageSkeleton";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { products, type Product, type ProductCategory } from "@/lib/products";
+
+const CATEGORIES: Array<{ value: ProductCategory; labelKey: string }> = [
+  { value: "all", labelKey: "shop.allProducts" },
+  { value: "luts", labelKey: "shop.luts" },
+  { value: "lightroom-presets", labelKey: "shop.lightroomPresets" },
+  { value: "sound-design", labelKey: "shop.soundDesign" },
+  { value: "transitions", labelKey: "shop.transitions" },
+  { value: "bundle", labelKey: "shop.bundle" },
+  { value: "other", labelKey: "shop.other" },
+];
+
+// Cât economisești la pachete față de produsele luate separat (aceleași valori ca pe site-ul actual)
+const BUNDLE_SAVINGS: Record<number, number> = { 11: 1000, 12: 450 };
 
 export default function Shop() {
   const { t, language } = useLanguage();
   const { formatPrice } = useCurrency();
+  const { addToCart } = useCart();
   const [promoCopied, setPromoCopied] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory>("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterStatus, setNewsletterStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
-  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
-  const { addToCart } = useCart();
 
-  // Blochează scroll-ul pe pagină când modalul produsului este deschis
+  useScrollLock(selectedProduct !== null);
+
+  // Popup-ul de newsletter apare o singură dată, după o secundă
   useEffect(() => {
-    if (selectedProduct) {
-      // Salvează starea curentă și blochează scroll-ul
-      document.body.style.overflow = "hidden";
-    } else {
-      // Restaurează scroll-ul
-      document.body.style.overflow = "";
-    }
+    if (localStorage.getItem("newsletter_popup_seen")) return;
+    const timer = setTimeout(() => setShowNewsletterPopup(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
-    // Cleanup: restaurează scroll-ul când componenta se demontează
-    return () => {
-      document.body.style.overflow = "";
-    };
+  useEffect(() => {
+    if (!selectedProduct) return;
+    const onKey = (event: KeyboardEvent) => event.key === "Escape" && setSelectedProduct(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [selectedProduct]);
 
-  // Verifică dacă popup-ul a fost deja afișat
-  useEffect(() => {
-    const hasSeenPopup = localStorage.getItem("newsletter_popup_seen");
-    if (!hasSeenPopup) {
-      // Afișează popup după 1 secundă
-      const timer = setTimeout(() => {
-        setShowNewsletterPopup(true);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, []);
+  const description = (product: Product) => (language === "ro" && product.descriptionRo ? product.descriptionRo : product.description);
 
   const handleNewsletterClose = () => {
     setShowNewsletterPopup(false);
@@ -60,541 +65,307 @@ export default function Shop() {
       setPromoCopied(true);
       window.setTimeout(() => setPromoCopied(false), 1400);
     } catch {
-      // ignore
+      // clipboard indisponibil - ignorăm
     }
   };
 
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Curăță și validează email-ul
+  const handleNewsletterSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     const cleanedEmail = newsletterEmail.trim().toLowerCase();
-
     if (!cleanedEmail || !cleanedEmail.includes("@") || !cleanedEmail.includes(".")) {
       setNewsletterStatus("error");
       return;
     }
-
     setNewsletterStatus("sending");
-    console.log("📧 Submitting newsletter subscription for:", cleanedEmail);
-
     try {
       const response = await fetch("/api/newsletter", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ email: cleanedEmail }),
       });
-
-      // Verifică dacă răspunsul este JSON
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
-        const text = await response.text();
-        console.error("❌ Non-JSON response:", text);
         setNewsletterStatus("error");
         return;
       }
-
       const data = await response.json();
-      console.log("📬 Newsletter API response:", data);
-
       if (response.ok && data.success) {
-        console.log("✅ Newsletter subscription successful");
         setNewsletterStatus("success");
-        setTimeout(() => {
-          handleNewsletterClose();
-        }, 2000);
+        setTimeout(handleNewsletterClose, 2000);
       } else {
-        console.error("❌ Newsletter subscription error:", data.error || data);
-        console.error("Response status:", response.status);
         setNewsletterStatus("error");
       }
-    } catch (error: any) {
-      console.error("❌ Newsletter subscription network error:", error);
-      console.error("Error details:", error.message, error.stack);
+    } catch {
       setNewsletterStatus("error");
     }
   };
 
-  const categories = [
-    { value: "all", label: "All Products", labelKey: "shop.allProducts" },
-    { value: "luts", label: "LUTs", labelKey: "shop.luts" },
-    { value: "lightroom-presets", label: "Lightroom Presets", labelKey: "shop.lightroomPresets" },
-    { value: "sound-design", label: "Sound Design", labelKey: "shop.soundDesign" },
-    { value: "transitions", label: "Transitions", labelKey: "shop.transitions" },
-    { value: "bundle", label: "Bundles", labelKey: "shop.bundle" },
-    { value: "other", label: "Other", labelKey: "shop.other" },
-  ];
-
-  const filteredProducts =
-    selectedCategory === "all"
-      ? products
-      : products.filter((product) => product.category === selectedCategory);
-
+  // Cardul produsului "zboară" spre iconița coșului din header
   const animateToCart = (buttonElement: HTMLElement) => {
-    // Găsește card-ul de produs (părintele care conține butonul)
-    const productCard = buttonElement.closest('.group.relative') as HTMLElement;
+    const productCard = buttonElement.closest<HTMLElement>("[data-product-card]");
     if (!productCard) return;
-
-    // Găsește poziția card-ului (getBoundingClientRect este relativ la viewport, perfect pentru fixed)
     const cardRect = productCard.getBoundingClientRect();
-    const startX = cardRect.left;
-    const startY = cardRect.top;
-    const cardWidth = cardRect.width;
-    const cardHeight = cardRect.height;
-
-    // Găsește iconița coșului din header (găsește butonul vizibil)
-    const allCartButtons = document.querySelectorAll('button[aria-label="Open shopping cart"]') as NodeListOf<HTMLElement>;
-    let cartIcon: HTMLElement | null = null;
-
-    // Găsește butonul care este vizibil în viewport
-    for (const btn of Array.from(allCartButtons)) {
-      const rect = btn.getBoundingClientRect();
-      const isVisible = rect.width > 0 && rect.height > 0 &&
-        rect.top >= 0 && rect.left >= 0 &&
-        rect.bottom <= window.innerHeight &&
-        rect.right <= window.innerWidth;
-
-      // Verifică și dacă elementul nu este ascuns prin CSS
-      const style = window.getComputedStyle(btn);
-      const isNotHidden = style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
-
-      if (isVisible && isNotHidden) {
-        cartIcon = btn;
-        break;
-      }
-    }
-
-    // Dacă nu găsește unul vizibil, folosește primul disponibil
-    if (!cartIcon && allCartButtons.length > 0) {
-      cartIcon = allCartButtons[0];
-    }
-
+    const cartButtons = Array.from(document.querySelectorAll<HTMLElement>('button[aria-label="Open shopping cart"]'));
+    const cartIcon =
+      cartButtons.find((button) => {
+        const rect = button.getBoundingClientRect();
+        return rect.width > 0 && rect.top >= 0 && rect.bottom <= window.innerHeight;
+      }) ?? cartButtons[0];
     if (!cartIcon) return;
 
     const cartRect = cartIcon.getBoundingClientRect();
-    const endX = cartRect.left + cartRect.width / 2;
-    const endY = cartRect.top + cartRect.height / 2;
+    const deltaX = cartRect.left + cartRect.width / 2 - (cardRect.left + cardRect.width / 2);
+    const deltaY = cartRect.top + cartRect.height / 2 - (cardRect.top + cardRect.height / 2);
+    const duration = Math.min(1000, Math.hypot(deltaX, deltaY) * 1.2);
 
-    // Creează o copie a card-ului de produs
     const flyingCard = productCard.cloneNode(true) as HTMLElement;
-
-    // Setează stilurile pentru animație
-    flyingCard.style.cssText = `
-      position: fixed;
-      left: ${startX}px;
-      top: ${startY}px;
-      width: ${cardWidth}px;
-      height: ${cardHeight}px;
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0.95;
-      transform-origin: center center;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    `;
-
-    // Elimină event listeners și butoanele din copie
-    const buttons = flyingCard.querySelectorAll('button');
-    buttons.forEach(btn => {
-      btn.style.pointerEvents = 'none';
-      btn.style.opacity = '0.8';
-    });
-
-    // Adaugă card-ul zburător în body
+    flyingCard.style.cssText = `position:fixed;left:${cardRect.left}px;top:${cardRect.top}px;width:${cardRect.width}px;height:${cardRect.height}px;pointer-events:none;z-index:9999;opacity:0.95;border-radius:16px;overflow:hidden;`;
     document.body.appendChild(flyingCard);
-
-    // Face card-ul original invizibil temporar
-    productCard.style.opacity = '0.3';
-    productCard.style.transition = 'opacity 0.3s';
-
-    // Forțează reflow pentru a începe animația
-    flyingCard.offsetHeight;
-
-    // Calculează distanța
-    const deltaX = endX - (startX + cardWidth / 2);
-    const deltaY = endY - (startY + cardHeight / 2);
-    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-    const duration = Math.min(1000, distance * 1.2); // Durată bazată pe distanță, max 1000ms
-
-    // Aplică animația
-    flyingCard.style.transition = `transform ${duration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity ${duration}ms ease-out`;
-    flyingCard.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.2)`;
-    flyingCard.style.opacity = '0';
-
-    // Restaurează opacitatea card-ului original și șterge elementul după animație
+    productCard.style.opacity = "0.3";
+    productCard.style.transition = "opacity 0.3s";
+    void flyingCard.offsetHeight;
+    flyingCard.style.transition = `transform ${duration}ms cubic-bezier(0.25,0.46,0.45,0.94), opacity ${duration}ms ease-out`;
+    flyingCard.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.15)`;
+    flyingCard.style.opacity = "0";
     setTimeout(() => {
-      productCard.style.opacity = '1';
-      if (flyingCard.parentNode) {
-        flyingCard.parentNode.removeChild(flyingCard);
-      }
+      productCard.style.opacity = "1";
+      flyingCard.remove();
     }, duration);
   };
 
   const handleAddToCart = (product: Product, event?: React.MouseEvent<HTMLButtonElement>) => {
-    // Animație dacă există event (butonul a fost apăsat)
-    if (event && event.currentTarget) {
-      animateToCart(event.currentTarget);
-    }
-
-    // Adaugă produsul în coș după un mic delay pentru a sincroniza cu animația
-    setTimeout(() => {
-      addToCart(product);
-    }, 50);
+    if (event?.currentTarget) animateToCart(event.currentTarget);
+    setTimeout(() => addToCart(product), 50);
   };
 
-  return (
-    <main className="min-h-screen text-white pt-24 pb-16 relative">
-      {/* Background Image */}
-      <div className="fixed inset-0 w-full h-full z-0">
-        <Image
-          src="/assets/backgrounds/2.jpg"
-          alt="Shop background"
-          fill
-          priority
-          quality={75}
-          sizes="100vw"
-          className="object-cover"
-        />
-      </div>
+  const filteredProducts = selectedCategory === "all" ? products : products.filter((product) => product.category === selectedCategory);
 
-      {/* Promo sticker (Shop only) - Desktop: positioned absolute, Mobile: above title */}
-      <div className="hidden md:block absolute right-4 top-24 mt-2 z-20 max-w-[calc(100vw-2rem)]">
-        <button
-          type="button"
-          onClick={handleCopyPromoCode}
-          className="max-w-full liquid-glass-button text-white px-3 py-2 rounded-xl border border-white/15 backdrop-blur-md shadow-xl hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-          aria-label="Promo code JOINTHECREW"
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-xs md:text-sm font-semibold" style={{ fontFamily: "var(--font-roboto)" }}>
+  return (
+    <>
+      <PageHeader kicker={t("shop.title")} title={t("shop2.title")} intro={t("shop.subtitle")}>
+        {/* Cod promo */}
+        <Reveal delay={0.45} className="mt-10">
+          <button
+            type="button"
+            onClick={handleCopyPromoCode}
+            className="group flex w-full max-w-xl items-center justify-between gap-4 rounded-2xl border border-rec/40 bg-rec/10 px-5 py-4 text-left transition-colors duration-300 hover:border-rec"
+            aria-label="Promo code JOINTHECREW"
+          >
+            <span className="flex items-center gap-3 text-sm font-medium md:text-base">
+              <span className="rec-dot shrink-0" />
               {promoCopied ? t("promo.copied") : t("promo.jointhecrew")}
             </span>
-            <span className="text-xs font-bold px-2 py-1 rounded-lg bg-white/10 border border-white/15 whitespace-nowrap">
+            <span className="shrink-0 rounded-full bg-paper px-3 py-1.5 text-[11px] font-bold tracking-[0.14em] text-ink transition-colors group-hover:bg-rec">
               {t("promo.copy")}
             </span>
-          </div>
-        </button>
-      </div>
+          </button>
+        </Reveal>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header Section */}
-        <div className="text-center mb-8 md:mb-12">
-          {/* Promo sticker - Mobile: above title */}
-          <div className="md:hidden mb-4 flex justify-center">
+        <Reveal delay={0.55} className="mt-10">
+          <div className="flex flex-wrap gap-2">
+            {CATEGORIES.map((category) => {
+              const active = selectedCategory === category.value;
+              return (
+                <button
+                  key={category.value}
+                  type="button"
+                  onClick={() => setSelectedCategory(category.value)}
+                  aria-pressed={active}
+                  className={`rounded-full border px-5 py-2.5 text-sm font-medium transition-colors duration-300 ${
+                    active ? "border-paper bg-paper text-ink" : "border-line hover:border-paper"
+                  }`}
+                >
+                  {t(category.labelKey)}
+                </button>
+              );
+            })}
+          </div>
+        </Reveal>
+      </PageHeader>
+
+      <section className="container-site pb-28 md:pb-40">
+        <motion.div layout className="grid grid-cols-1 gap-x-5 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <AnimatePresence mode="popLayout">
+            {filteredProducts.map((product, index) => (
+              <motion.article
+                key={product.id}
+                layout
+                data-product-card
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.8, ease: EASE, delay: Math.min(index, 8) * 0.04 }}
+                className="group flex flex-col bg-ink"
+              >
+                <button
+                  type="button"
+                  onClick={() => setSelectedProduct(product)}
+                  className="relative aspect-square overflow-hidden rounded-2xl bg-ink-2"
+                  data-cursor={t("cursor.view")}
+                  aria-label={`${product.name} - ${t("shop2.details")}`}
+                >
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    className="object-cover transition-transform duration-[1.2s] ease-[var(--ease-expo)] group-hover:scale-105"
+                  />
+                  {product.discountPercentage && (
+                    <span className="absolute right-3 top-3 rounded-full bg-rec px-3 py-1.5 text-xs font-bold text-ink">-{product.discountPercentage}%</span>
+                  )}
+                  {product.category === "bundle" && product.originalPrice && (
+                    <span className="absolute left-3 top-3 rounded-full bg-paper px-3 py-1.5 text-xs font-bold text-ink">
+                      {t("shop.save")} {formatPrice(BUNDLE_SAVINGS[product.id] ?? product.originalPrice - product.price)}
+                    </span>
+                  )}
+                </button>
+
+                <div className="mt-5 flex flex-1 flex-col">
+                  <h3 className="text-xl font-semibold tracking-tight">{product.name}</h3>
+                  <p className="mt-2 line-clamp-2 text-sm text-mute">{description(product)}</p>
+                  <div className="mt-5 flex items-end justify-between gap-4">
+                    <div>
+                      {product.originalPrice && <p className="text-sm text-mute line-through">{formatPrice(product.originalPrice)}</p>}
+                      <p className="font-display text-2xl font-semibold tracking-tight">{formatPrice(product.price)}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(event) => handleAddToCart(product, event)}
+                      disabled={!product.inStock}
+                      className="btn-primary btn-sm disabled:opacity-40"
+                    >
+                      {t("shop.addToCart")}
+                    </button>
+                  </div>
+                </div>
+              </motion.article>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+
+        {filteredProducts.length === 0 && <p className="py-20 text-center text-xl text-mute">{t("shop.noProducts")}</p>}
+      </section>
+
+      {/* Detaliile produsului */}
+      <AnimatePresence>
+        {selectedProduct && (
+          <motion.div
+            key="product-modal"
+            className="fixed inset-0 z-[70] bg-ink/95 backdrop-blur-xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label={selectedProduct.name}
+          >
+            <div className="h-full overflow-y-auto" data-lenis-prevent onClick={() => setSelectedProduct(null)}>
+              <motion.div
+                className="container-site grid min-h-full items-center gap-10 py-24 lg:grid-cols-2 lg:gap-16"
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: EASE }}
+              >
+                <div className="relative aspect-square overflow-hidden rounded-2xl bg-ink-2" onClick={(event) => event.stopPropagation()}>
+                  <Image src={selectedProduct.image} alt={selectedProduct.name} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                </div>
+                <div onClick={(event) => event.stopPropagation()}>
+                  <p className="kicker">{t(CATEGORIES.find((c) => c.value === selectedProduct.category)?.labelKey ?? "shop.title")}</p>
+                  <h2 className="display-md mt-5">{selectedProduct.name}</h2>
+                  <p className="mt-8 whitespace-pre-line leading-relaxed text-paper-dim">{description(selectedProduct)}</p>
+                  <div className="mt-10 flex flex-wrap items-end justify-between gap-6 border-t border-line pt-8">
+                    <div>
+                      {selectedProduct.originalPrice && (
+                        <p className="text-mute line-through">{formatPrice(selectedProduct.originalPrice)}</p>
+                      )}
+                      <p className="font-display text-4xl font-semibold tracking-tight">{formatPrice(selectedProduct.price)}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        addToCart(selectedProduct);
+                        setSelectedProduct(null);
+                      }}
+                      disabled={!selectedProduct.inStock}
+                      className="btn-primary disabled:opacity-40"
+                    >
+                      {t("shop.addToCart")}
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
             <button
               type="button"
-              onClick={handleCopyPromoCode}
-              className="w-full max-w-sm liquid-glass-button text-white px-4 py-3 rounded-xl border border-white/15 backdrop-blur-md shadow-xl hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-              aria-label="Promo code JOINTHECREW"
+              onClick={() => setSelectedProduct(null)}
+              className="fixed right-5 top-5 flex h-12 w-12 items-center justify-center rounded-full border border-line bg-ink/60 backdrop-blur-md transition-colors hover:border-paper md:right-8 md:top-8"
+              aria-label={t("common.close")}
             >
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-sm font-semibold" style={{ fontFamily: "var(--font-roboto)" }}>
-                  {promoCopied ? t("promo.copied") : t("promo.jointhecrew")}
-                </span>
-                <span className="text-xs font-bold px-2 py-1 rounded-lg bg-white/10 border border-white/15 whitespace-nowrap">
-                  JOINTHECREW
-                </span>
-              </div>
-            </button>
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-2 sm:mb-3 md:mb-4 px-2" style={{ fontFamily: "var(--font-playfair)" }}>
-            <Typewriter
-              key={language}
-              words={[t("shop.title")]}
-              loop={false}
-              cursor
-              cursorStyle="|"
-              typeSpeed={90}
-              deleteSpeed={0}
-              delaySpeed={999999}
-            />
-          </h1>
-          <p className="text-gray-300 text-base sm:text-lg md:text-xl px-2 sm:px-4 max-w-2xl mx-auto">
-            {t("shop.subtitle")}
-          </p>
-        </div>
-
-        {/* Filter Buttons */}
-        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mb-6 sm:mb-8 md:mb-12 px-2">
-          {categories.map((category) => (
-            <button
-              key={category.value}
-              onClick={() => setSelectedCategory(category.value as ProductCategory)}
-              className={`px-4 py-2 sm:px-5 sm:py-2 md:px-6 md:py-2.5 rounded-xl font-semibold transition-all duration-300 text-xs sm:text-sm md:text-base ${selectedCategory === category.value
-                ? "liquid-glass-button text-white scale-105"
-                : "liquid-glass liquid-glass-hover text-white"
-                }`}
-              style={{ fontFamily: "var(--font-roboto)" }}
-            >
-              {t(category.labelKey)}
-            </button>
-          ))}
-        </div>
-
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 mb-8 sm:mb-12 px-2 sm:px-0">
-          {filteredProducts.map((product) => (
-            <div
-              key={product.id}
-              onClick={() => setSelectedProduct(product)}
-              className="group relative overflow-visible rounded-xl sm:rounded-2xl liquid-glass liquid-glass-hover backdrop-blur-md transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20 cursor-pointer"
-            >
-              {/* Product Image */}
-              <div className="aspect-square relative overflow-hidden rounded-t-xl sm:rounded-t-2xl">
-                {!loadedImages.has(product.id) && (
-                  <ImageSkeleton className="absolute inset-0" aspectRatio="square" />
-                )}
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  className={`object-cover transition-all duration-500 group-hover:scale-110 ${
-                    loadedImages.has(product.id) ? 'opacity-100' : 'opacity-0'
-                  }`}
-                  onLoad={() => setLoadedImages(prev => new Set(prev).add(product.id))}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/10 group-hover:from-black/40 group-hover:via-black/20 group-hover:to-black/5 transition-all duration-300" />
-
-                {/* Discount Badge */}
-                {product.discountPercentage && (
-                  <div className="absolute top-2 right-2 sm:top-3 sm:right-3 liquid-glass-button bg-red-500/30 text-white px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold border-red-500/50 z-10">
-                    -{product.discountPercentage}%
-                  </div>
-                )}
-                {/* Save Badge for Bundles */}
-                {product.category === "bundle" && product.originalPrice && (
-                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 liquid-glass-button bg-yellow-500/30 text-white px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold border-yellow-500/50">
-                    {product.id === 11 
-                      ? `${t("shop.save")} ${formatPrice(1000)}` 
-                      : product.id === 12 
-                      ? `${t("shop.save")} ${formatPrice(450)}` 
-                      : `${t("shop.save")} ${formatPrice(product.originalPrice - product.price)}`}
-                  </div>
-                )}
-              </div>
-
-              {/* Product Info */}
-              <div className="p-3 sm:p-4 md:p-5 relative">
-                <h3 className="text-sm sm:text-base md:text-lg font-semibold mb-1 sm:mb-1.5 group-hover:text-white transition-colors" style={{ fontFamily: "var(--font-playfair)" }}>
-                  {product.name}
-                </h3>
-                <p className="text-gray-400 text-[10px] sm:text-xs md:text-sm mb-2 sm:mb-3 group-hover:text-gray-300 transition-colors line-clamp-2">{language === "ro" && product.descriptionRo ? product.descriptionRo : product.description}</p>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
-                  <div className="flex flex-col items-start">
-                    {product.originalPrice && (
-                      <span className="text-[10px] sm:text-xs text-gray-500 line-through mb-0.5">
-                        {formatPrice(product.originalPrice)}
-                      </span>
-                    )}
-                    <div className="flex items-center gap-2">
-                      <span className="text-base sm:text-lg md:text-xl font-bold text-white">
-                        {formatPrice(product.price)}
-                      </span>
-                      {product.discountPercentage && (
-                        <span className="text-[10px] sm:text-xs font-semibold text-green-400 bg-green-500/20 px-1.5 py-0.5 rounded">
-                          -{product.discountPercentage}%
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAddToCart(product, e);
-                    }}
-                    disabled={!product.inStock}
-                    className={`w-full sm:w-auto px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-[10px] sm:text-xs md:text-sm ${product.inStock
-                      ? "liquid-glass-button text-white hover:scale-105"
-                      : "bg-gray-700/50 text-gray-400 cursor-not-allowed opacity-50"
-                      }`}
-                    style={{ fontFamily: "var(--font-roboto)" }}
-                  >
-                    {t("shop.addToCart")}
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-12 sm:py-16 md:py-20">
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-400">{t("shop.noProducts")}</p>
-          </div>
-        )}
-      </div>
-
-      {/* Newsletter Popup */}
-      {showNewsletterPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-6 animate-fade-in">
-          <div
-            className="max-w-md w-full liquid-glass-strong rounded-2xl overflow-hidden relative mx-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              onClick={handleNewsletterClose}
-              className="absolute top-3 right-3 md:top-4 md:right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10"
-              aria-label="Close newsletter popup"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
+                <path strokeLinecap="round" d="M6 18 18 6M6 6l12 12" />
               </svg>
             </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-            {/* Content */}
-            <div className="p-6 md:p-8 text-center">
-              <div className="mb-5 md:mb-6">
-                <svg
-                  className="w-12 h-12 md:w-16 md:h-16 mx-auto text-white mb-3 md:mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-                <h2
-                  className="text-2xl md:text-3xl font-bold mb-2 md:mb-3 text-white"
-                  style={{ fontFamily: "var(--font-playfair)" }}
-                >
-                  Subscribe to Our Newsletter
-                </h2>
-                <p className="text-gray-300 text-xs md:text-sm px-2">
-                  Stay updated with our latest products, exclusive offers, and aerial photography tips!
-                </p>
-              </div>
-
-              {newsletterStatus === "success" ? (
-                <div className="py-6 md:py-8">
-                  <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 bg-green-500/20 rounded-full flex items-center justify-center">
-                    <svg className="w-7 h-7 md:w-8 md:h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <p className="text-green-400 font-semibold text-sm md:text-base">Thank you for subscribing!</p>
-                </div>
-              ) : (
-                <form onSubmit={handleNewsletterSubmit} className="space-y-3 md:space-y-4">
-                  <div>
-                    <input
-                      type="email"
-                      value={newsletterEmail}
-                      onChange={(e) => setNewsletterEmail(e.target.value)}
-                      onBlur={(e) => setNewsletterEmail(e.target.value.trim())}
-                      placeholder="Enter your email address"
-                      required
-                      autoComplete="email"
-                      inputMode="email"
-                      className="w-full px-4 py-2.5 md:py-3 rounded-xl liquid-glass-input text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/20 text-sm md:text-base"
-                      disabled={newsletterStatus === "sending"}
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={newsletterStatus === "sending" || !newsletterEmail.trim()}
-                    className="w-full liquid-glass-button text-white py-2.5 md:py-3 rounded-xl font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
-                  >
-                    {newsletterStatus === "sending" ? "Subscribing..." : "Subscribe"}
-                  </button>
-                  {newsletterStatus === "error" && (
-                    <p className="text-red-400 text-xs md:text-sm">Something went wrong. Please try again.</p>
-                  )}
-                </form>
-              )}
-
-              <button
-                onClick={handleNewsletterClose}
-                className="mt-3 md:mt-4 text-gray-400 hover:text-white text-xs md:text-sm transition-colors"
-              >
-                Maybe later
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal pentru produs selectat */}
-      {selectedProduct && (
-        <div
-          className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/95 backdrop-blur-sm p-0 md:p-4 lg:p-6 overflow-y-auto animate-fade-in"
-          onClick={() => setSelectedProduct(null)}
-        >
-          <div
-            className="max-w-2xl lg:max-w-3xl w-full liquid-glass-strong rounded-none md:rounded-2xl overflow-hidden my-0 md:my-4 min-h-screen md:min-h-0 max-h-screen md:max-h-[90vh] flex flex-col"
-            onClick={(e) => e.stopPropagation()}
+      {/* Newsletter */}
+      <AnimatePresence>
+        {showNewsletterPopup && (
+          <motion.div
+            key="newsletter"
+            className="fixed bottom-4 left-4 right-4 z-[65] mx-auto max-w-md rounded-3xl border border-line bg-ink-2 p-6 shadow-2xl sm:left-auto sm:right-6 sm:bottom-6 md:p-8"
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ duration: 0.8, ease: EASE }}
+            role="dialog"
+            aria-label={t("newsletter.title")}
           >
-            <div className="flex-shrink-0 bg-black overflow-hidden">
-              <div className="relative w-full bg-black overflow-hidden flex items-center justify-center h-[45vh] md:h-[50vh]">
-                <Image
-                  src={selectedProduct.image}
-                  alt={selectedProduct.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 50vw"
-                  className="object-contain"
+            <button
+              type="button"
+              onClick={handleNewsletterClose}
+              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-line text-mute transition-colors hover:border-paper hover:text-paper"
+              aria-label={t("common.close")}
+            >
+              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                <path strokeLinecap="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <p className="kicker flex items-center gap-2">
+              <span className="rec-dot h-1.5 w-1.5" /> Newsletter
+            </p>
+            <h2 className="mt-4 pr-8 text-2xl font-semibold tracking-tight">{t("newsletter.title")}</h2>
+            <p className="mt-3 text-sm text-paper-dim">{t("newsletter.text")}</p>
+            {newsletterStatus === "success" ? (
+              <p className="mt-6 font-medium text-paper">{t("newsletter.success")}</p>
+            ) : (
+              <form onSubmit={handleNewsletterSubmit} className="mt-6 space-y-3">
+                <input
+                  type="email"
+                  value={newsletterEmail}
+                  onChange={(event) => setNewsletterEmail(event.target.value)}
+                  placeholder={t("newsletter.placeholder")}
+                  required
+                  autoComplete="email"
+                  inputMode="email"
+                  disabled={newsletterStatus === "sending"}
+                  className="w-full rounded-full border border-line bg-ink px-5 py-3.5 text-sm text-paper placeholder:text-mute focus:border-paper focus:outline-none"
                 />
-                <button
-                  onClick={() => setSelectedProduct(null)}
-                  className="absolute top-4 right-4 bg-black/70 hover:bg-black/90 text-white rounded-full p-2.5 transition-colors z-10 backdrop-blur-sm"
-                  aria-label="Close modal"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                <button type="submit" disabled={newsletterStatus === "sending" || !newsletterEmail.trim()} className="btn-primary w-full disabled:opacity-50">
+                  {newsletterStatus === "sending" ? t("newsletter.subscribing") : t("newsletter.subscribe")}
                 </button>
-              </div>
-            </div>
-            <div className="p-4 sm:p-5 md:p-6 lg:p-8 overflow-y-auto flex-1">
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3" style={{ fontFamily: "var(--font-playfair)" }}>
-                {selectedProduct.name}
-              </h2>
-              <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-4 sm:mb-6 leading-relaxed whitespace-pre-line">{language === "ro" && selectedProduct.descriptionRo ? selectedProduct.descriptionRo : selectedProduct.description}</p>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-                <div className="flex flex-col items-start">
-                  {selectedProduct.originalPrice && (
-                    <span className="text-base sm:text-lg md:text-xl text-gray-500 line-through mb-1">
-                      {formatPrice(selectedProduct.originalPrice)}
-                    </span>
-                  )}
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
-                      {formatPrice(selectedProduct.price)}
-                    </span>
-                    {selectedProduct.discountPercentage && (
-                      <span className="text-sm sm:text-base font-semibold text-green-400 bg-green-500/20 px-2 py-1 rounded">
-                        -{selectedProduct.discountPercentage}%
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <button
-                  onClick={(e) => {
-                    handleAddToCart(selectedProduct, e);
-                    setSelectedProduct(null);
-                  }}
-                  disabled={!selectedProduct.inStock}
-                  className={`w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 md:py-3.5 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base md:text-lg ${selectedProduct.inStock
-                    ? "liquid-glass-button text-white hover:scale-105"
-                    : "bg-gray-700/50 text-gray-400 cursor-not-allowed opacity-50"
-                    }`}
-                  style={{ fontFamily: "var(--font-roboto)" }}
-                >
-                  {t("shop.addToCart")}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </main>
+                {newsletterStatus === "error" && <p className="text-sm text-rec">{t("newsletter.error")}</p>}
+              </form>
+            )}
+            <button type="button" onClick={handleNewsletterClose} className="link-line mt-4 text-xs text-mute hover:text-paper">
+              {t("newsletter.later")}
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
