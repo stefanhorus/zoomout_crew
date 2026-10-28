@@ -12,6 +12,7 @@ import { CURRENCIES } from "@/lib/currency";
 import { EASE } from "./motion/ease";
 import { useScrollLock } from "./motion/SmoothScroll";
 import Cart from "./Cart";
+import { withBasePath } from "@/lib/base-path";
 
 const NAV_LINKS = [
   { href: "/portfolio", labelKey: "nav.portfolio" },
@@ -152,7 +153,7 @@ export default function Header() {
         <div className="container-site flex h-16 items-center justify-between gap-6 md:h-20">
           <Link href="/" className="group flex items-center gap-3" aria-label="Zoomout_crew - Home">
             <Image
-              src="/assets/logo.png"
+              src={withBasePath("/assets/logo.png")}
               alt=""
               width={36}
               height={36}

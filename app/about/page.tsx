@@ -10,6 +10,7 @@ import { LogoMarquee } from "@/components/site/LogoMarquee";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Testimonials } from "@/components/site/Testimonials";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { withBasePath } from "@/lib/base-path";
 
 // Motivele existente din pagina About (about.*)
 const VALUES = ["professionalEquipment", "creativeVision", "experiencedTeam", "reliableService"];
@@ -29,7 +30,7 @@ export default function About() {
       <section className="container-site">
         <div ref={imageRef} className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-ink-2 md:aspect-[21/9]">
           <motion.div style={{ y: imageY, scale: imageScale }} className="absolute inset-x-0 -inset-y-[11%]">
-            <Image src="/assets/backgrounds/background6tiny.png" alt="" fill priority sizes="100vw" className="object-cover" />
+            <Image src={withBasePath("/assets/backgrounds/background6tiny.png")} alt="" fill priority sizes="100vw" className="object-cover" />
           </motion.div>
           <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent" />
           <p className="kicker absolute bottom-5 left-5 flex items-center gap-2 text-paper md:bottom-8 md:left-8">

@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { withBasePath } from "@/lib/base-path";
 
 function CheckoutSuccessContent() {
   const { t } = useLanguage();
@@ -19,7 +20,7 @@ function CheckoutSuccessContent() {
       // Pentru comenzile gratuite, nu trebuie să încărcăm sesiunea
       setLoading(false);
     } else if (sessionId) {
-      fetch(`/api/checkout/session?session_id=${sessionId}`)
+      fetch(withBasePath(`/api/checkout/session?session_id=${sessionId}`))
         .then((res) => res.json())
         .then((data) => {
           setSession(data.session);
@@ -134,7 +135,7 @@ export default function CheckoutSuccess() {
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
-          src="/assets/backgrounds/2.jpg"
+          src={withBasePath("/assets/backgrounds/2.jpg")}
           alt="Success background"
           fill
           priority

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { EASE, EASE_IN_OUT } from "./ease";
 import { Rich } from "./rich";
+import { withBasePath } from "@/lib/base-path";
 
 const SESSION_KEY = "zc_intro";
 
@@ -79,7 +80,7 @@ export function Preloader() {
       }}
     >
       <div className="flex items-center gap-3">
-        <Image src="/assets/logo.png" alt="" width={36} height={36} className="rounded-full" priority />
+        <Image src={withBasePath("/assets/logo.png")} alt="" width={36} height={36} className="rounded-full" priority />
         <span className="font-display text-lg font-semibold tracking-tight">Zoomout_crew</span>
       </div>
 

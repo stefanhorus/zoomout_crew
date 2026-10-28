@@ -1,7 +1,19 @@
 import type { NextConfig } from "next";
 import { withNextVideo } from 'next-video/process';
 
+// v2 e servit la zoomoutcrew.com/2: site-ul live trimite /2 către proiectul Vercel al lui v2.
+// Când v2 devine site-ul principal, pune "" aici (și indexarea în Google pornește din nou, vezi app/layout.tsx).
+const BASE_PATH = "/2";
+
 const nextConfig: NextConfig = {
+  basePath: BASE_PATH || undefined,
+  env: { NEXT_PUBLIC_BASE_PATH: BASE_PATH },
+
+  // Pe domeniul propriu al lui v2 (și local) rădăcina duce la /2
+  async redirects() {
+    return BASE_PATH ? [{ source: "/", destination: BASE_PATH, basePath: false, permanent: false }] : [];
+  },
+
   // Optimizări pentru imagini
   images: {
     formats: ['image/avif', 'image/webp'],

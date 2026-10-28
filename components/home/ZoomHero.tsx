@@ -11,20 +11,21 @@ import { useIntroDone } from "../motion/Preloader";
 import { Rich } from "../motion/rich";
 import { SplitReveal } from "../motion/SplitReveal";
 import { HeroVideo } from "./HeroVideo";
+import { withBasePath } from "@/lib/base-path";
 
 const square = (id: string, time: number) => muxThumb(id, { time, width: 900, height: 900, smartcrop: true });
 
 // Mozaicul din jurul video-ului: proiecte de client + filmări aeriene proprii. Poziția 4 (centrul) e video-ul.
 const TILES: Array<{ src: string; remote?: boolean } | null> = [
-  { src: "/assets/backgrounds/background6tiny.png" },
+  { src: withBasePath("/assets/backgrounds/background6tiny.png") },
   { src: square("BaZoibIrmiaFjm1oPbGIWlhQAZrZHCV9NcIMW4HQN014", 1), remote: true },
-  { src: "/assets/backgrounds/background4tiny.png" },
+  { src: withBasePath("/assets/backgrounds/background4tiny.png") },
   { src: square("Xi5sUxm00g8N5UJGPn7D9Mut4JsMfUFULA01Qn02woUOwo", 9), remote: true },
   null,
   { src: square("iQW9j3rKkGubagCrFEPgfWxQtpnzW5PFdTWw00SpAliA", 3), remote: true },
-  { src: "/assets/backgrounds/backgroundtiny.png" },
+  { src: withBasePath("/assets/backgrounds/backgroundtiny.png") },
   { src: square("c5jDLrljSoSJid7Du9P9XQb37yzRRrIKqFHYzqpKG8c", 12), remote: true },
-  { src: "/assets/adventures/edinburgh/edinburgh7.png" },
+  { src: withBasePath("/assets/adventures/edinburgh/edinburgh7.png") },
 ];
 
 const zoomEase = cubicBezier(0.42, 0, 0.3, 1);

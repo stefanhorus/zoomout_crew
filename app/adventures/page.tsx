@@ -5,6 +5,7 @@ import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ImageSkeleton from "@/components/ImageSkeleton";
+import { withBasePath } from "@/lib/base-path";
 
 // Tipuri de aventuri pentru filtrare
 type AdventureCategory = "all" | "europe" | "asia" | "americas" | "africa" | "oceania";
@@ -31,7 +32,7 @@ const adventures: Adventure[] = [
     location: "Kazakhstan & Kyrgyzstan",
     category: "asia",
     date: "2025-04-15",
-    thumbnail: "/assets/adventures/kz-kg/5.jpg",
+    thumbnail: withBasePath("/assets/adventures/kz-kg/5.jpg"),
     description:
       "A breathtaking 5-day journey through the heart of Central Asia, exploring the stunning landscapes of Kazakhstan and Kyrgyzstan. From the dramatic Charyn Canyon, often called Central Asia's mini-Grand Canyon, to the pristine alpine lakes of Kolsay and the unique submerged forest of Kaindy Lake. Cross into Kyrgyzstan through scenic mountain passes, discover the cultural gems of Karakol, and experience the vibrant Jety-Oguz Gorge with its famous red rock formations. Marvel at the powerful Barskoon Waterfall and explore the colorful Fairy-Tale Canyon. Witness the impressive tradition of eagle hunting in Bokonbaevo and enjoy an authentic stay in a traditional yurt. Immerse yourself in local culture, taste traditional Kyrgyz meals, and explore the bustling markets and landmarks of Bishkek. This immersive road trip captures the raw beauty and rich cultural heritage of Central Asia through aerial videography and authentic experiences.",
     highlights: [
@@ -47,11 +48,11 @@ const adventures: Adventure[] = [
       "Bishkek",
     ],
     images: [
-      "/assets/adventures/kz-kg/1.jpg",
-      "/assets/adventures/kz-kg/2.jpg",
-      "/assets/adventures/kz-kg/3.jpg",
-      "/assets/adventures/kz-kg/4.jpg",
-      "/assets/adventures/kz-kg/5.jpg",
+      withBasePath("/assets/adventures/kz-kg/1.jpg"),
+      withBasePath("/assets/adventures/kz-kg/2.jpg"),
+      withBasePath("/assets/adventures/kz-kg/3.jpg"),
+      withBasePath("/assets/adventures/kz-kg/4.jpg"),
+      withBasePath("/assets/adventures/kz-kg/5.jpg"),
     ],
   },
   {
@@ -60,7 +61,7 @@ const adventures: Adventure[] = [
     location: "Amsterdam, Netherlands",
     category: "europe",
     date: "2025-03-15",
-    thumbnail: "/assets/adventures/ams1tiny.png",
+    thumbnail: withBasePath("/assets/adventures/ams1tiny.png"),
     description: "A week-long Erasmus project adventure in Amsterdam—a boys trip sponsored by the university. During the days, we attended classes at HVA (Hogeschool van Amsterdam), but the rest of our time was all about having fun and exploring the city. We cruised the sunlit canals by boat, went karaoke singing, hit the clubs, and captured Amsterdam's iconic architecture and vibrant culture from unique aerial perspectives.",
     highlights: ["Canal Ring", "Anne Frank House", "Van Gogh Museum", "Jordaan District", "Vondelpark"],
   },
@@ -70,16 +71,16 @@ const adventures: Adventure[] = [
     location: "United States",
     category: "americas",
     date: "2025-09-15",
-    thumbnail: "/assets/backgrounds/background6tiny.png",
+    thumbnail: withBasePath("/assets/backgrounds/background6tiny.png"),
     description: "September exploration of America's breathtaking scenery, from coast to coast.",
     highlights: ["Fall Colors", "Desert Landscapes", "Historic Sites", "Natural Wonders"],
     images: [
-      "/assets/backgrounds/background6tiny.png",
-      "/assets/adventures/americasept/americasept2.png",
-      "/assets/adventures/americasept/americasept1.png",
-      "/assets/adventures/americasept/americasept3.png",
-      "/assets/adventures/americasept/americasept4.png",
-      "/assets/adventures/americasept/americasept5.png",
+      withBasePath("/assets/backgrounds/background6tiny.png"),
+      withBasePath("/assets/adventures/americasept/americasept2.png"),
+      withBasePath("/assets/adventures/americasept/americasept1.png"),
+      withBasePath("/assets/adventures/americasept/americasept3.png"),
+      withBasePath("/assets/adventures/americasept/americasept4.png"),
+      withBasePath("/assets/adventures/americasept/americasept5.png"),
     ],
   },
   {
@@ -88,7 +89,7 @@ const adventures: Adventure[] = [
     location: "Sardinia, Italy",
     category: "europe",
     date: "2025-09-15",
-    thumbnail: "/assets/adventures/sardinia/sardinia1.jpg",
+    thumbnail: withBasePath("/assets/adventures/sardinia/sardinia1.jpg"),
     description: "Aerial journey through the stunning Mediterranean island of Sardinia, capturing its pristine beaches and rugged landscapes.",
     highlights: ["Costa Smeralda", "Cagliari", "Alghero", "La Maddalena", "Nuraghe Su Nuraxi"],
   },
@@ -98,7 +99,7 @@ const adventures: Adventure[] = [
     location: "West Coast, United States",
     category: "americas",
     date: "2024-10-15",
-    thumbnail: "/assets/backgrounds/backgroundtiny.png",
+    thumbnail: withBasePath("/assets/backgrounds/backgroundtiny.png"),
     description: "An epic journey along America's West Coast, capturing the dramatic Pacific coastline and iconic cities.",
     highlights: ["Pacific Coast Highway", "San Francisco", "Los Angeles", "Seattle", "Portland", "Big Sur"],
   },
@@ -108,31 +109,31 @@ const adventures: Adventure[] = [
     location: "Edinburgh, Scotland",
     category: "europe",
     date: "2025-12-15",
-    thumbnail: "/assets/adventures/edinburgh/edinburgh1.png",
+    thumbnail: withBasePath("/assets/adventures/edinburgh/edinburgh1.png"),
     shortDescription: "A perfect escape from overpopulated London, this two-day trip to Edinburgh offered a refreshing change of pace in the historic Scottish capital.",
     description: "A two-day exploration of Edinburgh's historic charm and stunning architecture. Our journey began at Edinburgh Castle, the iconic fortress that dominates the city skyline from its volcanic rock perch. Wandering through the Royal Mile, we discovered the historic heart of the Old Town connecting the castle to Holyrood Palace, and stumbled upon the hidden gem of Dean's Village with its charming 19th-century architecture and peaceful Water of Leith. The adventure continued up Calton Hill, offering breathtaking panoramic views of the city and its surroundings.\n\nExploring Greyfriars Kirkyard revealed the historic cemetery that inspired J.K. Rowling's Harry Potter characters. Scott Monument was admired from a distance for the best view of this Gothic spire dedicated to Sir Walter Scott. Strolling through Circus Lane, a picturesque cobblestone street with colorful doors and flower boxes, led us to Victoria Street, the curved, colorful street that's said to have inspired Diagon Alley. Our journey also included St. Bernard's Well, the neoclassical structure overlooking the Water of Leith.\n\nDuring our adventure, we had a lovely photoshoot captured by Andreea Cucu. Through aerial videography, the city's unique character was captured, from its ancient cobblestone streets to its breathtaking hilltop vistas.",
     highlights: ["Edinburgh Castle", "Royal Mile", "Dean's Village", "Calton Hill", "Greyfriars Kirkyard", "Scott Monument", "Circus Lane", "Victoria Street", "St. Bernard's Well", "timshel.pictures Photoshoot"],
     images: [
-      "/assets/adventures/edinburgh/edinburgh1.png",
-      "/assets/adventures/edinburgh/edinburgh2.png",
-      "/assets/adventures/edinburgh/edinburgh3.png",
-      "/assets/adventures/edinburgh/edinburgh4.png",
-      "/assets/adventures/edinburgh/edinburgh5.png",
-      "/assets/adventures/edinburgh/edinburgh6.png",
-      "/assets/adventures/edinburgh/edinburgh7.png",
-      "/assets/adventures/edinburgh/edinburgh8.png",
-      "/assets/adventures/edinburgh/edinburgh9.png",
-      "/assets/adventures/edinburgh/edinburgh10.png",
-      "/assets/adventures/edinburgh/edinburgh11.png",
-      "/assets/adventures/edinburgh/edinburgh12.png",
-      "/assets/adventures/edinburgh/edinburgh13.png",
-      "/assets/adventures/edinburgh/edinburgh14.png",
-      "/assets/adventures/edinburgh/edinburgh15.png",
-      "/assets/adventures/edinburgh/edinburgh16.png",
-      "/assets/adventures/edinburgh/edinburgh17.png",
-      "/assets/adventures/edinburgh/edinburgh18.png",
-      "/assets/adventures/edinburgh/edinburgh19.png",
-      "/assets/adventures/edinburgh/edinburgh20.png",
+      withBasePath("/assets/adventures/edinburgh/edinburgh1.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh2.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh3.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh4.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh5.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh6.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh7.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh8.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh9.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh10.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh11.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh12.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh13.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh14.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh15.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh16.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh17.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh18.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh19.png"),
+      withBasePath("/assets/adventures/edinburgh/edinburgh20.png"),
     ],
   },
 ];
@@ -329,7 +330,7 @@ export default function Adventures() {
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
-          src="/assets/backgrounds/background3.jpg"
+          src={withBasePath("/assets/backgrounds/background3.jpg")}
           alt="Adventures background"
           fill
           priority

@@ -7,6 +7,7 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { withBasePath } from "@/lib/base-path";
 
 function CheckoutContent() {
   const { cart, getTotalPrice, clearCart } = useCart();
@@ -98,7 +99,7 @@ function CheckoutContent() {
     // Serverul validează codul și regulile de combinare (doar JOINTHECREW + un alt cod, maxim 2)
     setIsApplyingCode(true);
     try {
-      const response = await fetch("/api/discount/validate", {
+      const response = await fetch(withBasePath("/api/discount/validate"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -184,7 +185,7 @@ function CheckoutContent() {
       setIsProcessing(true);
       try {
         // Procesează comanda gratuită direct, fără gateway de plată
-        const response = await fetch("/api/checkout/free", {
+        const response = await fetch(withBasePath("/api/checkout/free"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -224,7 +225,7 @@ function CheckoutContent() {
       // Încearcă întâi Revolut Pay (metoda principală)
       if (paymentMethod === "revolut" || !showStripeFallback) {
         try {
-          const response = await fetch("/api/revolut/checkout", {
+          const response = await fetch(withBasePath("/api/revolut/checkout"), {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -262,7 +263,7 @@ function CheckoutContent() {
       }
 
       // Fallback la Stripe (pentru țări fără Revolut Pay sau dacă Revolut eșuează)
-      const response = await fetch("/api/checkout", {
+      const response = await fetch(withBasePath("/api/checkout"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -301,7 +302,7 @@ function CheckoutContent() {
       <main className="min-h-screen text-white pt-24 pb-16 relative">
         <div className="fixed inset-0 w-full h-full z-0">
           <Image
-            src="/assets/backgrounds/2.jpg"
+            src={withBasePath("/assets/backgrounds/2.jpg")}
             alt="Checkout background"
             fill
             priority
@@ -333,7 +334,7 @@ function CheckoutContent() {
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
-          src="/assets/backgrounds/2.jpg"
+          src={withBasePath("/assets/backgrounds/2.jpg")}
           alt="Checkout background"
           fill
           priority

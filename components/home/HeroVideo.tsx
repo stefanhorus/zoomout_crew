@@ -3,11 +3,12 @@
 import { getImageProps } from "next/image";
 import { useEffect, useRef } from "react";
 import { preload } from "react-dom";
+import { withBasePath } from "@/lib/base-path";
 
 // Fișierele sunt generate cu scripts/encode-hero-video.sh.
 // La înlocuirea video-urilor, crește VERSION ca vizitatorii să nu primească varianta veche din cache.
 const VERSION = "1";
-const DIR = "/assets/v2/video";
+const DIR = withBasePath("/assets/v2/video");
 const MOBILE = "(max-width: 767px)";
 // Ecrane mari sau retina primesc 1440p
 const LARGE = "(min-width: 1440px) and (min-resolution: 1.5dppx), (min-width: 2200px)";
@@ -52,8 +53,8 @@ export function HeroVideo() {
 
   // Coperta (primul cadru) e preîncărcată cu prioritate maximă, separat pentru mobil și desktop
   const common = { alt: "", fill: true, preload: true, fetchPriority: "high", sizes: "100vw" } as const;
-  const { props: desktopPoster } = getImageProps({ ...common, src: "/assets/v2/hero-poster.jpg" });
-  const { props: mobilePoster } = getImageProps({ ...common, src: "/assets/v2/hero-poster-mobile.jpg" });
+  const { props: desktopPoster } = getImageProps({ ...common, src: withBasePath("/assets/v2/hero-poster.jpg") });
+  const { props: mobilePoster } = getImageProps({ ...common, src: withBasePath("/assets/v2/hero-poster-mobile.jpg") });
   for (const [poster, media] of [
     [mobilePoster, MOBILE],
     [desktopPoster, "(min-width: 768px)"],

@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import { useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { withBasePath } from "@/lib/base-path";
 
 // Bandă cu o filmare aeriană în parallax și două rânduri de text care se mișcă în direcții opuse
 export function ParallaxBand() {
@@ -18,7 +19,7 @@ export function ParallaxBand() {
   return (
     <section ref={ref} className="relative h-[115svh] overflow-hidden">
       <motion.div style={{ y: imageY, scale: imageScale }} className="absolute inset-0">
-        <Image src="/assets/backgrounds/background4tiny.png" alt="" fill sizes="100vw" className="object-cover" />
+        <Image src={withBasePath("/assets/backgrounds/background4tiny.png")} alt="" fill sizes="100vw" className="object-cover" />
       </motion.div>
       <div className="absolute inset-0 bg-gradient-to-b from-ink via-ink/25 to-ink" />
       <div className="relative flex h-full flex-col justify-center gap-[2vw] overflow-hidden">

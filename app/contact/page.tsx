@@ -8,6 +8,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { SplitReveal } from "@/components/motion/SplitReveal";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { SERVICES } from "@/lib/services";
+import { withBasePath } from "@/lib/base-path";
 
 const OTHER = "other";
 
@@ -30,7 +31,7 @@ export default function Contact() {
     const message = projectType ? `${t("contact2.typePrefix")}: ${typeLabel(projectType)}\n\n${formData.message}` : formData.message;
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch(withBasePath("/api/contact"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...formData, message }),

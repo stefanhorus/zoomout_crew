@@ -5,12 +5,13 @@ import Image from "next/image";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { EASE } from "../motion/ease";
+import { withBasePath } from "@/lib/base-path";
 
 // Recenzii reale (din pagina About). originalLang = limba în care a fost scrisă recenzia.
 const REVIEWS = [
-  { key: "about.reviews.review1", avatar: "/assets/reviews/review1.png", originalLang: "en", logo: false },
-  { key: "about.reviews.review4", avatar: "/assets/reviews/review2.png", originalLang: "ro", logo: false },
-  { key: "about.reviews.review5", avatar: "/assets/brands/rotaract.png", originalLang: "en", logo: true },
+  { key: "about.reviews.review1", avatar: withBasePath("/assets/reviews/review1.png"), originalLang: "en", logo: false },
+  { key: "about.reviews.review4", avatar: withBasePath("/assets/reviews/review2.png"), originalLang: "ro", logo: false },
+  { key: "about.reviews.review5", avatar: withBasePath("/assets/brands/rotaract.png"), originalLang: "en", logo: true },
 ] as const;
 
 export function Testimonials() {

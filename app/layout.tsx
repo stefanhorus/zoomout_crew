@@ -7,13 +7,13 @@ import ConditionalAnalytics from "@/components/ConditionalAnalytics";
 import { CartProvider } from "@/contexts/CartContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import StructuredData from "@/components/StructuredData";
 import SmoothScroll from "@/components/motion/SmoothScroll";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { CursorLabel } from "@/components/motion/CursorLabel";
 import { Preloader, introSeenScript } from "@/components/motion/Preloader";
+import { BASE_PATH, withBasePath } from "@/lib/base-path";
 
 // latin-ext pentru diacriticele românești (ă, î, ș, ț)
 const display = Inter_Tight({
@@ -77,25 +77,28 @@ export const metadata: Metadata = {
       },
     ],
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
+  // Cât timp v2 e doar o copie de test sub /2, Google nu o indexează (ar dubla paginile site-ului live)
+  robots: BASE_PATH
+    ? { index: false, follow: false }
+    : {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-video-preview": -1,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+        },
+      },
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/assets/icon.ico", sizes: "any" },
-      { url: "/favicon.ico", type: "image/x-icon" },
+      { url: withBasePath("/favicon.ico"), sizes: "any" },
+      { url: withBasePath("/assets/icon.ico"), sizes: "any" },
+      { url: withBasePath("/favicon.ico"), type: "image/x-icon" },
     ],
-    shortcut: "/favicon.ico",
-    apple: "/assets/icon.ico",
+    shortcut: withBasePath("/favicon.ico"),
+    apple: withBasePath("/assets/icon.ico"),
   },
 };
 
@@ -140,7 +143,6 @@ export default function RootLayout({
         </LanguageProvider>
         <div className="grain" aria-hidden />
         <ConditionalAnalytics />
-        <SpeedInsights />
       </body>
     </html>
   );

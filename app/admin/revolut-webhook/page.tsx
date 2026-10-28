@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 export default function RevolutWebhookSetup() {
   const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ export default function RevolutWebhookSetup() {
     setResult(null);
 
     try {
-      const response = await fetch("/api/revolut/webhook-setup", {
+      const response = await fetch(withBasePath("/api/revolut/webhook-setup"), {
         method: "POST",
         headers: {
           "x-admin-username": username,

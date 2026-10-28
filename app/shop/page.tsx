@@ -11,6 +11,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { products, type Product, type ProductCategory } from "@/lib/products";
+import { withBasePath } from "@/lib/base-path";
 
 const CATEGORIES: Array<{ value: ProductCategory; labelKey: string }> = [
   { value: "all", labelKey: "shop.allProducts" },
@@ -78,7 +79,7 @@ export default function Shop() {
     }
     setNewsletterStatus("sending");
     try {
-      const response = await fetch("/api/newsletter", {
+      const response = await fetch(withBasePath("/api/newsletter"), {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ email: cleanedEmail }),

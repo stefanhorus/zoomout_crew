@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
 import { priceCart } from "@/lib/pricing";
+import { withBasePath } from "@/lib/base-path";
 
 export async function POST(request: NextRequest) {
   try {
@@ -75,8 +76,8 @@ export async function POST(request: NextRequest) {
       line_items: lineItems,
       mode: "payment",
       customer_email: customerEmail || undefined, // Adaugă emailul clientului dacă este furnizat
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || request.headers.get("origin")}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || request.headers.get("origin")}/checkout/cancel`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || request.headers.get("origin")}${withBasePath("/checkout/success")}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || request.headers.get("origin")}${withBasePath("/checkout/cancel")}`,
       metadata: {
         customer_email: customerEmail || "",
         customer_name: customerName?.trim() || "",
