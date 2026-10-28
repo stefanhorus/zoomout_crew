@@ -117,6 +117,10 @@ const baseTranslations: Record<Language, Record<string, string>> = {
     "portfolio.project11.description": "Video coverage for Lepas, the car brand, at their test drive event at Sun Garden in Cluj-Napoca. We created the test drive aftermovie, car presentation videos and interviews with the people who took the cars for a spin. The content highlights both the vehicles and the real reactions of the drivers behind the wheel.",
     "portfolio.project12.title": "Bacademia - Social Media Content",
     "portfolio.project12.description": "Social media content for Bacademia, a publisher of study guides for the Baccalaureate and National Evaluation exams. We filmed talking-head videos, sketches and challenges designed to make exam prep engaging for students. The content mixes useful information with a fun, relatable tone that speaks directly to a young audience.",
+    "portfolio.project13.title": "One Society - Commercials in London",
+    "portfolio.project13.description": "Three commercials for One Society, a clothing brand from London. Each one was filmed at a different location around the city, so every ad has its own setting and atmosphere.",
+    "portfolio.project14.title": "WeLovePNG - Clothing Brand Commercial",
+    "portfolio.project14.description": "A commercial for WeLovePNG, a clothing brand, that puts their clothes front and center.",
 
     // Services page
     "services.title": "Services",
@@ -385,6 +389,10 @@ const baseTranslations: Record<Language, Record<string, string>> = {
     "portfolio.project11.description": "Materiale video pentru Lepas, brandul de mașini, la evenimentul de test drive de la Sun Garden din Cluj-Napoca. Am realizat aftermovie-ul test drive-ului, videoclipuri de prezentare a mașinilor și interviuri cu cei care au testat mașinile. Conținutul pune în valoare atât mașinile, cât și reacțiile reale ale celor de la volan.",
     "portfolio.project12.title": "Bacademia - Conținut Social Media",
     "portfolio.project12.description": "Conținut pentru social media pentru Bacademia, o editură de culegeri pentru Bacalaureat și Evaluarea Națională. Am filmat talking heads, sketch-uri și challenge-uri care fac pregătirea pentru examene mai atractivă pentru elevi. Conținutul îmbină informația utilă cu un ton amuzant și apropiat, care vorbește direct publicului tânăr.",
+    "portfolio.project13.title": "One Society - Reclame în Londra",
+    "portfolio.project13.description": "Trei reclame pentru One Society, un brand de haine din Londra. Fiecare a fost filmată într-o altă locație din oraș, așa că fiecare reclamă are propriul decor și propria atmosferă.",
+    "portfolio.project14.title": "WeLovePNG - Reclamă pentru brand de haine",
+    "portfolio.project14.description": "O reclamă pentru WeLovePNG, un brand de haine, care pune hainele în prim-plan.",
 
     // Services page
     "services.title": "Servicii",

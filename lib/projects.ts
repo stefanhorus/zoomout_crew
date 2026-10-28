@@ -41,6 +41,18 @@ export const PROJECTS: Project[] = [
     logo: withBasePath("/assets/brands/bacademia.png"),
   },
   {
+    id: 13,
+    key: "portfolio.project13", // one society
+    categories: ["commercial"],
+    logo: withBasePath("/assets/brands/onesociety.png"),
+  },
+  {
+    id: 14,
+    key: "portfolio.project14", // welovepng
+    categories: ["commercial"],
+    logo: withBasePath("/assets/brands/welovepng.png"),
+  },
+  {
     id: 1,
     key: "portfolio.project5", // casa numaa
     categories: ["commercial"],
