@@ -92,6 +92,7 @@ const baseTranslations: Record<Language, Record<string, string>> = {
     "portfolio.realEstate": "Real Estate",
     "portfolio.events": "Events",
     "portfolio.commercial": "Commercial",
+    "portfolio.musicVideos": "Music Videos",
     "portfolio.noProjects": "No projects found in this category.",
     "portfolio.project1.title": "Big Belly - New Restaurant Location Opening",
     "portfolio.project1.description": "Big Belly's exclusive private opening event for their new location was a special opportunity. Capturing the celebration through aerial videography, the evening was documented with exceptional atmosphere and outstanding cuisine. The warm, welcoming ambiance combined with the delicious food created the perfect setting for this memorable launch event. This project was a collaborative effort with photographers Dragos Pasniciuc and Dan Gaspar.",
@@ -121,6 +122,10 @@ const baseTranslations: Record<Language, Record<string, string>> = {
     "portfolio.project13.description": "Three commercials for One Society, a clothing brand from London. Each one was filmed at a different location around the city, so every ad has its own setting and atmosphere.",
     "portfolio.project14.title": "WeLovePNG - Clothing Brand Commercial",
     "portfolio.project14.description": "A commercial for WeLovePNG, a clothing brand, that puts their clothes front and center.",
+    "portfolio.project15.title": "Mara feat. Lurre - Haide, Hai!",
+    "portfolio.project15.description": "Official music video for “Haide, Hai!” by Mara feat. Lurre, the first single from Coconut Express Records. A Visual Delights production where we worked as camera operators.",
+    "portfolio.project16.title": "CJ's - Efort",
+    "portfolio.project16.description": "Music video for “Efort” by CJ's, made together with Visual Delights.",
 
     // Services page
     "services.title": "Services",
@@ -364,6 +369,7 @@ const baseTranslations: Record<Language, Record<string, string>> = {
     "portfolio.realEstate": "Imobiliare",
     "portfolio.events": "Evenimente",
     "portfolio.commercial": "Comercial",
+    "portfolio.musicVideos": "Videoclipuri",
     "portfolio.noProjects": "Nu s-au găsit proiecte în această categorie.",
     "portfolio.project1.title": "Big Belly - Deschiderea Noii Locații de Restaurant",
     "portfolio.project1.description": "Evenimentul exclusiv privat de deschidere a Big Belly pentru noua lor locație a fost o oportunitate deosebită. Captând celebrarea prin videografie aeriană, s-a documentat o seară plină de atmosferă excepțională și bucătărie remarcabilă. Ambientul cald și primitor combinat cu mâncarea delicioasă a creat cadrul perfect pentru acest eveniment memorabil de lansare. Acest proiect a fost o colaborare cu fotograful Dragos Pasniciuc și Dan Gaspar.",
@@ -393,6 +399,10 @@ const baseTranslations: Record<Language, Record<string, string>> = {
     "portfolio.project13.description": "Trei reclame pentru One Society, un brand de haine din Londra. Fiecare a fost filmată într-o altă locație din oraș, așa că fiecare reclamă are propriul decor și propria atmosferă.",
     "portfolio.project14.title": "WeLovePNG - Reclamă pentru brand de haine",
     "portfolio.project14.description": "O reclamă pentru WeLovePNG, un brand de haine, care pune hainele în prim-plan.",
+    "portfolio.project15.title": "Mara feat. Lurre - Haide, Hai!",
+    "portfolio.project15.description": "Videoclipul oficial pentru „Haide, Hai!”, de Mara feat. Lurre, primul single lansat de Coconut Express Records. O producție Visual Delights, la care am lucrat ca operatori de cameră.",
+    "portfolio.project16.title": "CJ's - Efort",
+    "portfolio.project16.description": "Videoclipul pentru „Efort”, piesa CJ's, realizat împreună cu Visual Delights.",
 
     // Services page
     "services.title": "Servicii",

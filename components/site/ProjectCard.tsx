@@ -3,12 +3,13 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { muxPreview, projectCover, splitTitle, type Project, type ProjectCategory } from "@/lib/projects";
+import { isYouTube, muxPreview, projectCover, splitTitle, type Project, type ProjectCategory } from "@/lib/projects";
 
 export const CATEGORY_KEYS: Record<ProjectCategory, string> = {
   commercial: "portfolio.commercial",
   events: "portfolio.events",
   "real-estate": "portfolio.realEstate",
+  "music-videos": "portfolio.musicVideos",
 };
 
 interface ProjectCardProps {
@@ -21,7 +22,7 @@ interface ProjectCardProps {
   eager?: boolean; // încărcare imediată (cardurile din banda orizontală nu sunt detectate corect de lazy-loading)
 }
 
-// Card vertical (9:16) - copertă din video-ul Mux, previzualizare animată la hover
+// Card vertical (9:16) - copertă din video (Mux sau YouTube), previzualizare animată la hover pentru Mux
 export function ProjectCard({
   project,
   onOpen,
@@ -60,13 +61,15 @@ export function ProjectCard({
         />
       ) : (
         <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_50%_40%,rgba(242,238,230,0.08),transparent_65%)]">
-          <div className="relative h-[34%] w-[62%] transition-transform duration-[1.4s] ease-[var(--ease-expo)] group-hover:scale-[1.06]">
-            <Image src={project.logo} alt="" fill sizes="240px" className="object-contain" />
-          </div>
+          {project.logo && (
+            <div className="relative h-[34%] w-[62%] transition-transform duration-[1.4s] ease-[var(--ease-expo)] group-hover:scale-[1.06]">
+              <Image src={project.logo} alt="" fill sizes="240px" className="object-contain" />
+            </div>
+          )}
         </div>
       )}
 
-      {video && hovered && (
+      {video && !isYouTube(video) && hovered && (
         <Image
           src={muxPreview(video.playbackId, video.thumbTime)}
           alt=""

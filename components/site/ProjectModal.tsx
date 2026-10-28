@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { muxPlayer, splitTitle, type Project } from "@/lib/projects";
+import { splitTitle, videoId, videoPlayer, type Project } from "@/lib/projects";
 import { EASE } from "../motion/ease";
 import { useScrollLock } from "../motion/SmoothScroll";
 import { CATEGORY_KEYS } from "./ProjectCard";
@@ -59,8 +59,8 @@ function ModalContent({ project, onClose }: { project: Project; onClose: () => v
                 }`}
               >
                 <iframe
-                  key={video.playbackId}
-                  src={muxPlayer(video.playbackId)}
+                  key={videoId(video)}
+                  src={videoPlayer(video)}
                   title={name}
                   allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
                   allowFullScreen
@@ -73,9 +73,11 @@ function ModalContent({ project, onClose }: { project: Project; onClose: () => v
               </div>
             ) : (
               <div className="relative flex aspect-[4/5] w-full max-w-md items-center justify-center rounded-2xl border border-line bg-ink-2">
-                <div className="relative h-1/3 w-2/3">
-                  <Image src={project.logo} alt={name} fill sizes="320px" className="object-contain" />
-                </div>
+                {project.logo && (
+                  <div className="relative h-1/3 w-2/3">
+                    <Image src={project.logo} alt={name} fill sizes="320px" className="object-contain" />
+                  </div>
+                )}
               </div>
             )}
 

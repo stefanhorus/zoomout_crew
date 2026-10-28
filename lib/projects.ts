@@ -3,19 +3,28 @@ import { withBasePath } from "@/lib/base-path";
 // Proiectele din portofoliu - folosite pe homepage (Selected work), în pagina Portfolio și la Services (Related work).
 // Titlurile și descrierile sunt în LanguageContext, la cheile `${key}.title` / `${key}.description`.
 
-export type ProjectCategory = "commercial" | "events" | "real-estate";
+export type ProjectCategory = "commercial" | "events" | "real-estate" | "music-videos";
 
-export interface ProjectVideo {
+// Video găzduit pe Mux
+export interface MuxVideo {
   playbackId: string;
   thumbTime: number; // secunda din video folosită ca imagine de copertă
   landscape?: boolean; // video 16:9 (restul sunt verticale, 9:16)
 }
 
+// Video de pe YouTube (videoclipurile publicate pe canalele artiștilor)
+export interface YouTubeVideo {
+  youtubeId: string;
+  landscape?: boolean;
+}
+
+export type ProjectVideo = MuxVideo | YouTubeVideo;
+
 export interface Project {
   id: number;
   key: string;
   categories: ProjectCategory[];
-  logo: string;
+  logo?: string; // afișat când proiectul n-are video sau poze
   videos?: ProjectVideo[];
   images?: string[];
   featured?: boolean; // apare în "Selected work" pe homepage
@@ -51,6 +60,18 @@ export const PROJECTS: Project[] = [
     key: "portfolio.project14", // welovepng
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/welovepng.png"),
+  },
+  {
+    id: 15,
+    key: "portfolio.project15", // mara feat. lurre - haide, hai!
+    categories: ["music-videos"],
+    videos: [{ youtubeId: "FMYPoF7MZXA", landscape: true }],
+  },
+  {
+    id: 16,
+    key: "portfolio.project16", // cj's - efort
+    categories: ["music-videos"],
+    videos: [{ youtubeId: "pA2Szfcner0", landscape: true }],
   },
   {
     id: 1,
@@ -159,9 +180,21 @@ export function muxPlayer(playbackId: string) {
   return `https://player.mux.com/${playbackId}?autoplay=true&accent-color=%23ff4a2b`;
 }
 
+export const isYouTube = (video: ProjectVideo): video is YouTubeVideo => "youtubeId" in video;
+
+export const videoId = (video: ProjectVideo) => (isYouTube(video) ? video.youtubeId : video.playbackId);
+
+// Playerul din fereastra proiectului (youtube-nocookie nu pune cookie-uri până la redare)
+export function videoPlayer(video: ProjectVideo) {
+  return isYouTube(video)
+    ? `https://www.youtube-nocookie.com/embed/${video.youtubeId}?autoplay=1&rel=0&playsinline=1`
+    : muxPlayer(video.playbackId);
+}
+
 // Imaginea de copertă a unui proiect (pentru carduri verticale)
 export function projectCover(project: Project, width = 640): string | null {
   const video = project.videos?.[0];
+  if (video && isYouTube(video)) return `https://i.ytimg.com/vi/${video.youtubeId}/maxresdefault.jpg`;
   if (video) {
     return video.landscape
       ? muxThumb(video.playbackId, { time: video.thumbTime, width, height: Math.round((width * 16) / 9), smartcrop: true })

@@ -17,6 +17,7 @@ const FILTERS: Array<{ value: Filter; labelKey: string }> = [
   { value: "all", labelKey: "portfolio.allProjects" },
   { value: "commercial", labelKey: "portfolio.commercial" },
   { value: "events", labelKey: "portfolio.events" },
+  { value: "music-videos", labelKey: "portfolio.musicVideos" },
   { value: "real-estate", labelKey: "portfolio.realEstate" },
 ];
 
