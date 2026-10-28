@@ -6,6 +6,7 @@ import { EASE } from "@/components/motion/ease";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitReveal } from "@/components/motion/SplitReveal";
+import { LensBackdrop } from "@/components/site/LensBackdrop";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { SERVICES } from "@/lib/services";
 import { withBasePath } from "@/lib/base-path";
@@ -54,6 +55,7 @@ export default function Contact() {
 
   return (
     <section className="container-site pb-28 pt-36 md:pb-40 md:pt-48">
+      <LensBackdrop />
       <div className="grid gap-16 lg:grid-cols-12">
         <div className="lg:col-span-5">
           <p className="kicker flex items-center gap-2">

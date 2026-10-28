@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { SplitReveal } from "@/components/motion/SplitReveal";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { LensBackdrop } from "./LensBackdrop";
 
 export function NotFoundContent() {
   const { t } = useLanguage();
 
   return (
     <section className="container-site flex min-h-[100svh] flex-col justify-center pb-24 pt-36">
+      <LensBackdrop />
       <p className="kicker flex items-center gap-2">
         <span className="rec-dot h-1.5 w-1.5" /> 404 · {t("notFound.title")}
       </p>

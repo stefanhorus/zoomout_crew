@@ -30,8 +30,8 @@
     scrollbar-width: thin;
   }
 
+  /* Fundalul negru e pe html: body rămâne transparent ca fundalurile fixe (z-index -1, ex. obiectivul) să se vadă */
   body {
-    background: var(--color-ink);
     color: var(--color-paper);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -235,6 +235,26 @@
 
 .hero-video[data-ready] {
   opacity: 1;
+}
+
+/* Obiectivul din fundalul paginilor cu mult text (LensBackdrop): centrul e pe marginea din dreapta, deci se vede
+   doar jumătatea care încadrează textul. Pe telefon ochiul stă în colțul din dreapta sus. */
+.lens-backdrop {
+  position: fixed;
+  z-index: -1;
+  pointer-events: none;
+  aspect-ratio: 1;
+  width: 175vmin;
+  left: calc(100vw - 87.5vmin);
+  top: calc(17vh - 87.5vmin);
+}
+
+@media (min-width: 768px) {
+  .lens-backdrop {
+    width: 140vmin;
+    left: calc(100vw - 70vmin);
+    top: calc(48vh - 70vmin);
+  }
 }
 
 /* Preloader-ul se afișează o singură dată pe sesiune (în afara straturilor, ca să bată utilitarele Tailwind) */

@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { Reveal } from "../motion/Reveal";
 import { SplitReveal } from "../motion/SplitReveal";
+import { LensBackdrop } from "./LensBackdrop";
 
 interface PageHeaderProps {
   kicker: string;
@@ -11,10 +12,12 @@ interface PageHeaderProps {
   children?: ReactNode;
 }
 
-// Antetul paginilor interioare: kicker, titlu mare care apare cuvânt cu cuvânt, intro
+// Antetul paginilor interioare: kicker, titlu mare care apare cuvânt cu cuvânt, intro.
+// Aduce și fundalul cu obiectivul (fix, în spatele întregii pagini).
 export function PageHeader({ kicker, title, intro, children }: PageHeaderProps) {
   return (
     <section className="container-site pb-14 pt-36 md:pb-20 md:pt-48">
+      <LensBackdrop />
       <p className="kicker flex items-center gap-2">
         <span className="rec-dot h-1.5 w-1.5" /> {kicker}
       </p>

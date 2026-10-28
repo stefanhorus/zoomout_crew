@@ -125,7 +125,7 @@ export default function RootLayout({
         {/* LocalBusiness Structured Data for SEO */}
         <StructuredData type="LocalBusiness" data={{}} />
       </head>
-      <body className={`${display.variable} ${body.variable} ${serif.variable} flex min-h-screen flex-col bg-ink text-paper antialiased`}>
+      <body className={`${display.variable} ${body.variable} ${serif.variable} flex min-h-screen flex-col text-paper antialiased`}>
         <LanguageProvider>
           <CurrencyProvider>
             <CartProvider>
