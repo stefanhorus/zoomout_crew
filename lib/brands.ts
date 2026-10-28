@@ -17,4 +17,5 @@ export const BRANDS = [
   { name: "Barbaro", logo: withBasePath("/assets/brands/barbaro.png") },
   { name: "Risque", logo: withBasePath("/assets/brands/risque.png") },
   { name: "One Society", logo: withBasePath("/assets/brands/onesociety.png") },
+  { name: "WeLovePNG", logo: withBasePath("/assets/brands/welovepng.png") },
 ];
