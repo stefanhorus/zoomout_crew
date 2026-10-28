@@ -25,12 +25,16 @@ const nextConfig: NextConfig = {
   // Power optimizations
   poweredByHeader: false,
 
-  // zoomoutcrew.com/2 afișează noul design (v2), găzduit separat în proiectul Vercel „zoomout-crew-v2”
+  // zoomoutcrew.com/2 afișează noul design (v2), găzduit separat în proiectul Vercel „zoomout-crew-v2”.
+  // beforeFiles: pe Vercel, cererile prin care paginile se preîncarcă (antetul RSC) ajung la v2 neschimbate;
+  // altfel Vercel le modifică adresa înainte să le trimită, iar v2 răspunde cu 404.
   async rewrites() {
-    return [
-      { source: '/2', destination: 'https://zoomout-crew-v2.vercel.app/2' },
-      { source: '/2/:path*', destination: 'https://zoomout-crew-v2.vercel.app/2/:path*' },
-    ];
+    return {
+      beforeFiles: [
+        { source: '/2', destination: 'https://zoomout-crew-v2.vercel.app/2' },
+        { source: '/2/:path*', destination: 'https://zoomout-crew-v2.vercel.app/2/:path*' },
+      ],
+    };
   },
 
   // Headers pentru fișiere video
