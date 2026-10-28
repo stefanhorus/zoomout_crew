@@ -37,10 +37,12 @@ const GAZE_SPRING = { stiffness: 220, damping: 24, mass: 0.6 };
 // Clipitul: conturul ochiului se închide și se deschide repede
 const BLINK = { duration: 0.26, ease: "easeInOut" } as const;
 
-// O privire scurtă într-o parte (mai des spre pagină, la stânga)
-const nextGaze = () => {
-  const side = Math.random() < 0.65 ? -1 : 1;
-  return { x: side * (20 + Math.random() * 24), y: -12 + Math.random() * 24 };
+// O tură de priviri: trei spre stânga, spre pagină (în sus, drept, în jos) și una singură spre dreapta, în ordine aleatorie
+const gazeLoop = () => {
+  const toLeft = [-9, 0, 9].map((y) => ({ x: -(28 + Math.random() * 16), y: y - 2 + Math.random() * 4 }));
+  const loop = toLeft.sort(() => Math.random() - 0.5);
+  loop.splice(Math.floor(Math.random() * 4), 0, { x: 20 + Math.random() * 14, y: -6 + Math.random() * 12 });
+  return loop;
 };
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -89,9 +91,11 @@ export function LensBackdrop() {
 
     const glance = async () => {
       await wait(1500);
+      let queue: Array<{ x: number; y: number }> = [];
       while (active) {
         if (visible() && idle()) {
-          const target = nextGaze();
+          if (!queue.length) queue = gazeLoop();
+          const target = queue.shift() ?? { x: 0, y: 0 };
           lookAt(target.x, target.y);
           await wait(800 + Math.random() * 900);
           if (active && idle()) lookAt(0, 0);
