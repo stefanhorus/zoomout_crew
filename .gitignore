@@ -46,3 +46,6 @@ videos/*
 !videos/*.js
 !videos/*.ts
 public/_next-video
+
+# Fișierele de lucru ale Taste Skill (direcția, capturile inspectorului)
+/.taste-skill/

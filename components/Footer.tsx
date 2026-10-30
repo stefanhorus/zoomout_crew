@@ -3,6 +3,7 @@
 import { useLenis } from "lenis/react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { SERVICES } from "@/lib/services";
 import { EASE } from "./motion/ease";
@@ -26,12 +27,16 @@ const SOCIALS = [
 export default function Footer() {
   const { t } = useLanguage();
   const lenis = useLenis();
+  const pathname = usePathname();
   const year = new Date().getFullYear();
 
   const backToTop = () => {
     if (lenis) lenis.scrollTo(0, { duration: 1.6 });
     else window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  // /home2 are subsolul ei (components/home2/TileFooter.tsx)
+  if (pathname === "/home2") return null;
 
   return (
     <footer className="relative overflow-hidden border-t border-line bg-ink">

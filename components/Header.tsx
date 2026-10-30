@@ -147,7 +147,14 @@ export default function Header() {
         animate={{ y: hidden && !menuOpen ? "-110%" : "0%" }}
         transition={{ duration: 0.55, ease: EASE }}
         className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-500 ${
-          scrolled && !menuOpen ? "border-b border-line bg-ink/70 backdrop-blur-xl" : "border-b border-transparent"
+          // Pe /home2 (după principiile Taste Skill) bara e plină, fără sticlă și fără linie dedesubt
+          pathname === "/home2"
+            ? scrolled && !menuOpen
+              ? "bg-ink"
+              : ""
+            : scrolled && !menuOpen
+              ? "border-b border-line bg-ink/70 backdrop-blur-xl"
+              : "border-b border-transparent"
         }`}
       >
         <div className="container-site flex h-16 items-center justify-between gap-6 md:h-20">
@@ -182,7 +189,7 @@ export default function Header() {
             <LanguageToggle className="hidden md:flex" />
             {showCurrency && <CurrencyToggle className="hidden md:flex" />}
             {cartButton}
-            <Link href="/contact" className="btn-primary btn-sm hidden md:inline-flex">
+            <Link href="/contact" className={`btn-primary btn-sm hidden ${pathname === "/home2" ? "" : "md:inline-flex"}`}>
               {t("common.quote")}
             </Link>
             <button
