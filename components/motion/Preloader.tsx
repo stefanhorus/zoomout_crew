@@ -21,9 +21,8 @@ function announceIntroDone() {
   window.dispatchEvent(new Event("intro:done"));
 }
 
-// Scriptul din <head> ascunde intro-ul înainte de prima randare pentru cine l-a văzut deja în sesiune.
-// Pagina de test /home2 (după Taste Skill) n-are intro și nici granulație: titlul trebuie să se vadă din primul cadru.
-export const introSeenScript = `try{var h=document.documentElement;if(location.pathname.indexOf("/home2")>-1)h.classList.add("intro-seen","home2-page");if(sessionStorage.getItem("${SESSION_KEY}")||matchMedia("(prefers-reduced-motion: reduce)").matches)h.classList.add("intro-seen")}catch(e){}`;
+// Scriptul din <head> ascunde intro-ul înainte de prima randare pentru cine l-a văzut deja în sesiune
+export const introSeenScript = `try{if(sessionStorage.getItem("${SESSION_KEY}")||matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("intro-seen")}catch(e){}`;
 
 // Hero-ul își pornește animația abia după intro
 export function useIntroDone() {
