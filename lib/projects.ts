@@ -87,8 +87,9 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 19,
-    key: "portfolio.project19", // gio$anu - priză (linkul de YouTube vine mai târziu)
+    key: "portfolio.project19", // geo$anu - prrizzaa (linkul de YouTube vine mai târziu; până atunci, thumbnail-ul)
     categories: ["music-videos"],
+    images: [withBasePath("/assets/photos/geosanu-prrizzaa.jpg")],
   },
   {
     id: 1,
