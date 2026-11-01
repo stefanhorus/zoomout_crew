@@ -116,7 +116,7 @@ export const PROJECTS: Project[] = [
   {
     id: 3,
     key: "portfolio.project9", // panoramic360
-    categories: ["commercial"],
+    categories: ["events", "commercial"],
     logo: withBasePath("/assets/brands/panoramic360.jpg"),
     videos: [{ playbackId: "iQW9j3rKkGubagCrFEPgfWxQtpnzW5PFdTWw00SpAliA", thumbTime: 3 }],
     featured: true,
