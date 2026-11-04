@@ -21,14 +21,15 @@ import { SplitReveal } from "../motion/SplitReveal";
 import { HeroVideo } from "./HeroVideo";
 import { withBasePath } from "@/lib/base-path";
 
-// Buclele din mozaic sunt generate cu scripts/make-mosaic-tile.py, fiecare în variantă orizontală (desktop) și
+// Buclele din mozaic sunt generate cu scripts/encode-mosaic-loops.sh, fiecare în variantă orizontală (desktop) și
 // verticală (telefon). La înlocuirea lor, crește TILES_VERSION ca vizitatorii să nu primească varianta veche din cache.
 const TILES_VERSION = "1";
 const TILES_DIR = withBasePath("/assets/v2/tiles");
 const PORTRAIT = "(orientation: portrait)";
 
 // Mozaicul din jurul video-ului: proiecte de client + filmări aeriene proprii. Poziția 4 (centrul) e video-ul.
-const TILES = ["nyc", "casanumaa", "sardinia", "rooftop", null, "panoramic", "hollywood", "outdoor", "lifeispink"];
+// Buclele montate în DaVinci (scripts/encode-mosaic-loops.sh), numerotate de la stânga la dreapta, rând cu rând
+const TILES = ["loop-1", "loop-2", "loop-3", "loop-4", null, "loop-5", "loop-6", "loop-7", "loop-8"];
 
 // Vizitatorul a cerut economie de date (Chrome pe Android, „Data Saver”): rămân doar copertele
 const savesData = () => (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
