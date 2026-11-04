@@ -46,11 +46,16 @@ const TILES: Array<{ desktop: string; phone: string } | null> = [
 // Vizitatorul a cerut economie de date (Chrome pe Android, „Data Saver”): rămân doar copertele
 const savesData = () => (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
 
+// Buclele sunt și în HEVC (cu ~30% mai mici, decodate hardware pe Mac, iPhone și majoritatea telefoanelor);
+// browserele fără HEVC (de obicei Firefox) primesc H.264
+const HEVC = 'video/mp4; codecs="hvc1.1.6.L93.90"';
+
 const zoomEase = cubicBezier(0.42, 0, 0.3, 1);
 
-// O celulă din mozaic: coperta (primul cadru al buclei) și deasupra bucla, care se încarcă abia când e nevoie de ea
-// și rulează doar cât timp se vede
-function MosaicTile({ desktop, phone, play, portrait }: { desktop: string; phone: string; play: boolean; portrait: boolean }) {
+// O celulă din mozaic: coperta (primul cadru al buclei) și deasupra bucla, care se descarcă abia când e nevoie de ea
+// (`preload`: dinainte, fără s-o pornească) și rulează doar cât timp se vede (`play`)
+function MosaicTile(props: { desktop: string; phone: string; play: boolean; preload: boolean; portrait: boolean }) {
+  const { desktop, phone, play, preload, portrait } = props;
   const videoRef = useRef<HTMLVideoElement>(null);
   const common = { alt: "", fill: true, sizes: "34vw" } as const;
   const { props: poster } = getImageProps({ ...common, src: `${TILES_DIR}/${desktop}.jpg` });
@@ -59,19 +64,22 @@ function MosaicTile({ desktop, phone, play, portrait }: { desktop: string; phone
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    if (!play || savesData()) {
+    if ((!play && !preload) || savesData()) {
       video.pause();
       return;
     }
     const file = portrait ? `${phone}-portrait` : desktop;
-    const src = new URL(`${TILES_DIR}/${file}.mp4?v=${TILES_VERSION}`, window.location.href).href;
+    const format = video.canPlayType(HEVC) ? "hevc.mp4" : "mp4";
+    const src = new URL(`${TILES_DIR}/${file}.${format}?v=${TILES_VERSION}`, window.location.href).href;
     if (video.src !== src) {
       // Și la rotirea telefonului: coperta potrivită rămâne la vedere până pornește noul fișier
       video.removeAttribute("data-ready");
+      video.preload = "auto";
       video.src = src;
     }
-    video.play().catch(() => {});
-  }, [desktop, phone, play, portrait]);
+    if (play) video.play().catch(() => {});
+    else video.pause();
+  }, [desktop, phone, play, preload, portrait]);
 
   return (
     <div className="relative overflow-hidden rounded-[16px] bg-ink-2">
@@ -123,6 +131,27 @@ export function ZoomHero() {
   useMotionValueEvent(scrollYProgress, "change", (progress) => setScrolledIn(progress > 0.01));
   const playTiles = sectionInView && scrolledIn && !reducedMotion;
 
+  // Pe desktop buclele se descarcă dinainte, imediat ce video-ul din centru nu mai folosește rețeaua (s-a descărcat
+  // sau browserul are destul), ca să fie gata până ajungi la mozaic fără să-i încetinească pornirea. Pe telefon
+  // așteaptă derularea, ca să nu consume date mobile degeaba.
+  const [heroIdle, setHeroIdle] = useState(false);
+  useEffect(() => {
+    const video = centerRef.current?.querySelector("video");
+    if (!video) return;
+    const check = () => {
+      if (video.networkState === video.NETWORK_IDLE && video.readyState >= video.HAVE_ENOUGH_DATA) setHeroIdle(true);
+    };
+    const timer = setTimeout(check, 0);
+    video.addEventListener("suspend", check);
+    video.addEventListener("canplaythrough", check);
+    return () => {
+      clearTimeout(timer);
+      video.removeEventListener("suspend", check);
+      video.removeEventListener("canplaythrough", check);
+    };
+  }, []);
+  const preloadTiles = heroIdle && !portrait && !reducedMotion;
+
   useEffect(() => {
     const cell = centerRef.current;
     if (!cell) return;
@@ -154,7 +183,14 @@ export function ZoomHero() {
                 <HeroVideo />
               </motion.div>
             ) : (
-              <MosaicTile key={tile.desktop} desktop={tile.desktop} phone={tile.phone} play={playTiles} portrait={portrait} />
+              <MosaicTile
+                key={tile.desktop}
+                desktop={tile.desktop}
+                phone={tile.phone}
+                play={playTiles}
+                preload={preloadTiles}
+                portrait={portrait}
+              />
             )
           )}
         </motion.div>
