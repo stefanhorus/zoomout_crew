@@ -27,9 +27,21 @@ const TILES_VERSION = "1";
 const TILES_DIR = withBasePath("/assets/v2/tiles");
 const PORTRAIT = "(orientation: portrait)";
 
-// Mozaicul din jurul video-ului: proiecte de client + filmări aeriene proprii. Poziția 4 (centrul) e video-ul.
-// Buclele montate în DaVinci (scripts/encode-mosaic-loops.sh), numerotate de la stânga la dreapta, rând cu rând
-const TILES = ["loop-1", "loop-2", "loop-3", "loop-4", null, "loop-5", "loop-6", "loop-7", "loop-8"];
+// Mozaicul din jurul video-ului, de la stânga la dreapta, rând cu rând; poziția 4 (centrul) e video-ul.
+// Buclele montate în DaVinci (scripts/encode-mosaic-loops.sh): `desktop` = loop-N.mp4 din exportul orizontal N,
+// `phone` = loop-N-portrait.mp4 din exportul vertical N. Ordinea poate fi alta pe telefon decât pe desktop.
+// Pe desktop, tripticele (7 și 8) stau de o parte și de alta a centrului.
+const TILES: Array<{ desktop: string; phone: string } | null> = [
+  { desktop: "loop-1", phone: "loop-1" },
+  { desktop: "loop-2", phone: "loop-2" },
+  { desktop: "loop-3", phone: "loop-3" },
+  { desktop: "loop-7", phone: "loop-4" },
+  null,
+  { desktop: "loop-8", phone: "loop-5" },
+  { desktop: "loop-6", phone: "loop-6" },
+  { desktop: "loop-4", phone: "loop-7" },
+  { desktop: "loop-5", phone: "loop-8" },
+];
 
 // Vizitatorul a cerut economie de date (Chrome pe Android, „Data Saver”): rămân doar copertele
 const savesData = () => (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
@@ -38,11 +50,11 @@ const zoomEase = cubicBezier(0.42, 0, 0.3, 1);
 
 // O celulă din mozaic: coperta (primul cadru al buclei) și deasupra bucla, care se încarcă abia când e nevoie de ea
 // și rulează doar cât timp se vede
-function MosaicTile({ name, play, portrait }: { name: string; play: boolean; portrait: boolean }) {
+function MosaicTile({ desktop, phone, play, portrait }: { desktop: string; phone: string; play: boolean; portrait: boolean }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const common = { alt: "", fill: true, sizes: "34vw" } as const;
-  const { props: poster } = getImageProps({ ...common, src: `${TILES_DIR}/${name}.jpg` });
-  const { props: portraitPoster } = getImageProps({ ...common, src: `${TILES_DIR}/${name}-portrait.jpg` });
+  const { props: poster } = getImageProps({ ...common, src: `${TILES_DIR}/${desktop}.jpg` });
+  const { props: portraitPoster } = getImageProps({ ...common, src: `${TILES_DIR}/${phone}-portrait.jpg` });
 
   useEffect(() => {
     const video = videoRef.current;
@@ -51,14 +63,15 @@ function MosaicTile({ name, play, portrait }: { name: string; play: boolean; por
       video.pause();
       return;
     }
-    const src = new URL(`${TILES_DIR}/${name}${portrait ? "-portrait" : ""}.mp4?v=${TILES_VERSION}`, window.location.href).href;
+    const file = portrait ? `${phone}-portrait` : desktop;
+    const src = new URL(`${TILES_DIR}/${file}.mp4?v=${TILES_VERSION}`, window.location.href).href;
     if (video.src !== src) {
       // Și la rotirea telefonului: coperta potrivită rămâne la vedere până pornește noul fișier
       video.removeAttribute("data-ready");
       video.src = src;
     }
     video.play().catch(() => {});
-  }, [name, play, portrait]);
+  }, [desktop, phone, play, portrait]);
 
   return (
     <div className="relative overflow-hidden rounded-[16px] bg-ink-2">
@@ -141,7 +154,7 @@ export function ZoomHero() {
                 <HeroVideo />
               </motion.div>
             ) : (
-              <MosaicTile key={tile} name={tile} play={playTiles} portrait={portrait} />
+              <MosaicTile key={tile.desktop} desktop={tile.desktop} phone={tile.phone} play={playTiles} portrait={portrait} />
             )
           )}
         </motion.div>
