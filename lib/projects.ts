@@ -57,9 +57,10 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 14,
-    key: "portfolio.project14", // welovepng
+    key: "portfolio.project14", // welovepng (clipul e în al doilea cont Mux, cel din .env.local)
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/welovepng.png"),
+    videos: [{ playbackId: "Kq4qczREZagy4ZMILNX5BFwXeBrb2koFITr65SYQcpw", thumbTime: 20.9, landscape: true }],
   },
   {
     id: 15,
