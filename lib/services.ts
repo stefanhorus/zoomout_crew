@@ -9,7 +9,7 @@ export interface ServiceDefinition {
 }
 
 export const SERVICES: ServiceDefinition[] = [
-  { key: "commercials", image: withBasePath("/assets/services/hour.jpg"), showLocation: true, related: [1, 3, 11] },
+  { key: "commercials", image: withBasePath("/assets/services/welovepng-bts.jpg"), showLocation: true, related: [1, 3, 11] },
   { key: "socialMedia", image: withBasePath("/assets/adventures/ams1tiny.png"), showLocation: true, related: [12, 1, 2] },
   { key: "events", image: withBasePath("/assets/photos/ratuste1.png"), showLocation: true, related: [4, 6, 10] },
   { key: "musicVideos", image: withBasePath("/assets/backgrounds/2.jpg"), showLocation: true, related: [18, 15, 17] },
