@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useScroll, useTransform } from "motion/react";
+import { motion, useInView, useMotionValue, useScroll, useTransform } from "motion/react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -24,6 +24,9 @@ export function SelectedWork() {
 
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end end"] });
   const x = useTransform(() => -scrollYProgress.get() * distance.get());
+  // Copertele se descarcă toate deodată (și cele încă ascunse în dreapta), dar abia când secțiunea e la un ecran și
+  // jumătate distanță; până atunci banda rămâne pentru video-ul de sus
+  const near = useInView(sectionRef, { margin: "0px 0px 150% 0px", once: true });
 
   useEffect(() => {
     const track = trackRef.current;
@@ -89,7 +92,7 @@ export function SelectedWork() {
                 project={project}
                 index={index + 1}
                 onOpen={setSelected}
-                eager
+                eager={near}
                 className="aspect-[9/16] h-[min(60svh,640px)] shrink-0"
               />
             ))}
@@ -111,7 +114,7 @@ export function SelectedWork() {
                 project={project}
                 index={index + 1}
                 onOpen={setSelected}
-                eager
+                eager={near}
                 className="aspect-[9/16] w-[72vw] shrink-0 snap-start sm:w-[44vw] md:w-[32vw]"
               />
             ))}

@@ -50,7 +50,7 @@ export function Preloader() {
       return;
     }
     const controls = animate(0, 100, {
-      duration: 1.5,
+      duration: 1,
       ease: EASE_IN_OUT,
       onUpdate: (value) => setCount(Math.round(value)),
       onComplete: () => {
@@ -68,7 +68,7 @@ export function Preloader() {
       className="preloader fixed inset-0 z-[100] flex flex-col justify-between bg-ink p-6 md:p-10"
       initial={{ y: "0%" }}
       animate={{ y: phase === "exit" ? "-100%" : "0%" }}
-      transition={{ duration: 1.05, ease: EASE }}
+      transition={{ duration: 0.85, ease: EASE }}
       onAnimationComplete={() => {
         if (phase !== "exit") return;
         try {

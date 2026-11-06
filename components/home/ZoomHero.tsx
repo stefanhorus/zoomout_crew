@@ -43,8 +43,12 @@ const TILES: Array<{ desktop: string; phone: string } | null> = [
   { desktop: "loop-5", phone: "loop-8" },
 ];
 
+type NetworkInfo = { saveData?: boolean; effectiveType?: string };
+const network = () => (navigator as Navigator & { connection?: NetworkInfo }).connection;
 // Vizitatorul a cerut economie de date (Chrome pe Android, „Data Saver”): rămân doar copertele
-const savesData = () => (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+const savesData = () => network()?.saveData === true;
+// Pe rețele lente (2G/3G, unde browserul o spune) buclele nu se descarcă dinainte, doar la scroll
+const slowNetwork = () => /(^|-)(2g|3g)$/.test(network()?.effectiveType ?? "");
 
 // Buclele sunt și în HEVC (cu ~30% mai mici, decodate hardware pe Mac, iPhone și majoritatea telefoanelor);
 // browserele fără HEVC (de obicei Firefox) primesc H.264
@@ -54,8 +58,8 @@ const zoomEase = cubicBezier(0.42, 0, 0.3, 1);
 
 // O celulă din mozaic: coperta (primul cadru al buclei) și deasupra bucla, care se descarcă abia când e nevoie de ea
 // (`preload`: dinainte, fără s-o pornească) și rulează doar cât timp se vede (`play`)
-function MosaicTile(props: { desktop: string; phone: string; play: boolean; preload: boolean; portrait: boolean }) {
-  const { desktop, phone, play, preload, portrait } = props;
+function MosaicTile(props: { desktop: string; phone: string; play: boolean; preload: boolean; poster: boolean; portrait: boolean }) {
+  const { desktop, phone, play, preload, poster: showPoster, portrait } = props;
   const videoRef = useRef<HTMLVideoElement>(null);
   const common = { alt: "", fill: true, sizes: "34vw" } as const;
   const { props: poster } = getImageProps({ ...common, src: `${TILES_DIR}/${desktop}.jpg` });
@@ -64,7 +68,7 @@ function MosaicTile(props: { desktop: string; phone: string; play: boolean; prel
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    if ((!play && !preload) || savesData()) {
+    if ((!play && !(preload && !slowNetwork())) || savesData()) {
       video.pause();
       return;
     }
@@ -83,11 +87,14 @@ function MosaicTile(props: { desktop: string; phone: string; play: boolean; prel
 
   return (
     <div className="relative overflow-hidden rounded-[16px] bg-ink-2">
-      <picture>
-        <source media={PORTRAIT} srcSet={portraitPoster.srcSet || portraitPoster.src} sizes="34vw" />
-        {/* eslint-disable-next-line jsx-a11y/alt-text -- alt-ul vine din poster (decorativ, gol) */}
-        <img {...poster} className="object-cover" />
-      </picture>
+      {/* Coperta abia când mozaicul urmează să se vadă: la început celulele sunt în afara ecranului */}
+      {showPoster && (
+        <picture>
+          <source media={PORTRAIT} srcSet={portraitPoster.srcSet || portraitPoster.src} sizes="34vw" />
+          {/* eslint-disable-next-line jsx-a11y/alt-text -- alt-ul vine din poster (decorativ, gol) */}
+          <img {...poster} className="object-cover" />
+        </picture>
+      )}
       <video
         ref={videoRef}
         className="hero-video"
@@ -128,12 +135,16 @@ export function ZoomHero() {
   const portrait = useMediaQuery(PORTRAIT);
   const sectionInView = useInView(sectionRef);
   const [scrolledIn, setScrolledIn] = useState(false);
-  useMotionValueEvent(scrollYProgress, "change", (progress) => setScrolledIn(progress > 0.01));
+  const [everScrolled, setEverScrolled] = useState(false);
+  useMotionValueEvent(scrollYProgress, "change", (progress) => {
+    setScrolledIn(progress > 0.01);
+    if (progress > 0.01) setEverScrolled(true);
+  });
   const playTiles = sectionInView && scrolledIn && !reducedMotion;
 
-  // Pe desktop buclele se descarcă dinainte, imediat ce video-ul din centru nu mai folosește rețeaua (s-a descărcat
-  // sau browserul are destul), ca să fie gata până ajungi la mozaic fără să-i încetinească pornirea. Pe telefon
-  // așteaptă derularea, ca să nu consume date mobile degeaba.
+  // Buclele (și copertele lor) se descarcă dinainte, imediat ce video-ul din centru nu mai folosește rețeaua (s-a
+  // descărcat sau browserul are destul), ca să fie gata până ajungi la mozaic fără să-i încetinească pornirea.
+  // Aproape oricine derulează mai departe de primul ecran, așa că merită și pe telefon (fără Data Saver / 2G-3G).
   const [heroIdle, setHeroIdle] = useState(false);
   useEffect(() => {
     const video = centerRef.current?.querySelector("video");
@@ -150,7 +161,8 @@ export function ZoomHero() {
       video.removeEventListener("canplaythrough", check);
     };
   }, []);
-  const preloadTiles = heroIdle && !portrait && !reducedMotion;
+  const preloadTiles = heroIdle && !reducedMotion;
+  const showPosters = (preloadTiles || everScrolled) && !reducedMotion;
 
   useEffect(() => {
     const cell = centerRef.current;
@@ -189,6 +201,7 @@ export function ZoomHero() {
                 phone={tile.phone}
                 play={playTiles}
                 preload={preloadTiles}
+                poster={showPosters}
                 portrait={portrait}
               />
             )
