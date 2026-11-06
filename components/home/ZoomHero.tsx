@@ -23,7 +23,7 @@ import { withBasePath } from "@/lib/base-path";
 
 // Buclele din mozaic sunt generate cu scripts/encode-mosaic-loops.sh, fiecare în variantă orizontală (desktop) și
 // verticală (telefon). La înlocuirea lor, crește TILES_VERSION ca vizitatorii să nu primească varianta veche din cache.
-const TILES_VERSION = "1";
+const TILES_VERSION = "2";
 const TILES_DIR = withBasePath("/assets/v2/tiles");
 const PORTRAIT = "(orientation: portrait)";
 
