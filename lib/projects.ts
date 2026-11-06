@@ -25,6 +25,7 @@ export interface Project {
   key: string;
   categories: ProjectCategory[];
   logo?: string; // afișat când proiectul n-are video sau poze
+  cover?: string; // copertă aleasă (ex. thumbnail-ul oficial); altfel cadrul thumbTime din primul video sau prima poză
   videos?: ProjectVideo[];
   images?: string[];
   featured?: boolean; // apare în "Selected work" pe homepage
@@ -64,9 +65,10 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 15,
-    key: "portfolio.project15", // mara feat. lurre - haide, hai!
+    key: "portfolio.project15", // mara feat. lurre - haide, hai! (clipul e în al doilea cont Mux)
     categories: ["music-videos"],
-    videos: [{ youtubeId: "FMYPoF7MZXA", landscape: true }],
+    cover: "https://i.ytimg.com/vi/FMYPoF7MZXA/maxresdefault.jpg", // thumbnail-ul oficial de pe YouTube
+    videos: [{ playbackId: "M00nUAy00JC01Ro02R0001QtelvwyWrqT9Y01K4AwlFN9USKVQ", thumbTime: 106, landscape: true }],
   },
   {
     id: 16,
@@ -88,9 +90,10 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 19,
-    key: "portfolio.project19", // geo$anu - prrizzaa (linkul de YouTube vine mai târziu; până atunci, thumbnail-ul)
+    key: "portfolio.project19", // geo$anu - prrizzaa (clipul e în al doilea cont Mux)
     categories: ["music-videos"],
-    images: [withBasePath("/assets/photos/geosanu-prrizzaa.jpg")],
+    cover: withBasePath("/assets/photos/geosanu-prrizzaa.jpg"), // thumbnail-ul oficial al piesei
+    videos: [{ playbackId: "hpB027Kl8fPmSbVKoMSMw7u01qfilw1xxJNr1WPwPyt02M", thumbTime: 148, landscape: true }],
   },
   {
     id: 1,
@@ -212,6 +215,7 @@ export function videoPlayer(video: ProjectVideo) {
 
 // Imaginea de copertă a unui proiect (pentru carduri verticale)
 export function projectCover(project: Project, width = 640): string | null {
+  if (project.cover) return project.cover;
   const video = project.videos?.[0];
   if (video && isYouTube(video)) return `https://i.ytimg.com/vi/${video.youtubeId}/maxresdefault.jpg`;
   if (video) {
