@@ -52,9 +52,16 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 13,
-    key: "portfolio.project13", // one society
+    key: "portfolio.project13", // one society (al doilea cont Mux; cele două reel-uri sunt luate de pe Instagram, în 720p)
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/onesociety.png"),
+    // Lime bike la 0:16.5, decupat pe mijloc: hanoracul One Society cu Tower Bridge în spate
+    cover: withBasePath("/assets/photos/onesociety-limebike.jpg"),
+    videos: [
+      { playbackId: "t202Ew4ykBTdRUCOOWbEn801eJDKhj9NJDNUs00HpbjXD00", thumbTime: 16, landscape: true }, // Lime bike
+      { playbackId: "wQlXWsZMu02MfBrxZyimdpL6KJvWcE2uXwBhOLrmbB00A", thumbTime: 11, landscape: true }, // Londra noaptea
+      { playbackId: "ucb142bFWhqBt00MAwmxpgzlsNgcGRtO9DszKaFJ8euU", thumbTime: 4, landscape: true }, // pista de atletism
+    ],
   },
   {
     id: 14,
