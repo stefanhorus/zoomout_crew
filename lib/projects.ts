@@ -84,9 +84,11 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 18,
-    key: "portfolio.project18", // nico ramírez - transylvania sunset
+    key: "portfolio.project18", // nico ramírez - transylvania sunset (set-ul întreg, în al doilea cont Mux)
     categories: ["music-videos", "events"],
-    videos: [{ youtubeId: "XD3L5bj4om0", landscape: true }],
+    // Cadrul de la 0:20 decupat pe mijloc: decupajul automat Mux alegea difuzorul din stânga, fără DJ
+    cover: withBasePath("/assets/photos/nico-transylvania-sunset.jpg"),
+    videos: [{ playbackId: "eXh14zrJ3KDI3neux2RFOT021Sg3XkpxBISF2JBblsmk", thumbTime: 20, landscape: true }],
   },
   {
     id: 19,
