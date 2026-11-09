@@ -132,6 +132,8 @@ export const PROJECTS: Project[] = [
       { playbackId: "ye3gKVLY2eF9k8wYm58kSLvTbuIWC3RUvmo53wsBX9U", thumbTime: 28.6 },
       // reel-ul cu Nico Ramírez, de la sosire până la pult
       { playbackId: "YsVxnZ8JSmK8PpSHmJR5UWPz6wXi00umNRIoWcjXeRJs", thumbTime: 44.5 },
+      // set-ul complet al lui Nico Ramírez (56 min, din 4K convertit la 1080p)
+      { playbackId: "aLHaNy87sJC4uStU1JaKt7QdQeh8RUv8aQJTYU0223KM", thumbTime: 500, landscape: true },
     ],
   },
   {
