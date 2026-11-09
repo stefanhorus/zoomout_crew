@@ -84,12 +84,17 @@ export const PROJECTS: Project[] = [
     id: 16,
     key: "portfolio.project16", // cj's - efort
     categories: ["music-videos"],
+    // Cadrul de la 0:13 din short-ul vertical al piesei (pe acoperiș, în hanoracul albastru); thumbnail-ul de pe
+    // YouTube are titlul scris mare, care în cardul vertical apărea tăiat
+    cover: withBasePath("/assets/photos/cjs-efort.jpg"),
     videos: [{ youtubeId: "pA2Szfcner0", landscape: true }],
   },
   {
     id: 17,
     key: "portfolio.project17", // rone damasc - adevăr
     categories: ["music-videos"],
+    // Cadrul de la 0:55 din clipul 4K de pe YouTube, decupat pe mijloc: legat de scaun, cu banderola pe ochi
+    cover: withBasePath("/assets/photos/rone-damasc-adevar.jpg"),
     videos: [{ youtubeId: "w64x8lvIiP8", landscape: true }],
   },
   {
