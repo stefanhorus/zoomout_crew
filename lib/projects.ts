@@ -9,6 +9,7 @@ export type ProjectCategory = "commercial" | "events" | "real-estate" | "music-v
 export interface MuxVideo {
   playbackId: string;
   thumbTime: number; // secunda din video folosită ca imagine de copertă
+  previewStart?: number; // de unde pornește animația de 4 s de la hover, dacă nu de la copertă (thumbTime)
   landscape?: boolean; // video 16:9 (restul sunt verticale, 9:16)
   // Bucla verticală de 4 s de la hover pentru clipurile orizontale (public/assets/v2/previews/<preview>.mp4),
   // făcută cu scripts/encode-hover-preview.sh; fără ea, cardul folosește animația de la Mux (muxPreview)
@@ -48,8 +49,9 @@ export const PROJECTS: Project[] = [
     categories: ["events", "commercial"],
     logo: withBasePath("/assets/brands/lepas.png"),
     videos: [
-      // drona peste Sun Garden, mașina și reacțiile de la volan; coperta e SUV-ul verde la intrarea în Sun Garden
-      { playbackId: "TwSR24ylP02D2THBM6voq778HIU00lG2vaaHmfCKNgGN8", thumbTime: 10.3 },
+      // drona peste Sun Garden, mașina și reacțiile de la volan; coperta e SUV-ul verde la intrarea în Sun Garden (10.3),
+      // iar hover-ul pornește cu o secundă înainte, de la roată (9.3-13.3)
+      { playbackId: "TwSR24ylP02D2THBM6voq778HIU00lG2vaaHmfCKNgGN8", thumbTime: 10.3, previewStart: 9.3 },
       // reacțiile celor care au testat mașina
       { playbackId: "Ftj1HA1CPZTAWpgyosyKhVlfyT00dMKikFFE8NCz3khE", thumbTime: 24 },
     ],

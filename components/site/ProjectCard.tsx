@@ -114,7 +114,7 @@ export function ProjectCard({
       {hovered && video?.preview && <HoverLoop name={video.preview} />}
       {hovered && video && !video.preview && !isYouTube(video) && (
         <Image
-          src={muxPreview(video.playbackId, video.thumbTime)}
+          src={muxPreview(video.playbackId, video.previewStart ?? video.thumbTime)}
           alt=""
           fill
           unoptimized
