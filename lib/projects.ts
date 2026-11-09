@@ -50,8 +50,8 @@ export const PROJECTS: Project[] = [
     logo: withBasePath("/assets/brands/lepas.png"),
     videos: [
       // drona peste Sun Garden, mașina și reacțiile de la volan; coperta e SUV-ul verde la intrarea în Sun Garden (10.3),
-      // iar hover-ul pornește cu o secundă înainte, de la roată (9.3-13.3)
-      { playbackId: "TwSR24ylP02D2THBM6voq778HIU00lG2vaaHmfCKNgGN8", thumbTime: 10.3, previewStart: 9.3 },
+      // iar hover-ul pornește cu 1,5 secunde înainte, de la roată (8.8-12.8)
+      { playbackId: "TwSR24ylP02D2THBM6voq778HIU00lG2vaaHmfCKNgGN8", thumbTime: 10.3, previewStart: 8.8 },
       // reacțiile celor care au testat mașina
       { playbackId: "Ftj1HA1CPZTAWpgyosyKhVlfyT00dMKikFFE8NCz3khE", thumbTime: 24 },
     ],
