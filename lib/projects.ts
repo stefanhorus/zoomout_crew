@@ -10,6 +10,9 @@ export interface MuxVideo {
   playbackId: string;
   thumbTime: number; // secunda din video folosită ca imagine de copertă
   landscape?: boolean; // video 16:9 (restul sunt verticale, 9:16)
+  // Bucla verticală de 4 s de la hover pentru clipurile orizontale (public/assets/v2/previews/<preview>.mp4),
+  // făcută cu scripts/encode-hover-preview.sh; fără ea, cardul folosește animația de la Mux (muxPreview)
+  preview?: string;
 }
 
 // Video de pe YouTube (videoclipurile publicate pe canalele artiștilor)
@@ -58,7 +61,7 @@ export const PROJECTS: Project[] = [
     // Lime bike la 0:16.5, decupat pe mijloc: hanoracul One Society cu Tower Bridge în spate
     cover: withBasePath("/assets/photos/onesociety-limebike.jpg"),
     videos: [
-      { playbackId: "t202Ew4ykBTdRUCOOWbEn801eJDKhj9NJDNUs00HpbjXD00", thumbTime: 16, landscape: true }, // Lime bike
+      { playbackId: "t202Ew4ykBTdRUCOOWbEn801eJDKhj9NJDNUs00HpbjXD00", thumbTime: 16, landscape: true, preview: "onesociety-limebike" }, // Lime bike
       { playbackId: "wQlXWsZMu02MfBrxZyimdpL6KJvWcE2uXwBhOLrmbB00A", thumbTime: 11, landscape: true }, // Londra noaptea
       { playbackId: "ucb142bFWhqBt00MAwmxpgzlsNgcGRtO9DszKaFJ8euU", thumbTime: 4, landscape: true }, // pista de atletism
     ],
@@ -68,14 +71,14 @@ export const PROJECTS: Project[] = [
     key: "portfolio.project14", // welovepng (clipul e în al doilea cont Mux, cel din .env.local)
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/welovepng.png"),
-    videos: [{ playbackId: "Kq4qczREZagy4ZMILNX5BFwXeBrb2koFITr65SYQcpw", thumbTime: 20.9, landscape: true }],
+    videos: [{ playbackId: "Kq4qczREZagy4ZMILNX5BFwXeBrb2koFITr65SYQcpw", thumbTime: 20.9, landscape: true, preview: "welovepng-promo" }],
   },
   {
     id: 15,
     key: "portfolio.project15", // mara feat. lurre - haide, hai! (clipul e în al doilea cont Mux)
     categories: ["music-videos"],
     cover: "https://i.ytimg.com/vi/FMYPoF7MZXA/maxresdefault.jpg", // thumbnail-ul oficial de pe YouTube
-    videos: [{ playbackId: "M00nUAy00JC01Ro02R0001QtelvwyWrqT9Y01K4AwlFN9USKVQ", thumbTime: 106, landscape: true }],
+    videos: [{ playbackId: "M00nUAy00JC01Ro02R0001QtelvwyWrqT9Y01K4AwlFN9USKVQ", thumbTime: 106, landscape: true, preview: "haide-hai" }],
   },
   {
     id: 16,
@@ -95,14 +98,14 @@ export const PROJECTS: Project[] = [
     categories: ["music-videos", "events"],
     // Cadrul de la 0:20 decupat pe mijloc: decupajul automat Mux alegea difuzorul din stânga, fără DJ
     cover: withBasePath("/assets/photos/nico-transylvania-sunset.jpg"),
-    videos: [{ playbackId: "eXh14zrJ3KDI3neux2RFOT021Sg3XkpxBISF2JBblsmk", thumbTime: 20, landscape: true }],
+    videos: [{ playbackId: "eXh14zrJ3KDI3neux2RFOT021Sg3XkpxBISF2JBblsmk", thumbTime: 20, landscape: true, preview: "nico-transylvania-sunset" }],
   },
   {
     id: 19,
     key: "portfolio.project19", // geo$anu - prrizzaa (clipul e în al doilea cont Mux)
     categories: ["music-videos"],
     cover: withBasePath("/assets/photos/geosanu-prrizzaa.jpg"), // thumbnail-ul oficial al piesei
-    videos: [{ playbackId: "hpB027Kl8fPmSbVKoMSMw7u01qfilw1xxJNr1WPwPyt02M", thumbTime: 148, landscape: true }],
+    videos: [{ playbackId: "hpB027Kl8fPmSbVKoMSMw7u01qfilw1xxJNr1WPwPyt02M", thumbTime: 148, landscape: true, preview: "geosanu-prrizzaa" }],
   },
   {
     id: 1,
@@ -155,7 +158,8 @@ export const PROJECTS: Project[] = [
     key: "portfolio.project6", // utopic
     categories: ["events"],
     logo: withBasePath("/assets/brands/utopic.png"),
-    videos: [{ playbackId: "CY6gQczar8Ompqq02jXDHskFOwuuB1W8yng5ZOtXTq800", thumbTime: 18, landscape: true }],
+    // Pe Mux clipul are doar 638x360, așa că și bucla de hover e limitată la claritatea asta
+    videos: [{ playbackId: "CY6gQczar8Ompqq02jXDHskFOwuuB1W8yng5ZOtXTq800", thumbTime: 18, landscape: true, preview: "utopic" }],
     featured: true,
   },
   {
@@ -202,9 +206,20 @@ export function muxThumb(
   return `https://image.mux.com/${playbackId}/thumbnail.webp?${size}${fit}&time=${time}`;
 }
 
-// Previzualizare animată (se încarcă doar la hover)
+// Previzualizare animată (se încarcă doar la hover), pentru clipurile verticale. La cele orizontale Mux dă cel mult
+// 640 px și nu decupează, așa că în cardul vertical ar rămâne vreo 114x202 pixeli reali: ele au bucla `preview`.
 export function muxPreview(playbackId: string, start: number, width = 360) {
   return `https://image.mux.com/${playbackId}/animated.webp?width=${width}&start=${start}&end=${start + 4}&fps=14`;
+}
+
+// Bucla de hover găzduită pe site (HEVC, apoi H.264 pentru browserele fără HEVC). Crește PREVIEWS_VERSION când
+// înlocuiești o buclă: mp4-urile stau un an în cache.
+const PREVIEWS_VERSION = "1";
+export const HEVC_TYPE = 'video/mp4; codecs="hvc1.1.6.L93.90"';
+
+export function previewLoop(name: string) {
+  const base = withBasePath(`/assets/v2/previews/${name}`);
+  return { hevc: `${base}.hevc.mp4?v=${PREVIEWS_VERSION}`, h264: `${base}.mp4?v=${PREVIEWS_VERSION}` };
 }
 
 export function muxPlayer(playbackId: string) {

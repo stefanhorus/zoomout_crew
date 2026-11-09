@@ -3,7 +3,16 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { isYouTube, muxPreview, projectCover, splitTitle, type Project, type ProjectCategory } from "@/lib/projects";
+import {
+  HEVC_TYPE,
+  isYouTube,
+  muxPreview,
+  previewLoop,
+  projectCover,
+  splitTitle,
+  type Project,
+  type ProjectCategory,
+} from "@/lib/projects";
 
 export const CATEGORY_KEYS: Record<ProjectCategory, string> = {
   commercial: "portfolio.commercial",
@@ -20,6 +29,29 @@ interface ProjectCardProps {
   sizes?: string;
   compact?: boolean; // card mic (ex. "Related work" pe pagina Services)
   eager?: boolean; // încărcare imediată (cardurile din banda orizontală nu sunt detectate corect de lazy-loading)
+}
+
+// Bucla verticală de 4 s a unui clip orizontal; apare peste copertă abia când rulează, ca să nu clipească negru
+function HoverLoop({ name }: { name: string }) {
+  const [playing, setPlaying] = useState(false);
+  const { hevc, h264 } = previewLoop(name);
+
+  return (
+    <video
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+      disablePictureInPicture
+      aria-hidden
+      onPlaying={() => setPlaying(true)}
+      className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${playing ? "opacity-100" : "opacity-0"}`}
+    >
+      <source src={hevc} type={HEVC_TYPE} />
+      <source src={h264} type="video/mp4" />
+    </video>
+  );
 }
 
 // Card vertical (9:16) - copertă din video (Mux sau YouTube), previzualizare animată la hover pentru Mux
@@ -79,14 +111,18 @@ export function ProjectCard({
       )}
 
       {video && !isYouTube(video) && hovered && (
-        <Image
-          src={muxPreview(video.playbackId, video.thumbTime)}
-          alt=""
-          fill
-          unoptimized
-          sizes={sizes}
-          className="object-cover"
-        />
+        video.preview ? (
+          <HoverLoop name={video.preview} />
+        ) : (
+          <Image
+            src={muxPreview(video.playbackId, video.thumbTime)}
+            alt=""
+            fill
+            unoptimized
+            sizes={sizes}
+            className="object-cover"
+          />
+        )
       )}
 
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/15 to-ink/30" />
