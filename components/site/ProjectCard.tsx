@@ -54,7 +54,8 @@ function HoverLoop({ name }: { name: string }) {
   );
 }
 
-// Card vertical (9:16) - copertă din video (Mux sau YouTube), previzualizare animată la hover pentru Mux
+// Card vertical (9:16) - copertă din video (Mux sau YouTube); la hover rulează bucla proprie (`preview`), iar clipurile
+// verticale de pe Mux fără buclă folosesc animația de la Mux
 export function ProjectCard({
   project,
   onOpen,
@@ -110,19 +111,16 @@ export function ProjectCard({
         </div>
       )}
 
-      {video && !isYouTube(video) && hovered && (
-        video.preview ? (
-          <HoverLoop name={video.preview} />
-        ) : (
-          <Image
-            src={muxPreview(video.playbackId, video.thumbTime)}
-            alt=""
-            fill
-            unoptimized
-            sizes={sizes}
-            className="object-cover"
-          />
-        )
+      {hovered && video?.preview && <HoverLoop name={video.preview} />}
+      {hovered && video && !video.preview && !isYouTube(video) && (
+        <Image
+          src={muxPreview(video.playbackId, video.thumbTime)}
+          alt=""
+          fill
+          unoptimized
+          sizes={sizes}
+          className="object-cover"
+        />
       )}
 
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/15 to-ink/30" />

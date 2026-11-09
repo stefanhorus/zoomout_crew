@@ -19,6 +19,7 @@ export interface MuxVideo {
 export interface YouTubeVideo {
   youtubeId: string;
   landscape?: boolean;
+  preview?: string; // bucla de hover, ca la MuxVideo (YouTube nu oferă altă previzualizare animată)
 }
 
 export type ProjectVideo = MuxVideo | YouTubeVideo;
@@ -87,7 +88,8 @@ export const PROJECTS: Project[] = [
     // Cadrul de la 0:13 din short-ul vertical al piesei (pe acoperiș, în hanoracul albastru); thumbnail-ul de pe
     // YouTube are titlul scris mare, care în cardul vertical apărea tăiat
     cover: withBasePath("/assets/photos/cjs-efort.jpg"),
-    videos: [{ youtubeId: "pA2Szfcner0", landscape: true }],
+    // bucla de hover: scena de pe acoperiș din short (0:12.05-0:15.83), între două tranziții
+    videos: [{ youtubeId: "pA2Szfcner0", landscape: true, preview: "cjs-efort" }],
   },
   {
     id: 17,
@@ -95,7 +97,8 @@ export const PROJECTS: Project[] = [
     categories: ["music-videos"],
     // Cadrul de la 0:55 din clipul 4K de pe YouTube, decupat pe mijloc: legat de scaun, cu banderola pe ochi
     cover: withBasePath("/assets/photos/rone-damasc-adevar.jpg"),
-    videos: [{ youtubeId: "w64x8lvIiP8", landscape: true }],
+    // bucla de hover: 0:54.0-0:57.9 din 4K (scaunul, cadrul larg, prim-planul cu banderola), fără imagini de arhivă
+    videos: [{ youtubeId: "w64x8lvIiP8", landscape: true, preview: "rone-damasc-adevar" }],
   },
   {
     id: 18,
