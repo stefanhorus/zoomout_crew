@@ -55,7 +55,8 @@ function HoverLoop({ name }: { name: string }) {
 }
 
 // Card vertical (9:16) - copertă din video (Mux sau YouTube); la hover rulează bucla proprie (`preview`), iar clipurile
-// verticale de pe Mux fără buclă folosesc animația de la Mux
+// verticale de pe Mux fără buclă folosesc animația de la Mux. Proiectele care nu sunt videoclipuri muzicale și au
+// `overlayLogo` arată până la hover coperta blurată cu logo-ul clientului peste.
 export function ProjectCard({
   project,
   onOpen,
@@ -71,6 +72,8 @@ export function ProjectCard({
   const cover = projectCover(project);
   const video = project.videos?.[0];
   const categories = project.categories.map((category) => t(CATEGORY_KEYS[category])).join(" · ");
+  // În afară de videoclipurile muzicale: coperta stă blurată, cu logo-ul clientului peste, până la hover
+  const overlayLogo = cover && !project.categories.includes("music-videos") ? project.overlayLogo : undefined;
 
   return (
     <button
@@ -90,7 +93,12 @@ export function ProjectCard({
           sizes={sizes}
           loading={eager ? "eager" : "lazy"}
           unoptimized={cover.startsWith("https://")}
-          className="object-cover transition-transform duration-[1.4s] ease-[var(--ease-expo)] group-hover:scale-[1.06]"
+          className={
+            overlayLogo
+              ? // mărită puțin, ca marginile blurului să nu se vadă; la hover se limpezește și face același zoom
+                "scale-110 object-cover blur-md brightness-[0.62] [transition:scale_1.4s_var(--ease-expo),transform_1.4s_var(--ease-expo),filter_0.6s_ease-out] group-hover:scale-[1.16] group-hover:blur-none group-hover:brightness-100"
+              : "object-cover transition-transform duration-[1.4s] ease-[var(--ease-expo)] group-hover:scale-[1.06]"
+          }
         />
       ) : (
         <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_50%_40%,rgba(242,238,230,0.08),transparent_65%)]">
@@ -124,6 +132,14 @@ export function ProjectCard({
       )}
 
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/15 to-ink/30" />
+
+      {overlayLogo && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center pb-[14%] transition-opacity duration-500 group-hover:opacity-0">
+          <div className={`relative w-[58%] ${compact ? "h-[22%]" : "h-[26%]"}`}>
+            <Image src={overlayLogo} alt="" fill sizes="240px" className="object-contain drop-shadow-[0_2px_14px_rgba(0,0,0,0.35)]" />
+          </div>
+        </div>
+      )}
 
       <div className={`absolute inset-x-0 top-0 flex items-start justify-between ${compact ? "p-3" : "p-4 md:p-5"}`}>
         {index !== undefined && <span className="kicker text-paper/80">{String(index).padStart(2, "0")}</span>}

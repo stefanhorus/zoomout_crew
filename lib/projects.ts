@@ -30,6 +30,9 @@ export interface Project {
   key: string;
   categories: ProjectCategory[];
   logo?: string; // afișat când proiectul n-are video sau poze
+  // logo alb, pe transparent, afișat peste coperta blurată până la hover (doar proiectele care nu sunt videoclipuri
+  // muzicale); se face din logo-ul clientului cu scripts/make-white-logo.sh
+  overlayLogo?: string;
   cover?: string; // copertă aleasă (ex. thumbnail-ul oficial); altfel cadrul thumbTime din primul video sau prima poză
   videos?: ProjectVideo[];
   images?: string[];
@@ -48,6 +51,7 @@ export const PROJECTS: Project[] = [
     key: "portfolio.project11", // lepas (al treilea cont Mux; clipurile sunt luate de pe Instagram, @lepasromania, în 720p)
     categories: ["events", "commercial"],
     logo: withBasePath("/assets/brands/lepas.png"),
+    overlayLogo: withBasePath("/assets/brands/white/lepas.png"),
     videos: [
       // drona peste Sun Garden, mașina și reacțiile de la volan; coperta e SUV-ul verde la intrarea în Sun Garden (10.3),
       // iar hover-ul pornește cu 1,5 secunde înainte, de la roată (8.8-12.8)
@@ -67,6 +71,7 @@ export const PROJECTS: Project[] = [
     key: "portfolio.project13", // one society (al doilea cont Mux; cele două reel-uri sunt luate de pe Instagram, în 720p)
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/onesociety.png"),
+    overlayLogo: withBasePath("/assets/brands/white/onesociety.png"),
     // Lime bike la 0:16.5, decupat pe mijloc: hanoracul One Society cu Tower Bridge în spate
     cover: withBasePath("/assets/photos/onesociety-limebike.jpg"),
     videos: [
@@ -80,6 +85,7 @@ export const PROJECTS: Project[] = [
     key: "portfolio.project14", // welovepng (clipul e în al doilea cont Mux, cel din .env.local)
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/welovepng.png"),
+    overlayLogo: withBasePath("/assets/brands/white/welovepng.png"),
     videos: [{ playbackId: "Kq4qczREZagy4ZMILNX5BFwXeBrb2koFITr65SYQcpw", thumbTime: 20.9, landscape: true, preview: "welovepng-promo" }],
   },
   {
@@ -141,6 +147,7 @@ export const PROJECTS: Project[] = [
     key: "portfolio.project5", // casa numaa
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/casanumaa.png"),
+    overlayLogo: withBasePath("/assets/brands/white/casanumaa.png"),
     videos: [
       { playbackId: "BaZoibIrmiaFjm1oPbGIWlhQAZrZHCV9NcIMW4HQN014", thumbTime: 1 },
       { playbackId: "mUlM3T9v62Udt6bf02520200cihk49QMbiSc7zYCQDvldk", thumbTime: 9 },
@@ -152,6 +159,7 @@ export const PROJECTS: Project[] = [
     key: "portfolio.project1", // big belly
     categories: ["events", "commercial"],
     logo: withBasePath("/assets/brands/bigbelly.png"),
+    overlayLogo: withBasePath("/assets/brands/white/bigbelly.png"),
     videos: [
       { playbackId: "p1LpNG3CjEe01QQhHDOPG3j5L8kywtmmLSKdJaU51Tjg", thumbTime: 9 },
       { playbackId: "DbdlbHpdu541nz100c9oOc700DsUnduPJ6EkEmNIFCzOo", thumbTime: 12 },
@@ -163,6 +171,7 @@ export const PROJECTS: Project[] = [
     key: "portfolio.project9", // panoramic360
     categories: ["events", "commercial"],
     logo: withBasePath("/assets/brands/panoramic360.jpg"),
+    overlayLogo: withBasePath("/assets/brands/white/panoramic360.png"),
     videos: [{ playbackId: "iQW9j3rKkGubagCrFEPgfWxQtpnzW5PFdTWw00SpAliA", thumbTime: 3 }],
     featured: true,
   },
@@ -171,6 +180,7 @@ export const PROJECTS: Project[] = [
     key: "portfolio.project2", // multiverse
     categories: ["events"],
     logo: withBasePath("/assets/brands/multiverse.png"),
+    overlayLogo: withBasePath("/assets/brands/white/multiverse.png"),
     videos: [{ playbackId: "Xi5sUxm00g8N5UJGPn7D9Mut4JsMfUFULA01Qn02woUOwo", thumbTime: 9 }],
     featured: true,
   },
@@ -187,6 +197,7 @@ export const PROJECTS: Project[] = [
     key: "portfolio.project6", // utopic
     categories: ["events"],
     logo: withBasePath("/assets/brands/utopic.png"),
+    overlayLogo: withBasePath("/assets/brands/white/utopic.png"),
     // Pe Mux clipul are doar 638x360, așa că și bucla de hover e limitată la claritatea asta
     videos: [{ playbackId: "CY6gQczar8Ompqq02jXDHskFOwuuB1W8yng5ZOtXTq800", thumbTime: 18, landscape: true, preview: "utopic" }],
     featured: true,
@@ -196,6 +207,7 @@ export const PROJECTS: Project[] = [
     key: "portfolio.project8", // rotaract
     categories: ["events"],
     logo: withBasePath("/assets/brands/rotaract.png"),
+    overlayLogo: withBasePath("/assets/brands/white/rotaract.png"),
     images: [withBasePath("/assets/photos/ratuste1.png"), withBasePath("/assets/photos/ratuste2.png"), withBasePath("/assets/photos/ratuste3.png")],
     featured: true,
   },
@@ -211,6 +223,7 @@ export const PROJECTS: Project[] = [
     key: "portfolio.project4", // outdoor lounge (aer lounge)
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/aerlounge.png"),
+    overlayLogo: withBasePath("/assets/brands/white/aerlounge.png"),
     videos: [{ playbackId: "c5jDLrljSoSJid7Du9P9XQb37yzRRrIKqFHYzqpKG8c", thumbTime: 12 }],
     featured: true,
   },
