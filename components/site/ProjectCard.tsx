@@ -29,6 +29,7 @@ interface ProjectCardProps {
   sizes?: string;
   compact?: boolean; // card mic (ex. "Related work" pe pagina Services)
   eager?: boolean; // încărcare imediată (cardurile din banda orizontală nu sunt detectate corect de lazy-loading)
+  logoOverlay?: boolean; // logo-ul clientului peste coperta blurată până la hover (doar pe pagina Portfolio)
 }
 
 // Bucla verticală de 4 s a unui clip orizontal; apare peste copertă abia când rulează, ca să nu clipească negru
@@ -55,8 +56,8 @@ function HoverLoop({ name }: { name: string }) {
 }
 
 // Card vertical (9:16) - copertă din video (Mux sau YouTube); la hover rulează bucla proprie (`preview`), iar clipurile
-// verticale de pe Mux fără buclă folosesc animația de la Mux. Proiectele care nu sunt videoclipuri muzicale și au
-// `overlayLogo` arată până la hover coperta blurată cu logo-ul clientului peste.
+// verticale de pe Mux fără buclă folosesc animația de la Mux. Cu `logoOverlay` (pagina Portfolio), proiectele care nu
+// sunt videoclipuri muzicale și au `overlayLogo` arată până la hover coperta blurată cu logo-ul clientului peste.
 export function ProjectCard({
   project,
   onOpen,
@@ -65,6 +66,7 @@ export function ProjectCard({
   sizes = "(max-width: 768px) 75vw, 28vw",
   compact = false,
   eager = false,
+  logoOverlay = false,
 }: ProjectCardProps) {
   const { t } = useLanguage();
   const [hovered, setHovered] = useState(false);
@@ -72,8 +74,9 @@ export function ProjectCard({
   const cover = projectCover(project);
   const video = project.videos?.[0];
   const categories = project.categories.map((category) => t(CATEGORY_KEYS[category])).join(" · ");
-  // În afară de videoclipurile muzicale: coperta stă blurată, cu logo-ul clientului peste, până la hover
-  const overlayLogo = cover && !project.categories.includes("music-videos") ? project.overlayLogo : undefined;
+  // Pe Portfolio, în afară de videoclipurile muzicale: coperta stă blurată, cu logo-ul clientului peste, până la hover
+  const overlayLogo =
+    logoOverlay && cover && !project.categories.includes("music-videos") ? project.overlayLogo : undefined;
 
   return (
     <button

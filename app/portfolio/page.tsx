@@ -73,6 +73,7 @@ export default function Portfolio() {
                   onOpen={setSelected}
                   className="aspect-[9/16] w-full"
                   sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                  logoOverlay
                 />
               </motion.div>
             ))}
