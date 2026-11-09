@@ -137,6 +137,8 @@ const baseTranslations: Record<Language, Record<string, string>> = {
     "portfolio.project18.description": "A one-hour live DJ set by Nico Ramírez, filmed at sunset on the tallest residential building in Romania, in Cluj-Napoca. The concept, the set design and the camera work are all ours.",
     "portfolio.project19.title": "Geo$anu - Prrizzaa",
     "portfolio.project19.description": "Music video for “Prrizzaa” by Geo$anu.",
+    "portfolio.project20.title": "Barbaro x Risqué - Ministry of Sound Club",
+    "portfolio.project20.description": "We filmed the Barbaro x Risqué night at Ministry of Sound in London: a recap reel of the night, a reel that follows Nico Ramírez from his arrival to the decks, and his full DJ set, almost an hour long.",
 
     // Services page
     "services.title": "Services",
@@ -425,6 +427,8 @@ const baseTranslations: Record<Language, Record<string, string>> = {
     "portfolio.project18.description": "Un live DJ set de o oră cu Nico Ramírez, filmat la apus pe cea mai înaltă clădire rezidențială din România, în Cluj-Napoca. Conceptul, setup-ul și filmarea ne aparțin.",
     "portfolio.project19.title": "Geo$anu - Prrizzaa",
     "portfolio.project19.description": "Videoclipul pentru „Prrizzaa”, piesa lui Geo$anu.",
+    "portfolio.project20.title": "Barbaro x Risqué - Ministry of Sound Club",
+    "portfolio.project20.description": "Am filmat seara Barbaro x Risqué de la Ministry of Sound din Londra: un reel cu atmosfera serii, unul în care îl urmărim pe Nico Ramírez de la sosire până la pult și set-ul lui complet, de aproape o oră.",
 
     // Services page
     "services.title": "Servicii",

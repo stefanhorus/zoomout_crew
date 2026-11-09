@@ -44,9 +44,15 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 11,
-    key: "portfolio.project11", // lepas
+    key: "portfolio.project11", // lepas (al treilea cont Mux; clipurile sunt luate de pe Instagram, @lepasromania, în 720p)
     categories: ["events", "commercial"],
     logo: withBasePath("/assets/brands/lepas.png"),
+    videos: [
+      // drona peste Sun Garden, mașina și reacțiile de la volan; coperta e SUV-ul verde la intrarea în Sun Garden
+      { playbackId: "TwSR24ylP02D2THBM6voq778HIU00lG2vaaHmfCKNgGN8", thumbTime: 10.3 },
+      // reacțiile celor care au testat mașina
+      { playbackId: "Ftj1HA1CPZTAWpgyosyKhVlfyT00dMKikFFE8NCz3khE", thumbTime: 24 },
+    ],
   },
   {
     id: 12,
@@ -114,6 +120,17 @@ export const PROJECTS: Project[] = [
     categories: ["music-videos"],
     cover: withBasePath("/assets/photos/geosanu-prrizzaa.jpg"), // thumbnail-ul oficial al piesei
     videos: [{ playbackId: "hpB027Kl8fPmSbVKoMSMw7u01qfilw1xxJNr1WPwPyt02M", thumbTime: 148, landscape: true, preview: "geosanu-prrizzaa" }],
+  },
+  {
+    id: 20,
+    key: "portfolio.project20", // barbaro x risqué la ministry of sound, londra (al doilea cont Mux, care e plin: 10 din 10)
+    categories: ["events", "music-videos"],
+    videos: [
+      // reel-ul serii; coperta și hover-ul pornesc de la DJ-ul cu șapca NY la pult (urmează publicul și dansatoarea)
+      { playbackId: "ye3gKVLY2eF9k8wYm58kSLvTbuIWC3RUvmo53wsBX9U", thumbTime: 28.6 },
+      // reel-ul cu Nico Ramírez, de la sosire până la pult
+      { playbackId: "YsVxnZ8JSmK8PpSHmJR5UWPz6wXi00umNRIoWcjXeRJs", thumbTime: 44.5 },
+    ],
   },
   {
     id: 1,
