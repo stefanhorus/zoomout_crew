@@ -13,6 +13,6 @@ export const SERVICES: ServiceDefinition[] = [
   { key: "socialMedia", image: withBasePath("/assets/adventures/ams1tiny.png"), showLocation: true, related: [12, 1, 2] },
   { key: "events", image: withBasePath("/assets/photos/ratuste1.png"), showLocation: true, related: [4, 6, 10] },
   { key: "musicVideos", image: withBasePath("/assets/services/music-videos.webp"), showLocation: true, related: [18, 15, 17] },
-  { key: "drone", image: withBasePath("/assets/services/fullday.png"), showLocation: true, related: [5, 9, 8] },
+  { key: "drone", image: withBasePath("/assets/services/fullday.png"), showLocation: true, related: [5, 11, 2] },
   { key: "postProduction", image: withBasePath("/assets/services/postproduction.jpg"), showLocation: false, related: [3, 4] },
 ];

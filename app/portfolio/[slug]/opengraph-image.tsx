@@ -43,7 +43,7 @@ function imageSize(data: Buffer): { width: number; height: number } | null {
 }
 
 // O poză din public/ (calea din date are deja /2 în față), ca data URL. Doar PNG și JPEG se pot desena; formatul se
-// citește din fișier, nu din extensie (pozele cu La Villa Sunhouse sunt AVIF salvate ca .jpeg), restul rămâne afară
+// citește din fișier, nu din extensie (o poză poate fi, de exemplu, AVIF salvată ca .jpeg), restul rămâne afară
 async function localCover(path: string): Promise<Cover | null> {
   const file = BASE_PATH && path.startsWith(BASE_PATH) ? path.slice(BASE_PATH.length) : path;
   try {

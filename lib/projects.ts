@@ -253,23 +253,6 @@ export const PROJECTS: Project[] = [
     overlayLogo: withBasePath("/assets/brands/white/rotaract.png"),
     images: [withBasePath("/assets/photos/ratuste1.png"), withBasePath("/assets/photos/ratuste2.png"), withBasePath("/assets/photos/ratuste3.png")],
   },
-  {
-    id: 8,
-    slug: "la-villa-sunhouse",
-    key: "portfolio.project7", // la villa sunhouse
-    categories: ["real-estate"],
-    logo: withBasePath("/assets/photos/sardinia1.jpeg"),
-    images: [withBasePath("/assets/photos/sardinia1.jpeg"), withBasePath("/assets/photos/sardinia2.jpeg")],
-  },
-  {
-    id: 9,
-    slug: "outdoor-lounge",
-    key: "portfolio.project4", // outdoor lounge (aer lounge)
-    categories: ["commercial"],
-    logo: withBasePath("/assets/brands/aerlounge.png"),
-    overlayLogo: withBasePath("/assets/brands/white/aerlounge.png"),
-    videos: [{ playbackId: "c5jDLrljSoSJid7Du9P9XQb37yzRRrIKqFHYzqpKG8c", thumbTime: 12 }],
-  },
 ];
 
 export const getProject = (id: number) => PROJECTS.find((p) => p.id === id);
