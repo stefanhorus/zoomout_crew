@@ -62,9 +62,21 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 12,
-    key: "portfolio.project12", // bacademia
+    key: "portfolio.project12", // bacademia (al treilea cont Mux; exporturile verticale ale userului, din 2026-11-10)
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/bacademia.png"),
+    overlayLogo: withBasePath("/assets/brands/white/bacademia.png"),
+    videos: [
+      // UGC-ul de lansare: coperta e fata care zâmbește cu culegerile de Română și Matematică, în fața bisericii (5.0),
+      // iar hover-ul pornește cu 1,5 secunde înainte, de la începutul cadrului (3.5-7.5)
+      { playbackId: "aimP8x2Iw2nziJOarXzgwZ6TOJ9GAx1G2Ra22Ce2CBw", thumbTime: 5, previewStart: 3.5 },
+      // sketch: „Baltagul dacă era reality show”, partea 1
+      { playbackId: "gwbA8R2XrwLGAHtaBATRpXnv3LuERh01LbZcuvCVsqiY", thumbTime: 1.5 },
+      // challenge pe stradă, în Piața Unirii din Cluj
+      { playbackId: "QKlqfMnSQMlbOEwZtqWVrhirabVt101Z9t02W9s025voAE", thumbTime: 1 },
+      // talking head cu ilustrații (Bacademia Ro #1)
+      { playbackId: "npXvUkcJs5CwZO3a01kL00BTLh5xQoPAS4tEqWCgXNAds", thumbTime: 16.6 },
+    ],
   },
   {
     id: 13,
