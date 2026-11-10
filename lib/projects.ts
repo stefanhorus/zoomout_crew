@@ -36,7 +36,7 @@ export interface Project {
   cover?: string; // copertă aleasă (ex. thumbnail-ul oficial); altfel cadrul thumbTime din primul video sau prima poză
   videos?: ProjectVideo[];
   images?: string[];
-  featured?: boolean; // apare în "Selected work" pe homepage
+  featured?: boolean; // apare în „Stories we've filmed” pe homepage (proiectele alese de user), în ordinea din PROJECTS
 }
 
 export const PROJECTS: Project[] = [
@@ -59,6 +59,7 @@ export const PROJECTS: Project[] = [
       // reacțiile celor care au testat mașina
       { playbackId: "Ftj1HA1CPZTAWpgyosyKhVlfyT00dMKikFFE8NCz3khE", thumbTime: 24 },
     ],
+    featured: true,
   },
   {
     id: 12,
@@ -100,6 +101,7 @@ export const PROJECTS: Project[] = [
     logo: withBasePath("/assets/brands/welovepng.png"),
     overlayLogo: withBasePath("/assets/brands/white/welovepng.png"),
     videos: [{ playbackId: "Kq4qczREZagy4ZMILNX5BFwXeBrb2koFITr65SYQcpw", thumbTime: 20.9, landscape: true, preview: "welovepng-promo" }],
+    featured: true,
   },
   {
     id: 15,
@@ -107,6 +109,7 @@ export const PROJECTS: Project[] = [
     categories: ["music-videos"],
     cover: "https://i.ytimg.com/vi/FMYPoF7MZXA/maxresdefault.jpg", // thumbnail-ul oficial de pe YouTube
     videos: [{ playbackId: "M00nUAy00JC01Ro02R0001QtelvwyWrqT9Y01K4AwlFN9USKVQ", thumbTime: 106, landscape: true, preview: "haide-hai" }],
+    featured: true,
   },
   {
     id: 16,
@@ -134,6 +137,7 @@ export const PROJECTS: Project[] = [
     // Cadrul de la 0:20 decupat pe mijloc: decupajul automat Mux alegea difuzorul din stânga, fără DJ
     cover: withBasePath("/assets/photos/nico-transylvania-sunset.jpg"),
     videos: [{ playbackId: "eXh14zrJ3KDI3neux2RFOT021Sg3XkpxBISF2JBblsmk", thumbTime: 20, landscape: true, preview: "nico-transylvania-sunset" }],
+    featured: true,
   },
   {
     id: 19,
@@ -141,6 +145,7 @@ export const PROJECTS: Project[] = [
     categories: ["music-videos"],
     cover: withBasePath("/assets/photos/geosanu-prrizzaa.jpg"), // thumbnail-ul oficial al piesei
     videos: [{ playbackId: "hpB027Kl8fPmSbVKoMSMw7u01qfilw1xxJNr1WPwPyt02M", thumbTime: 148, landscape: true, preview: "geosanu-prrizzaa" }],
+    featured: true,
   },
   {
     id: 20,
@@ -154,6 +159,7 @@ export const PROJECTS: Project[] = [
       // set-ul complet al lui Nico Ramírez (56 min, din 4K convertit la 1080p)
       { playbackId: "aLHaNy87sJC4uStU1JaKt7QdQeh8RUv8aQJTYU0223KM", thumbTime: 500, landscape: true },
     ],
+    featured: true,
   },
   {
     id: 1,
@@ -165,7 +171,6 @@ export const PROJECTS: Project[] = [
       { playbackId: "BaZoibIrmiaFjm1oPbGIWlhQAZrZHCV9NcIMW4HQN014", thumbTime: 1 },
       { playbackId: "mUlM3T9v62Udt6bf02520200cihk49QMbiSc7zYCQDvldk", thumbTime: 9 },
     ],
-    featured: true,
   },
   {
     id: 2,
@@ -195,7 +200,6 @@ export const PROJECTS: Project[] = [
     logo: withBasePath("/assets/brands/multiverse.png"),
     overlayLogo: withBasePath("/assets/brands/white/multiverse.png"),
     videos: [{ playbackId: "Xi5sUxm00g8N5UJGPn7D9Mut4JsMfUFULA01Qn02woUOwo", thumbTime: 9 }],
-    featured: true,
   },
   {
     id: 5,
@@ -203,7 +207,6 @@ export const PROJECTS: Project[] = [
     categories: ["real-estate"],
     logo: withBasePath("/assets/brands/cabanuta.png"),
     videos: [{ playbackId: "ILANTrld964hQ4OanXs6lq02kqN01q745BRJGgfqPy7Kk", thumbTime: 6 }],
-    featured: true,
   },
   {
     id: 6,
@@ -213,7 +216,6 @@ export const PROJECTS: Project[] = [
     overlayLogo: withBasePath("/assets/brands/white/utopic.png"),
     // Pe Mux clipul are doar 638x360, așa că și bucla de hover e limitată la claritatea asta
     videos: [{ playbackId: "CY6gQczar8Ompqq02jXDHskFOwuuB1W8yng5ZOtXTq800", thumbTime: 18, landscape: true, preview: "utopic" }],
-    featured: true,
   },
   {
     id: 7,
@@ -222,7 +224,6 @@ export const PROJECTS: Project[] = [
     logo: withBasePath("/assets/brands/rotaract.png"),
     overlayLogo: withBasePath("/assets/brands/white/rotaract.png"),
     images: [withBasePath("/assets/photos/ratuste1.png"), withBasePath("/assets/photos/ratuste2.png"), withBasePath("/assets/photos/ratuste3.png")],
-    featured: true,
   },
   {
     id: 8,
@@ -238,7 +239,6 @@ export const PROJECTS: Project[] = [
     logo: withBasePath("/assets/brands/aerlounge.png"),
     overlayLogo: withBasePath("/assets/brands/white/aerlounge.png"),
     videos: [{ playbackId: "c5jDLrljSoSJid7Du9P9XQb37yzRRrIKqFHYzqpKG8c", thumbTime: 12 }],
-    featured: true,
   },
 ];
 
