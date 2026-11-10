@@ -30,6 +30,12 @@ const nextConfig: NextConfig = {
     };
   },
 
+  // app/portfolio/[slug]/opengraph-image.tsx citește copertele din public/ doar la build. Fără excluderea asta, Vercel
+  // pune tot public/ (cu video-urile) în funcția paginilor de proiect, peste limita de 250 MB, și deploy-ul pică.
+  outputFileTracingExcludes: {
+    "/portfolio/**": ["public/**/*"],
+  },
+
   // Optimizări pentru imagini
   images: {
     formats: ['image/avif', 'image/webp'],
