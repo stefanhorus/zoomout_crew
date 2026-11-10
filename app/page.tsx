@@ -3,15 +3,12 @@
 import { useState, useRef, useEffect } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
-import Video from 'next-video';
-import videoLoop from '/videos/bg.mp4';
 import { useLanguage } from "@/contexts/LanguageContext";
+import HeroVideo from "@/components/HeroVideo";
 
 export default function Home() {
   const { t, language } = useLanguage();
   const [shouldStartTypewriter, setShouldStartTypewriter] = useState(true);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const [videoError, setVideoError] = useState(false);
 
   // Update page title when language changes
   useEffect(() => {
@@ -43,16 +40,11 @@ export default function Home() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const startXRef = useRef<number>(0);
   const scrollLeftRef = useRef<number>(0);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      // Reset video loaded state când se schimbă device-ul pentru a forța reîncărcare
-      if (videoRef.current) {
-        setVideoLoaded(false);
-      }
     };
 
     const updateViewportHeight = () => {
@@ -193,79 +185,6 @@ export default function Home() {
     };
   }, []);
 
-  // Video loading și error handling - forțează autoplay pe toate device-urile
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const tryPlayVideo = async () => {
-      if (!video) return;
-      try {
-        await video.play();
-        setVideoLoaded(true);
-      } catch (err) {
-        console.log("Video autoplay blocked, will retry on user interaction");
-        // Dacă autoplay eșuează, adaugă event listeners pentru interacțiune utilizator
-        const playOnInteraction = () => {
-          video.play().catch(() => {});
-          document.removeEventListener('click', playOnInteraction);
-          document.removeEventListener('touchstart', playOnInteraction);
-          document.removeEventListener('keydown', playOnInteraction);
-        };
-        document.addEventListener('click', playOnInteraction, { once: true });
-        document.addEventListener('touchstart', playOnInteraction, { once: true });
-        document.addEventListener('keydown', playOnInteraction, { once: true });
-      }
-    };
-
-    const handleCanPlay = () => {
-      setVideoLoaded(true);
-      // Forțează play imediat când video-ul poate fi redat
-      tryPlayVideo();
-    };
-
-    const handleError = (e: Event) => {
-      console.error("Video loading error:", e);
-      setVideoError(true);
-    };
-
-    const handleLoadedMetadata = () => {
-      // Încearcă să pornească video-ul când metadata este încărcată
-      if (video.readyState >= 2) {
-        tryPlayVideo();
-      }
-    };
-
-    // Încearcă play imediat când video-ul e gata
-    const handleLoadedData = () => {
-      tryPlayVideo();
-    };
-
-    video.addEventListener('canplay', handleCanPlay);
-    video.addEventListener('canplaythrough', handleCanPlay);
-    video.addEventListener('loadeddata', handleLoadedData);
-    video.addEventListener('error', handleError);
-    video.addEventListener('loadedmetadata', handleLoadedMetadata);
-
-    // Retry play după un scurt delay
-    const retryTimer = setTimeout(() => {
-      if (video.readyState >= 2 && video.paused) {
-        tryPlayVideo();
-      }
-    }, 500);
-
-    return () => {
-      clearTimeout(retryTimer);
-      video.removeEventListener('canplay', handleCanPlay);
-      video.removeEventListener('canplaythrough', handleCanPlay);
-      video.removeEventListener('loadeddata', handleLoadedData);
-      video.removeEventListener('error', handleError);
-      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
-    };
-  }, []);
-
-  // Preconnect este adăugat în layout.tsx head pentru încărcare mai rapidă (SSR)
-
   // Preload all background images for other pages (după video)
   useEffect(() => {
     const backgrounds = [
@@ -329,115 +248,8 @@ export default function Home() {
       
       {/* Video de fundal cu overlay gradient - Mutat sus pentru prioritate maximă */}
       <div className="absolute inset-0 w-full h-full z-0" style={{ willChange: 'transform' }}>
-        {/* Fallback image dacă video-ul nu se încarcă */}
-        {videoError && (
-          <div className="absolute inset-0 w-full h-full bg-black">
-            <Image
-              src="/assets/backgrounds/backgroundtiny.png"
-              alt="Background fallback"
-              fill
-              priority
-              quality={75}
-              sizes="100vw"
-              className="object-cover opacity-50"
-            />
-          </div>
-        )}
-        
-        {/* Folosim Bunny.net Stream HLS direct pentru video-ul "Hero" în producție */}
-        {process.env.NODE_ENV === 'production' ? (
-          <div className="absolute inset-0 w-full h-full overflow-hidden">
-            <video
-              key={isMobile ? 'mobile' : 'desktop'}
-              ref={videoRef}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              controls={false}
-              className={`w-full h-full object-cover transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
-              style={{ 
-                width: '100vw', 
-                height: isMobile ? '177.78vw' : '56.25vw', // 9/16 pentru mobile, 16/9 pentru desktop
-                minHeight: '100vh',
-                minWidth: isMobile ? '56.25vh' : '177.78vh',
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                backgroundColor: '#000',
-                zIndex: 1,
-                pointerEvents: 'none'
-              }}
-              onCanPlay={() => {
-                setVideoLoaded(true);
-                const video = videoRef.current;
-                if (video && video.paused) {
-                  // Forțează play cu retry pentru browser-e care blochează autoplay
-                  const tryPlay = async () => {
-                    try {
-                      await video.play();
-                    } catch (err) {
-                      // Dacă autoplay eșuează, încercă la interacțiune utilizator
-                      const playOnInteraction = () => {
-                        video.play().catch(() => {});
-                        document.removeEventListener('click', playOnInteraction);
-                        document.removeEventListener('touchstart', playOnInteraction);
-                      };
-                      document.addEventListener('click', playOnInteraction, { once: true });
-                      document.addEventListener('touchstart', playOnInteraction, { once: true });
-                    }
-                  };
-                  tryPlay();
-                }
-              }}
-              onLoadedData={() => {
-                const video = videoRef.current;
-                if (video && video.paused) {
-                  video.play().catch(() => {});
-                }
-              }}
-              onError={() => {
-                console.error('Bunny.net video error');
-                setVideoError(true);
-              }}
-            >
-              {/* Bunny.net Stream HLS Playlist URL - adaptive bitrate streaming */}
-              {/* Mobile: fbe2794c-4978-44d7-be45-18b9f305a2b3 (1080p), Desktop: 27ea52de-c96c-4210-9ffb-06c6520809fc (2K) */}
-              {isMobile ? (
-                <source src="https://vz-b2ef903c-299.b-cdn.net/fbe2794c-4978-44d7-be45-18b9f305a2b3/playlist.m3u8" type="application/x-mpegURL" />
-              ) : (
-                <source src="https://vz-b2ef903c-299.b-cdn.net/27ea52de-c96c-4210-9ffb-06c6520809fc/playlist.m3u8" type="application/x-mpegURL" />
-              )}
-            </video>
-          </div>
-        ) : (
-          <video
-            ref={videoRef}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            crossOrigin="anonymous"
-            className={`w-full h-full object-cover transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
-            style={{ 
-              backgroundColor: '#000',
-              zIndex: 1 // Asigură că video-ul este sub conținut dar deasupra fundalului
-            }}
-          >
-            {/* Video local pentru development */}
-            {isMobile ? (
-              <>
-                <source src="/assets/videos/Drone-hero-mobile-1080.mp4" type="video/mp4" />
-                <source src="/assets/videos/Drone-Hero-2-1080.mp4" type="video/mp4" />
-              </>
-            ) : (
-              <source src="/assets/videos/Drone-Hero-2-2k-clean.mp4" type="video/mp4" />
-            )}
-          </video>
-        )}
+        {/* Același video hero ca pe site-ul principal: fișiere găzduite acolo, varianta aleasă după ecran și browser */}
+        <HeroVideo />
         {/* Dark overlay pentru a întuneca video-ul */}
         <div className="absolute inset-0 w-full h-full bg-black/40 z-0" />
       </div>

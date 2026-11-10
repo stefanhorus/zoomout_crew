@@ -84,7 +84,6 @@ export default function RootLayout({
         {/* Prioritate maximă pentru video - preconnect pentru Bunny.net Stream */}
         <link rel="preconnect" href="https://iframe.mediadelivery.net" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://iframe.mediadelivery.net" />
-        <link rel="preconnect" href="https://vz-*.b-cdn.net" crossOrigin="anonymous" />
         {/* hreflang tags pentru SEO multilingv */}
         <link rel="alternate" hrefLang="en" href="https://zoomoutcrew.com" />
         <link rel="alternate" hrefLang="ro" href="https://zoomoutcrew.com" />
