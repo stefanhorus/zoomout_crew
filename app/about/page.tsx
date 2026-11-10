@@ -588,7 +588,7 @@ export default function About() {
               {t("about.readyToWork.text")}
             </p>
             <a
-              href="/contact"
+              href="/2/contact"
               className="inline-block liquid-glass-button text-white px-8 py-3 rounded-xl font-semibold relative transform hover:scale-105 transition-transform"
               style={{ fontFamily: "var(--font-roboto)" }}
             >

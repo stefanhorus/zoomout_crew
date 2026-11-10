@@ -472,7 +472,7 @@ export default function Home() {
         </p>
 
         <a
-          href="/portfolio"
+          href="/2/portfolio"
           className="inline-block liquid-glass-button text-white px-5 py-2.5 md:px-8 md:py-4 rounded-xl font-semibold text-sm md:text-base"
           style={{ fontFamily: "var(--font-roboto)" }}
         >

@@ -87,8 +87,9 @@ export default function Header() {
       <header ref={headerRef} className={`fixed top-0 left-0 w-full z-50 liquid-glass-header ${isMobileMenuOpen ? 'header-menu-open' : ''}`}>
         <nav className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
           {/* Logo */}
+          {/* Site-ul vechi stă la zoomoutcrew.com/2: linkurile simple (<a>) nu primesc singure prefixul, ca <Link> */}
           <a 
-            href="/" 
+            href="/2" 
             className="flex items-center gap-2 md:gap-3 hover:opacity-90 transition-all duration-300 cursor-pointer z-50 group"
             onClick={handleLinkClick}
           >
@@ -113,7 +114,7 @@ export default function Header() {
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <a 
-                    href={link.href} 
+                    href={`/2${link.href === "/" ? "" : link.href}`} 
                     className="hover:opacity-90 transition-all duration-300 text-sm md:text-base relative group font-medium"
                   >
                     <span className="relative z-10">{t(link.labelKey)}</span>
@@ -278,7 +279,7 @@ export default function Header() {
                   style={{ transitionDelay: `${index * 40}ms` }}
                 >
                   <a
-                    href={link.href}
+                    href={`/2${link.href === "/" ? "" : link.href}`}
                     onClick={handleLinkClick}
                     className="flex items-center gap-3 text-white text-base py-3 px-4 rounded-lg hover:bg-white/10 active:bg-white/15 transition-all duration-200 font-medium group relative overflow-hidden"
                     style={{ fontFamily: "var(--font-playfair)" }}
