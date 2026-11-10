@@ -101,20 +101,6 @@ export default function Portfolio() {
       description: t("portfolio.project2.description"),
     },
     {
-      id: 5,
-      title: t("portfolio.project3.title"), // casa
-      category: "real-estate",
-      thumbnail: "/assets/brands/cabanuta.png",
-      muxVideos: [
-        {
-          playbackId: "ILANTrld964hQ4OanXs6lq02kqN01q745BRJGgfqPy7Kk",
-          title: "",
-          assetId: "bhUSdN7wq8dC4E46Fd7oTbjdhiFpGWKYuJiI9NhS1TQ",
-        },
-      ],
-      description: t("portfolio.project3.description"),
-    },
-    {
       id: 6,
       title: t("portfolio.project6.title"), // utopic
       category: "events",
@@ -139,28 +125,6 @@ export default function Portfolio() {
         "/assets/photos/ratuste3.png",
       ],
       description: t("portfolio.project8.description"),
-    },
-    {
-      id: 8,
-      title: t("portfolio.project7.title"), // sunhouse
-      category: "real-estate",
-      thumbnail: "/assets/photos/sardinia1.jpeg",
-      images: ["/assets/photos/sardinia1.jpeg", "/assets/photos/sardinia2.jpeg"],
-      description: t("portfolio.project7.description"),
-    },
-    {
-      id: 9,
-      title: t("portfolio.project4.title"), // aer lounge
-      category: "commercial",
-      thumbnail: "/assets/brands/aerlounge.png",
-      muxVideos: [
-        {
-          playbackId: "c5jDLrljSoSJid7Du9P9XQb37yzRRrIKqFHYzqpKG8c",
-          title: "",
-          assetId: "cTKE4Xu5idbGw3DAqK02UivmpqNNhkwsMZ52C5ghzLRY",
-        },
-      ],
-      description: t("portfolio.project4.description"),
     },
   ], [t, language]);
 
@@ -188,7 +152,6 @@ export default function Portfolio() {
     { value: "all", label: "All Projects", labelKey: "portfolio.allProjects" },
     { value: "commercial", label: "Commercial", labelKey: "portfolio.commercial" },
     { value: "events", label: "Events", labelKey: "portfolio.events" },
-    { value: "real-estate", label: "Real Estate", labelKey: "portfolio.realEstate" },
   ];
 
   const filteredProjects =
