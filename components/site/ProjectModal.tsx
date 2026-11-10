@@ -1,35 +1,25 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { splitTitle, videoId, videoPlayer, type Project } from "@/lib/projects";
+import { splitTitle, type Project } from "@/lib/projects";
 import { EASE } from "../motion/ease";
 import { useScrollLock } from "../motion/SmoothScroll";
-import { CATEGORY_KEYS } from "./ProjectCard";
+import { ProjectView } from "./ProjectView";
 
-function ModalContent({ project, onClose }: { project: Project; onClose: () => void }) {
+function ModalContent({ project, onClose, onLeave }: { project: Project; onClose: () => void; onLeave: () => void }) {
   const { t } = useLanguage();
-  const [index, setIndex] = useState(0);
-  const { name, subtitle } = splitTitle(t(`${project.key}.title`));
-  const media = project.videos ?? project.images ?? [];
-  const count = media.length;
+  const { name } = splitTitle(t(`${project.key}.title`));
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
-      if (count > 1 && event.key === "ArrowRight") setIndex((i) => (i + 1) % count);
-      if (count > 1 && event.key === "ArrowLeft") setIndex((i) => (i - 1 + count) % count);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [count, onClose]);
-
-  const video = project.videos?.[index];
-  const image = project.images?.[index];
+  }, [onClose]);
 
   return (
     <motion.div
@@ -50,74 +40,7 @@ function ModalContent({ project, onClose }: { project: Project; onClose: () => v
           exit={{ y: 20, opacity: 0 }}
           transition={{ duration: 0.8, ease: EASE }}
         >
-          {/* Media */}
-          <div className="flex flex-col items-center gap-5 lg:col-span-7" onClick={(event) => event.stopPropagation()}>
-            {video ? (
-              <div
-                className={`relative overflow-hidden rounded-2xl bg-ink-2 ${
-                  video.landscape ? "aspect-video w-full" : "aspect-[9/16] w-full max-w-[min(100%,calc(78svh*9/16))]"
-                }`}
-              >
-                <iframe
-                  key={videoId(video)}
-                  src={videoPlayer(video)}
-                  title={name}
-                  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
-                  allowFullScreen
-                  className="absolute inset-0 h-full w-full border-0"
-                />
-              </div>
-            ) : image ? (
-              <div className="relative aspect-[9/16] w-full max-w-[min(100%,calc(78svh*9/16))] overflow-hidden rounded-2xl bg-ink-2">
-                <Image key={image} src={image} alt={name} fill sizes="(max-width: 1024px) 90vw, 45vw" className="object-cover" />
-              </div>
-            ) : (
-              <div className="relative flex aspect-[4/5] w-full max-w-md items-center justify-center rounded-2xl border border-line bg-ink-2">
-                {project.logo ? (
-                  <div className="relative h-1/3 w-2/3">
-                    <Image src={project.logo} alt={name} fill sizes="320px" className="object-contain" />
-                  </div>
-                ) : (
-                  <span className="serif-i px-8 text-center text-6xl leading-none text-paper/85 md:text-7xl">{subtitle || name}</span>
-                )}
-              </div>
-            )}
-
-            {count > 1 && (
-              <div className="flex items-center gap-4">
-                <button
-                  type="button"
-                  onClick={() => setIndex((i) => (i - 1 + count) % count)}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-line transition-colors hover:border-paper"
-                  aria-label={t("common.prev")}
-                >
-                  ←
-                </button>
-                <span className="kicker tabular-nums text-paper">
-                  {String(index + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setIndex((i) => (i + 1) % count)}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-line transition-colors hover:border-paper"
-                  aria-label={t("common.next")}
-                >
-                  →
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Detalii */}
-          <div className="lg:col-span-5" onClick={(event) => event.stopPropagation()}>
-            <p className="kicker">{project.categories.map((category) => t(CATEGORY_KEYS[category])).join(" · ")}</p>
-            <h2 className="display-md mt-5">{name}</h2>
-            {subtitle && <p className="serif-i mt-3 text-2xl text-paper-dim md:text-3xl">{subtitle}</p>}
-            <p className="lead mt-8">{t(`${project.key}.description`)}</p>
-            <Link href="/contact" onClick={onClose} className="btn-primary mt-10">
-              {t("modal.quote")} →
-            </Link>
-          </div>
+          <ProjectView project={project} onLeave={onLeave} />
         </motion.div>
       </div>
 
@@ -135,8 +58,17 @@ function ModalContent({ project, onClose }: { project: Project; onClose: () => v
   );
 }
 
-// Fereastra cu video-ul / pozele unui proiect (randată în body, peste tot site-ul)
-export function ProjectModal({ project, onClose }: { project: Project | null; onClose: () => void }) {
+// Fereastra cu video-ul / pozele unui proiect (randată în body, peste tot site-ul). `onLeave` se cheamă când
+// vizitatorul pleacă pe un link din fereastră (altfel `onClose`); vezi useProjectSelection.
+export function ProjectModal({
+  project,
+  onClose,
+  onLeave,
+}: {
+  project: Project | null;
+  onClose: () => void;
+  onLeave?: () => void;
+}) {
   useScrollLock(project !== null);
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -145,7 +77,9 @@ export function ProjectModal({ project, onClose }: { project: Project | null; on
   if (!mounted) return null;
 
   return createPortal(
-    <AnimatePresence>{project && <ModalContent key={project.id} project={project} onClose={onClose} />}</AnimatePresence>,
+    <AnimatePresence>
+      {project && <ModalContent key={project.id} project={project} onClose={onClose} onLeave={onLeave ?? onClose} />}
+    </AnimatePresence>,
     document.body
   );
 }

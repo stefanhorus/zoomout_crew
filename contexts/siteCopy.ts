@@ -121,6 +121,11 @@ const en: Copy = {
 
   // Project modal
   "modal.quote": "Get a quote for a similar project",
+  "project.prev": "Previous project",
+  "project.next": "Next project",
+  "project.share": "Share link",
+  "project.copied": "Link copied",
+  "project.copy": "Copy the project link",
 
   // Services page
   "services2.related": "Related work",
@@ -257,6 +262,11 @@ const ro: Copy = {
 
   // Project modal
   "modal.quote": "Cere ofertă pentru un proiect similar",
+  "project.prev": "Proiectul anterior",
+  "project.next": "Proiectul următor",
+  "project.share": "Trimite linkul",
+  "project.copied": "Link copiat",
+  "project.copy": "Copiază linkul proiectului",
 
   // Services page
   "services2.related": "Proiecte similare",

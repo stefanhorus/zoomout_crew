@@ -5,10 +5,11 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useIsDesktop } from "@/lib/hooks";
-import { PROJECTS, type Project } from "@/lib/projects";
+import { PROJECTS } from "@/lib/projects";
 import { SplitReveal } from "../motion/SplitReveal";
 import { ProjectCard } from "../site/ProjectCard";
 import { ProjectModal } from "../site/ProjectModal";
+import { useProjectSelection } from "../site/useProjectSelection";
 
 const FEATURED = PROJECTS.filter((project) => project.featured);
 
@@ -20,7 +21,7 @@ export function SelectedWork() {
   const trackRef = useRef<HTMLDivElement>(null);
   const distance = useMotionValue(0);
   const [sectionHeight, setSectionHeight] = useState<number | null>(null);
-  const [selected, setSelected] = useState<Project | null>(null);
+  const { selected, open, close, leave } = useProjectSelection("/");
 
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end end"] });
   const x = useTransform(() => -scrollYProgress.get() * distance.get());
@@ -91,7 +92,7 @@ export function SelectedWork() {
                 key={project.id}
                 project={project}
                 index={index + 1}
-                onOpen={setSelected}
+                onOpen={open}
                 eager={near}
                 className="aspect-[9/16] h-[min(60svh,640px)] shrink-0"
               />
@@ -113,7 +114,7 @@ export function SelectedWork() {
                 key={project.id}
                 project={project}
                 index={index + 1}
-                onOpen={setSelected}
+                onOpen={open}
                 eager={near}
                 className="aspect-[9/16] w-[72vw] shrink-0 snap-start sm:w-[44vw] md:w-[32vw]"
               />
@@ -127,7 +128,7 @@ export function SelectedWork() {
           </div>
         </div>
       )}
-      <ProjectModal project={selected} onClose={() => setSelected(null)} />
+      <ProjectModal project={selected} onClose={close} onLeave={leave} />
     </section>
   );
 }

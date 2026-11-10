@@ -25,8 +25,18 @@ export interface YouTubeVideo {
 
 export type ProjectVideo = MuxVideo | YouTubeVideo;
 
+// Cheile textelor pentru numele categoriilor (contexts/translations.ts)
+export const CATEGORY_KEYS: Record<ProjectCategory, string> = {
+  commercial: "portfolio.commercial",
+  events: "portfolio.events",
+  "real-estate": "portfolio.realEstate",
+  "music-videos": "portfolio.musicVideos",
+};
+
 export interface Project {
   id: number;
+  // adresa paginii proiectului: /portfolio/<slug>, fără diacritice; n-o mai schimba după ce linkul a fost trimis cuiva
+  slug: string;
   key: string;
   categories: ProjectCategory[];
   logo?: string; // afișat când proiectul n-are video sau poze
@@ -42,12 +52,14 @@ export interface Project {
 export const PROJECTS: Project[] = [
   {
     id: 10,
+    slug: "wild-west-tour",
     key: "portfolio.project10", // wild west tour
     categories: ["events"],
     logo: withBasePath("/assets/brands/wildwest.webp"),
   },
   {
     id: 11,
+    slug: "lepas",
     key: "portfolio.project11", // lepas (al treilea cont Mux; clipurile sunt luate de pe Instagram, @lepasromania, în 720p)
     categories: ["events", "commercial"],
     logo: withBasePath("/assets/brands/lepas.png"),
@@ -63,6 +75,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 12,
+    slug: "bacademia",
     key: "portfolio.project12", // bacademia (al treilea cont Mux; exporturile verticale ale userului, din 2026-11-10)
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/bacademia.png"),
@@ -82,6 +95,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 13,
+    slug: "one-society",
     key: "portfolio.project13", // one society (al doilea cont Mux; cele două reel-uri sunt luate de pe Instagram, în 720p)
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/onesociety.png"),
@@ -96,6 +110,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 14,
+    slug: "welovepng",
     key: "portfolio.project14", // welovepng (clipul e în al doilea cont Mux, cel din .env.local)
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/welovepng.png"),
@@ -105,6 +120,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 15,
+    slug: "haide-hai",
     key: "portfolio.project15", // mara feat. lurre - haide, hai! (clipul e în al doilea cont Mux)
     categories: ["music-videos"],
     cover: "https://i.ytimg.com/vi/FMYPoF7MZXA/maxresdefault.jpg", // thumbnail-ul oficial de pe YouTube
@@ -113,6 +129,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 16,
+    slug: "cjs-efort",
     key: "portfolio.project16", // cj's - efort
     categories: ["music-videos"],
     // Cadrul de la 0:13 din short-ul vertical al piesei (pe acoperiș, în hanoracul albastru); thumbnail-ul de pe
@@ -123,6 +140,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 17,
+    slug: "rone-damasc-adevar",
     key: "portfolio.project17", // rone damasc - adevăr
     categories: ["music-videos"],
     // Cadrul de la 0:55 din clipul 4K de pe YouTube, decupat pe mijloc: legat de scaun, cu banderola pe ochi
@@ -132,6 +150,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 18,
+    slug: "transylvania-sunset",
     key: "portfolio.project18", // nico ramírez - transylvania sunset (set-ul întreg, în al doilea cont Mux)
     categories: ["music-videos", "events"],
     // Cadrul de la 0:20 decupat pe mijloc: decupajul automat Mux alegea difuzorul din stânga, fără DJ
@@ -141,6 +160,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 19,
+    slug: "geosanu-prrizzaa",
     key: "portfolio.project19", // geo$anu - prrizzaa (clipul e în al doilea cont Mux)
     categories: ["music-videos"],
     cover: withBasePath("/assets/photos/geosanu-prrizzaa.jpg"), // thumbnail-ul oficial al piesei
@@ -149,6 +169,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 20,
+    slug: "ministry-of-sound",
     key: "portfolio.project20", // barbaro x risqué la ministry of sound, londra (al doilea cont Mux, care e plin: 10 din 10)
     categories: ["events", "music-videos"],
     videos: [
@@ -163,6 +184,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 1,
+    slug: "casa-numaa",
     key: "portfolio.project5", // casa numaa
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/casanumaa.png"),
@@ -174,6 +196,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 2,
+    slug: "big-belly",
     key: "portfolio.project1", // big belly
     categories: ["events", "commercial"],
     logo: withBasePath("/assets/brands/bigbelly.png"),
@@ -186,6 +209,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 3,
+    slug: "panoramic-360",
     key: "portfolio.project9", // panoramic360
     categories: ["events", "commercial"],
     logo: withBasePath("/assets/brands/panoramic360.jpg"),
@@ -195,6 +219,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 4,
+    slug: "multiverse",
     key: "portfolio.project2", // multiverse
     categories: ["events"],
     logo: withBasePath("/assets/brands/multiverse.png"),
@@ -203,6 +228,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 5,
+    slug: "remote-tiny-house",
     key: "portfolio.project3", // remote tiny house (cabanuta)
     categories: ["real-estate"],
     logo: withBasePath("/assets/brands/cabanuta.png"),
@@ -210,6 +236,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 6,
+    slug: "utopic",
     key: "portfolio.project6", // utopic
     categories: ["events"],
     logo: withBasePath("/assets/brands/utopic.png"),
@@ -219,6 +246,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 7,
+    slug: "rotaract",
     key: "portfolio.project8", // rotaract
     categories: ["events"],
     logo: withBasePath("/assets/brands/rotaract.png"),
@@ -227,6 +255,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 8,
+    slug: "la-villa-sunhouse",
     key: "portfolio.project7", // la villa sunhouse
     categories: ["real-estate"],
     logo: withBasePath("/assets/photos/sardinia1.jpeg"),
@@ -234,6 +263,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 9,
+    slug: "outdoor-lounge",
     key: "portfolio.project4", // outdoor lounge (aer lounge)
     categories: ["commercial"],
     logo: withBasePath("/assets/brands/aerlounge.png"),
@@ -243,6 +273,14 @@ export const PROJECTS: Project[] = [
 ];
 
 export const getProject = (id: number) => PROJECTS.find((p) => p.id === id);
+export const getProjectBySlug = (slug: string) => PROJECTS.find((p) => p.slug === slug);
+
+// ---------------- Pagina fiecărui proiect (/portfolio/<slug>) ----------------
+
+export const SITE_URL = "https://zoomoutcrew.com";
+export const projectPath = (project: Project) => `/portfolio/${project.slug}`;
+// Linkul întreg, de trimis clienților (cu /2 cât timp noul design stă sub zoomoutcrew.com/2)
+export const projectUrl = (project: Project) => `${SITE_URL}${withBasePath(projectPath(project))}`;
 
 // "Casa Numaa - Fine Dining Restaurant" -> { name: "Casa Numaa", subtitle: "Fine Dining Restaurant" }
 export function splitTitle(title: string): { name: string; subtitle: string } {
@@ -277,8 +315,10 @@ export function previewLoop(name: string) {
   return { hevc: `${base}.hevc.mp4?v=${PREVIEWS_VERSION}`, h264: `${base}.mp4?v=${PREVIEWS_VERSION}` };
 }
 
-export function muxPlayer(playbackId: string) {
-  return `https://player.mux.com/${playbackId}?autoplay=true&accent-color=%23ff4a2b`;
+// Cu autoplay (fereastra deschisă la click) sau, pe pagina proiectului, oprit pe cadrul de copertă
+export function muxPlayer(playbackId: string, { autoplay = true, thumbTime }: { autoplay?: boolean; thumbTime?: number } = {}) {
+  const poster = thumbTime !== undefined ? `&thumbnail-time=${thumbTime}` : "";
+  return `https://player.mux.com/${playbackId}?${autoplay ? "autoplay=true&" : ""}accent-color=%23ff4a2b${poster}`;
 }
 
 export const isYouTube = (video: ProjectVideo): video is YouTubeVideo => "youtubeId" in video;
@@ -286,10 +326,10 @@ export const isYouTube = (video: ProjectVideo): video is YouTubeVideo => "youtub
 export const videoId = (video: ProjectVideo) => (isYouTube(video) ? video.youtubeId : video.playbackId);
 
 // Playerul din fereastra proiectului (youtube-nocookie nu pune cookie-uri până la redare)
-export function videoPlayer(video: ProjectVideo) {
+export function videoPlayer(video: ProjectVideo, { autoplay = true }: { autoplay?: boolean } = {}) {
   return isYouTube(video)
-    ? `https://www.youtube-nocookie.com/embed/${video.youtubeId}?autoplay=1&rel=0&playsinline=1`
-    : muxPlayer(video.playbackId);
+    ? `https://www.youtube-nocookie.com/embed/${video.youtubeId}?${autoplay ? "autoplay=1&" : ""}rel=0&playsinline=1`
+    : muxPlayer(video.playbackId, autoplay ? {} : { autoplay: false, thumbTime: video.thumbTime });
 }
 
 // Imaginea de copertă a unui proiect (pentru carduri verticale)

@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitReveal } from "@/components/motion/SplitReveal";
@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { Process } from "@/components/site/Process";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { ProjectModal } from "@/components/site/ProjectModal";
+import { useProjectSelection } from "@/components/site/useProjectSelection";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getProject, type Project } from "@/lib/projects";
 import { SERVICES, type ServiceDefinition } from "@/lib/services";
@@ -106,7 +107,7 @@ function ServiceBlock({
 
 export default function Services() {
   const { t } = useLanguage();
-  const [selected, setSelected] = useState<Project | null>(null);
+  const { selected, open, close, leave } = useProjectSelection("/services");
 
   return (
     <>
@@ -129,12 +130,12 @@ export default function Services() {
       </PageHeader>
 
       {SERVICES.map((service, index) => (
-        <ServiceBlock key={service.key} service={service} index={index} onOpen={setSelected} />
+        <ServiceBlock key={service.key} service={service} index={index} onOpen={open} />
       ))}
 
       <Process />
       <CallToAction />
-      <ProjectModal project={selected} onClose={() => setSelected(null)} />
+      <ProjectModal project={selected} onClose={close} onLeave={leave} />
     </>
   );
 }

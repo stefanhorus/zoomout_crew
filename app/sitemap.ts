@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { PROJECTS } from '@/lib/projects'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://zoomoutcrew.com'
@@ -40,5 +41,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.6,
     },
+    // Pagina fiecărui proiect din portofoliu (/portfolio/<slug>)
+    ...PROJECTS.map((project) => ({
+      url: `${baseUrl}/portfolio/${project.slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
   ]
 }

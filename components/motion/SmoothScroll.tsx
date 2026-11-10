@@ -5,6 +5,13 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, type ReactNode } from "react";
 import { usePrefersReducedMotion } from "@/lib/hooks";
 
+// Adresa schimbată doar ca să arate linkul proiectului deschis în fereastră (history.pushState) nu e o pagină nouă:
+// pagina de sub fereastră rămâne unde era
+let keepScrollOnNextPathChange = false;
+export function keepScrollPosition() {
+  keepScrollOnNextPathChange = true;
+}
+
 // La schimbarea paginii pornim de sus (sau de la #ancoră), dar nu la Back/Forward.
 function ScrollReset() {
   const pathname = usePathname();
@@ -20,10 +27,10 @@ function ScrollReset() {
   }, []);
 
   useEffect(() => {
-    if (isPopNavigation.current) {
-      isPopNavigation.current = false;
-      return;
-    }
+    const keep = isPopNavigation.current || keepScrollOnNextPathChange;
+    isPopNavigation.current = false;
+    keepScrollOnNextPathChange = false;
+    if (keep) return;
     const hash = window.location.hash;
     const target = hash ? document.querySelector<HTMLElement>(hash) : null;
     if (target) {

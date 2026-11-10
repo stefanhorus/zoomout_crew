@@ -37,6 +37,9 @@ const serif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
+  // adresele relative din metadate (ex. imaginea de share a fiecărui proiect) devin linkuri întregi pe domeniul site-ului;
+  // Next nu adaugă singur /2 (basePath) în fața lor, așa că stă aici
+  metadataBase: new URL(`https://zoomoutcrew.com${BASE_PATH}`),
   title: {
     default: "Zoomout_crew - Producție Video & Filmări cu Dronă Cluj",
     template: "%s | Zoomout_crew",

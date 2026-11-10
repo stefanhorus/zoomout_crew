@@ -3,23 +3,18 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { withBasePath } from "@/lib/base-path";
 import {
   HEVC_TYPE,
   isYouTube,
   muxPreview,
   previewLoop,
   projectCover,
+  projectPath,
   splitTitle,
+  CATEGORY_KEYS,
   type Project,
-  type ProjectCategory,
 } from "@/lib/projects";
-
-export const CATEGORY_KEYS: Record<ProjectCategory, string> = {
-  commercial: "portfolio.commercial",
-  events: "portfolio.events",
-  "real-estate": "portfolio.realEstate",
-  "music-videos": "portfolio.musicVideos",
-};
 
 interface ProjectCardProps {
   project: Project;
@@ -79,9 +74,15 @@ export function ProjectCard({
     logoOverlay && cover && !project.categories.includes("music-videos") ? project.overlayLogo : undefined;
 
   return (
-    <button
-      type="button"
-      onClick={() => onOpen(project)}
+    // Link adevărat spre pagina proiectului (Cmd/Ctrl+click sau „Copy link” din meniul browserului); click-ul simplu
+    // deschide fereastra, iar useProjectSelection pune aceeași adresă în bara browserului
+    <a
+      href={withBasePath(projectPath(project))}
+      onClick={(event) => {
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        onOpen(project);
+      }}
       onPointerEnter={(event) => event.pointerType === "mouse" && setHovered(true)}
       onPointerLeave={() => setHovered(false)}
       data-cursor={video ? t("cursor.play") : t("cursor.view")}
@@ -170,6 +171,6 @@ export function ProjectCard({
         </h3>
         {subtitle && !compact && <p className="mt-2 line-clamp-2 hidden text-sm text-paper-dim sm:block">{subtitle}</p>}
       </div>
-    </button>
+    </a>
   );
 }

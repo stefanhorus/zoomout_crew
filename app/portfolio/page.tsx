@@ -8,8 +8,9 @@ import { CallToAction } from "@/components/site/CallToAction";
 import { PageHeader } from "@/components/site/PageHeader";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { ProjectModal } from "@/components/site/ProjectModal";
+import { useProjectSelection } from "@/components/site/useProjectSelection";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { PROJECTS, type Project, type ProjectCategory } from "@/lib/projects";
+import { PROJECTS, type ProjectCategory } from "@/lib/projects";
 
 type Filter = "all" | ProjectCategory;
 
@@ -24,7 +25,7 @@ const FILTERS: Array<{ value: Filter; labelKey: string }> = [
 export default function Portfolio() {
   const { t } = useLanguage();
   const [filter, setFilter] = useState<Filter>("all");
-  const [selected, setSelected] = useState<Project | null>(null);
+  const { selected, open, close, leave } = useProjectSelection("/portfolio");
 
   const countFor = (value: Filter) => (value === "all" ? PROJECTS.length : PROJECTS.filter((p) => p.categories.includes(value)).length);
   const visible = filter === "all" ? PROJECTS : PROJECTS.filter((project) => project.categories.includes(filter));
@@ -70,7 +71,7 @@ export default function Portfolio() {
                 <ProjectCard
                   project={project}
                   index={index + 1}
-                  onOpen={setSelected}
+                  onOpen={open}
                   className="aspect-[9/16] w-full"
                   sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
                   logoOverlay
@@ -82,7 +83,7 @@ export default function Portfolio() {
       </section>
 
       <CallToAction />
-      <ProjectModal project={selected} onClose={() => setSelected(null)} />
+      <ProjectModal project={selected} onClose={close} onLeave={leave} />
     </>
   );
 }
