@@ -227,14 +227,6 @@ export const PROJECTS: Project[] = [
     videos: [{ playbackId: "Xi5sUxm00g8N5UJGPn7D9Mut4JsMfUFULA01Qn02woUOwo", thumbTime: 9 }],
   },
   {
-    id: 5,
-    slug: "remote-tiny-house",
-    key: "portfolio.project3", // remote tiny house (cabanuta)
-    categories: ["real-estate"],
-    logo: withBasePath("/assets/brands/cabanuta.png"),
-    videos: [{ playbackId: "ILANTrld964hQ4OanXs6lq02kqN01q745BRJGgfqPy7Kk", thumbTime: 6 }],
-  },
-  {
     id: 6,
     slug: "utopic",
     key: "portfolio.project6", // utopic

@@ -22,12 +22,17 @@ const FILTERS: Array<{ value: Filter; labelKey: string }> = [
   { value: "real-estate", labelKey: "portfolio.realEstate" },
 ];
 
+const countFor = (value: Filter) => (value === "all" ? PROJECTS.length : PROJECTS.filter((p) => p.categories.includes(value)).length);
+
+// O categorie cu un singur proiect nu primește filtru (ex. Real Estate după ce a rămas doar Remote Tiny House);
+// filtrul reapare singur de la al doilea proiect
+const VISIBLE_FILTERS = FILTERS.filter((item) => item.value === "all" || countFor(item.value) >= 2);
+
 export default function Portfolio() {
   const { t } = useLanguage();
   const [filter, setFilter] = useState<Filter>("all");
   const { selected, open, close, leave } = useProjectSelection("/portfolio");
 
-  const countFor = (value: Filter) => (value === "all" ? PROJECTS.length : PROJECTS.filter((p) => p.categories.includes(value)).length);
   const visible = filter === "all" ? PROJECTS : PROJECTS.filter((project) => project.categories.includes(filter));
 
   return (
@@ -35,7 +40,7 @@ export default function Portfolio() {
       <PageHeader kicker={t("portfolio.title")} title={t("portfolio2.title")} intro={t("portfolio.subtitle")}>
         <Reveal delay={0.5} className="mt-12">
           <div className="flex flex-wrap gap-2" role="group" aria-label={t("portfolio.title")}>
-            {FILTERS.map((item) => {
+            {VISIBLE_FILTERS.map((item) => {
               const active = filter === item.value;
               return (
                 <button
