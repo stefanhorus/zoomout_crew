@@ -254,7 +254,7 @@ export const getProjectBySlug = (slug: string) => PROJECTS.find((p) => p.slug ==
 
 export const SITE_URL = "https://zoomoutcrew.com";
 export const projectPath = (project: Project) => `/portfolio/${project.slug}`;
-// Linkul întreg, de trimis clienților (cu /2 cât timp noul design stă sub zoomoutcrew.com/2)
+// Linkul întreg, de trimis clienților (ex. https://zoomoutcrew.com/portfolio/lepas)
 export const projectUrl = (project: Project) => `${SITE_URL}${withBasePath(projectPath(project))}`;
 
 // "Casa Numaa - Fine Dining Restaurant" -> { name: "Casa Numaa", subtitle: "Fine Dining Restaurant" }

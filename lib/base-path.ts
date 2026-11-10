@@ -1,4 +1,4 @@
-// Site-ul v2 rulează sub zoomoutcrew.com/2 (basePath din next.config.ts).
+// Prefixul site-ului (basePath din next.config.ts): gol de când noul design e la zoomoutcrew.com; a fost /2 până atunci.
 // <Link> și router-ul adaugă singure prefixul; fișierele din public/ (imagini, video) și cererile către /api nu.
 export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 

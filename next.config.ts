@@ -1,17 +1,33 @@
 import type { NextConfig } from "next";
 import { withNextVideo } from 'next-video/process';
 
-// v2 e servit la zoomoutcrew.com/2: site-ul live trimite /2 către proiectul Vercel al lui v2.
-// Când v2 devine site-ul principal, pune "" aici (și indexarea în Google pornește din nou, vezi app/layout.tsx).
-const BASE_PATH = "/2";
+// Din 2026-11-10 noul design e site-ul principal, la zoomoutcrew.com. Site-ul vechi a rămas la zoomoutcrew.com/2:
+// îl servește proiectul Vercel „zoomout-crew-v2” (ramura v2, cu basePath /2), iar rewrites de mai jos îl aduc sub domeniu.
+// Un prefix aici ar muta iar noul design sub el (și ar opri indexarea în Google, vezi app/layout.tsx).
+const BASE_PATH = "";
+const OLD_SITE = "https://zoomout-crew-v2.vercel.app";
 
 const nextConfig: NextConfig = {
   basePath: BASE_PATH || undefined,
   env: { NEXT_PUBLIC_BASE_PATH: BASE_PATH },
 
-  // Pe domeniul propriu al lui v2 (și local) rădăcina duce la /2
   async redirects() {
-    return BASE_PATH ? [{ source: "/", destination: BASE_PATH, basePath: false, permanent: false }] : [];
+    // Sub un prefix, rădăcina domeniului duce la el
+    if (BASE_PATH) return [{ source: "/", destination: BASE_PATH, basePath: false, permanent: false }];
+    // Linkurile proiectelor trimise cât timp noul design stătea la /2 (ex. zoomoutcrew.com/2/portfolio/lepas)
+    return [{ source: "/2/portfolio/:slug", destination: "/portfolio/:slug", permanent: true }];
+  },
+
+  // zoomoutcrew.com/2 = site-ul vechi. beforeFiles: pe Vercel, cererile prin care paginile se preîncarcă (antetul RSC)
+  // ajung la el neschimbate; altfel Vercel le modifică adresa, iar site-ul de la /2 răspunde cu 404.
+  async rewrites() {
+    if (BASE_PATH) return [];
+    return {
+      beforeFiles: [
+        { source: "/2", destination: `${OLD_SITE}/2` },
+        { source: "/2/:path*", destination: `${OLD_SITE}/2/:path*` },
+      ],
+    };
   },
 
   // Optimizări pentru imagini
