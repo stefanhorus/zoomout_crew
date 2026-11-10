@@ -78,7 +78,14 @@ function ServiceBlock({
         <div className="lg:col-span-7">
           <div ref={imageRef} className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-ink-2 md:aspect-[16/11]">
             <motion.div style={{ y: imageY }} className="absolute inset-x-0 -inset-y-[9%]">
-              <Image src={service.image} alt={t(`services.${service.key}`)} fill sizes="(max-width: 1024px) 100vw, 58vw" className="object-cover" />
+              <Image
+                src={service.image}
+                alt={t(`services.${service.key}`)}
+                fill
+                sizes="(max-width: 1024px) 100vw, 58vw"
+                className="object-cover"
+                style={service.focus ? { objectPosition: service.focus } : undefined}
+              />
             </motion.div>
           </div>
 

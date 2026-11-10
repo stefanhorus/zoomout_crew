@@ -101,6 +101,7 @@ export function ServicesIndex() {
                     fill
                     sizes="260px"
                     className={`object-cover transition-opacity duration-500 ${index === active ? "opacity-100" : "opacity-0"}`}
+                    style={service.focus ? { objectPosition: service.focus } : undefined}
                   />
                 ))}
               </motion.div>
