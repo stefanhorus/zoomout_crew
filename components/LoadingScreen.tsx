@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { withBasePath } from "@/lib/base-path";
 
 // Loading screen component - no progress bar
 
@@ -212,7 +211,7 @@ export default function LoadingScreen({ isLoading, onTextComplete }: LoadingScre
           }`}
         >
           <Image
-            src={withBasePath("/assets/logo.png")}
+            src="/assets/logo.png"
             alt="Zoomout_crew Logo"
             width={200}
             height={200}

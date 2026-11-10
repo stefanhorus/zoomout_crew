@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Order from "@/lib/models/Order";
-import { priceCart } from "@/lib/pricing";
+import { getDiscountPercentageForCode, normalizeDiscountCode, processMultipleDiscountCodes } from "@/lib/discount-codes";
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,44 +14,83 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Prețurile și reducerile se calculează pe server din catalog; ignorăm orice preț trimis de browser
-    const { items, discountCode, customerEmail, customerName, language, currency, requestInvoice } = await request.json();
+    const { items, discountPercentage, discountCode, customerEmail, customerName, language, currency = "RON", requestInvoice } = await request.json();
     const invoiceRequested = !!requestInvoice;
+    
+    // Calculează subtotalul înainte de discount-uri
+    const subtotal = items.reduce((sum: number, item: { product: { price: number }; quantity: number }) => {
+      return sum + item.product.price * item.quantity;
+    }, 0);
 
-    const pricing = priceCart(items, discountCode, currency);
-    if (!pricing.ok) {
-      return NextResponse.json({ error: pricing.message }, { status: 400 });
+    // Procesează multiple coduri de discount (dacă există)
+    let effectiveDiscountPercentage = 0;
+    let normalizedCodes = "";
+    let discountCodesArray: string[] = [];
+
+    if (discountCode && typeof discountCode === "string") {
+      // Procesează multiple coduri
+      const discountResult = processMultipleDiscountCodes(discountCode, subtotal);
+      effectiveDiscountPercentage = discountResult.effectivePercentage;
+      discountCodesArray = discountResult.codes;
+      normalizedCodes = discountCodesArray.join(", ");
+      
+      // Verifică dacă toate codurile sunt valide
+      if (discountCodesArray.length === 0 && discountCode.trim().length > 0) {
+        return NextResponse.json(
+          { error: "Invalid discount code(s)" },
+          { status: 400 }
+        );
+      }
+    } else if (typeof discountPercentage === "number") {
+      // Folosește discountPercentage dacă nu există coduri
+      effectiveDiscountPercentage = Math.max(0, Math.min(100, discountPercentage));
     }
 
-    const {
-      lines,
-      discountCodes: discountCodesArray,
-      discountPercentage: effectiveDiscountPercentage,
-      totalRON: totalAmountRON,
-      totalInCurrency: totalAmount,
-      currency: selectedCurrency,
-      exchangeRate,
-      isFree,
-    } = pricing.cart;
-    const normalizedCodes = discountCodesArray.join(", ");
 
-    if (isFree) {
+    if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
-        { error: "Free orders must use /api/checkout/free" },
+        { error: "Cart items are required" },
         { status: 400 }
       );
     }
 
+    // Rate-uri de schimb (trebuie să fie identice cu cele din CurrencyContext)
+    const exchangeRates: Record<string, number> = {
+      RON: 1,
+      EUR: 0.2,
+      USD: 0.22,
+      GBP: 0.18,
+    };
+
+    // Validează currency-ul și folosește RON dacă nu este suportat
+    const validCurrencies = ["RON", "EUR", "USD", "GBP"];
+    const selectedCurrency = validCurrencies.includes(currency) ? currency : "RON";
+    const exchangeRate = exchangeRates[selectedCurrency] || 1;
+
+    // Calculează totalul în RON după discount-uri
+    const totalAmountRON = subtotal - (subtotal * (effectiveDiscountPercentage / 100));
+
+    // Convertește în currency-ul selectat
+    const totalAmount = totalAmountRON * exchangeRate;
+
     // Construiește order items pentru Revolut
-    const orderItems = lines.map((line) => {
-      // Prețul este în RON, trebuie convertit în currency-ul selectat
-      const unitPrice = line.discountedUnitPriceRON * exchangeRate;
+    const orderItems = items.map((item: { product: { name: string; price: number; description?: string }; quantity: number }) => {
+      // Prețul este în RON, trebuie convertit
+      let unitPriceRON = item.product.price;
+      
+      // Aplică discount dacă există
+      if (effectiveDiscountPercentage > 0) {
+        unitPriceRON = unitPriceRON * (1 - effectiveDiscountPercentage / 100);
+      }
+
+      // Convertește în currency-ul selectat
+      const unitPrice = unitPriceRON * exchangeRate;
 
       return {
-        name: line.name,
-        quantity: line.quantity,
+        name: item.product.name,
+        quantity: item.quantity,
         unit_price: Math.round(unitPrice * 100), // Revolut folosește cenți/bani
-        total_amount: Math.round(unitPrice * line.quantity * 100),
+        total_amount: Math.round(unitPrice * item.quantity * 100),
       };
     });
 
@@ -73,13 +112,13 @@ export async function POST(request: NextRequest) {
         capture_mode: "AUTOMATIC",
         customer_id: undefined, // Poți adăuga customer_id dacă ai
         email: customerEmail || undefined, // Adaugă emailul clientului
-        description: `Order from Zoomout Crew - ${lines.length} item(s)`,
+        description: `Order from Zoomout Crew - ${items.length} item(s)`,
         items: orderItems,
         metadata: {
           discount_percentage: effectiveDiscountPercentage || 0,
           discount_code: normalizedCodes || "",
           discount_codes: discountCodesArray.join(","), // Lista de coduri separate prin virgulă
-          items_count: lines.length,
+          items_count: items.length,
           customer_email: customerEmail || "",
           customer_name: customerName?.trim() || "",
           language: language || "en",
@@ -107,12 +146,20 @@ export async function POST(request: NextRequest) {
     try {
       await connectDB();
       
-      // Prețurile cu discount aplicat secvențial (calculate în priceCart)
-      const formattedItems = lines.map((line) => ({
-        name: line.name,
-        quantity: line.quantity,
-        price: line.discountedUnitPriceRON,
-      }));
+      // Calculează prețurile cu discount aplicat secvențial
+      const formattedItems = items.map((item: { product: { name: string; price: number }; quantity: number }) => {
+        // Aplică discount-ul total calculat secvențial
+        const itemSubtotal = item.product.price * (item.quantity || 1);
+        const itemDiscount = itemSubtotal * (effectiveDiscountPercentage / 100);
+        const itemPriceAfterDiscount = itemSubtotal - itemDiscount;
+        const unitPriceAfterDiscount = itemPriceAfterDiscount / (item.quantity || 1);
+        
+        return {
+          name: item.product.name,
+          quantity: item.quantity || 1,
+          price: unitPriceAfterDiscount,
+        };
+      });
 
       await Order.findOneAndUpdate(
         { orderId: data.id },

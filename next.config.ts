@@ -1,17 +1,17 @@
 import type { NextConfig } from "next";
 import { withNextVideo } from 'next-video/process';
 
-// v2 e servit la zoomoutcrew.com/2: site-ul live trimite /2 către proiectul Vercel al lui v2.
-// Când v2 devine site-ul principal, pune "" aici (și indexarea în Google pornește din nou, vezi app/layout.tsx).
+// Site-ul vechi, păstrat la zoomoutcrew.com/2 de când noul design e site-ul principal (2026-11-10). Îl servește
+// proiectul Vercel „zoomout-crew-v2” (ramura v2); site-ul principal trimite /2 aici. Fișierele din public/ sunt
+// cerute fără /2 (ex. /assets/...), deci vin de la site-ul principal, care le are pe toate; la fel cererile către /api.
 const BASE_PATH = "/2";
 
 const nextConfig: NextConfig = {
-  basePath: BASE_PATH || undefined,
-  env: { NEXT_PUBLIC_BASE_PATH: BASE_PATH },
+  basePath: BASE_PATH,
 
-  // Pe domeniul propriu al lui v2 (și local) rădăcina duce la /2
+  // Pe domeniul propriu al proiectului (zoomout-crew-v2.vercel.app) rădăcina duce la /2
   async redirects() {
-    return BASE_PATH ? [{ source: "/", destination: BASE_PATH, basePath: false, permanent: false }] : [];
+    return [{ source: "/", destination: BASE_PATH, basePath: false, permanent: false }];
   },
 
   // Optimizări pentru imagini
@@ -20,12 +20,8 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60,
-    // Copertele proiectelor vin direct de la Mux
-    remotePatterns: [{ protocol: "https", hostname: "image.mux.com" }],
-    // Local (npm run dev) servim imaginile direct: pe SSD-ul exFAT macOS creează fișiere "._*" în
-    // .next/dev/cache/images, iar Next le citește în locul imaginii (imagini stricate în browser).
-    // În producție (Vercel) optimizarea rămâne activă.
-    unoptimized: process.env.NODE_ENV === "development",
+    // Fără optimizare: cu basePath, optimizatorul ar căuta /assets/... în acest proiect, nu la site-ul principal
+    unoptimized: true,
   },
 
   // Optimizări pentru build

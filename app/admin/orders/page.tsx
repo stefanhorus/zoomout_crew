@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { withBasePath } from "@/lib/base-path";
 
 interface OrderItem {
   name: string;
@@ -58,7 +57,7 @@ export default function AdminOrdersPage() {
         return;
       }
       
-      const response = await fetch(withBasePath("/api/admin/orders"), {
+      const response = await fetch("/api/admin/orders", {
         method: "GET",
         headers: {
           "x-admin-username": username,
@@ -100,7 +99,7 @@ export default function AdminOrdersPage() {
         headers["x-admin-password"] = password;
       }
       
-      const response = await fetch(withBasePath("/api/admin/orders"), { headers });
+      const response = await fetch("/api/admin/orders", { headers });
       if (!response.ok) {
         if (response.status === 401) {
           setIsAuthenticated(false);
@@ -151,7 +150,7 @@ export default function AdminOrdersPage() {
         return;
       }
 
-      const response = await fetch(withBasePath("/api/admin/sync-orders"), {
+      const response = await fetch("/api/admin/sync-orders", {
         method: "POST",
         headers: {
           "x-admin-username": savedUsername,
@@ -224,7 +223,7 @@ export default function AdminOrdersPage() {
           <div className="flex justify-center mb-8">
             <div className="logo-animated">
               <Image
-                src={withBasePath("/assets/logo.png")}
+                src="/assets/logo.png"
                 alt="Zoomout Crew Logo"
                 width={120}
                 height={120}
@@ -347,7 +346,7 @@ export default function AdminOrdersPage() {
         <div className="flex items-center gap-4 mb-8">
           <div className="logo-animated-header">
             <Image
-              src={withBasePath("/assets/logo.png")}
+              src="/assets/logo.png"
               alt="Zoomout Crew Logo"
               width={60}
               height={60}

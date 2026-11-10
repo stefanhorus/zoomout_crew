@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { withBasePath } from "@/lib/base-path";
 
 export default function CheckoutCancel() {
   return (
@@ -10,7 +9,7 @@ export default function CheckoutCancel() {
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
-          src={withBasePath("/assets/backgrounds/2.jpg")}
+          src="/assets/backgrounds/2.jpg"
           alt="Cancel background"
           fill
           priority
