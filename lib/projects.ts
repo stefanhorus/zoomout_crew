@@ -47,15 +47,19 @@ export interface Project {
   videos?: ProjectVideo[];
   images?: string[];
   featured?: boolean; // apare în „Stories we've filmed” pe homepage (proiectele alese de user), în ordinea din PROJECTS
+  // ascuns cât nu e gata: lipsește din Portfolio, de pe homepage, din Related work și din sitemap, iar pagina lui dă
+  // 404. Ca să-l readuci, șterge rândul `hidden: true`.
+  hidden?: boolean;
 }
 
-export const PROJECTS: Project[] = [
+const ALL_PROJECTS: Project[] = [
   {
     id: 10,
     slug: "wild-west-tour",
     key: "portfolio.project10", // wild west tour
     categories: ["events"],
     logo: withBasePath("/assets/brands/wildwest.webp"),
+    hidden: true, // 2026-11-11, la cererea userului: încă nu e gata (n-are clipuri sau poze)
   },
   {
     id: 11,
@@ -246,6 +250,9 @@ export const PROJECTS: Project[] = [
     images: [withBasePath("/assets/photos/ratuste1.png"), withBasePath("/assets/photos/ratuste2.png"), withBasePath("/assets/photos/ratuste3.png")],
   },
 ];
+
+// Proiectele de pe site, fără cele ascunse; tot site-ul le ia de aici
+export const PROJECTS = ALL_PROJECTS.filter((project) => !project.hidden);
 
 export const getProject = (id: number) => PROJECTS.find((p) => p.id === id);
 export const getProjectBySlug = (slug: string) => PROJECTS.find((p) => p.slug === slug);

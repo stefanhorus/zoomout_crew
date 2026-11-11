@@ -5,6 +5,10 @@ import { getProject, isYouTube, type Project } from "@/lib/projects";
 // hover pornită din alt loc al clipului decât pe restul site-ului (ex. la Drone, Lepas arată zborul de la început)
 export type RelatedProject = number | { id: number; previewStart: number };
 
+// „Related work” arată primele 3 proiecte din `related` care sunt pe site. Un proiect ascuns (hidden în
+// lib/projects.ts) e sărit, iar locul lui îl ia rezerva pusă după cele trei.
+const RELATED_COUNT = 3;
+
 // Serviciile - textele sunt în LanguageContext: services.<key>, services.<key>.desc, services.<key>.feature1-4
 export interface ServiceDefinition {
   key: string;
@@ -16,8 +20,8 @@ export interface ServiceDefinition {
 
 export const SERVICES: ServiceDefinition[] = [
   { key: "commercials", image: withBasePath("/assets/services/welovepng-bts.jpg"), showLocation: true, related: [13, 3, 11] },
-  { key: "socialMedia", image: withBasePath("/assets/services/social-media.webp"), focus: "50% 25%", showLocation: true, related: [12, 1, 10] },
-  { key: "events", image: withBasePath("/assets/photos/ratuste1.png"), showLocation: true, related: [20, 10, 2] },
+  { key: "socialMedia", image: withBasePath("/assets/services/social-media.webp"), focus: "50% 25%", showLocation: true, related: [12, 1, 10, 2] }, // rezervă: Big Belly
+  { key: "events", image: withBasePath("/assets/photos/ratuste1.png"), showLocation: true, related: [20, 10, 2, 18] }, // rezervă: Transylvania Sunset
   { key: "musicVideos", image: withBasePath("/assets/services/music-videos.webp"), showLocation: true, related: [15, 19, 16] },
   { key: "drone", image: withBasePath("/assets/services/fullday.png"), showLocation: true, related: [3, { id: 11, previewStart: 0.2 }, 1] },
   { key: "postProduction", image: withBasePath("/assets/services/postproduction.jpg"), showLocation: false, related: [3, 4] },
@@ -31,5 +35,5 @@ export function relatedProjects(service: ServiceDefinition): Project[] {
     const [first, ...rest] = project.videos ?? [];
     if (typeof entry === "number" || !first || isYouTube(first)) return [project];
     return [{ ...project, videos: [{ ...first, previewStart: entry.previewStart }, ...rest] }];
-  });
+  }).slice(0, RELATED_COUNT);
 }
