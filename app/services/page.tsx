@@ -14,8 +14,8 @@ import { ProjectCard } from "@/components/site/ProjectCard";
 import { ProjectModal } from "@/components/site/ProjectModal";
 import { useProjectSelection } from "@/components/site/useProjectSelection";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { getProject, type Project } from "@/lib/projects";
-import { SERVICES, type ServiceDefinition } from "@/lib/services";
+import { type Project } from "@/lib/projects";
+import { relatedProjects, SERVICES, type ServiceDefinition } from "@/lib/services";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -32,7 +32,7 @@ function ServiceBlock({
   const imageRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: imageRef, offset: ["start end", "end start"] });
   const imageY = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
-  const related = service.related.map(getProject).filter((project): project is Project => Boolean(project));
+  const related = relatedProjects(service);
   const features = [1, 2, 3, 4].map((n) => t(`services.${service.key}.feature${n}`));
 
   return (
