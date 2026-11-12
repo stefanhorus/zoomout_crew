@@ -56,10 +56,20 @@ const ALL_PROJECTS: Project[] = [
   {
     id: 10,
     slug: "wild-west-tour",
-    key: "portfolio.project10", // wild west tour
+    key: "portfolio.project10", // wild west tour (al treilea cont Mux; exporturile verticale ale userului, din 2026-11-12)
     categories: ["events"],
     logo: withBasePath("/assets/brands/wildwest.webp"),
-    hidden: true, // 2026-11-11, la cererea userului: încă nu e gata (n-are clipuri sau poze)
+    overlayLogo: withBasePath("/assets/brands/white/wildwest.png"),
+    videos: [
+      // recap-ul turului (1:51): coperta e grupul de pe marginea Marelui Canion, cu un pumn ridicat (26.2), iar hover-ul
+      // pornește de la cadrul de dinainte, tot la Grand Canyon (24.6-28.6)
+      { playbackId: "N01xmGm7QavtS4b3DmCBoi00kfbdIangWd5FiM76BuFtQ", thumbTime: 26.2, previewStart: 24.6 },
+      // o zi pe Route 66 (0:19): coperta e fata de la zidul pictat „Historic 66”
+      { playbackId: "3T01OoFptVaXNzCVhTtyEEy2L73PtoEPdLd8gMs2TcGg", thumbTime: 13.2 },
+    ],
+    // 2026-11-11, la cererea userului: încă nu era gata. Din 2026-11-12 are recap-ul și clipul de pe Route 66, dar
+    // rămâne ascuns până când userul spune să apară.
+    hidden: true,
   },
   {
     id: 11,
