@@ -67,9 +67,7 @@ const ALL_PROJECTS: Project[] = [
       // o zi pe Route 66 (0:19): coperta e fata de la zidul pictat „Historic 66”
       { playbackId: "3T01OoFptVaXNzCVhTtyEEy2L73PtoEPdLd8gMs2TcGg", thumbTime: 13.2 },
     ],
-    // 2026-11-11, la cererea userului: încă nu era gata. Din 2026-11-12 are recap-ul și clipul de pe Route 66, dar
-    // rămâne ascuns până când userul spune să apară.
-    hidden: true,
+    // ascuns între 2026-11-11 și 2026-11-12, cât nu avea clipuri; userul l-a pus pe site după ce a văzut logo-ul curățat
   },
   {
     id: 11,
