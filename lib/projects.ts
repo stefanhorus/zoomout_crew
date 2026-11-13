@@ -60,12 +60,14 @@ const ALL_PROJECTS: Project[] = [
     categories: ["events"],
     logo: withBasePath("/assets/brands/wildwest.webp"),
     overlayLogo: withBasePath("/assets/brands/white/wildwest.png"),
+    // ordinea aleasă de user (2026-11-13, „pune al doilea video primul”): ziua pe Route 66, apoi recap-ul
     videos: [
-      // recap-ul turului (1:51): coperta e grupul de pe marginea Marelui Canion, cu un pumn ridicat (26.2), iar hover-ul
-      // pornește de la cadrul de dinainte, tot la Grand Canyon (24.6-28.6)
+      // o zi pe Route 66 (0:19): coperta e fata de la zidul pictat „Historic 66” (13.2), iar hover-ul pornește de la
+      // începutul aceluiași cadru (12.75-16.75): zidul, apoi fata cu pălărie în fața Cadillac-ului roz
+      { playbackId: "3T01OoFptVaXNzCVhTtyEEy2L73PtoEPdLd8gMs2TcGg", thumbTime: 13.2, previewStart: 12.75 },
+      // recap-ul turului (1:51): grupul de pe marginea Marelui Canion, cu un pumn ridicat (26.2); hover-ul de la 24.6
+      // (tot la Grand Canyon) contează doar dacă recap-ul ajunge iar primul
       { playbackId: "N01xmGm7QavtS4b3DmCBoi00kfbdIangWd5FiM76BuFtQ", thumbTime: 26.2, previewStart: 24.6 },
-      // o zi pe Route 66 (0:19): coperta e fata de la zidul pictat „Historic 66”
-      { playbackId: "3T01OoFptVaXNzCVhTtyEEy2L73PtoEPdLd8gMs2TcGg", thumbTime: 13.2 },
     ],
     // ascuns între 2026-11-11 și 2026-11-12, cât nu avea clipuri; userul l-a pus pe site după ce a văzut logo-ul curățat
   },
