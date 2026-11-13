@@ -51,8 +51,10 @@ export function ProjectView({ project, autoplay = true, heading: Heading = "h2",
   const [index, setIndex] = useState(0);
   const title = t(`${project.key}.title`);
   const { name, subtitle } = splitTitle(title);
-  const media = project.videos ?? project.images ?? [];
-  const count = media.length;
+  // întâi clipurile, apoi pozele (un proiect poate avea doar una dintre ele sau pe amândouă)
+  const videos = project.videos ?? [];
+  const images = project.images ?? [];
+  const count = videos.length + images.length;
 
   useEffect(() => {
     if (count < 2) return;
@@ -64,8 +66,10 @@ export function ProjectView({ project, autoplay = true, heading: Heading = "h2",
     return () => window.removeEventListener("keydown", onKey);
   }, [count]);
 
-  const video = project.videos?.[index];
-  const image = project.images?.[index];
+  const video = videos[index];
+  const image = index >= videos.length ? images[index - videos.length] : undefined;
+  // rama pozei: forma din proiect (implicit 9:16) și cel mult 78% din înălțimea ecranului, ca la clipurile verticale
+  const imageAspect = project.imageAspect ?? "9 / 16";
 
   return (
     <>
@@ -87,7 +91,10 @@ export function ProjectView({ project, autoplay = true, heading: Heading = "h2",
             />
           </div>
         ) : image ? (
-          <div className="relative aspect-[9/16] w-full max-w-[min(100%,calc(78svh*9/16))] overflow-hidden rounded-2xl bg-ink-2">
+          <div
+            className="relative w-full overflow-hidden rounded-2xl bg-ink-2"
+            style={{ aspectRatio: imageAspect, maxWidth: `min(100%, calc(78svh * ${imageAspect}))` }}
+          >
             <Image key={image} src={image} alt={name} fill sizes="(max-width: 1024px) 90vw, 45vw" className="object-cover" />
           </div>
         ) : (

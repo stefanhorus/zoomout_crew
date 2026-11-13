@@ -45,7 +45,10 @@ export interface Project {
   overlayLogo?: string;
   cover?: string; // copertă aleasă (ex. thumbnail-ul oficial); altfel cadrul thumbTime din primul video sau prima poză
   videos?: ProjectVideo[];
-  images?: string[];
+  images?: string[]; // pozele; la un proiect cu clipuri apar după ele, în același player cu săgeți
+  // forma ramei pozelor (lățime / înălțime, ex. "3 / 4"); implicit "9 / 16", ca la clipurile verticale. Pozele umplu rama
+  // și se taie ce iese din ea, așa că pune forma celei mai înguste poze
+  imageAspect?: string;
   featured?: boolean; // apare în „Stories we've filmed” pe homepage (proiectele alese de user), în ordinea din PROJECTS
   // ascuns cât nu e gata: lipsește din Portfolio, de pe homepage, din Related work și din sitemap, iar pagina lui dă
   // 404. Ca să-l readuci, șterge rândul `hidden: true`.
@@ -60,14 +63,19 @@ const ALL_PROJECTS: Project[] = [
     categories: ["events"],
     logo: withBasePath("/assets/brands/wildwest.webp"),
     overlayLogo: withBasePath("/assets/brands/white/wildwest.png"),
-    // ordinea aleasă de user (2026-11-13): reclama ADD1WWT în locul recap-ului („pune asta în loc de recap”), apoi
-    // ziua pe Route 66 și interviul din Las Vegas
+    // ordinea aleasă de user (2026-11-13): reclama ADD1WWT în locul recap-ului („pune asta în loc de recap”), ziua la
+    // Lake Powell (dtn11), apoi ziua pe Route 66 și interviul din Las Vegas. Recap-ul a fost șters din Mux ca să facă loc
+    // (originalul, RECAPdone.mp4, e în Downloads și pe HoruSSD)
     videos: [
       // ADD1WWT (1:00), reclama turului („This is not your average…”): Route 66, Grand Canyon, Lake Powell, Los Angeles,
       // San Francisco, Las Vegas. Coperta: fata așezată pe o stâncă deasupra Marelui Canion (20.6). Hover-ul pornește de
       // la începutul aceluiași cadru (20.45-24.45): stânca, fata cu steagul la canion, barca de pe Lake Powell, apoi
       // barca văzută de sus. La Mux, de la 20.3 animația încă începe cu cadrul de dinainte
       { playbackId: "wWoCsPFS4TSMo2mIHUysopdvf6o01H4gheVYOAFtsRgI", thumbTime: 20.6, previewStart: 20.45 },
+      // dtn11 (0:23), o zi la Lake Powell, Utah: plaja, barca, colacul tras de barcă, jet-ski-ul. Coperta: colacul roșu
+      // cu picioarele tuturor în aer și platoul din spate (16.4; la Mux, de la 16.7 e alt cadru, mai de departe). Hover-ul
+      // de la 16.3 contează doar dacă ajunge primul
+      { playbackId: "Xb89m2FREX82JIVZbmfawi4z1IWpmop3PtXwWUbO01O4", thumbTime: 16.4, previewStart: 16.3 },
       // o zi pe Route 66 (0:19): coperta e fata de la zidul pictat „Historic 66” (13.2); hover-ul de la începutul
       // aceluiași cadru (12.75-16.75) contează doar dacă ajunge iar primul
       { playbackId: "3T01OoFptVaXNzCVhTtyEEy2L73PtoEPdLd8gMs2TcGg", thumbTime: 13.2, previewStart: 12.75 },
@@ -201,6 +209,15 @@ const ALL_PROJECTS: Project[] = [
       // set-ul complet al lui Nico Ramírez (56 min, din 4K convertit la 1080p)
       { playbackId: "aLHaNy87sJC4uStU1JaKt7QdQeh8RUv8aQJTYU0223KM", thumbTime: 500, landscape: true },
     ],
+    // pozele de după clipuri, în ordinea cerută de user (2026-11-13): două din ~/Desktop/Barbaro (DSC05947, DSC05950;
+    // originale 4672x7008, adică 2:3) și prima poză din caruselul @barbaro_ldn (instagram.com/p/DcO6QKiiFGv, 3072x4096).
+    // Rama e 3:4, ca poza din carusel; la cele 2:3 se taie câte ~5% sus și jos
+    images: [
+      withBasePath("/assets/photos/barbaro-dj-neon.jpg"), // DJ-ul la pult, sub neonul roșu BARBARO
+      withBasePath("/assets/photos/barbaro-risque-neon.jpg"), // neonurile RISQUÉ, fața cu pălărie și BARBARO deasupra pultului
+      withBasePath("/assets/photos/barbaro-risque-crowd.jpg"), // RISQUÉ și fața cu pălărie, cu publicul în față
+    ],
+    imageAspect: "3 / 4",
     featured: true,
   },
   {
