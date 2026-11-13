@@ -60,11 +60,16 @@ const ALL_PROJECTS: Project[] = [
     categories: ["events"],
     logo: withBasePath("/assets/brands/wildwest.webp"),
     overlayLogo: withBasePath("/assets/brands/white/wildwest.png"),
-    // ordinea aleasă de user (2026-11-13, „pune al doilea video primul”): ziua pe Route 66, apoi recap-ul
+    // ordinea aleasă de user (2026-11-13): ziua pe Route 66, interviul din Las Vegas („pune și InterviewCaption ca al
+    // doilea video”), apoi recap-ul
     videos: [
       // o zi pe Route 66 (0:19): coperta e fata de la zidul pictat „Historic 66” (13.2), iar hover-ul pornește de la
       // începutul aceluiași cadru (12.75-16.75): zidul, apoi fata cu pălărie în fața Cadillac-ului roz
       { playbackId: "3T01OoFptVaXNzCVhTtyEEy2L73PtoEPdLd8gMs2TcGg", thumbTime: 13.2, previewStart: 12.75 },
+      // interviurile cu subtitrare de pe o terasă din Las Vegas, noaptea (1:10). Coperta: gazda și băiatul în bluză
+      // verde-deschis care râde, cu subtitrarea „People love it!” (35.75; la Mux, la 35.65 subtitrarea încă lipsește).
+      // Hover-ul, de la începutul aceluiași cadru (34.3), contează doar dacă interviul ajunge primul
+      { playbackId: "YWP01aPr3hyTIOBQxa2Lhn92d9q27L7JW700H4MSZWfQw", thumbTime: 35.75, previewStart: 34.3 },
       // recap-ul turului (1:51): grupul de pe marginea Marelui Canion, cu un pumn ridicat (26.2); hover-ul de la 24.6
       // (tot la Grand Canyon) contează doar dacă recap-ul ajunge iar primul
       { playbackId: "N01xmGm7QavtS4b3DmCBoi00kfbdIangWd5FiM76BuFtQ", thumbTime: 26.2, previewStart: 24.6 },
