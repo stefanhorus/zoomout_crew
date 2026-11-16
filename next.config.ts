@@ -31,6 +31,7 @@ const nextConfig: NextConfig = {
       // servite la zoomoutcrew.com/<slug>. Sursa lor e în /Volumes/Extreme SSD/outreach/pitch/.
       afterFiles: [
         { source: "/suncebeat2027", destination: "/suncebeat2027/index.html" },
+        { source: "/disconnect", destination: "/disconnect/index.html" },
       ],
     };
   },
