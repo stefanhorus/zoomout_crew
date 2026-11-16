@@ -27,6 +27,11 @@ const nextConfig: NextConfig = {
         { source: "/2", destination: `${OLD_SITE}/2` },
         { source: "/2/:path*", destination: `${OLD_SITE}/2/:path*` },
       ],
+      // Pagini de pitch pentru clienți: fișiere statice în public/<slug>/ (cu <base href="/<slug>/"> în index.html),
+      // servite la zoomoutcrew.com/<slug>. Sursa lor e în /Volumes/Extreme SSD/outreach/pitch/.
+      afterFiles: [
+        { source: "/suncebeat2027", destination: "/suncebeat2027/index.html" },
+      ],
     };
   },
 
