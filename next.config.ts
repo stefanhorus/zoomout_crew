@@ -32,6 +32,7 @@ const nextConfig: NextConfig = {
       afterFiles: [
         { source: "/suncebeat2027", destination: "/suncebeat2027/index.html" },
         { source: "/disconnect", destination: "/disconnect/index.html" },
+        { source: "/lepetit", destination: "/lepetit/index.html" },
       ],
     };
   },
