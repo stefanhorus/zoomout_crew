@@ -77,6 +77,54 @@
     });
   });
 
+  // clip carousel (several short mp4 clips in one 16:9 frame)
+  document.querySelectorAll('.clips').forEach(function (fig) {
+    var n = +fig.dataset.n, i = 0, playing = false;
+    var v = fig.querySelector('video');
+    var count = fig.querySelector('.c-count');
+    var dots = fig.querySelector('.c-dots');
+    players.push(v);
+    for (var k = 0; k < n; k++) {
+      var d = document.createElement('button');
+      d.setAttribute('aria-label', 'Clip ' + (k + 1));
+      (function (k) { d.addEventListener('click', function () { go(k, playing); }); })(k);
+      dots.appendChild(d);
+    }
+    function mark() {
+      count.textContent = (i + 1) + ' / ' + n;
+      Array.prototype.forEach.call(dots.children, function (d, k) { d.classList.toggle('on', k === i); });
+    }
+    function go(k, autoplay) {
+      i = (k + n) % n;
+      v.poster = 'media/set/set-' + (i + 1) + '.jpg';
+      v.src = 'media/set/set-' + (i + 1) + '.mp4';
+      mark();
+      if (autoplay) start(); else { fig.classList.remove('playing'); }
+    }
+    function start() {
+      if (!v.getAttribute('src')) v.src = 'media/set/set-' + (i + 1) + '.mp4';
+      pauseAll(v);
+      v.muted = false;
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+    fig.querySelector('.play').addEventListener('click', start);
+    v.addEventListener('click', function () { if (v.paused) start(); else v.pause(); });
+    fig.querySelector('.c-prev').addEventListener('click', function () { go(i - 1, playing); });
+    fig.querySelector('.c-next').addEventListener('click', function () { go(i + 1, playing); });
+    v.addEventListener('play', function () { playing = true; fig.classList.add('playing'); });
+    v.addEventListener('pause', function () { if (!v.ended) { playing = false; fig.classList.remove('playing'); } });
+    v.addEventListener('ended', function () { if (i < n - 1) go(i + 1, true); else { playing = false; go(0, false); } });
+    var x0 = null;
+    fig.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    fig.addEventListener('touchend', function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 40) go(dx < 0 ? i + 1 : i - 1, playing);
+    });
+    mark();
+  });
+
   // tabs
   document.querySelectorAll('.tabs').forEach(function (bar) {
     var group = bar.dataset.group;
