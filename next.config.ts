@@ -34,6 +34,13 @@ const nextConfig: NextConfig = {
         { source: "/disconnect", destination: "/disconnect/index.html" },
         { source: "/lepetit", destination: "/lepetit/index.html" },
         { source: "/snowfest", destination: "/snowfest/index.html" },
+        { source: "/hive2027", destination: "/hive2027/index.html" },
+        { source: "/obeach2027", destination: "/obeach2027/index.html" },
+        { source: "/meibiza2027", destination: "/meibiza2027/index.html" },
+        { source: "/sunandbass2027", destination: "/sunandbass2027/index.html" },
+        { source: "/boardmasters2027", destination: "/boardmasters2027/index.html" },
+        { source: "/festivalrepublic2027", destination: "/festivalrepublic2027/index.html" },
+        { source: "/afronation2027", destination: "/afronation2027/index.html" },
       ],
     };
   },
