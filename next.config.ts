@@ -43,6 +43,8 @@ const nextConfig: NextConfig = {
         { source: "/afronation2027", destination: "/afronation2027/index.html" },
         { source: "/ontheblock", destination: "/ontheblock/index.html" },
         { source: "/iammorbid", destination: "/iammorbid/index.html" },
+        { source: "/cafedelmarphuket", destination: "/cafedelmarphuket/index.html" },
+        { source: "/blackframe", destination: "/blackframe/index.html" },
       ],
     };
   },
