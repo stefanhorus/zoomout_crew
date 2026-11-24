@@ -45,6 +45,7 @@ const nextConfig: NextConfig = {
         { source: "/iammorbid", destination: "/iammorbid/index.html" },
         { source: "/cafedelmarphuket", destination: "/cafedelmarphuket/index.html" },
         { source: "/blackframe", destination: "/blackframe/index.html" },
+        { source: "/dornatechno", destination: "/dornatechno/index.html" },
       ],
     };
   },
