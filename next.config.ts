@@ -42,6 +42,7 @@ const nextConfig: NextConfig = {
         { source: "/festivalrepublic2027", destination: "/festivalrepublic2027/index.html" },
         { source: "/afronation2027", destination: "/afronation2027/index.html" },
         { source: "/ontheblock", destination: "/ontheblock/index.html" },
+        { source: "/iammorbid", destination: "/iammorbid/index.html" },
       ],
     };
   },
